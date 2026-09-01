@@ -1,0 +1,48 @@
+\begin{frame}{Длинная таблица: перечень пакетов\orient}
+  \vspace{0.2em}
+  {\footnotesize\color{acGray}Пример компактной таблицы с {\ttfamily\small} или
+  {\ttfamily footnotesize}.}
+  \vspace{0.5em}
+
+  \footnotesize
+  \begin{tabular}{@{}p{0.22\textwidth}p{0.74\textwidth}@{}}
+    \toprule
+    \textbf{Категория} & \textbf{Пакеты / компоненты}\\
+    \midrule
+    Основные &
+      \ttfamily component-a, component-b, component-c, component-d \\
+    \addlinespace[0.3em]
+    Обработка данных &
+      \ttfamily lib-1, lib-2, lib-3, lib-4 \\
+    \addlinespace[0.3em]
+    Визуализация &
+      \ttfamily chart-a, chart-b, chart-c \\
+    \addlinespace[0.3em]
+    Утилиты &
+      \ttfamily util-1, util-2, util-3 \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+\begin{frame}{Два блока: условия и практика}
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Обязательные условия}
+        \begin{itemize}\setlength\itemsep{0.3em}
+          \item \textbf{прямой доступ} к настройкам оборудования;
+          \item пропускная способность канала --- \textbf{не менее 200 Мбит/с}.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{На практике}
+        \begin{itemize}\setlength\itemsep{0.3em}
+          \item выделенный сегмент сети;
+          \item ограниченный доступ в Интернет;
+          \item тестовый прогон до основного события.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}

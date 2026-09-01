@@ -1,0 +1,8 @@
+* text=auto eol=lf
+
+*.sh text eol=lf
+Makefile text eol=lf
+latexmkrc text eol=lf
+*.{tex,sty,yml,yaml,md,html,py,gitignore,gitattributes} text eol=lf
+
+lectures/_template/** linguist-documentation

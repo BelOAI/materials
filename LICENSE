@@ -1,0 +1,29 @@
+Copyright (c) 2026 Pavel Kasila and BelOAI Material Authors
+
+This repository uses two licenses, by path.
+
+Copyright holders: Pavel Kasila and BelOAI Material Authors. For
+attribution examples and redistribution rules, see LICENSING.md and
+ATTRIBUTION.md.
+
+Educational materials — CC BY 4.0
+  lectures/
+  README.md
+  generated lecture PDFs and the public course index copy
+
+  Copy, share, and adapt that material with attribution.
+  Full terms: LICENSE-CC-BY-4.0
+  https://creativecommons.org/licenses/by/4.0/
+
+Software — MIT License
+  latex/
+  scripts/
+  Makefile
+  latexmkrc
+  .github/
+
+  Full terms: LICENSE-MIT
+
+Maintainer documentation (AGENTS.md and nested README files) follows
+the license of the tree it describes: lectures/README.md is CC BY 4.0;
+latex/README.md and AGENTS.md are MIT.

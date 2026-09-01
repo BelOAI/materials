@@ -1,0 +1,24 @@
+% Academic Beamer outer theme
+\ProvidesFile{beamerouterthemeAcademic.sty}[2026/09/01 Academic Beamer outer theme]
+
+\setbeamersize{text margin left=0.055\paperwidth,
+               text margin right=0.055\paperwidth}
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamertemplate{frametitle}{%
+  \vspace{0.85em}\hspace{0.055\paperwidth}%
+  \begin{minipage}{0.89\paperwidth}
+    \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle\par
+    \vspace{0.25em}{\color{acRule}\hrule height 0.6pt}
+  \end{minipage}%
+}
+
+\setbeamertemplate{footline}{%
+  \hspace{0.055\paperwidth}%
+  \begin{minipage}{0.89\paperwidth}
+    {\color{acRule}\hrule height 0.4pt}\vspace{0.3em}
+    {\scriptsize\color{acGray}\ac@shorttitle\hfill\insertframenumber}
+    \vspace{0.55em}
+  \end{minipage}%
+}

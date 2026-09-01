@@ -1,0 +1,36 @@
+# LaTeX intermediate files
+*.aux
+*.log
+*.out
+*.toc
+*.nav
+*.snm
+*.vrb
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+*-blx.bib
+*.lof
+*.lot
+
+# Generated presentation PDFs (built by CI / make)
+lectures/**/main.pdf
+
+# GitHub Pages site output
+_site/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor backups
+*~
+*.swp
+.idea/
+
+__pycache__

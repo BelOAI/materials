@@ -1,0 +1,30 @@
+% Convenience package: language setup + Academic Beamer theme
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{academicbeamer}[2026/09/01 Academic Beamer presentation package]
+
+\newif\ifac@russian
+\newif\ifac@english
+\ac@russiantrue
+
+\newcommand{\ac@shorttitle}{}
+
+\DeclareOption{russian}{\ac@russiantrue\ac@englishfalse}
+\DeclareOption{english}{\ac@englishtrue\ac@russianfalse}
+\ProcessOptions\relax
+
+\newcommand{\setshorttitle}[1]{\renewcommand{\ac@shorttitle}{#1}}
+
+\RequirePackage{cmap}
+\RequirePackage[utf8]{inputenc}
+
+\ifac@russian
+  \RequirePackage[T2A]{fontenc}
+  \RequirePackage[english,russian]{babel}
+\else
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage[english]{babel}
+\fi
+
+\usetheme{Academic}
+
+\endinput

@@ -1,0 +1,76 @@
+name: Presentations
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lectures/**'
+      - 'latex/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+      - 'Makefile'
+      - 'latexmkrc'
+  pull_request:
+    paths:
+      - 'lectures/**'
+      - 'latex/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+      - 'Makefile'
+      - 'latexmkrc'
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install TeX Live and poppler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base \
+            texlive-latex-recommended \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-lang-cyrillic \
+            texlive-pictures \
+            texlive-science \
+            poppler-utils \
+            make
+
+      - name: Build presentations and site
+        run: make site
+
+      - name: Upload site artifact (pull request)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: presentations-site
+          path: _site
+
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
