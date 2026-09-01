@@ -7,6 +7,11 @@ import re
 from pathlib import Path
 from typing import Any
 
+ASSIGNMENT_TYPE_LABELS = {
+    "math": "Математика",
+    "coding": "Программирование",
+}
+
 REFERENCE_KIND_LABELS = {
     "contest": "Яндекс.Контест",
     "kaggle": "Kaggle",
@@ -107,6 +112,17 @@ def get_flat(meta: dict[str, Any], key: str, default: str = "") -> str:
     if isinstance(value, str):
         return value
     return default
+
+
+def get_assignment_type(meta: dict[str, Any]) -> str:
+    value = get_flat(meta, "assignment_type", "").strip().lower()
+    if value in ASSIGNMENT_TYPE_LABELS:
+        return value
+    return ""
+
+
+def get_assignment_type_label(assignment_type: str) -> str:
+    return ASSIGNMENT_TYPE_LABELS.get(assignment_type.strip().lower(), "")
 
 
 def get_references(meta: dict[str, Any]) -> list[dict[str, str]]:

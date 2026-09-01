@@ -1,0 +1,18 @@
+title: "Домашнее задание N"
+subtitle: "Краткий подзаголовок"
+date: "2026-01-01"
+description: "Опишите задание в 1–2 предложениях: темы, что нужно сделать, формат сдачи."
+assignment_type: math
+lang: ru
+build: false
+
+# Optional external links (uncomment and edit):
+# references:
+#   - kind: contest
+#     url: https://new.contest.yandex.ru/contests/98758
+#     label: Сдать решения
+
+# Optional downloadable materials:
+# materials:
+#   - path: materials/dataset.csv
+#     label: Данные

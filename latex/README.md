@@ -1,4 +1,4 @@
-# LaTeX theme — Academic Beamer
+# LaTeX theme — Academic Beamer and assignment packages
 
 In-repo TeX packages following a minimal [TDS layout](https://www.ctan.org/TDS-guidelines):
 
@@ -12,6 +12,10 @@ latex/tex/latex/
     beamercolorthemeAcademicPractice.sty
   academicbeamer/
     academicbeamer.sty
+  academicworksheet/
+    academicworksheet.sty
+  academicstatement/
+    academicstatement.sty
 ```
 
 Build scripts set:
@@ -20,7 +24,7 @@ Build scripts set:
 export TEXINPUTS="$REPO_ROOT/latex/tex/latex//:${TEXINPUTS:-}"
 ```
 
-so decks can `\usepackage{academicbeamer}` without relative `\input` paths.
+so decks can `\usepackage{academicbeamer}` and assignments can `\usepackage{academicworksheet}` without relative `\input` paths.
 
 ## Package: `academicbeamer`
 
@@ -39,6 +43,35 @@ so decks can `\usepackage{academicbeamer}` without relative `\input` paths.
 
 After loading, the **Academic** Beamer theme is active.
 
+## Package: `academicworksheet`
+
+Math home task printouts (`assignments/` with `assignment_type: math`):
+
+```latex
+\documentclass[a4paper,11pt]{article}
+\usepackage[russian]{academicworksheet}
+\setassignmentno{2}
+```
+
+| Option | Description |
+| ------ | ----------- |
+| `russian` | `T2A` fontenc, Russian babel (default) |
+| `english` | `T1` fontenc, English babel |
+
+Helper macros: `exercise` environment, `\answerlines{n}`, `\answerbox[height]`.
+
+## Package: `academicstatement`
+
+Coding problem statements (`assignments/` with `assignment_type: coding`):
+
+```latex
+\documentclass[a4paper,11pt]{article}
+\usepackage[russian]{academicstatement}
+\setassignmentno{2}
+```
+
+Environments: `problem`, `io`, `example`, `constraints`; macro `\sampleio{input}{output}`.
+
 ## Customisation
 
 | Change | Edit |
@@ -49,6 +82,8 @@ After loading, the **Academic** Beamer theme is active.
 | Blocks, lists, section dividers, macros | `beamerinnerthemeAcademic.sty` |
 | Shared dependencies | `beamerthemeAcademic.sty` |
 | Language / fonts | `academicbeamer.sty` |
+| Math worksheet layout | `academicworksheet/academicworksheet.sty` |
+| Coding statement layout | `academicstatement/academicstatement.sty` |
 
 ## Helper macros (inner theme)
 
@@ -67,8 +102,8 @@ cd lectures/01-project-setup
 latexmk -pdf main.tex
 ```
 
-Or use `make lecture DIR=lectures/01-project-setup` from the repository root.
+Or use `make session DIR=assignments/02-derivatives` from the repository root.
 
 ## License
 
-The Academic Beamer theme is [MIT](../LICENSE-MIT). Copyright: Pavel Kasila and BelOAI Material Authors. See [`../LICENSE`](../LICENSE) and [`../LICENSING.md`](../LICENSING.md).
+The Academic Beamer theme and assignment packages are [MIT](../LICENSE-MIT). Copyright: Pavel Kasila and BelOAI Material Authors. See [`../LICENSE`](../LICENSE) and [`../LICENSING.md`](../LICENSING.md).

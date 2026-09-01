@@ -6,6 +6,7 @@ on:
     paths:
       - 'lectures/**'
       - 'practices/**'
+      - 'assignments/**'
       - 'latex/**'
       - 'scripts/**'
       - 'site/**'
@@ -16,6 +17,7 @@ on:
     paths:
       - 'lectures/**'
       - 'practices/**'
+      - 'assignments/**'
       - 'latex/**'
       - 'scripts/**'
       - 'site/**'

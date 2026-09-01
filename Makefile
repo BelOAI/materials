@@ -28,7 +28,7 @@ site:
 	python3 $(SCRIPTS)/generate-site.py
 
 clean:
-	find $(REPO_ROOT)/lectures $(REPO_ROOT)/practices -type f \( \
+	find $(REPO_ROOT)/lectures $(REPO_ROOT)/practices $(REPO_ROOT)/assignments -type f \( \
 		-name '*.aux' -o -name '*.log' -o -name '*.out' -o -name '*.toc' \
 		-o -name '*.nav' -o -name '*.snm' -o -name '*.vrb' -o -name '*.fls' \
 		-o -name '*.fdb_latexmk' -o -name '*.synctex.gz' -o -name 'main.pdf' \

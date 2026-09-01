@@ -1,0 +1,32 @@
+\begin{problem}
+Дан массив целых чисел $a_1, a_2, \ldots, a_n$. Найдите два различных индекса $i$ и $j$ таких, что $a_i + a_j$ равно заданному числу $t$.
+
+Если таких индексов нет, выведите \texttt{-1 -1}.
+\end{problem}
+
+\begin{io}
+\textbf{Вход.} Первая строка содержит целое $n$ ($2 \leq n \leq 10^5$) и целое $t$. Вторая строка содержит $n$ целых чисел $a_i$ ($-10^9 \leq a_i \leq 10^9$).
+
+\textbf{Выход.} Два целых числа --- индексы $i$ и $j$ ($1 \leq i < j \leq n$) или \texttt{-1 -1}.
+\end{io}
+
+\begin{example}
+\noindent\textbf{Вход:}
+\begin{lstlisting}
+4 9
+2 7 11 15
+\end{lstlisting}
+\noindent\textbf{Выход:}
+\begin{lstlisting}
+0 1
+\end{lstlisting}
+
+\smallskip
+\noindent\textbf{Пояснение:} $a_0 + a_1 = 2 + 7 = 9$. Индексы выводятся с нуля.
+\end{example}
+
+\begin{constraints}
+  \item Время: 1 с
+  \item Память: 256 МБ
+  \item Решение должно работать за $O(n)$ по времени
+\end{constraints}

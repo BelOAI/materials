@@ -28,7 +28,7 @@ should_build() {
 # shellcheck source=session-slug.sh
 source "${REPO_ROOT}/scripts/session-slug.sh"
 
-for kind in lectures practices; do
+for kind in lectures practices assignments; do
   kind_dir="${REPO_ROOT}/${kind}"
   [[ -d "$kind_dir" ]] || continue
 
@@ -60,4 +60,4 @@ for kind in lectures practices; do
   done
 done
 
-echo "All presentations built."
+echo "All sessions built."

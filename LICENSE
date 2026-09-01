@@ -9,6 +9,7 @@ ATTRIBUTION.md.
 Educational materials — CC BY 4.0
   lectures/
   practices/
+  assignments/
   README.md
   generated lecture PDFs and the public course index copy
 
@@ -26,6 +27,6 @@ Software — MIT License
   Full terms: LICENSE-MIT
 
 Maintainer documentation (AGENTS.md and nested README files) follows
-the license of the tree it describes: lectures/README.md and
-practices/README.md are CC BY 4.0;
+the license of the tree it describes: lectures/README.md,
+practices/README.md, and assignments/README.md are CC BY 4.0;
 latex/README.md and AGENTS.md are MIT.

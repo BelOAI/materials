@@ -11,10 +11,21 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from meta_parser import get_flat, get_materials, get_references, parse_meta
+from meta_parser import (
+    get_assignment_type,
+    get_assignment_type_label,
+    get_flat,
+    get_materials,
+    get_references,
+    parse_meta,
+)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SESSION_ROOTS = (REPO_ROOT / "lectures", REPO_ROOT / "practices")
+SESSION_ROOTS = (
+    REPO_ROOT / "lectures",
+    REPO_ROOT / "practices",
+    REPO_ROOT / "assignments",
+)
 SITE_DIR = REPO_ROOT / "_site"
 FONTS_SRC = REPO_ROOT / "site" / "fonts"
 FONTS_DEST = SITE_DIR / "fonts"
@@ -24,14 +35,23 @@ SITE = {
     "title": "BelOAI",
     "subtitle": "Подготовка к олимпиаде по искусственному интеллекту",
     "page_title": "BelOAI — материалы к занятиям",
-    "tagline": "Лекции и практики в одном списке — слайды, ноутбуки и ссылки на задания.",
+    "tagline": "Лекции, практики и домашние задания — слайды, PDF-задания, ноутбуки и ссылки.",
     "download_pdf": "Скачать PDF",
+    "download_assignment": "Скачать задание",
     "open_notebook": "Открыть ноутбук",
     "download_material": "Скачать",
     "references_label": "Ссылки",
     "scheduled": "Проведение",
+    "issued": "Выдано",
     "session_label_lecture": "Лекция",
     "session_label_practice": "Практика",
+    "session_label_assignment": "Домашнее задание",
+    "assignment_type_math": "Математика",
+    "assignment_type_coding": "Программирование",
+    "filter_all": "Все",
+    "filter_lectures": "Лекции",
+    "filter_practices": "Практики",
+    "filter_assignments": "Задания",
     "empty": "Пока нет опубликованных материалов.",
     "count_one": "{} занятие",
     "count_few": "{} занятия",
@@ -42,6 +62,9 @@ SITE = {
     "practice_one": "{} практика",
     "practice_few": "{} практики",
     "practice_many": "{} практик",
+    "assignment_one": "{} задание",
+    "assignment_few": "{} задания",
+    "assignment_many": "{} заданий",
     "license": "Материалы — CC BY 4.0",
     "license_url": "https://creativecommons.org/licenses/by/4.0/",
     "repo": "Исходники на GitHub",
@@ -53,6 +76,12 @@ DEFAULT_TIME_SLOTS = {
     "2": "13:15–14:40",
 }
 DEFAULT_SLOT = "1"
+
+KIND_ORDER = {
+    "assignment": 0,
+    "lecture": 1,
+    "practice": 2,
+}
 
 MONTHS_RU = (
     "",
@@ -76,6 +105,8 @@ def folder_kind(root_name: str) -> str:
         return "lecture"
     if root_name == "practices":
         return "practice"
+    if root_name == "assignments":
+        return "assignment"
     raise ValueError(f"unknown session root: {root_name}")
 
 
@@ -155,12 +186,14 @@ def plural_sessions(count: int) -> str:
 def session_label(kind: str) -> str:
     if kind == "practice":
         return SITE["session_label_practice"]
+    if kind == "assignment":
+        return SITE["session_label_assignment"]
     return SITE["session_label_lecture"]
 
 
 def session_sort_key(entry: dict) -> tuple:
     date_tuple = parse_iso_date(entry["date"])
-    kind_order = 0 if entry["kind"] == "lecture" else 1
+    kind_order = KIND_ORDER.get(entry["kind"], 9)
     return (date_tuple, entry["slot_index"], kind_order, entry["slug"])
 
 
@@ -222,6 +255,17 @@ def discover_sessions() -> list[dict]:
             if get_flat(meta, "hidden", "false").lower() == "true":
                 continue
 
+            assignment_type = ""
+            if kind == "assignment":
+                assignment_type = get_assignment_type(meta)
+                if not assignment_type:
+                    print(
+                        f"Warning: skipping {session_dir}: "
+                        "assignment_type must be math or coding",
+                        file=sys.stderr,
+                    )
+                    continue
+
             slug = f"{root.name}/{folder_name}"
             pdf_rel = f"pdfs/{slug}.pdf"
             pdf_exists = (SITE_DIR / pdf_rel).exists()
@@ -245,19 +289,31 @@ def discover_sessions() -> list[dict]:
                         thumb_href = material["download"]
                         break
 
+            if kind == "assignment":
+                time = get_flat(meta, "time", "").strip()
+                slot_index = resolve_slot_index(meta) if time else 0
+                scheduled_display = format_scheduled_ru(
+                    get_flat(meta, "date", ""), time
+                )
+            else:
+                time = resolve_time(meta)
+                slot_index = resolve_slot_index(meta)
+                scheduled_display = format_scheduled_ru(
+                    get_flat(meta, "date", ""), time
+                )
+
             entries.append(
                 {
                     "slug": slug,
                     "kind": kind,
+                    "assignment_type": assignment_type,
                     "number": session_number(folder_name),
                     "title": get_flat(meta, "title", folder_name),
                     "subtitle": get_flat(meta, "subtitle", ""),
                     "date": get_flat(meta, "date", ""),
-                    "time": resolve_time(meta),
-                    "slot_index": resolve_slot_index(meta),
-                    "scheduled_display": format_scheduled_ru(
-                        get_flat(meta, "date", ""), resolve_time(meta)
-                    ),
+                    "time": time,
+                    "slot_index": slot_index,
+                    "scheduled_display": scheduled_display,
                     "description": get_flat(meta, "description", ""),
                     "pdf": pdf_rel if pdf_exists else "",
                     "thumb": f"thumbs/{slug}.png" if thumb.exists() else "",
@@ -358,10 +414,19 @@ def render_session_row(entry: dict, index: int) -> str:
     if session_no:
         index_html = f'<p class="session-index">{html.escape(label)} {session_no}</p>'
 
+    assignment_badge_html = ""
+    if kind == "assignment" and entry.get("assignment_type"):
+        type_label = get_assignment_type_label(entry["assignment_type"])
+        if type_label:
+            assignment_badge_html = (
+                f'<span class="session-type-badge">{html.escape(type_label)}</span>'
+            )
+
     subtitle_html = f'<p class="session-subtitle">{subtitle}</p>' if subtitle else ""
     desc_html = f'<p class="session-desc">{description}</p>' if description else ""
+    meta_label = SITE["issued"] if kind == "assignment" else SITE["scheduled"]
     scheduled_html = (
-        f'<p class="session-meta"><span class="session-meta-label">{SITE["scheduled"]}</span> '
+        f'<p class="session-meta"><span class="session-meta-label">{meta_label}</span> '
         f'<time datetime="{html.escape(entry["date"])}">{scheduled_display}</time></p>'
         if scheduled_display
         else ""
@@ -369,10 +434,15 @@ def render_session_row(entry: dict, index: int) -> str:
 
     actions: list[str] = []
     if entry["pdf"]:
+        pdf_label = (
+            SITE["download_assignment"]
+            if kind == "assignment"
+            else SITE["download_pdf"]
+        )
         actions.append(
             render_action_link(
                 entry["pdf"],
-                SITE["download_pdf"],
+                pdf_label,
                 "session-action session-action-primary",
             )
         )
@@ -381,12 +451,12 @@ def render_session_row(entry: dict, index: int) -> str:
     refs_html = render_reference_chips(entry["references"])
 
     return f"""
-    <article class="session {kind_class}" style="--i: {index}">
+    <article class="session {kind_class}" data-kind="{html.escape(kind)}" style="--i: {index}">
       <div class="session-card">
         {thumb_html}
         <div class="session-body">
           {index_html}
-          <h2 class="session-title">{title}</h2>
+          <h2 class="session-title">{title}{assignment_badge_html}</h2>
           {subtitle_html}
           {desc_html}
           {scheduled_html}
@@ -405,6 +475,7 @@ def render_hero_count(entries: list[dict]) -> str:
 
     lecture_count = sum(1 for entry in entries if entry["kind"] == "lecture")
     practice_count = sum(1 for entry in entries if entry["kind"] == "practice")
+    assignment_count = sum(1 for entry in entries if entry["kind"] == "assignment")
 
     parts = [html.escape(plural_sessions(len(entries)))]
     breakdown: list[str] = []
@@ -430,10 +501,39 @@ def render_hero_count(entries: list[dict]) -> str:
                 )
             )
         )
+    if assignment_count:
+        breakdown.append(
+            html.escape(
+                plural_ru(
+                    assignment_count,
+                    SITE["assignment_one"],
+                    SITE["assignment_few"],
+                    SITE["assignment_many"],
+                )
+            )
+        )
     if breakdown:
         parts.append(f'<span class="hero-count-breakdown">{" · ".join(breakdown)}</span>')
 
     return f'<p class="hero-count">{" ".join(parts)}</p>'
+
+
+def render_filter_tabs() -> str:
+    tabs = [
+        ("all", SITE["filter_all"], ""),
+        ("lecture", SITE["filter_lectures"], "#lectures"),
+        ("practice", SITE["filter_practices"], "#practices"),
+        ("assignment", SITE["filter_assignments"], "#assignments"),
+    ]
+    buttons = "\n      ".join(
+        f'<button type="button" class="filter-tab" data-filter="{html.escape(kind)}" '
+        f'data-hash="{html.escape(hash_suffix)}">{html.escape(label)}</button>'
+        for kind, label, hash_suffix in tabs
+    )
+    return f"""
+    <nav class="session-filters" aria-label="Фильтр материалов">
+      {buttons}
+    </nav>"""
 
 
 def copy_fonts() -> None:
@@ -468,6 +568,7 @@ def render_index(entries: list[dict]) -> str:
         rows = f'<p class="empty">{SITE["empty"]}</p>'
 
     count_html = render_hero_count(entries)
+    filter_html = render_filter_tabs()
 
     page_title = html.escape(SITE["page_title"])
     meta_description = html.escape(SITE["tagline"])
@@ -557,6 +658,40 @@ def render_index(entries: list[dict]) -> str:
     .session-list {{
       margin-top: 2rem;
     }}
+    .session-filters {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }}
+    .filter-tab {{
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ac-mid);
+      background: #fff;
+      border: 1px solid var(--ac-rule);
+      border-radius: 2px;
+      padding: 0.4rem 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }}
+    .filter-tab:hover {{
+      border-color: var(--ac-mid);
+      color: var(--ac-dark);
+    }}
+    .filter-tab.is-active {{
+      background: var(--ac-dark);
+      border-color: var(--ac-dark);
+      color: #fff;
+    }}
+    .filter-tab:focus-visible {{
+      outline: 2px solid var(--ac-mid);
+      outline-offset: 2px;
+    }}
+    .session.is-filtered {{
+      display: none;
+    }}
     .session {{
       border-bottom: 1px solid var(--ac-rule);
       animation: fade-up 0.5s ease both;
@@ -569,6 +704,10 @@ def render_index(entries: list[dict]) -> str:
     .session-practice {{
       --session-dark: #1a4a3d;
       --session-mid: #2d7a62;
+    }}
+    .session-assignment {{
+      --session-dark: #4a3520;
+      --session-mid: #8a6530;
     }}
     .session-card {{
       display: grid;
@@ -595,6 +734,11 @@ def render_index(entries: list[dict]) -> str:
       object-fit: cover;
       transition: transform 0.25s ease;
     }}
+    .session-assignment .session-thumb {{
+      aspect-ratio: 210 / 297;
+      object-fit: contain;
+      background: #fff;
+    }}
     .session-thumb-link:hover .session-thumb {{
       transform: scale(1.03);
     }}
@@ -617,6 +761,21 @@ def render_index(entries: list[dict]) -> str:
       font-weight: 700;
       color: var(--session-dark);
       line-height: 1.25;
+    }}
+    .session-type-badge {{
+      display: inline-block;
+      margin-left: 0.5rem;
+      padding: 0.1rem 0.45rem;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      vertical-align: middle;
+      color: var(--session-mid);
+      border: 1px solid var(--session-mid);
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.8);
     }}
     .session-subtitle {{
       margin: 0.4rem 0 0;
@@ -769,6 +928,7 @@ def render_index(entries: list[dict]) -> str:
     </div>
   </header>
   <main>
+    {filter_html}
     <div class="session-list">
       {rows}
     </div>
@@ -780,6 +940,51 @@ def render_index(entries: list[dict]) -> str:
       <a href="{html.escape(SITE["repo_url"])}">{html.escape(SITE["repo"])}</a>
     </p>
   </footer>
+  <script>
+    (function () {{
+      var tabs = document.querySelectorAll(".filter-tab");
+      var sessions = document.querySelectorAll(".session[data-kind]");
+      var hashMap = {{
+        "#lectures": "lecture",
+        "#practices": "practice",
+        "#assignments": "assignment"
+      }};
+
+      function applyFilter(kind) {{
+        sessions.forEach(function (session) {{
+          var show = kind === "all" || session.getAttribute("data-kind") === kind;
+          session.classList.toggle("is-filtered", !show);
+        }});
+        tabs.forEach(function (tab) {{
+          tab.classList.toggle("is-active", tab.getAttribute("data-filter") === kind);
+        }});
+      }}
+
+      function filterFromHash() {{
+        var hash = window.location.hash;
+        return hashMap[hash] || "all";
+      }}
+
+      tabs.forEach(function (tab) {{
+        tab.addEventListener("click", function () {{
+          var kind = tab.getAttribute("data-filter");
+          var hash = tab.getAttribute("data-hash");
+          if (hash) {{
+            window.location.hash = hash.slice(1);
+          }} else {{
+            history.replaceState(null, "", window.location.pathname + window.location.search);
+          }}
+          applyFilter(kind);
+        }});
+      }});
+
+      window.addEventListener("hashchange", function () {{
+        applyFilter(filterFromHash());
+      }});
+
+      applyFilter(filterFromHash());
+    }})();
+  </script>
 </body>
 </html>
 """

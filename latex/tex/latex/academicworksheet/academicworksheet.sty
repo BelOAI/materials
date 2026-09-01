@@ -1,0 +1,110 @@
+% BelOAI math worksheet package — A4 print layout for home assignments
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{academicworksheet}[2026/09/01 Academic worksheet package]
+
+\makeatletter
+
+\newif\ifacw@russian
+\newif\ifacw@english
+\acw@russiantrue
+
+\newcommand{\acw@assignmentno}{}
+\newcommand{\acw@assignmenttitle}{}
+
+\DeclareOption{russian}{\acw@russiantrue\acw@englishfalse}
+\DeclareOption{english}{\acw@englishtrue\acw@russianfalse}
+\ProcessOptions\relax
+
+\newcommand{\setassignmentno}[1]{\renewcommand{\acw@assignmentno}{#1}}
+\newcommand{\setassignmenttitle}[1]{\renewcommand{\acw@assignmenttitle}{#1}}
+
+\RequirePackage{cmap}
+\RequirePackage[utf8]{inputenc}
+
+\ifacw@russian
+  \RequirePackage[T2A]{fontenc}
+  \RequirePackage[english,russian]{babel}
+\else
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage[english]{babel}
+\fi
+
+\RequirePackage[a4paper,margin=2cm]{geometry}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{enumitem}
+\RequirePackage{xcolor}
+
+\definecolor{acw@accent}{HTML}{8A6530}
+\definecolor{acw@accentdark}{HTML}{4A3520}
+\definecolor{acw@rule}{HTML}{C6CBD2}
+\definecolor{acw@fill}{HTML}{F7F3EC}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\def\subtitle#1{\def\@subtitle{#1}}
+\def\@subtitle{}
+
+\setlist[itemize]{leftmargin=1.5em, topsep=0.25em, itemsep=0.15em}
+\setlist[enumerate]{leftmargin=1.5em, topsep=0.25em, itemsep=0.15em}
+
+\renewcommand{\maketitle}{%
+  \begingroup
+  \color{acw@accentdark}%
+  {\large\bfseries BelOAI}%
+  \ifx\acw@assignmentno\empty\else
+    \hfill{\small\color{acw@accent}\ifacw@russian Домашнее задание\else Assignment\fi~\acw@assignmentno}%
+  \fi
+  \par\vspace{0.4em}%
+  {\LARGE\bfseries\@title\par}%
+  \ifx\@subtitle\empty\else
+    {\large\color{acw@accent}\@subtitle\par}%
+  \fi
+  \ifx\acw@assignmenttitle\empty\else
+    {\normalsize\acw@assignmenttitle\par}%
+  \fi
+  \vspace{0.2em}%
+  {\small\color{acw@accent}\@author \quad\textbar\quad \@date}%
+  \par\vspace{0.8em}%
+  \rule{\linewidth}{0.6pt}%
+  \vspace{0.6em}%
+  \endgroup
+}
+
+\newcounter{acw@exercise}
+\renewcommand{\theacw@exercise}{\arabic{acw@exercise}}
+
+\newenvironment{exercise}{%
+  \refstepcounter{acw@exercise}%
+  \par\vspace{0.75em}%
+  {\color{acw@accentdark}\textbf{\ifacw@russian Задача\else Exercise\fi~\theacw@exercise.}}\par
+  \vspace{0.35em}%
+}{%
+  \par\vspace{0.25em}%
+  \noindent{\color{acw@rule}\rule{\linewidth}{0.4pt}}%
+  \par
+}
+
+\newcommand{\answerlines}[1]{%
+  \par\vspace{0.3em}%
+  {\color{acw@rule}%
+  \@tempcnta=0
+  \loop\ifnum\@tempcnta<#1\relax
+    \advance\@tempcnta\@ne
+    \noindent\rule{\linewidth}{0.4pt}\par\vspace{0.85em}%
+  \repeat}%
+}
+
+\newcommand{\answerbox}[1][3cm]{%
+  \par\vspace{0.3em}%
+  \noindent\fcolorbox{acw@rule}{acw@fill}{%
+    \parbox[t][#1][t]{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{%
+      \vspace{#1}%
+    }%
+  }%
+  \par
+}
+
+\makeatother
+
+\endinput

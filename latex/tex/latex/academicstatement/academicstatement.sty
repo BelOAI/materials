@@ -1,0 +1,126 @@
+% BelOAI coding problem statement package — A4 print layout for home assignments
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{academicstatement}[2026/09/01 Academic problem statement package]
+
+\newif\ifacs@russian
+\newif\ifacs@english
+\acs@russiantrue
+
+\newcommand{\acs@assignmentno}{}
+\newcommand{\acs@assignmenttitle}{}
+
+\DeclareOption{russian}{\acs@russiantrue\acs@englishfalse}
+\DeclareOption{english}{\acs@englishtrue\acs@russianfalse}
+\ProcessOptions\relax
+
+\newcommand{\setassignmentno}[1]{\renewcommand{\acs@assignmentno}{#1}}
+\newcommand{\setassignmenttitle}[1]{\renewcommand{\acs@assignmenttitle}{#1}}
+
+\RequirePackage{cmap}
+\RequirePackage[utf8]{inputenc}
+
+\ifacs@russian
+  \RequirePackage[T2A]{fontenc}
+  \RequirePackage[english,russian]{babel}
+\else
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage[english]{babel}
+\fi
+
+\RequirePackage[a4paper,margin=2cm]{geometry}
+\RequirePackage{enumitem}
+\RequirePackage{xcolor}
+\RequirePackage{listings}
+
+\definecolor{acs@accent}{HTML}{8A6530}
+\definecolor{acs@accentdark}{HTML}{4A3520}
+\definecolor{acs@rule}{HTML}{C6CBD2}
+\definecolor{acs@fill}{HTML}{F7F3EC}
+\definecolor{acs@codebg}{HTML}{F4F4F4}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\def\subtitle#1{\def\@subtitle{#1}}
+\def\@subtitle{}
+
+\setlist[itemize]{leftmargin=1.5em, topsep=0.25em, itemsep=0.15em}
+\setlist[enumerate]{leftmargin=1.5em, topsep=0.25em, itemsep=0.15em}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{acs@codebg},
+  frame=single,
+  rulecolor=\color{acs@rule},
+  framerule=0.4pt,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  aboveskip=0.5em,
+  belowskip=0.5em,
+}
+
+\renewcommand{\maketitle}{%
+  \begingroup
+  \color{acs@accentdark}%
+  {\large\bfseries BelOAI}%
+  \ifx\acs@assignmentno\empty\else
+    \hfill{\small\color{acs@accent}\ifacs@russian Домашнее задание\else Assignment\fi~\acs@assignmentno}%
+  \fi
+  \par\vspace{0.4em}%
+  {\LARGE\bfseries\@title\par}%
+  \ifx\@subtitle\empty\else
+    {\large\color{acs@accent}\@subtitle\par}%
+  \fi
+  \ifx\acs@assignmenttitle\empty\else
+    {\normalsize\acs@assignmenttitle\par}%
+  \fi
+  \vspace{0.2em}%
+  {\small\color{acs@accent}\@author \quad\textbar\quad \@date}%
+  \par\vspace{0.8em}%
+  \rule{\linewidth}{0.6pt}%
+  \vspace{0.6em}%
+  \endgroup
+}
+
+\newcommand{\acs@blocktitle}[1]{%
+  \par\vspace{0.4em}%
+  \textbf{\color{acs@accentdark}#1}%
+  \par\vspace{0.2em}%
+}
+
+\newenvironment{problem}{%
+  \acs@blocktitle{\ifacs@russian Условие\else Problem\fi}%
+}{%
+  \par
+}
+
+\newenvironment{io}{%
+  \acs@blocktitle{\ifacs@russian Формат ввода и вывода\else Input / Output\fi}%
+}{%
+  \par
+}
+
+\newenvironment{example}{%
+  \par\vspace{0.4em}%
+  \acs@blocktitle{\ifacs@russian Пример\else Example\fi}%
+}{%
+  \par\vspace{0.25em}%
+}
+
+\newenvironment{constraints}{%
+  \acs@blocktitle{\ifacs@russian Ограничения\else Constraints\fi}%
+  \begin{itemize}%
+}{%
+  \end{itemize}%
+}
+
+\newcommand{\sampleio}[2]{%
+  \par\noindent\textbf{\ifacs@russian Вход:\else Input:\fi}\par
+  \lstinline|#1|\par
+  \noindent\textbf{\ifacs@russian Выход:\else Output:\fi}\par
+  \lstinline|#2|\par
+}
+
+\endinput
