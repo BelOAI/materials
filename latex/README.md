@@ -9,6 +9,7 @@ latex/tex/latex/
     beamerinnerthemeAcademic.sty
     beamerouterthemeAcademic.sty
     beamercolorthemeAcademic.sty
+    beamercolorthemeAcademicPractice.sty
   academicbeamer/
     academicbeamer.sty
 ```
@@ -24,7 +25,8 @@ so decks can `\usepackage{academicbeamer}` without relative `\input` paths.
 ## Package: `academicbeamer`
 
 ```latex
-\usepackage[russian]{academicbeamer}  % or [english]
+\usepackage[russian]{academicbeamer}           % lecture (blue, default)
+\usepackage[practice,russian]{academicbeamer}  % practice (teal-green)
 \setshorttitle{Footer text \textbar\ Lecture 1}
 ```
 
@@ -32,6 +34,8 @@ so decks can `\usepackage{academicbeamer}` without relative `\input` paths.
 | ------ | ----------- |
 | `russian` | `T2A` fontenc, Russian babel (default) |
 | `english` | `T1` fontenc, English babel |
+| `lecture` | Blue palette (default) |
+| `practice` | Teal-green palette for practice sessions |
 
 After loading, the **Academic** Beamer theme is active.
 
@@ -39,7 +43,8 @@ After loading, the **Academic** Beamer theme is active.
 
 | Change | Edit |
 | ------ | ---- |
-| Colours | `beamercolorthemeAcademic.sty` |
+| Lecture colours | `beamercolorthemeAcademic.sty` |
+| Practice colours | `beamercolorthemeAcademicPractice.sty` |
 | Frametitle / footline / margins | `beamerouterthemeAcademic.sty` |
 | Blocks, lists, section dividers, macros | `beamerinnerthemeAcademic.sty` |
 | Shared dependencies | `beamerthemeAcademic.sty` |

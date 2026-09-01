@@ -1,0 +1,26 @@
+\begin{frame}{Изображение и заглушка}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lead{Подпись к фото.} Текст рядом с иллюстрацией: итоги, цитата,
+      краткая таблица результатов.
+
+      \smallskip
+      {\small
+      \begin{tabular}{@{}p{0.26\textwidth}>{\raggedleft\arraybackslash}p{0.72\textwidth}@{}}
+        \toprule
+        Показатель A & значение \\
+        Показатель B & значение \\
+        \bottomrule
+      \end{tabular}}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \centering
+      % Раскомментируйте, когда файл лежит в assets/:
+      % \includegraphics[width=\linewidth]{photo.jpg}
+      \photoframe{9.6}{5.4}{ФОТО\\[2pt]\texttt{assets/photo.jpg}\\[2pt]рекоменд. 16:9}
+
+      \smallskip
+      {\scriptsize\color{acGray}Подпись под изображением}
+    \end{column}
+  \end{columns}
+\end{frame}

@@ -7,13 +7,14 @@ This repository uses a **path-based dual license**. Copyright is held jointly by
 
 | Path | License | What it covers |
 | ---- | ------- | -------------- |
-| `lectures/` | [CC BY 4.0](LICENSE-CC-BY-4.0) | Slide sources, `meta.yaml`, assets |
+| `lectures/` | [CC BY 4.0](LICENSE-CC-BY-4.0) | Lecture slide sources, `meta.yaml`, assets |
+| `practices/` | [CC BY 4.0](LICENSE-CC-BY-4.0) | Practice slide sources, `meta.yaml`, assets |
 | `README.md` | [CC BY 4.0](LICENSE-CC-BY-4.0) | Student-facing index copy |
 | Generated PDFs and site copy | [CC BY 4.0](LICENSE-CC-BY-4.0) | Built lecture PDFs and public index text |
 | `latex/` | [MIT](LICENSE-MIT) | Academic Beamer theme |
 | `scripts/`, `Makefile`, `latexmkrc`, `.github/` | [MIT](LICENSE-MIT) | Build tooling and CI |
 
-Maintainer docs follow the tree they describe: [`lectures/README.md`](lectures/README.md) is CC BY 4.0; [`latex/README.md`](latex/README.md) and [`AGENTS.md`](AGENTS.md) are MIT.
+Maintainer docs follow the tree they describe: [`lectures/README.md`](lectures/README.md) and [`practices/README.md`](practices/README.md) are CC BY 4.0; [`latex/README.md`](latex/README.md) and [`AGENTS.md`](AGENTS.md) are MIT.
 
 The summary in [`LICENSE`](LICENSE) is authoritative for path boundaries. Full legal text:
 

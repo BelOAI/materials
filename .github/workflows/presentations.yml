@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'lectures/**'
+      - 'practices/**'
       - 'latex/**'
       - 'scripts/**'
       - 'site/**'
@@ -14,6 +15,7 @@ on:
   pull_request:
     paths:
       - 'lectures/**'
+      - 'practices/**'
       - 'latex/**'
       - 'scripts/**'
       - 'site/**'

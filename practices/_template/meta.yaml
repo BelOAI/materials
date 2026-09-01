@@ -1,0 +1,25 @@
+title: "Название практики"
+subtitle: "Краткий подзаголовок"
+date: "2026-01-01"
+description: "Опишите содержание практики в 1–2 предложениях: задачи, формат занятия, что понадобится участникам."
+lang: ru
+build: false
+
+# Optional external links (uncomment and edit):
+# references:
+#   - kind: contest
+#     url: https://new.contest.yandex.ru/contests/98758
+#     label: Задачи занятия          # optional; defaults to «Яндекс.Контест»
+#   - kind: kaggle
+#     url: https://www.kaggle.com/competitions/example
+#   - kind: huggingface
+#     url: https://huggingface.co/datasets/example
+#   - label: Google Colab            # kind omitted → generic external link
+#     url: https://colab.research.google.com/...
+
+# Optional downloadable / browsable materials (files in materials/):
+# materials:
+#   - path: materials/notebook.ipynb
+#     label: Jupyter Notebook
+#   - path: materials/cheatsheet.pdf
+#     label: Шпаргалка

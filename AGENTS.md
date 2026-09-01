@@ -1,13 +1,13 @@
 # AGENTS.md
 
-Guidance for AI agents working in **beloai-materials** — BelOAI lecture materials (LaTeX Beamer → PDF, notebooks, external links) published to GitHub Pages.
+Guidance for AI agents working in **beloai-materials** — BelOAI session materials (LaTeX Beamer → PDF, notebooks, external links) published to GitHub Pages.
 
 ## Repository purpose
 
 | Audience | Primary doc | Goal |
 | -------- | ----------- | ---- |
-| Students | [`README.md`](README.md) | Find lecture PDFs, notebooks, and links |
-| Maintainers | this file, [`lectures/README.md`](lectures/README.md) | Add/edit slides, materials, and publish |
+| Students | [`README.md`](README.md) | Find lecture and practice PDFs, notebooks, and links |
+| Maintainers | this file, [`lectures/README.md`](lectures/README.md), [`practices/README.md`](practices/README.md) | Add/edit slides, materials, and publish |
 
 **Live site:** https://beloai.github.io/materials/
 
@@ -20,9 +20,15 @@ latex/tex/latex/          # Beamer .sty theme (TDS layout)
   beamer/                   # beamerthemeAcademic + inner/outer/color
   academicbeamer/           # \usepackage{academicbeamer}
 
-lectures/
+lectures/                  # Theory / slide decks (blue theme)
   _template/                # Copy-paste scaffold (build: false, skipped by CI)
   [NN]-[name]/              # One deck per folder
+
+practices/                  # Hands-on / contest sessions (teal theme)
+  _template/
+  [NN]-[name]/              # Independent numbering from lectures/
+
+  [NN]-[name]/              # Shared per-folder layout:
     main.tex                # Driver only — optional for notebook/contest-only
     meta.yaml               # Site index metadata (Russian copy for students)
     slides/                 # Numbered \input{} fragments
@@ -32,22 +38,25 @@ lectures/
 scripts/                    # build-presentation.sh, build-materials.sh,
                             # build-all.sh, generate-site.py, meta_parser.py
 _site/                      # Generated site (gitignored)
-  index.html
-  pdfs/<slug>.pdf
-  thumbs/<slug>.png
-  materials/<slug>/         # Copied files + .ipynb → .html
+  index.html                # Single list: lectures + practices, newest first
+  pdfs/<kind>/<name>.pdf
+  thumbs/<kind>/<name>.png
+  materials/<kind>/<name>/   # Copied files + .ipynb → .html
 ```
 
 ## Conventions
 
 - **Line endings:** Unix LF only (see [`.gitattributes`](.gitattributes)).
-- **Slide content** lives in `lectures/*/slides/*.tex`, not in theme files.
+- **Slide content** lives in `lectures/*/slides/*.tex` or `practices/*/slides/*.tex`, not in theme files.
 - **Theme/style** lives only in `latex/tex/latex/**/*.sty`.
-- **Folder names:** `lectures/02-collections/` — numeric prefix controls site sort order.
+- **Session kind** is determined by parent directory (`lectures/` or `practices/`), not `meta.yaml`.
+- **Folder names:** `lectures/02-collections/` or `practices/02-warmup/` — numeric prefix is for human labels («Лекция 2», «Практика 2»).
+- **Site sort order** is by `date` + `slot`/`time` in `meta.yaml` (newest first), not folder prefix.
 - **Skip CI:** folders named `_…` or `meta.yaml` with `build: false`.
 - **Hide from index:** `hidden: true` in `meta.yaml` (artifacts still built if `build: true`).
 - **Generated artifacts:** never commit `main.pdf`, LaTeX aux files, or `_site/`.
-- **Licensing:** path-based dual license — `lectures/` and student `README.md` are CC BY 4.0; `latex/`, `scripts/`, `Makefile`, and CI are MIT. Copyright: Pavel Kasila and BelOAI Material Authors. See [`LICENSE`](LICENSE) and [`LICENSING.md`](LICENSING.md).
+- **Color schemes:** lectures use default `\usepackage{academicbeamer}` (blue); practices use `\usepackage[practice]{academicbeamer}` (teal-green). Match the site card colors.
+- **Licensing:** path-based dual license — `lectures/`, `practices/`, and student `README.md` are CC BY 4.0; `latex/`, `scripts/`, `Makefile`, and CI are MIT. Copyright: Pavel Kasila and BelOAI Material Authors. See [`LICENSE`](LICENSE) and [`LICENSING.md`](LICENSING.md).
 
 ## meta.yaml (site index)
 
@@ -55,6 +64,7 @@ _site/                      # Generated site (gitignored)
 title: "Название лекции"
 subtitle: "Краткий подзаголовок"
 date: "2026-09-01"
+slot: "1"                    # optional: 1 → 11:25–12:50, 2 → 13:15–14:40
 description: "1–2 предложения для студентов на сайте"
 lang: ru
 build: true
@@ -74,23 +84,31 @@ materials:
 
 Known `references` kinds and default labels: `contest` → Яндекс.Контест, `kaggle` → Kaggle, `huggingface` → Hugging Face, `colab` → Google Colab.
 
-## Lecture types and recipes
+## Session types and recipes
 
-### Slides only
+### Slides only (lecture)
 
 ```bash
 cp -R lectures/_template lectures/02-collections
 ```
 
 1. Edit `meta.yaml` — `build: true`, Russian `title`, `subtitle`, `description`, `date`.
-2. Edit `main.tex` — title, author, `\setshorttitle{...}`, remove unused `\input{slides/...}` lines.
+2. Edit `main.tex` — title, author, `\setshorttitle{BelOAI \textbar\ Лекция 2}`, remove unused `\input{slides/...}` lines.
 3. Replace example slides in `slides/`.
-4. Build: `make lecture DIR=lectures/02-collections`
+4. Build: `make session DIR=lectures/02-collections`
 5. Verify: `make site` → card on `_site/index.html` with «Скачать PDF».
+
+### Slides only (practice)
+
+```bash
+cp -R practices/_template practices/02-warmup
+```
+
+Same steps as lecture, but under `practices/` and with `\usepackage[practice,russian]{academicbeamer}` in `main.tex`.
 
 ### Slides + notebook
 
-1. Create `materials/notebook.ipynb` in the lecture folder.
+1. Create `materials/notebook.ipynb` in the session folder.
 2. Add to `meta.yaml`:
 
 ```yaml
@@ -98,7 +116,7 @@ materials:
   - path: materials/notebook.ipynb
 ```
 
-3. Build: `make lecture DIR=lectures/02-collections && make site`
+3. Build: `make session DIR=lectures/02-collections && make site`
 4. Verify: card shows «Скачать PDF» and «Открыть ноутбук» (requires `jupyter nbconvert` locally).
 
 ### Slides + Яндекс.Контест
@@ -130,10 +148,10 @@ materials:
 
 ### Contest-only (no slides)
 
-1. Create folder with `meta.yaml` only — no `main.tex`.
+1. Create folder under `lectures/` or `practices/` with `meta.yaml` only — no `main.tex`.
 2. Set `build: true` and a `references` entry with `kind: contest`.
 3. Build: `make site`
-4. Verify: lecture appears on index with contest chip, no PDF action.
+4. Verify: session appears on index with contest chip, no PDF action.
 
 ### Notebook-only (no slides)
 
@@ -144,17 +162,17 @@ materials:
 
 ## Basic workflows
 
-### 1. Add a new lecture
+### 1. Add a new lecture or practice
 
-See recipes above. Always update the student [`README.md`](README.md) if a new public lecture was added.
+See recipes above. Always update the student [`README.md`](README.md) when adding the first public item of a new kind.
 
-### 2. Edit an existing lecture
+### 2. Edit an existing session
 
-1. Change files under `lectures/[NN]-name/slides/`, `materials/`, or `meta.yaml`.
-2. Run `make lecture DIR=lectures/[NN]-name`.
+1. Change files under `lectures/[NN]-name/` or `practices/[NN]-name/` (`slides/`, `materials/`, or `meta.yaml`).
+2. Run `make session DIR=lectures/[NN]-name` (or `practices/…`).
 3. Fix LaTeX errors from `main.log` if applicable.
 
-### 3. Build all lectures and regenerate the site
+### 3. Build all sessions and regenerate the site
 
 ```bash
 make          # or: make site
@@ -163,8 +181,8 @@ make clean    # remove aux files, PDFs, _site/
 
 Pipeline:
 
-1. `scripts/build-all.sh` — for each publishable lecture dir: build PDF (if `main.tex`), copy materials (if declared), generate thumbnails.
-2. `scripts/generate-site.py` — writes Russian `_site/index.html` from `meta.yaml` + built artifacts.
+1. `scripts/build-all.sh` — for each publishable dir under `lectures/` and `practices/`: build PDF (if `main.tex`), copy materials (if declared), generate thumbnails.
+2. `scripts/generate-site.py` — writes Russian `_site/index.html` from `meta.yaml` + built artifacts; single list sorted by datetime descending.
 
 Requires TeX Live, `poppler-utils`, and `jupyter nbconvert` (for notebook HTML) locally; CI installs these on Ubuntu.
 
@@ -174,13 +192,14 @@ Edit files under `latex/tex/latex/`:
 
 | Change | File |
 | ------ | ---- |
-| Colours | `beamer/beamercolorthemeAcademic.sty` |
+| Lecture colours | `beamer/beamercolorthemeAcademic.sty` |
+| Practice colours | `beamer/beamercolorthemeAcademicPractice.sty` |
 | Header/footer/margins | `beamer/beamerouterthemeAcademic.sty` |
 | Blocks, lists, `\lead`, `\photoframe` | `beamer/beamerinnerthemeAcademic.sty` |
 | Package deps | `beamer/beamerthemeAcademic.sty` |
-| Language/fonts | `academicbeamer/academicbeamer.sty` |
+| Language/fonts, practice option | `academicbeamer/academicbeamer.sty` |
 
-After theme changes, rebuild **all** publishable lectures:
+After theme changes, rebuild **all** publishable sessions:
 
 ```bash
 make clean && make
@@ -191,7 +210,7 @@ make clean && make
 Edit [`scripts/generate-site.py`](scripts/generate-site.py):
 
 - `SITE` dict — Russian UI strings.
-- Card layout/CSS in `render_index()` and `render_lecture_row()`.
+- Card layout/CSS in `render_index()` and `render_session_row()`.
 
 ### 6. Publish to GitHub Pages
 
@@ -200,52 +219,54 @@ Push to `main`. Workflow [`.github/workflows/presentations.yml`](.github/workflo
 - **Pull request:** build only, upload artifact.
 - **Push to `main`:** build + deploy `_site/` to GitHub Pages.
 
-## LaTeX driver template
+## LaTeX driver templates
+
+**Lecture:**
 
 ```latex
 \documentclass[aspectratio=169,11pt,t]{beamer}
 \usepackage[russian]{academicbeamer}   % or [english]
-\setshorttitle{BelOAI \textbar\ Занятие 2}
+\setshorttitle{BelOAI \textbar\ Лекция 2}
+```
 
-\graphicspath{{assets/}}
+**Practice:**
 
-\title{...}
-\subtitle{...}
-\author{...}
-\date{...}
-
-\begin{document}
-\input{slides/01-title}
-% ...
-\end{document}
+```latex
+\documentclass[aspectratio=169,11pt,t]{beamer}
+\usepackage[practice,russian]{academicbeamer}   % or [practice,english]
+\setshorttitle{BelOAI \textbar\ Практика 2}
 ```
 
 ## Verification checklist
 
-Before finishing a lecture or theme change:
+Before finishing a session or theme change:
 
-- [ ] `make lecture DIR=lectures/…` exits 0 (PDF if `main.tex` exists; materials if declared)
-- [ ] `make site` lists the deck on `_site/index.html` (unless `hidden: true`)
+- [ ] `make session DIR=lectures/…` or `make session DIR=practices/…` exits 0 (PDF if `main.tex` exists; materials if declared)
+- [ ] `make site` lists the session on `_site/index.html` in correct datetime order (unless `hidden: true`)
+- [ ] Lecture cards are blue; practice cards are teal-green
 - [ ] Contest / Kaggle / HF links visible when declared in `references`
 - [ ] Notebook HTML opens when `jupyter nbconvert` is available
-- [ ] PDF-optional lectures (contest-only, notebook-only) appear without broken PDF links
+- [ ] PDF-optional sessions (contest-only, notebook-only) appear without broken PDF links
 - [ ] `git status` shows no aux/PDF/`_site/` files staged
-- [ ] Student [`README.md`](README.md) updated if a new public lecture was added
+- [ ] Student [`README.md`](README.md) updated if a new public kind was added
 - [ ] Shell scripts remain LF (no `\r` — breaks `env: bash\r` in CI)
 
 ## What to avoid
 
 - Committing build output (`main.pdf`, `_site/`, `*.aux`, `*.log`, …).
 - Broken or placeholder contest URLs in `references`.
-- Forgetting `build: true` on new lectures.
+- Forgetting `build: true` on new sessions.
 - Putting slide content into `.sty` files or theme into slide files.
+- Mixing lectures and practices in one folder — use `lectures/` vs `practices/`.
+- Using `[practice]` option in `lectures/` decks or omitting it in `practices/` decks.
 - Editing [`README.md`](README.md) with LaTeX/CI instructions (use this file instead).
 - Using `\input{../../latex/...}` for theme — use `\usepackage{academicbeamer}`.
-- Renumbering lectures without updating student README links.
+- Assuming folder numeric prefix controls site order — use `date` and `slot`/`time` in `meta.yaml`.
 
 ## Related docs
 
 - [`lectures/README.md`](lectures/README.md) — lecture folder layout, `meta.yaml` schema
+- [`practices/README.md`](practices/README.md) — practice folder layout and theme
 - [`latex/README.md`](latex/README.md) — theme file map and macros
 - [`lectures/_template/slides/README.md`](lectures/_template/slides/README.md) — example slide patterns
 - [`lectures/_template/materials/README.md`](lectures/_template/materials/README.md) — supplementary files

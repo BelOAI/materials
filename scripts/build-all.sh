@@ -25,28 +25,39 @@ should_build() {
   return 0
 }
 
-for lecture_dir in "${REPO_ROOT}"/lectures/*/; do
-  [[ -d "$lecture_dir" ]] || continue
+# shellcheck source=session-slug.sh
+source "${REPO_ROOT}/scripts/session-slug.sh"
 
-  if ! should_build "$lecture_dir"; then
-    echo "Skipping $(basename "$lecture_dir")"
-    continue
-  fi
+for kind in lectures practices; do
+  kind_dir="${REPO_ROOT}/${kind}"
+  [[ -d "$kind_dir" ]] || continue
 
-  if [[ -f "${lecture_dir}/main.tex" ]]; then
-    "${REPO_ROOT}/scripts/build-presentation.sh" "$lecture_dir"
+  for session_dir in "${kind_dir}"/*/; do
+    [[ -d "$session_dir" ]] || continue
 
-    slug="$(basename "$lecture_dir")"
-    if command -v pdftoppm >/dev/null 2>&1 && [[ -f "${lecture_dir}/main.pdf" ]]; then
-      pdftoppm -png -f 1 -l 1 -singlefile \
-        "${lecture_dir}/main.pdf" "${SITE_DIR}/thumbs/${slug}" || true
-      if [[ -f "${SITE_DIR}/thumbs/${slug}.png" ]]; then
-        echo "Thumbnail ${SITE_DIR}/thumbs/${slug}.png"
+    if ! should_build "$session_dir"; then
+      echo "Skipping $(basename "$session_dir")"
+      continue
+    fi
+
+    session_slug "$session_dir"
+
+    if [[ -f "${session_dir}/main.tex" ]]; then
+      "${REPO_ROOT}/scripts/build-presentation.sh" "$session_dir"
+
+      if command -v pdftoppm >/dev/null 2>&1 && [[ -f "${session_dir}/main.pdf" ]]; then
+        thumb_dir="${SITE_DIR}/thumbs/$(dirname "$SESSION_SLUG")"
+        mkdir -p "$thumb_dir"
+        pdftoppm -png -f 1 -l 1 -singlefile \
+          "${session_dir}/main.pdf" "${SITE_DIR}/thumbs/${SESSION_SLUG}" || true
+        if [[ -f "${SITE_DIR}/thumbs/${SESSION_SLUG}.png" ]]; then
+          echo "Thumbnail ${SITE_DIR}/thumbs/${SESSION_SLUG}.png"
+        fi
       fi
     fi
-  fi
 
-  "${REPO_ROOT}/scripts/build-materials.sh" "$lecture_dir"
+    "${REPO_ROOT}/scripts/build-materials.sh" "$session_dir"
+  done
 done
 
 echo "All presentations built."

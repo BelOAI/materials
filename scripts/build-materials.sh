@@ -2,19 +2,23 @@
 set -euo pipefail
 
 if [[ $# -ne 1 ]]; then
-  echo "Usage: $0 <lecture-directory>" >&2
+  echo "Usage: $0 <session-directory>" >&2
   exit 1
 fi
 
-LECTURE_DIR="$(cd "$1" && pwd)"
+SESSION_DIR="$(cd "$1" && pwd)"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SITE_DIR="${REPO_ROOT}/_site"
-SLUG="$(basename "$LECTURE_DIR")"
-META="${LECTURE_DIR}/meta.yaml"
-OUT_DIR="${SITE_DIR}/materials/${SLUG}"
+META="${SESSION_DIR}/meta.yaml"
+
+# shellcheck source=session-slug.sh
+source "${REPO_ROOT}/scripts/session-slug.sh"
+session_slug "$SESSION_DIR"
+
+OUT_DIR="${SITE_DIR}/materials/${SESSION_SLUG}"
 
 if [[ ! -f "$META" ]]; then
-  echo "No meta.yaml in ${LECTURE_DIR}; skipping materials"
+  echo "No meta.yaml in ${SESSION_DIR}; skipping materials"
   exit 0
 fi
 
@@ -44,7 +48,7 @@ built=0
 for line in "${MATERIAL_LINES[@]}"; do
   [[ -n "$line" ]] || continue
   rel_path="${line%%$'\t'*}"
-  src="${LECTURE_DIR}/${rel_path}"
+  src="${SESSION_DIR}/${rel_path}"
 
   if [[ ! -f "$src" ]]; then
     echo "Warning: material not found, skipping: ${rel_path}" >&2
@@ -74,5 +78,5 @@ for line in "${MATERIAL_LINES[@]}"; do
 done
 
 if [[ $built -gt 0 ]]; then
-  echo "Built ${built} material(s) for ${SLUG}"
+  echo "Built ${built} material(s) for ${SESSION_SLUG}"
 fi

@@ -20,6 +20,7 @@
 
 # Generated presentation PDFs (built by CI / make)
 lectures/**/main.pdf
+practices/**/main.pdf
 
 # GitHub Pages site output
 _site/

@@ -4,12 +4,16 @@
 
 \newif\ifac@russian
 \newif\ifac@english
+\newif\ifac@practice
 \ac@russiantrue
+\ac@practicefalse
 
 \newcommand{\ac@shorttitle}{}
 
 \DeclareOption{russian}{\ac@russiantrue\ac@englishfalse}
 \DeclareOption{english}{\ac@englishtrue\ac@russianfalse}
+\DeclareOption{practice}{\ac@practicetrue}
+\DeclareOption{lecture}{\ac@practicefalse}
 \ProcessOptions\relax
 
 \newcommand{\setshorttitle}[1]{\renewcommand{\ac@shorttitle}{#1}}
@@ -26,5 +30,8 @@
 \fi
 
 \usetheme{Academic}
+\ifac@practice
+  \usecolortheme{AcademicPractice}
+\fi
 
 \endinput

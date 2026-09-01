@@ -13,7 +13,9 @@ lectures/02-collections/
 
 ## Naming
 
-Use a numeric prefix for sort order on the site index, e.g. `01-project-setup`, `02-collections`.
+Use a numeric prefix for human-readable labels on the site (e.g. «Лекция 2»), e.g. `01-project-setup`, `02-collections`. The **site sort order** is determined by `date` and `slot`/`time` in `meta.yaml`, not the folder prefix.
+
+For practice sessions, see [`../practices/README.md`](../practices/README.md).
 
 Folders starting with `_` (e.g. `_template`) are excluded from CI builds.
 
@@ -107,7 +109,7 @@ references:
 cp -R lectures/_template lectures/02-my-topic
 # edit meta.yaml (set build: true), main.tex, slides/*
 # add materials/ and references as needed
-make lecture DIR=lectures/02-my-topic
+make session DIR=lectures/02-my-topic
 make site   # regenerate index
 ```
 
@@ -116,8 +118,8 @@ make site   # regenerate index
 Load the shared theme in `main.tex`:
 
 ```latex
-\usepackage[russian]{academicbeamer}  % or [english]
-\setshorttitle{Footer text}
+\usepackage[russian]{academicbeamer}  % or [english] — blue lecture theme
+\setshorttitle{BelOAI \textbar\ Лекция 2}
 ```
 
 See [`../latex/README.md`](../latex/README.md) for package options and customization.
