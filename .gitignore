@@ -34,3 +34,4 @@ Thumbs.db
 .idea/
 
 __pycache__
+.venv-fonts/

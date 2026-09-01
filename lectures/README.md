@@ -8,6 +8,7 @@ lectures/02-collections/
   meta.yaml      # site index metadata
   slides/        # numbered slide fragments
   assets/        # optional images (referenced via \graphicspath)
+  materials/     # optional notebooks, PDFs, archives (published to _site/)
 ```
 
 ## Naming
@@ -28,15 +29,86 @@ Folders starting with `_` (e.g. `_template`) are excluded from CI builds.
 | `description` | no | — | Card blurb |
 | `lang` | no | — | Informational (`ru`, `en`); language is set in `main.tex` |
 | `build` | no | `true` | Set `false` to skip CI/local batch builds |
-| `hidden` | no | `false` | Omit from public index (PDF still built if `build: true`) |
+| `hidden` | no | `false` | Omit from public index (artifacts still built if `build: true`) |
+| `references` | no | — | List of external links (see below) |
+| `materials` | no | — | List of files to publish (see below) |
+
+### references
+
+External links shown as chips on the lecture card.
+
+```yaml
+references:
+  - kind: contest
+    url: https://new.contest.yandex.ru/contests/98758
+    label: Задачи занятия          # optional
+  - kind: kaggle
+    url: https://www.kaggle.com/competitions/example
+  - label: Custom link             # required when kind is omitted
+    url: https://example.com
+```
+
+| `kind` | Default label |
+| ------ | ------------- |
+| `contest` | Яндекс.Контест |
+| `kaggle` | Kaggle |
+| `huggingface` | Hugging Face |
+| `colab` | Google Colab |
+
+### materials
+
+Files relative to the lecture folder. `.ipynb` files are rendered to HTML and offered for download.
+
+```yaml
+materials:
+  - path: materials/notebook.ipynb
+    label: Jupyter Notebook        # optional
+  - path: materials/cheatsheet.pdf
+```
+
+### Index inclusion
+
+A lecture appears on the site when `build: true`, `hidden: false`, and **at least one** of:
+
+- PDF was built (`main.tex` present)
+- a declared material was copied to `_site/materials/<slug>/`
+- `references` is non-empty
+
+PDF alone is no longer required.
+
+## Яндекс.Контест
+
+1. Open the contest in the browser and copy the **student-facing URL** (`contest.yandex.ru`, `contest.yandex.com`, or `new.contest.yandex.ru`).
+2. Add to `meta.yaml`:
+
+```yaml
+references:
+  - kind: contest
+    url: https://new.contest.yandex.ru/contests/98758
+```
+
+3. Optional custom label: `label: Задачи занятия` (defaults to «Яндекс.Контест»).
+4. **Contest-only** lectures are valid: set `build: true`, add the reference, omit `main.tex`.
+
+## Типы занятий
+
+| Тип | Что добавить |
+| --- | ------------ |
+| Только слайды | `main.tex`, `slides/`, `meta.yaml` |
+| Слайды + ноутбук | + `materials/*.ipynb` в `meta.yaml` |
+| Слайды + контест | + `references` с `kind: contest` |
+| Полный набор | слайды + `materials` + `references` |
+| Только контест | `meta.yaml` с `kind: contest`, без `main.tex` |
+| Только ноутбук | `meta.yaml` + `materials/*.ipynb`, без `main.tex` |
 
 ## Quick start
 
 ```bash
 cp -R lectures/_template lectures/02-my-topic
 # edit meta.yaml (set build: true), main.tex, slides/*
-# remove example slide files you do not need (see _template/slides/README.md)
+# add materials/ and references as needed
 make lecture DIR=lectures/02-my-topic
+make site   # regenerate index
 ```
 
 ## Theme

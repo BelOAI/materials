@@ -2,7 +2,7 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SCRIPTS := $(REPO_ROOT)/scripts
 DIR ?=
 
-.PHONY: all lecture site clean
+.PHONY: all lecture materials site clean
 
 all: site
 
@@ -10,7 +10,16 @@ lecture:
 ifndef DIR
 	$(error Usage: make lecture DIR=lectures/01-project-setup)
 endif
-	$(SCRIPTS)/build-presentation.sh $(DIR)
+	@if [ -f "$(DIR)/main.tex" ]; then \
+		$(SCRIPTS)/build-presentation.sh $(DIR); \
+	fi
+	$(SCRIPTS)/build-materials.sh $(DIR)
+
+materials:
+ifndef DIR
+	$(error Usage: make materials DIR=lectures/01-project-setup)
+endif
+	$(SCRIPTS)/build-materials.sh $(DIR)
 
 site:
 	$(SCRIPTS)/build-all.sh

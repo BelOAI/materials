@@ -3,27 +3,14 @@
 
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-def parse_meta(path: Path) -> dict[str, str]:
-    data: dict[str, str] = {}
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        match = re.match(r"^([A-Za-z_]+):\s*(.+)$", line)
-        if not match:
-            continue
-        key, raw = match.group(1), match.group(2).strip()
-        if raw.startswith('"') and raw.endswith('"'):
-            raw = raw[1:-1]
-        elif raw.startswith("'") and raw.endswith("'"):
-            raw = raw[1:-1]
-        data[key] = raw
-    return data
+from meta_parser import get_flat, parse_meta
+
+from meta_parser import get_flat, parse_meta
 
 
 def main() -> None:
@@ -34,7 +21,7 @@ def main() -> None:
     path = Path(sys.argv[1])
     field = sys.argv[2]
     data = parse_meta(path)
-    value = data.get(field, "")
+    value = get_flat(data, field, "")
     print(value)
 
 

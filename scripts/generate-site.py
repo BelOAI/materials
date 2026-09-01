@@ -1,23 +1,34 @@
 #!/usr/bin/env python3
-"""Generate GitHub Pages index from lecture meta.yaml files and built PDFs."""
+"""Generate GitHub Pages index from lecture meta.yaml files and built artifacts."""
 
 from __future__ import annotations
 
 import html
 import re
+import shutil
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from meta_parser import get_flat, get_materials, get_references, parse_meta
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LECTURES_DIR = REPO_ROOT / "lectures"
 SITE_DIR = REPO_ROOT / "_site"
+FONTS_SRC = REPO_ROOT / "site" / "fonts"
+FONTS_DEST = SITE_DIR / "fonts"
 
 SITE = {
     "lang": "ru",
     "title": "BelOAI",
-    "subtitle": "Белорусская олимпиада по искусственному интеллекту",
-    "page_title": "BelOAI — презентации к занятиям",
-    "tagline": "Слайды в PDF для просмотра и конспекта. Список занятий — на главной странице.",
-    "download": "Скачать PDF",
+    "subtitle": "Подготовка к олимпиаде по искусственному интеллекту",
+    "page_title": "BelOAI — материалы к занятиям",
+    "tagline": "Слайды, ноутбуки и ссылки на задания — всё для занятий в одном списке.",
+    "download_pdf": "Скачать PDF",
+    "open_notebook": "Открыть ноутбук",
+    "download_material": "Скачать",
+    "references_label": "Ссылки",
     "scheduled": "Проведение",
     "session_label": "Занятие",
     "empty": "Пока нет опубликованных материалов.",
@@ -53,24 +64,6 @@ MONTHS_RU = (
 )
 
 
-def parse_meta(path: Path) -> dict[str, str]:
-    data: dict[str, str] = {}
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        match = re.match(r"^([A-Za-z_]+):\s*(.+)$", line)
-        if not match:
-            continue
-        key, raw = match.group(1), match.group(2).strip()
-        if raw.startswith('"') and raw.endswith('"'):
-            raw = raw[1:-1]
-        elif raw.startswith("'") and raw.endswith("'"):
-            raw = raw[1:-1]
-        data[key] = raw
-    return data
-
-
 def lecture_sort_key(slug: str) -> tuple:
     match = re.match(r"^(\d+)", slug)
     num = int(match.group(1)) if match else 9999
@@ -93,11 +86,11 @@ def format_date_ru(iso_date: str) -> str:
     return f"{int(day)} {MONTHS_RU[month_idx]} {year}"
 
 
-def resolve_time(meta: dict[str, str]) -> str:
-    explicit = meta.get("time", "").strip()
+def resolve_time(meta: dict) -> str:
+    explicit = get_flat(meta, "time", "").strip()
     if explicit:
         return explicit
-    slot = meta.get("slot", DEFAULT_SLOT).strip() or DEFAULT_SLOT
+    slot = get_flat(meta, "slot", DEFAULT_SLOT).strip() or DEFAULT_SLOT
     return DEFAULT_TIME_SLOTS.get(slot, DEFAULT_TIME_SLOTS[DEFAULT_SLOT])
 
 
@@ -123,6 +116,41 @@ def plural_sessions(count: int) -> str:
     return SITE["count_many"].format(count)
 
 
+def discover_built_materials(slug: str, declared: list[dict[str, str]]) -> list[dict[str, str]]:
+    built: list[dict[str, str]] = []
+    out_dir = SITE_DIR / "materials" / slug
+    if not out_dir.is_dir():
+        return built
+
+    for item in declared:
+        rel_path = item["path"]
+        base = Path(rel_path).name
+        stem = Path(base).stem
+        suffix = Path(base).suffix.lower()
+
+        download_url = ""
+        open_url = ""
+        if (out_dir / base).exists():
+            download_url = f"materials/{slug}/{base}"
+
+        if suffix == ".ipynb":
+            html_name = f"{stem}.html"
+            if (out_dir / html_name).exists():
+                open_url = f"materials/{slug}/{html_name}"
+
+        if download_url or open_url:
+            built.append(
+                {
+                    "label": item["label"],
+                    "download": download_url,
+                    "open": open_url,
+                    "is_notebook": suffix == ".ipynb",
+                }
+            )
+
+    return built
+
+
 def discover_lectures() -> list[dict]:
     entries: list[dict] = []
     for lecture_dir in sorted(LECTURES_DIR.iterdir()):
@@ -134,33 +162,115 @@ def discover_lectures() -> list[dict]:
         meta_path = lecture_dir / "meta.yaml"
         if not meta_path.exists():
             continue
+
         meta = parse_meta(meta_path)
-        if meta.get("build", "true").lower() == "false":
+        if get_flat(meta, "build", "true").lower() == "false":
             continue
-        if meta.get("hidden", "false").lower() == "true":
+        if get_flat(meta, "hidden", "false").lower() == "true":
             continue
-        pdf = SITE_DIR / "pdfs" / f"{slug}.pdf"
-        if not pdf.exists():
+
+        pdf_rel = f"pdfs/{slug}.pdf"
+        pdf_exists = (SITE_DIR / pdf_rel).exists()
+        references = get_references(meta)
+        declared_materials = get_materials(meta)
+        built_materials = discover_built_materials(slug, declared_materials)
+
+        if not pdf_exists and not built_materials and not references:
             continue
+
         thumb = SITE_DIR / "thumbs" / f"{slug}.png"
+        thumb_href = ""
+        if pdf_exists:
+            thumb_href = pdf_rel
+        elif built_materials:
+            for material in built_materials:
+                if material["open"]:
+                    thumb_href = material["open"]
+                    break
+                if material["download"]:
+                    thumb_href = material["download"]
+                    break
+
         entries.append(
             {
                 "slug": slug,
                 "number": lecture_number(slug),
-                "title": meta.get("title", slug),
-                "subtitle": meta.get("subtitle", ""),
-                "date": meta.get("date", ""),
+                "title": get_flat(meta, "title", slug),
+                "subtitle": get_flat(meta, "subtitle", ""),
+                "date": get_flat(meta, "date", ""),
                 "time": resolve_time(meta),
                 "scheduled_display": format_scheduled_ru(
-                    meta.get("date", ""), resolve_time(meta)
+                    get_flat(meta, "date", ""), resolve_time(meta)
                 ),
-                "description": meta.get("description", ""),
-                "pdf": f"pdfs/{slug}.pdf",
+                "description": get_flat(meta, "description", ""),
+                "pdf": pdf_rel if pdf_exists else "",
                 "thumb": f"thumbs/{slug}.png" if thumb.exists() else "",
+                "thumb_href": thumb_href,
+                "materials": built_materials,
+                "references": references,
             }
         )
+
     entries.sort(key=lambda e: lecture_sort_key(e["slug"]))
     return entries
+
+
+def render_action_link(href: str, label: str, css_class: str = "lecture-action") -> str:
+    return (
+        f'<a class="{css_class}" href="{html.escape(href)}">'
+        f"{html.escape(label)}</a>"
+    )
+
+
+def render_material_actions(materials: list[dict]) -> str:
+    parts: list[str] = []
+    for material in materials:
+        if material["is_notebook"] and material["open"]:
+            parts.append(
+                render_action_link(
+                    material["open"],
+                    SITE["open_notebook"],
+                    "lecture-action lecture-action-primary",
+                )
+            )
+            if material["download"]:
+                parts.append(
+                    render_action_link(
+                        material["download"],
+                        f"{SITE['download_material']} .ipynb",
+                    )
+                )
+        elif material["download"]:
+            parts.append(
+                render_action_link(
+                    material["download"],
+                    f"{SITE['download_material']} {material['label']}",
+                )
+            )
+    return "\n          ".join(parts)
+
+
+def render_reference_chips(references: list[dict]) -> str:
+    if not references:
+        return ""
+
+    chips: list[str] = []
+    for ref in references:
+        css = "lecture-ref"
+        if ref["kind"] == "contest":
+            css += " ref-contest"
+        chips.append(
+            f'<a class="{css}" href="{html.escape(ref["url"])}" '
+            f'target="_blank" rel="noopener noreferrer">'
+            f'{html.escape(ref["label"])}</a>'
+        )
+
+    inner = "\n        ".join(chips)
+    return f"""
+        <div class="lecture-refs">
+          <span class="lecture-refs-label">{html.escape(SITE["references_label"])}</span>
+          {inner}
+        </div>"""
 
 
 def render_lecture_row(entry: dict, index: int) -> str:
@@ -168,21 +278,24 @@ def render_lecture_row(entry: dict, index: int) -> str:
     subtitle = html.escape(entry["subtitle"])
     scheduled_display = html.escape(entry["scheduled_display"])
     description = html.escape(entry["description"])
-    pdf = html.escape(entry["pdf"])
     lecture_no = html.escape(entry["number"])
-    thumb_alt = html.escape(f"{SITE['session_label']} {entry['number']}: {entry['title']}")
-    aria_label = html.escape(
-        f"{SITE['session_label']} {entry['number']}: {entry['title']} — скачать PDF"
-    )
 
     thumb_html = ""
     if entry["thumb"]:
         thumb = html.escape(entry["thumb"])
-        thumb_html = (
-            f'<div class="lecture-thumb-wrap">'
-            f'<img class="lecture-thumb" src="{thumb}" alt="{thumb_alt}">'
-            f"</div>"
+        thumb_alt = html.escape(
+            f"{SITE['session_label']} {entry['number']}: {entry['title']}"
         )
+        if entry["thumb_href"]:
+            thumb_href = html.escape(entry["thumb_href"])
+            thumb_inner = (
+                f'<a class="lecture-thumb-link" href="{thumb_href}">'
+                f'<img class="lecture-thumb" src="{thumb}" alt="{thumb_alt}">'
+                f"</a>"
+            )
+        else:
+            thumb_inner = f'<img class="lecture-thumb" src="{thumb}" alt="{thumb_alt}">'
+        thumb_html = f'<div class="lecture-thumb-wrap">{thumb_inner}</div>'
 
     index_html = ""
     if lecture_no:
@@ -197,9 +310,22 @@ def render_lecture_row(entry: dict, index: int) -> str:
         else ""
     )
 
+    actions: list[str] = []
+    if entry["pdf"]:
+        actions.append(
+            render_action_link(
+                entry["pdf"],
+                SITE["download_pdf"],
+                "lecture-action lecture-action-primary",
+            )
+        )
+    actions.append(render_material_actions(entry["materials"]))
+    actions_html = "\n          ".join(part for part in actions if part)
+    refs_html = render_reference_chips(entry["references"])
+
     return f"""
     <article class="lecture" style="--i: {index}">
-      <a class="lecture-link" href="{pdf}" aria-label="{aria_label}">
+      <div class="lecture-card">
         {thumb_html}
         <div class="lecture-body">
           {index_html}
@@ -207,10 +333,39 @@ def render_lecture_row(entry: dict, index: int) -> str:
           {subtitle_html}
           {desc_html}
           {scheduled_html}
-          <span class="lecture-action">{SITE["download"]}<span class="lecture-arrow" aria-hidden="true">→</span></span>
+          <div class="lecture-actions">
+            {actions_html}
+          </div>
+          {refs_html}
         </div>
-      </a>
+      </div>
     </article>"""
+
+
+def copy_fonts() -> None:
+    if not FONTS_SRC.is_dir():
+        raise SystemExit(
+            f"Missing fonts directory: {FONTS_SRC}\n"
+            "Run: bash scripts/vendor-fonts.sh"
+        )
+    shutil.copytree(FONTS_SRC, FONTS_DEST, dirs_exist_ok=True)
+
+
+def render_font_faces() -> str:
+    return """@font-face {
+      font-family: "Unbounded";
+      src: url("fonts/unbounded-latin-cyrillic.woff2") format("woff2");
+      font-weight: 200 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "IBM Plex Sans";
+      src: url("fonts/ibm-plex-sans-latin-cyrillic.woff2") format("woff2");
+      font-weight: 100 700;
+      font-style: normal;
+      font-display: swap;
+    }"""
 
 
 def render_index(entries: list[dict]) -> str:
@@ -234,6 +389,7 @@ def render_index(entries: list[dict]) -> str:
   <meta name="theme-color" content="#172a4a">
   <title>{page_title}</title>
   <style>
+    {render_font_faces()}
     :root {{
       --ac-dark: #172a4a;
       --ac-mid: #3e547a;
@@ -245,7 +401,7 @@ def render_index(entries: list[dict]) -> str:
     * {{ box-sizing: border-box; }}
     body {{
       margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       background: var(--ac-light);
       color: #222;
       line-height: 1.55;
@@ -272,6 +428,7 @@ def render_index(entries: list[dict]) -> str:
     }}
     .hero-brand {{
       margin: 0;
+      font-family: "Unbounded", "IBM Plex Sans", system-ui, sans-serif;
       font-size: clamp(1.75rem, 4.5vw, 3rem);
       font-weight: 700;
       line-height: 1.15;
@@ -309,28 +466,22 @@ def render_index(entries: list[dict]) -> str:
       animation: fade-up 0.5s ease both;
       animation-delay: calc(0.08s * var(--i) + 0.15s);
     }}
-    .lecture-link {{
+    .lecture-card {{
       display: grid;
       grid-template-columns: 200px 1fr;
       gap: 1.5rem;
       align-items: start;
       padding: 1.5rem 0;
-      color: inherit;
-      text-decoration: none;
-      transition: background 0.15s ease;
-    }}
-    .lecture-link:hover {{
-      background: rgba(255, 255, 255, 0.45);
-    }}
-    .lecture-link:focus-visible {{
-      outline: 2px solid var(--ac-mid);
-      outline-offset: 4px;
-      border-radius: 2px;
     }}
     .lecture-thumb-wrap {{
       overflow: hidden;
       border-radius: 2px;
       background: #fff;
+    }}
+    .lecture-thumb-link {{
+      display: block;
+      color: inherit;
+      text-decoration: none;
     }}
     .lecture-thumb {{
       display: block;
@@ -339,7 +490,7 @@ def render_index(entries: list[dict]) -> str:
       object-fit: cover;
       transition: transform 0.25s ease;
     }}
-    .lecture-link:hover .lecture-thumb {{
+    .lecture-thumb-link:hover .lecture-thumb {{
       transform: scale(1.03);
     }}
     .lecture-body {{
@@ -356,6 +507,7 @@ def render_index(entries: list[dict]) -> str:
     }}
     .lecture-title {{
       margin: 0.35rem 0 0;
+      font-family: "Unbounded", "IBM Plex Sans", system-ui, sans-serif;
       font-size: 1.25rem;
       font-weight: 700;
       color: var(--ac-dark);
@@ -386,24 +538,77 @@ def render_index(entries: list[dict]) -> str:
     .lecture-meta time {{
       color: var(--ac-gray);
     }}
+    .lecture-actions {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.75rem;
+      margin-top: 0.85rem;
+    }}
     .lecture-action {{
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      margin-top: 0.85rem;
       font-size: 0.88rem;
       font-weight: 600;
       color: var(--ac-mid);
+      text-decoration: none;
+      padding: 0.2rem 0;
+      border-bottom: 1px solid transparent;
+      transition: color 0.15s ease, border-color 0.15s ease;
     }}
-    .lecture-arrow {{
-      display: inline-block;
-      opacity: 0;
-      transform: translateX(-4px);
-      transition: opacity 0.15s ease, transform 0.15s ease;
+    .lecture-action:hover {{
+      color: var(--ac-dark);
+      border-bottom-color: var(--ac-mid);
     }}
-    .lecture-link:hover .lecture-arrow {{
-      opacity: 1;
-      transform: translateX(0);
+    .lecture-action:focus-visible {{
+      outline: 2px solid var(--ac-mid);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }}
+    .lecture-action-primary {{
+      color: var(--ac-dark);
+    }}
+    .lecture-refs {{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem 0.55rem;
+      margin-top: 0.75rem;
+    }}
+    .lecture-refs-label {{
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--ac-gray);
+      margin-right: 0.15rem;
+    }}
+    .lecture-ref {{
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--ac-mid);
+      text-decoration: none;
+      padding: 0.15rem 0.55rem;
+      border: 1px solid var(--ac-rule);
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.7);
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }}
+    .lecture-ref:hover {{
+      background: #fff;
+      border-color: var(--ac-mid);
+      color: var(--ac-dark);
+    }}
+    .lecture-ref:focus-visible {{
+      outline: 2px solid var(--ac-mid);
+      outline-offset: 2px;
+    }}
+    .ref-contest {{
+      font-weight: 700;
+      color: var(--ac-dark);
+      border-color: var(--ac-mid);
+      background: #fff;
     }}
     .empty {{
       margin: 3rem 0;
@@ -430,7 +635,7 @@ def render_index(entries: list[dict]) -> str:
       text-decoration: underline;
     }}
     @media (max-width: 640px) {{
-      .lecture-link {{
+      .lecture-card {{
         grid-template-columns: 1fr;
         gap: 1rem;
       }}
@@ -440,11 +645,10 @@ def render_index(entries: list[dict]) -> str:
       .lecture {{
         animation: none;
       }}
-      .lecture-thumb,
-      .lecture-arrow {{
+      .lecture-thumb {{
         transition: none;
       }}
-      .lecture-link:hover .lecture-thumb {{
+      .lecture-thumb-link:hover .lecture-thumb {{
         transform: none;
       }}
     }}
@@ -478,6 +682,7 @@ def render_index(entries: list[dict]) -> str:
 
 def main() -> None:
     SITE_DIR.mkdir(parents=True, exist_ok=True)
+    copy_fonts()
     entries = discover_lectures()
     index_path = SITE_DIR / "index.html"
     index_path.write_text(render_index(entries), encoding="utf-8")

@@ -7,6 +7,7 @@ on:
       - 'lectures/**'
       - 'latex/**'
       - 'scripts/**'
+      - 'site/**'
       - '.github/workflows/**'
       - 'Makefile'
       - 'latexmkrc'
@@ -15,6 +16,7 @@ on:
       - 'lectures/**'
       - 'latex/**'
       - 'scripts/**'
+      - 'site/**'
       - '.github/workflows/**'
       - 'Makefile'
       - 'latexmkrc'
@@ -43,6 +45,9 @@ jobs:
             texlive-science \
             poppler-utils \
             make
+
+      - name: Install Jupyter for notebook HTML export
+        run: pip install jupyter nbconvert
 
       - name: Build presentations and site
         run: make site
