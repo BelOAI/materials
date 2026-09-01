@@ -18,9 +18,8 @@
 *.lof
 *.lot
 
-# Generated presentation PDFs (built by CI / make)
-lectures/**/main.pdf
-practices/**/main.pdf
+# Generated session PDFs (built by CI / make)
+**/main.pdf
 
 # GitHub Pages site output
 _site/
