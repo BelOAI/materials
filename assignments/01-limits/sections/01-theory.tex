@@ -1,0 +1,58 @@
+\section*{Теоретическая справка}
+
+\subsection*{1. Предел функции в точке}
+Окрестностью точки называется любой промежуток, содержащий данную точку, причём данная точка обязательно является внутренней точкой выбранного промежутка.
+
+\begin{exercise}
+\textbf{Определение предела.} Число $A$ называется пределом функции $y=f(x)$ при $x\to a$, если в окрестности точки $a$ значение функции приближается к числу $A$. Обозначение:
+\[
+  \lim\limits_{x\to a} f(x)=A.
+\]
+\textbf{Односторонние пределы.} Предел справа записывают $\lim\limits_{x\to a+0}f(x)=A$.
+Предел слева записывают $\lim\limits_{x\to a-0}f(x)=A$.
+
+Если функция имеет в некоторой точке равные пределы справа и слева, то существует и её предел в этой точке:
+\[
+\lim\limits_{x\to a+0}f(x)=\lim\limits_{x\to a-0}f(x)=A
+\quad\Longrightarrow\quad
+\lim\limits_{x\to a}f(x)=A.
+\]
+\end{exercise}
+
+\subsection*{2. Правила вычисления пределов}
+Если функция определена в некоторой точке (непрерывна в ней), то её предел в этой точке равен её значению: $\lim\limits_{x\to a}f(x)=f(a)$.
+
+Если пределы $f(x)$ и $g(x)$ при $x\to a$ существуют, то:
+\begin{enumerate}
+  \item $\lim\limits_{x\to a}c=c$, где $c$ --- константа;
+  \item $\lim\limits_{x\to a}(f(x)\pm g(x))=\lim\limits_{x\to a}f(x)\pm\lim\limits_{x\to a}g(x)$;
+  \item $\lim\limits_{x\to a}(f(x)g(x))=\lim\limits_{x\to a}f(x)\cdot\lim\limits_{x\to a}g(x)$;
+  \item $\lim\limits_{x\to a}\dfrac{f(x)}{g(x)}=\dfrac{\lim\limits_{x\to a}f(x)}{\lim\limits_{x\to a}g(x)}$, если $\lim\limits_{x\to a}g(x)\ne0$.
+\end{enumerate}
+
+\subsection*{3. Предел на бесконечности и неопределённости}
+При $x\to\infty$ (как к $+\infty$, так и к $-\infty$) значения функции могут стремиться к конкретному числу; например, $\lim\limits_{x\to\infty}\frac1x=0$.
+
+Часто встречаются неопределённости
+\[
+  \left[\frac\infty\infty\right],\quad \left[\frac00\right],\quad [0\cdot\infty],\quad [\infty-\infty],\quad [0^0],\quad [\infty^0],\quad [1^\infty].
+\]
+Для их раскрытия используют алгебраические преобразования (разложение на множители, домножение на сопряжённое) и замечательные пределы.
+
+\subsection*{4. Замечательные пределы}
+\begin{exercise}
+\textbf{Первый замечательный предел} применяется при неопределённости $\left[\frac00\right]$:
+\[
+  \lim\limits_{x\to0}\frac{\sin x}{x}=1.
+\]
+Следствия: $\lim\limits_{x\to0}\frac{\sin x}{x}=1$, $\lim\limits_{x\to0}\frac{\tg x}{x}=1$, $\lim\limits_{x\to0}\frac{\arcsin x}{x}=1$, $\lim\limits_{x\to0}\frac{\arctg x}{x}=1$.
+\end{exercise}
+
+\begin{exercise}
+\textbf{Второй замечательный предел} применяется при неопределённости $[1^\infty]$:
+\[
+  \lim\limits_{x\to\infty}\left(1+\frac1x\right)^x=e,
+  \qquad
+  \lim\limits_{x\to0}(1+x)^{1/x}=e.
+\]
+\end{exercise}
