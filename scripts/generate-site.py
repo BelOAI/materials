@@ -746,6 +746,9 @@ def render_index(entries: list[dict]) -> str:
       min-width: 0;
       padding-top: 0.1rem;
     }}
+    .session-body:only-child {{
+      grid-column: 1 / -1;
+    }}
     .session-index {{
       margin: 0;
       font-size: 0.8rem;
