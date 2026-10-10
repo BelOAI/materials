@@ -385,6 +385,27 @@ def render_reference_chips(references: list[dict]) -> str:
         </div>"""
 
 
+def render_notebook_thumb(entry: dict, label: str, href: str) -> str:
+    """Preview tile for sessions that have a notebook but no PDF thumbnail."""
+    open_label = html.escape(f"{SITE['open_notebook']}: {entry['title']}")
+    bars = (
+        '<span class="nb-cell"><span class="nb-prompt">In [1]:</span>'
+        '<span class="nb-code"><i style="width:55%"></i></span></span>'
+        '<span class="nb-cell"><span class="nb-prompt">In [2]:</span>'
+        '<span class="nb-code"><i style="width:80%"></i><i style="width:46%"></i></span></span>'
+        '<span class="nb-out"><i style="width:62%"></i></span>'
+    )
+    return (
+        '<div class="session-thumb-wrap">'
+        f'<a class="session-thumb-link" href="{html.escape(href)}" aria-label="{open_label}">'
+        '<span class="session-thumb session-thumb-notebook" aria-hidden="true">'
+        '<span class="nb-badge">Jupyter Notebook</span>'
+        '<span class="nb-heading"><i></i></span>'
+        f"{bars}"
+        "</span></a></div>"
+    )
+
+
 def render_session_row(entry: dict, index: int) -> str:
     title = html.escape(entry["title"])
     subtitle = html.escape(entry["subtitle"])
@@ -409,6 +430,17 @@ def render_session_row(entry: dict, index: int) -> str:
         else:
             thumb_inner = f'<img class="session-thumb" src="{thumb}" alt="{thumb_alt}">'
         thumb_html = f'<div class="session-thumb-wrap">{thumb_inner}</div>'
+
+    card_extra_class = ""
+    if not thumb_html:
+        notebook_href = next(
+            (m["open"] for m in entry["materials"] if m["is_notebook"] and m["open"]),
+            "",
+        )
+        if notebook_href:
+            thumb_html = render_notebook_thumb(entry, label, notebook_href)
+        else:
+            card_extra_class = " session-card-no-thumb"
 
     index_html = ""
     if session_no:
@@ -452,7 +484,7 @@ def render_session_row(entry: dict, index: int) -> str:
 
     return f"""
     <article class="session {kind_class}" data-kind="{html.escape(kind)}" style="--i: {index}">
-      <div class="session-card">
+      <div class="session-card{card_extra_class}">
         {thumb_html}
         <div class="session-body">
           {index_html}
@@ -741,6 +773,74 @@ def render_index(entries: list[dict]) -> str:
     }}
     .session-thumb-link:hover .session-thumb {{
       transform: scale(1.03);
+    }}
+    .session-card-no-thumb {{
+      grid-template-columns: 1fr;
+    }}
+    .session-thumb-notebook {{
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 0.6rem 0.75rem;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid var(--ac-rule);
+      overflow: hidden;
+    }}
+    .session-assignment .session-thumb-notebook {{
+      aspect-ratio: 16 / 9;
+    }}
+    .nb-badge {{
+      font-size: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--session-mid);
+    }}
+    .nb-heading {{
+      display: block;
+    }}
+    .nb-heading i {{
+      display: block;
+      width: 62%;
+      height: 0.45rem;
+      border-radius: 1px;
+      background: var(--session-dark);
+    }}
+    .nb-cell {{
+      display: flex;
+      gap: 0.35rem;
+      align-items: flex-start;
+    }}
+    .nb-prompt {{
+      flex: none;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.42rem;
+      line-height: 1.6;
+      color: var(--session-mid);
+    }}
+    .nb-code, .nb-out {{
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }}
+    .nb-code {{
+      flex: 1;
+      padding: 0.22rem 0.3rem;
+      background: #eff1f4;
+      border: 1px solid var(--ac-rule);
+    }}
+    .nb-out {{
+      padding-left: 1.45rem;
+    }}
+    .nb-code i, .nb-out i {{
+      display: block;
+      height: 0.2rem;
+      border-radius: 1px;
+      background: var(--ac-rule);
+    }}
+    .nb-out i {{
+      background: #dde0e5;
     }}
     .session-body {{
       min-width: 0;
