@@ -5,6 +5,8 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SITE_DIR="${REPO_ROOT}/_site"
 META_PARSER="${REPO_ROOT}/scripts/parse-meta.py"
 
+# Удаляем только генерируемые ресурсы, включая результаты удалённых занятий.
+rm -rf "${SITE_DIR}/pdfs" "${SITE_DIR}/thumbs" "${SITE_DIR}/materials"
 mkdir -p "${SITE_DIR}/pdfs" "${SITE_DIR}/thumbs" "${SITE_DIR}/materials"
 
 should_build() {
@@ -25,9 +27,6 @@ should_build() {
   return 0
 }
 
-# shellcheck source=session-slug.sh
-source "${REPO_ROOT}/scripts/session-slug.sh"
-
 for kind in lectures practices assignments; do
   kind_dir="${REPO_ROOT}/${kind}"
   [[ -d "$kind_dir" ]] || continue
@@ -40,23 +39,8 @@ for kind in lectures practices assignments; do
       continue
     fi
 
-    session_slug "$session_dir"
+    python3 "${REPO_ROOT}/scripts/build-session.py" "$session_dir"
 
-    if [[ -f "${session_dir}/main.tex" ]]; then
-      "${REPO_ROOT}/scripts/build-presentation.sh" "$session_dir"
-
-      if command -v pdftoppm >/dev/null 2>&1 && [[ -f "${session_dir}/main.pdf" ]]; then
-        thumb_dir="${SITE_DIR}/thumbs/$(dirname "$SESSION_SLUG")"
-        mkdir -p "$thumb_dir"
-        pdftoppm -png -f 1 -l 1 -singlefile \
-          "${session_dir}/main.pdf" "${SITE_DIR}/thumbs/${SESSION_SLUG}" || true
-        if [[ -f "${SITE_DIR}/thumbs/${SESSION_SLUG}.png" ]]; then
-          echo "Thumbnail ${SITE_DIR}/thumbs/${SESSION_SLUG}.png"
-        fi
-      fi
-    fi
-
-    "${REPO_ROOT}/scripts/build-materials.sh" "$session_dir"
   done
 done
 

@@ -2,7 +2,7 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SCRIPTS := $(REPO_ROOT)/scripts
 DIR ?=
 
-.PHONY: all session lecture materials site frontend test clean
+.PHONY: all session lecture materials site frontend test tex clean
 
 all: site
 
@@ -10,10 +10,13 @@ session:
 ifndef DIR
 	$(error Usage: make session DIR=lectures/01-project-setup)
 endif
-	@if [ -f "$(DIR)/main.tex" ]; then \
-		$(SCRIPTS)/build-presentation.sh $(DIR); \
-	fi
-	$(SCRIPTS)/build-materials.sh $(DIR)
+	python3 $(SCRIPTS)/build-session.py "$(DIR)"
+
+tex:
+ifndef DIR
+	$(error Usage: make tex DIR=lectures/01-intro-ml)
+endif
+	$(SCRIPTS)/build-presentation.sh "$(DIR)" --local
 
 lecture: session
 
@@ -21,7 +24,7 @@ materials:
 ifndef DIR
 	$(error Usage: make materials DIR=lectures/01-project-setup)
 endif
-	$(SCRIPTS)/build-materials.sh $(DIR)
+	$(SCRIPTS)/build-materials.sh "$(DIR)"
 
 frontend:
 	npm --prefix $(REPO_ROOT)/site run build

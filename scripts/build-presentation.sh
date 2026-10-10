@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 1 ]]; then
-  echo "Usage: $0 <session-directory>" >&2
+if [[ $# -lt 1 || $# -gt 2 || ( $# -eq 2 && "$2" != --local ) ]]; then
+  echo "Usage: $0 <session-directory> [--local]" >&2
   exit 1
 fi
 
@@ -31,6 +31,11 @@ pdflatex -file-line-error -halt-on-error -interaction=nonstopmode main.tex >/dev
 if [[ ! -f main.pdf ]]; then
   echo "Error: main.pdf was not produced" >&2
   exit 1
+fi
+
+if [[ "${2:-}" == --local ]]; then
+  echo "Built ${SESSION_DIR}/main.pdf (local)"
+  exit 0
 fi
 
 PDF_DEST="${SITE_DIR}/pdfs/${SESSION_SLUG}.pdf"
