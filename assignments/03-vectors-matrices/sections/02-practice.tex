@@ -1,0 +1,110 @@
+\newpage
+\section*{Практикум}
+\textit{Векторы в задачах записаны строками, но при умножении матрицы на вектор вектор считается столбцом.}
+
+\needspace{12\baselineskip}
+\subsection*{Часть 1. Векторы}
+
+\needspace{9\baselineskip}
+\begin{exercise}
+Даны векторы $\vect a=(2,-1,2)$ и $\vect b=(1,4,-2)$. Найдите
+\begin{multicols}{3}
+\begin{enumerate}[label=\asbuk*)]
+  \item $\vect a+\vect b$;
+  \item $3\vect a-2\vect b$;
+  \item $\norm{\vect a}$ и $\norm{\vect b}$;
+  \item $\vect a\cdot\vect b$;
+  \item $\vect a\odot\vect b$;
+  \item сумму координат $\vect a\odot\vect b$.
+\end{enumerate}
+\end{multicols}
+\end{exercise}
+
+\needspace{9\baselineskip}
+\begin{exercise}
+Нормируйте вектор $\vect c=(6,-2,3)$, то есть найдите единичный вектор того же направления. Затем найдите вектор длины $14$, сонаправленный с $\vect c$.
+\end{exercise}
+
+\needspace{9\baselineskip}
+\begin{exercise}
+Найдите угол между векторами:
+\begin{multicols}{3}
+\begin{enumerate}[label=\asbuk*)]
+  \item $(1,1)$ и $(-1,0)$;
+  \item $(2,1,-2)$ и $(1,1,0)$;
+  \item $(1,2,3)$ и $(3,0,-1)$.
+\end{enumerate}
+\end{multicols}
+\end{exercise}
+
+\needspace{9\baselineskip}
+\begin{exercise}
+При каком значении $t$ векторы $\vect p=(t,2,1)$ и $\vect q=(3,t,-5)$ ортогональны?
+\end{exercise}
+
+\needspace{9\baselineskip}
+\begin{exercise}
+Найдите $\vect a\times\vect b$ для $\vect a=(2,1,0)$ и $\vect b=(1,3,-1)$. Проверьте с помощью скалярного произведения, что результат ортогонален $\vect a$ и $\vect b$. Чему равны $\vect b\times\vect a$ и $\vect a\times(2\vect a)$? Ответ на последний вопрос дайте без вычислений.
+\end{exercise}
+
+\needspace{9\baselineskip}
+\begin{exercise}
+Даны точки $A(1,1,1)$, $B(2,3,3)$, $C(3,2,-1)$.
+\begin{enumerate}[label=\asbuk*)]
+  \item Найдите векторы $\overrightarrow{AB}$, $\overrightarrow{AC}$ и их длины.
+  \item Найдите угол $BAC$ треугольника $ABC$.
+  \item Найдите площадь треугольника $ABC$ с помощью векторного произведения и проверьте ответ, используя пункт б).
+\end{enumerate}
+\end{exercise}
+
+\needspace{12\baselineskip}
+\subsection*{Часть 2. Матрицы}
+
+\needspace{9\baselineskip}
+\begin{exercise}
+Даны матрицы $A=\begin{pmatrix}2&-1\\0&3\end{pmatrix}$ и $B=\begin{pmatrix}1&2\\4&-1\end{pmatrix}$. Найдите
+\begin{multicols}{3}
+\begin{enumerate}[label=\asbuk*)]
+  \item $A+2B$;
+  \item $A^T$;
+  \item $A\odot B$;
+  \item $AB$;
+  \item $BA$;
+  \item $(AB)^T$ и $B^TA^T$.
+\end{enumerate}
+\end{multicols}
+Совпадают ли $AB$ и $BA$? Совпадают ли матрицы из пункта е)?
+\end{exercise}
+
+\needspace{9\baselineskip}
+\begin{exercise}
+Пусть $A$ --- матрица $2\times3$, $B$ --- $3\times4$, $C$ --- $4\times2$, $\vect x$ --- столбец $3\times1$. Какие из выражений имеют смысл? Для имеющих смысл укажите размер результата.
+\begin{multicols}{3}
+\begin{enumerate}[label=\asbuk*)]
+  \item $AB$;
+  \item $BA$;
+  \item $ABC$;
+  \item $CA$;
+  \item $A\vect x$;
+  \item $\vect x^TA^T$;
+  \item $\vect x^T\vect x$;
+  \item $\vect x\vect x^T$;
+  \item $A\odot B$.
+\end{enumerate}
+\end{multicols}
+\end{exercise}
+
+\needspace{10\baselineskip}
+\subsection*{Ответы для самопроверки}
+\begin{small}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=2em]
+  \item а) $(3,3,0)$; б) $(4,-11,10)$; в) $3$ и $\sqrt{21}$; г) $-6$; д) $(2,-4,-4)$; е) $-6$, как и в пункте г).
+  \item $\left(\frac67,-\frac27,\frac37\right)$; \ $(12,-4,6)$.
+  \item а) $135^\circ$; б) $45^\circ$; в) $90^\circ$.
+  \item $t=1$.
+  \item $\vect a\times\vect b=(-1,2,5)$; \ $\vect b\times\vect a=(1,-2,-5)$; \ $\vect a\times(2\vect a)=\vect 0$ (векторы коллинеарны).
+  \item а) $\overrightarrow{AB}=(1,2,2)$, $\overrightarrow{AC}=(2,1,-2)$, обе длины равны $3$; б) $90^\circ$; в) $\overrightarrow{AB}\times\overrightarrow{AC}=(-6,6,-3)$, его длина $9$, площадь $\frac92$ (по катетам: $\frac12\cdot3\cdot3$).
+  \item а) $\begin{pmatrix}4&3\\8&1\end{pmatrix}$; б) $\begin{pmatrix}2&0\\-1&3\end{pmatrix}$; в) $\begin{pmatrix}2&-2\\0&-3\end{pmatrix}$; г) $\begin{pmatrix}-2&5\\12&-3\end{pmatrix}$; д) $\begin{pmatrix}2&5\\8&-7\end{pmatrix}$; е) обе равны $\begin{pmatrix}-2&12\\5&-3\end{pmatrix}$. $AB\ne BA$.
+  \item а) $2\times4$; б) нет; в) $2\times2$; г) $4\times3$; д) $2\times1$; е) $1\times2$; ж) $1\times1$ (число $\norm{\vect x}^2$); з) $3\times3$; и) нет.
+\end{enumerate}
+\end{small}

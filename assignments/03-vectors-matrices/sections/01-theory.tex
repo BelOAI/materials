@@ -1,0 +1,217 @@
+\section*{Теоретическая справка}
+\textit{Обозначения.} Векторы обозначаем полужирными строчными буквами ($\vect a$, $\vect b$, $\vect x$), матрицы --- прописными ($A$, $B$). Числа (их ещё называют \emph{скалярами}) принято обозначать строчными буквами, чаще всего греческими: $\alpha,\ \beta,\ \lambda,\ \mu,\ \varphi$; иногда используют и латинские $t,\ s,\ k$. Множество всех векторов из $n$ действительных чисел обозначают $\mathbb R^n$.
+
+\subsection*{1. Векторы}
+\textbf{Вектор} размерности $n$ --- это упорядоченный набор из $n$ чисел, которые называются его \textbf{координатами}:
+\[
+\vect a=(a_1,a_2,\dots,a_n)\in\mathbb R^n .
+\]
+Порядок координат важен: $(1,2)\ne(2,1)$. Геометрически вектор из $\mathbb R^2$ или $\mathbb R^3$ --- это направленный отрезок (стрелка) из начала координат в точку с теми же координатами. Вектором можно записать и набор измерений, например $(\text{рост},\ \text{вес},\ \text{возраст})\in\mathbb R^3$.
+
+\textbf{Линейные операции.} Пусть есть два вектора одной размерности, $\vect a=(a_1,\dots,a_n)$ и $\vect b=(b_1,\dots,b_n)$, и число $\lambda$.
+
+\textbf{Сумма} векторов --- вектор, координаты которого равны суммам соответствующих координат:
+\[
+\vect a+\vect b=(a_1+b_1,\ \dots,\ a_n+b_n).
+\]
+Складывать можно только векторы одной размерности.
+
+\textbf{Произведение вектора на число} --- вектор, у которого каждая координата умножена на это число:
+\[
+\lambda\vect a=(\lambda a_1,\ \dots,\ \lambda a_n).
+\]
+
+\textbf{Разность} векторов --- это $\vect a-\vect b=\vect a+(-1)\vect b=(a_1-b_1,\ \dots,\ a_n-b_n)$.
+
+\textit{Пример.} $(1,2,2)+(2,-1,2)=(3,1,4)$, \ $2\cdot(1,2,2)=(2,4,4)$. Геометрически сумма строится по правилу параллелограмма, а умножение на $\lambda$ растягивает вектор в $|\lambda|$ раз (и разворачивает его при $\lambda<0$).
+
+\textbf{Нулевой вектор} $\vect 0=(0,\dots,0)$: для любого $\vect a$ выполнено $\vect a+\vect 0=\vect a$.
+
+\textbf{Противоположный вектор} к $\vect a$ --- это $-\vect a=(-1)\cdot\vect a$.
+
+\textbf{Длина (евклидова норма)} вектора $\vect a=(a_1,\dots,a_n)$:
+\[
+\norm{\vect a}=\sqrt{a_1^2+a_2^2+\dots+a_n^2}.
+\]
+На плоскости это теорема Пифагора: $\norm{(3,4)}=\sqrt{9+16}=5$ --- длина гипотенузы при катетах $3$ и $4$. Ещё пример: $\norm{(1,2,2)}=\sqrt{1+4+4}=3$. Длина равна нулю только у нулевого вектора, и $\norm{\lambda\vect a}=|\lambda|\cdot\norm{\vect a}$.
+
+\textbf{Единичный вектор} --- вектор длины $1$. Любой ненулевой вектор можно \emph{нормировать}, разделив на его длину: $\vect e=\dfrac{\vect a}{\norm{\vect a}}$ --- единичный вектор того же направления. Для $\vect a=(3,4)$ получаем $\vect e=\left(\frac35,\frac45\right)$.
+
+\subsection*{2. Скалярное произведение}
+\textbf{Скалярным произведением} векторов $\vect a,\vect b\in\mathbb R^n$ называется \emph{число}
+\[
+\vect a\cdot\vect b=a_1b_1+a_2b_2+\dots+a_nb_n .
+\]
+Встречаются также обозначения $(\vect a,\vect b)$ и $\langle\vect a,\vect b\rangle$. Пример: $(1,2,3)\cdot(4,-5,6)=4-10+18=12$.
+
+\textbf{Свойства} (для любых векторов $\vect a,\vect b,\vect c$ и любого числа $\lambda$):
+\begin{enumerate}
+  \item $\vect a\cdot\vect b=\vect b\cdot\vect a$ (коммутативность, или симметричность);
+  \item $(\vect a+\vect b)\cdot\vect c=\vect a\cdot\vect c+\vect b\cdot\vect c$ (дистрибутивность, или распределительный закон);
+  \item $(\lambda\vect a)\cdot\vect b=\lambda(\vect a\cdot\vect b)$ (ассоциативность относительно умножения на число, или однородность);
+  \item $\vect a\cdot\vect a=\norm{\vect a}^2\ge0$, причём $\vect a\cdot\vect a=0$ только при $\vect a=\vect 0$.
+\end{enumerate}
+Свойства 2 и 3 вместе называют \emph{линейностью} скалярного произведения (по первому множителю). Из свойства 4 следует, что длину можно вычислять через скалярное произведение: $\norm{\vect a}=\sqrt{\vect a\cdot\vect a}$.
+
+\textbf{Геометрический смысл.} Для векторов на плоскости и в пространстве
+\[
+\vect a\cdot\vect b=\norm{\vect a}\cdot\norm{\vect b}\cdot\cos\varphi,
+\]
+где $\varphi\in[0;\pi]$ --- угол между векторами. Знак скалярного произведения показывает характер угла: $\vect a\cdot\vect b>0$ --- угол острый, $\vect a\cdot\vect b<0$ --- тупой, $\vect a\cdot\vect b=0$ --- прямой.
+
+\textbf{Ортогональность.} Векторы называются \textbf{ортогональными} ($\vect a\perp\vect b$), если $\vect a\cdot\vect b=0$. Например, $(1,2,2)\perp(2,1,-2)$, так как $2+2-4=0$. Нулевой вектор считается ортогональным любому.
+
+\textbf{Проекция.} Число $\operatorname{pr}_{\vect a}\vect b=\dfrac{\vect a\cdot\vect b}{\norm{\vect a}}$ ($\vect a\ne\vect 0$) --- это длина «тени» вектора $\vect b$ на прямую, содержащую $\vect a$, взятая со знаком «$-$», если угол тупой. Пример: для $\vect a=(3,4)$, $\vect b=(2,1)$ получаем $\operatorname{pr}_{\vect a}\vect b=\frac{6+4}{5}=2$.
+
+\subsection*{3. Угол между векторами}
+Для \emph{ненулевых} векторов $\vect a$ и $\vect b$ из формулы скалярного произведения получаем
+\[
+\cos\varphi=\frac{\vect a\cdot\vect b}{\norm{\vect a}\cdot\norm{\vect b}},\qquad \varphi\in[0;\pi].
+\]
+Для нулевого вектора угол не определён (знаменатель обращается в ноль). Частные случаи: $\cos\varphi=1$ --- векторы сонаправлены ($\vect b=\lambda\vect a$, $\lambda>0$); $\cos\varphi=-1$ --- противоположно направлены ($\lambda<0$); $\cos\varphi=0$ --- ортогональны.
+
+\textit{Пример.} $\vect a=(1,1,0)$, $\vect b=(1,0,1)$: \
+$\cos\varphi=\dfrac{1+0+0}{\sqrt2\cdot\sqrt2}=\dfrac12$, \ значит, $\varphi=\dfrac{\pi}{3}=60^\circ$.
+
+Формула верна и в $\mathbb R^n$ при любом $n$. Заметим, что значение $\cos\varphi$ не меняется при растяжении векторов: оно зависит только от их направлений.
+
+\subsection*{4. Поэлементное (поточечное) произведение векторов}
+\textbf{Поэлементное произведение} (произведение Адамара) двух векторов \emph{одинаковой размерности} --- это вектор той же размерности, координаты которого равны произведениям соответствующих координат:
+\[
+\vect a\odot\vect b=(a_1b_1,\ a_2b_2,\ \dots,\ a_nb_n).
+\]
+Пример: $(1,2,3)\odot(4,-5,6)=(4,-10,18)$.
+
+\textbf{Не путайте со скалярным произведением!} Скалярное произведение даёт \emph{число}, а поэлементное --- \emph{вектор}. Связь такая: сумма координат вектора $\vect a\odot\vect b$ как раз равна $\vect a\cdot\vect b$ (в примере выше $4-10+18=12$).
+
+\subsection*{5. Векторное произведение в $\mathbb R^3$}
+\textbf{Векторным произведением} векторов $\vect a=(a_1,a_2,a_3)$ и $\vect b=(b_1,b_2,b_3)$ называется вектор
+\[
+\vect a\times\vect b=\bigl(a_2b_3-a_3b_2,\ \ a_3b_1-a_1b_3,\ \ a_1b_2-a_2b_1\bigr).
+\]
+Встречается и обозначение $[\vect a,\vect b]$. Оно определено именно для трёхмерных векторов, и в отличие от скалярного, его результат --- \emph{вектор}.
+
+\textit{Пример.} $(1,2,3)\times(4,5,6)=(2\cdot6-3\cdot5,\ 3\cdot4-1\cdot6,\ 1\cdot5-2\cdot4)=(-3,6,-3)$. \
+Проверка: $(-3,6,-3)\cdot(1,2,3)=-3+12-9=0$ и $(-3,6,-3)\cdot(4,5,6)=-12+30-18=0$.
+
+\textbf{Свойства.}
+\begin{enumerate}
+  \item $\vect b\times\vect a=-(\vect a\times\vect b)$ (антикоммутативность); в частности, $\vect a\times\vect a=\vect 0$, и вообще $\vect a\times\vect b=\vect 0$ для коллинеарных векторов.
+  \item $\vect a\times\vect b$ ортогонален и $\vect a$, и $\vect b$.
+  \item $\norm{\vect a\times\vect b}=\norm{\vect a}\cdot\norm{\vect b}\cdot\sin\varphi$ --- это \textbf{площадь параллелограмма}, построенного на $\vect a$ и $\vect b$; площадь треугольника вдвое меньше. В примере выше площадь параллелограмма равна $\norm{(-3,6,-3)}=\sqrt{54}=3\sqrt6$.
+  \item Направление задаётся \textbf{правилом правой руки}: если пальцы правой руки поворачивают от $\vect a$ к $\vect b$ по кратчайшему пути, то большой палец указывает направление $\vect a\times\vect b$.
+\end{enumerate}
+
+\subsection*{6. Матрицы}
+\textbf{Матрицей размеров $m\times n$} называется прямоугольная таблица чисел из $m$ строк и $n$ столбцов:
+\[
+A=\begin{pmatrix}
+a_{11}&a_{12}&\dots&a_{1n}\\
+a_{21}&a_{22}&\dots&a_{2n}\\
+\vdots&\vdots&\ddots&\vdots\\
+a_{m1}&a_{m2}&\dots&a_{mn}
+\end{pmatrix}=(a_{ij}).
+\]
+Элемент $a_{ij}$ стоит в $i$-й строке и $j$-м столбце: \emph{сначала номер строки, потом столбца}. Например, у матрицы $A=\left(\begin{smallmatrix}1&0&2\\-1&3&1\end{smallmatrix}\right)$ размер $2\times3$ и $a_{21}=-1$, $a_{13}=2$. Каждую строку матрицы можно рассматривать как вектор из $\mathbb R^n$, каждый столбец --- как вектор из $\mathbb R^m$.
+
+\textbf{Матрица-строка} --- матрица из одной строки ($1\times n$); \textbf{матрица-столбец} --- матрица из одного столбца ($m\times1$).
+
+\textbf{Сложение} определено для матриц \emph{одного размера}, умножение на число --- для любых, оба действия выполняются поэлементно: $(A+B)_{ij}=a_{ij}+b_{ij}$, \ $(\lambda A)_{ij}=\lambda a_{ij}$.
+
+\textbf{Поэлементное произведение} матриц одного размера определяется так же, как для векторов (п.~4): $(A\odot B)_{ij}=a_{ij}b_{ij}$. Пример:
+\[
+\begin{pmatrix}1&2\\3&4\end{pmatrix}\odot\begin{pmatrix}5&6\\7&8\end{pmatrix}=\begin{pmatrix}1\cdot5&2\cdot6\\3\cdot7&4\cdot8\end{pmatrix}=\begin{pmatrix}5&12\\21&32\end{pmatrix}.
+\]
+Не путайте его с матричным произведением $AB$ из следующего пункта: результаты у них разные.
+
+\needspace{16\baselineskip}
+\textbf{Частные виды матриц.}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}p{3.4cm}p{7.3cm}c@{}}
+\textbf{Нулевая} $O$ & все элементы равны нулю & $\begin{pmatrix}0&0&0\\0&0&0\end{pmatrix}$ \\[1.6em]
+\textbf{Квадратная} порядка $n$ & число строк равно числу столбцов, $m=n$; элементы $a_{11},a_{22},\dots,a_{nn}$ образуют \textbf{главную диагональ} (здесь $1,5,9$) & $\begin{pmatrix}1&2&3\\4&5&6\\7&8&9\end{pmatrix}$ \\[1.9em]
+\textbf{Диагональная} & квадратная, все элементы вне главной диагонали равны нулю; обозначение $\operatorname{diag}(d_1,\dots,d_n)$ & $\begin{pmatrix}2&0&0\\0&-1&0\\0&0&3\end{pmatrix}$ \\[1.9em]
+\textbf{Единичная} $E$ (часто пишут $I$) & диагональная, на диагонали стоят единицы; для любой подходящей матрицы $AE=EA=A$ & $\begin{pmatrix}1&0&0\\0&1&0\\0&0&1\end{pmatrix}$ \\[1.9em]
+\textbf{Симметрическая} & квадратная, $a_{ij}=a_{ji}$ при всех $i,j$, то есть $A^T=A$ (см. п.~8) & $\begin{pmatrix}1&2&0\\2&-1&4\\0&4&3\end{pmatrix}$ \\
+\end{tabular}
+\end{center}
+
+\subsection*{7. Умножение матриц}
+Произведение $AB$ определено, только если \textbf{число столбцов $A$ равно числу строк $B$}:
+\[
+\underbrace{A}_{m\times n}\cdot\underbrace{B}_{n\times k}=\underbrace{C}_{m\times k},
+\qquad
+c_{ij}=a_{i1}b_{1j}+a_{i2}b_{2j}+\dots+a_{in}b_{nj}.
+\]
+Правило «\textbf{строка на столбец}»: элемент $c_{ij}$ равен скалярному произведению $i$-й строки $A$ на $j$-й столбец $B$. Идём по строке слева направо и по столбцу сверху вниз, перемножаем встретившиеся числа и складываем. Вот как получаются два элемента произведения $\left(\begin{smallmatrix}1&2\\3&4\end{smallmatrix}\right)\left(\begin{smallmatrix}5&6\\7&8\end{smallmatrix}\right)$:
+
+\begin{center}
+\newcommand{\mulpicture}[7]{%
+  % #1: row of A to highlight (1/2), #2: column of B to highlight (1/2),
+  % #3-#4: result position text, #5: computation, #6: value, #7: unused
+  \begin{tikzpicture}[baseline=(A.center),every node/.style={inner sep=2.5pt}]
+    \matrix (A) [matrix of math nodes,ampersand replacement=\&,left delimiter={(},right delimiter={)},column sep=5pt,row sep=1pt]
+      {1\&2\\3\&4\\};
+    \node[right=7pt of A] (dot) {$\cdot$};
+    \matrix (B) [matrix of math nodes,ampersand replacement=\&,left delimiter={(},right delimiter={)},column sep=5pt,row sep=1pt,right=7pt of dot]
+      {5\&6\\7\&8\\};
+    \node[right=7pt of B] (eq) {$=$};
+    \matrix (C) [matrix of math nodes,ampersand replacement=\&,left delimiter={(},right delimiter={)},column sep=5pt,row sep=1pt,right=7pt of eq]
+      {19\&22\\43\&50\\};
+    \begin{scope}[on background layer]
+      \node[fit=(A-#1-1)(A-#1-2),fill=blue!22,rounded corners=2pt,inner sep=1.5pt] {};
+      \node[fit=(B-1-#2)(B-2-#2),fill=orange!30,rounded corners=2pt,inner sep=1.5pt] {};
+      \node[fit=(C-#1-#2),fill=green!25,rounded corners=2pt,inner sep=1.5pt] {};
+    \end{scope}
+  \end{tikzpicture}}
+\begin{minipage}{0.49\linewidth}\centering
+\mulpicture{1}{2}{}{}{}{}{}\\[0.6em]
+$c_{12}=\textcolor{blue!70!black}{1}\cdot\textcolor{orange!85!black}{6}+\textcolor{blue!70!black}{2}\cdot\textcolor{orange!85!black}{8}=\textcolor{green!45!black}{22}$
+\end{minipage}\hfill
+\begin{minipage}{0.49\linewidth}\centering
+\mulpicture{2}{1}{}{}{}{}{}\\[0.6em]
+$c_{21}=\textcolor{blue!70!black}{3}\cdot\textcolor{orange!85!black}{5}+\textcolor{blue!70!black}{4}\cdot\textcolor{orange!85!black}{7}=\textcolor{green!45!black}{43}$
+\end{minipage}
+\end{center}
+Синим выделена строка первой матрицы, оранжевым --- столбец второй, зелёным --- элемент результата, который получается из них. Аналогично находятся остальные элементы:
+\[
+\begin{pmatrix}1&2\\3&4\end{pmatrix}\begin{pmatrix}5&6\\7&8\end{pmatrix}
+=\begin{pmatrix}1\cdot5+2\cdot7&1\cdot6+2\cdot8\\3\cdot5+4\cdot7&3\cdot6+4\cdot8\end{pmatrix}
+=\begin{pmatrix}19&22\\43&50\end{pmatrix},
+\qquad
+\begin{pmatrix}5&6\\7&8\end{pmatrix}\begin{pmatrix}1&2\\3&4\end{pmatrix}=\begin{pmatrix}23&34\\31&46\end{pmatrix}.
+\]
+Матрицы разных размеров тоже можно перемножать, если размеры согласованы:
+\[
+\underbrace{\begin{pmatrix}1&0&2\\-1&3&1\end{pmatrix}}_{2\times3}
+\underbrace{\begin{pmatrix}3&1\\2&1\\1&0\end{pmatrix}}_{3\times2}
+=\underbrace{\begin{pmatrix}3+0+2&1+0+0\\-3+6+1&-1+3+0\end{pmatrix}}_{2\times2}
+=\begin{pmatrix}5&1\\4&2\end{pmatrix}.
+\]
+\needspace{7\baselineskip}
+\textbf{Свойства.}
+\begin{enumerate}
+  \item Умножение \textbf{некоммутативно}: в общем случае $AB\ne BA$ (см. первый пример). Бывает, что $AB$ существует, а $BA$ --- нет, или что они разного размера: во втором примере $BA$ --- матрица $3\times3$.
+  \item \textbf{Ассоциативность}: $(AB)C=A(BC)$; \ \textbf{дистрибутивность}: $A(B+C)=AB+AC$, \ $(A+B)C=AC+BC$.
+  \item $(\lambda A)B=A(\lambda B)=\lambda(AB)$; \ $AE=EA=A$.
+\end{enumerate}
+
+\textbf{Умножение матрицы на вектор.} Вектор $\vect x\in\mathbb R^n$ записываем столбцом ($n\times1$); тогда $A\vect x$ --- столбец из $m$ чисел, и его $i$-я координата есть скалярное произведение $i$-й строки $A$ на $\vect x$. Отображение $\vect x\mapsto A\vect x$ является \textbf{линейным преобразованием}: $A(\vect x+\vect y)=A\vect x+A\vect y$, $A(\lambda\vect x)=\lambda A\vect x$. Например, матрица $R$ ниже поворачивает векторы плоскости на $90^\circ$ против часовой стрелки:
+\[
+R=\begin{pmatrix}0&-1\\1&0\end{pmatrix},\qquad
+R\begin{pmatrix}2\\1\end{pmatrix}=\begin{pmatrix}0\cdot2+(-1)\cdot1\\1\cdot2+0\cdot1\end{pmatrix}=\begin{pmatrix}-1\\2\end{pmatrix}.
+\]
+
+\subsection*{8. Транспонирование}
+\textbf{Транспонированная} к матрице $A$ размера $m\times n$ --- матрица $A^T$ размера $n\times m$, у которой $j$-й столбец составлен из элементов $j$-й строки $A$ (строки и столбцы меняются ролями): $(A^T)_{ij}=a_{ji}$.
+\[
+A=\begin{pmatrix}1&0&2\\-1&3&1\end{pmatrix}\quad\Longrightarrow\quad A^T=\begin{pmatrix}1&-1\\0&3\\2&1\end{pmatrix}.
+\]
+\textbf{Свойства:} \ $(A^T)^T=A$; \quad $(A+B)^T=A^T+B^T$; \quad $(\lambda A)^T=\lambda A^T$; \quad $(AB)^T=B^TA^T$ (порядок множителей меняется!).
+
+\textbf{Строки и столбцы.} Транспонирование превращает вектор-столбец в вектор-строку и обратно. Если $\vect a,\vect b$ --- столбцы из $\mathbb R^n$, то
+\[
+\vect a^T\vect b=\underbrace{(a_1\ \dots\ a_n)}_{1\times n}\underbrace{\begin{pmatrix}b_1\\\vdots\\b_n\end{pmatrix}}_{n\times1}=a_1b_1+\dots+a_nb_n=\vect a\cdot\vect b,
+\]
+то есть скалярное произведение --- частный случай матричного (результат $1\times1$ отождествляем с числом). А вот $\vect a\vect b^T$ --- уже матрица $n\times n$ (её называют \emph{внешним произведением}).

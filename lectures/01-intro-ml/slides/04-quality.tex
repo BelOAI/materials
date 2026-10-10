@@ -1,0 +1,188 @@
+\section{Критерии качества}
+
+\begin{frame}[c]{Как понять, что модель хороша}
+  \small
+  \zebra{1}
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.191\textwidth}>{\raggedright\arraybackslash}p{0.688\textwidth}}
+    \textcolor{acMid}{\textbf{Бизнес}} & Сколько денег и довольных клиентов получает компания. Зависит от всего сразу, измерить трудно.\\
+    \textcolor{acMid}{\textbf{Онлайн}} & Что видно на работающем сервисе: например, сколько времени люди сидят в приложении.\\
+    \textcolor{acMid}{\textbf{Асессоры}} & Живые люди смотрят на ответы модели и ставят оценки. Нужно, когда качество --- дело вкуса.\\
+    \textcolor{acMid}{\textbf{Офлайн}} & Считаем по старым данным до запуска: насколько ответы модели отличаются от правильных.\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}[c]{Офлайн и онлайн метрики}
+  \small
+  \zebra{2}\small
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.115\textwidth}>{\raggedright\arraybackslash}p{0.362\textwidth}>{\raggedright\arraybackslash}p{0.382\textwidth}}
+    \rowcolor{acDark} & \textcolor{white}{\textbf{Офлайн}} & \textcolor{white}{\textbf{Онлайн}}\\
+    Когда & До запуска модели & После деплоя, на работающей системе\\
+    На чём & Исторические данные, тестовая выборка, оценки асессоров & Реальное поведение пользователей и магазинов\\
+    Примеры & accuracy, MAE, MSE, precision, recall & Медианная длина сессии, число бананов на полках в конце дня\\
+    Плюсы & Быстро, дёшево, без риска для пользователей & Ближе к бизнес-метрикам\\
+    Минусы & Хороший результат не гарантирует рост бизнес-метрик & Нужны деплой, A/B-тест и риск для пользователей\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}[c]{Путь модели от офлайна до бизнеса}
+  \lead{Как всё связано.}
+
+  \medskip
+  \begin{columns}[T]
+    \begin{column}{0.23\textwidth}
+      \begin{block}{Офлайн}
+        Метрики на тесте. Быстро отсеиваем слабые модели.
+      \end{block}
+    \end{column}
+    \begin{column}{0.23\textwidth}
+      \begin{block}{Деплой}
+        Выкатка в продакшен. Нужна возможность отката.
+      \end{block}
+    \end{column}
+    \begin{column}{0.23\textwidth}
+      \begin{block}{Онлайн и A/B}
+        Сравниваем с прошлой версией на случайных группах.
+      \end{block}
+    \end{column}
+    \begin{column}{0.23\textwidth}
+      \begin{block}{Бизнес}
+        Доход и лояльность --- итоговая цель.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  \textbf{Офлайн-метрика --- прокси онлайн-метрики, онлайн --- прокси бизнеса.
+  Хорошее число на тесте не гарантирует эффект в продакшене.}
+\end{frame}
+
+\begin{frame}[c]{Офлайн или онлайн?}
+  \lead{Голосуем.}
+  \begin{numrows}
+        1 & Доля верно поставленных диагнозов на отложенной выборке\\
+        2 & Среднее число бананов на полках в конце дня\\
+        3 & Средний модуль разницы между предсказанной и истинной ценой квартиры\\
+        4 & Медианная длина сессии в онлайн-игре\\
+        5 & Оценка качества перевода асессорами\\
+      \end{numrows}\par
+\end{frame}
+
+\begin{frame}[c]{Ответы: вид метрики}
+  \small
+  \zebra{2}
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.324\textwidth}>{\raggedright\arraybackslash}p{0.553\textwidth}}
+    \rowcolor{acDark} \textcolor{white}{\textbf{Метрика}} & \textcolor{white}{\textbf{Вид}}\\
+    1. Доля верных диагнозов & Офлайн: считаем по историческим данным\\
+    2. Бананы на полках & Онлайн: нужна работающая система\\
+    3. Ошибка в цене квартиры & Офлайн: сравниваем с известными ценами\\
+    4. Длина сессии & Онлайн: считается по реальным пользователям\\
+    5. Оценка асессоров & Офлайн: оценивают до выпуска в продакшен\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}[c]{Какую метрику выбрать?}
+  \lead{Вопрос на подумать.}
+  \small Модель отвечает «да» или «нет». Ошибиться можно двумя способами: сказать «да» зря
+  (ложная тревога) или сказать «нет» зря (пропуск).
+
+  \smallskip
+  \begin{columns}[T]
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Обычная поликлиника}
+        Нужно, чтобы диагнозы в целом чаще были верными.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Проходная завода}
+        Камера решает, сотрудник ли перед ней. Пустить чужого --- беда, а лишний раз не пустить своего --- мелочь.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Опасная болезнь}
+        Пропущенный больной заразит других. Ложная тревога куда дешевле.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \smallskip
+  \textbf{Какую метрику выбрать в каждом случае?}
+\end{frame}
+
+\begin{frame}[c]{Ответ: разные нужды --- разные метрики}
+  \small
+  \zebra{1}
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.191\textwidth}>{\raggedright\arraybackslash}p{0.688\textwidth}}
+    \textcolor{acMid}{\textbf{Accuracy}}\newline{\scriptsize\color{acGray}обычная поликлиника} &
+    \textbf{верные ответы $\div$ все ответы}\newline
+    Какая доля ответов оказалась правильной. Подходит, когда обе ошибки одинаково неприятны.\\
+    \textcolor{acMid}{\textbf{Precision}}\newline{\scriptsize\color{acGray}проходная завода} &
+    \textbf{верно найденные $\div$ всё, что модель назвала «да»}\newline
+    Можно ли верить модели, когда она говорит «да». Важна, когда ложное «да» дорого стоит: нельзя пустить чужого.\\
+    \textcolor{acMid}{\textbf{Recall}}\newline{\scriptsize\color{acGray}опасная болезнь} &
+    \textbf{верно найденные $\div$ все, кого нужно было найти}\newline
+    Сколько из настоящих «да» модель нашла. Важна, когда нельзя пропустить: больной заразит других.\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}[c]{Другие метрики}
+  \lead{Вопрос на подумать.} Какую метрику выбрать здесь?
+
+  \smallskip
+  \begin{columns}[T]
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Видеозвонок}
+        Приложение «надевает» на участника виртуальный костюм рыцаря. Костюм должен ровно лечь на фигуру.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Безопасность}
+        Охрана важного объекта: нужно заметить любого, кто вошёл в кадр.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Пандемия}
+        Контроль, не превышает ли число людей в помещении порог.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Ответ: зависит от цели}
+  \begin{columns}[T]
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Точность положения}
+        Среднеквадратичное отклонение координат опорных точек тела от истинных: костюм должен сесть ровно.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Полнота (recall)}
+        На какой доле кадров с людьми модель их заметила. Точность рамки не так важна.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Число людей}
+        Среднеквадратичное отклонение числа найденных людей от истинного.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Не всё сводится к метрикам}
+  \begin{columns}[T]
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Скорость}
+        Предсказания в режиме реального времени. Требование и к модели, и к серверам.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Компактность}
+        Модель должна помещаться на телефон или другое устройство.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Интерпретируемость}
+        Можно объяснить решение: дадут ли кредит, согласуют ли лечение.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}

@@ -1,0 +1,54 @@
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[aspectratio=169,11pt,t]{beamer}
+\usepackage[russian]{academicbeamer}
+\setshorttitle{BelOAI~\textbar~Лекция 1}
+
+\usetikzlibrary{arrows.meta}
+\graphicspath{{assets/}}
+
+% Deck-local styling for the generated charts (assets/*.tex) and flow diagrams.
+\definecolor{acOrange}{RGB}{225,115,45}
+\colorlet{acAccent}{acMid}
+\colorlet{acInk}{acDark}
+\colorlet{acCard}{white}
+\colorlet{acText}{black!85}
+\tikzset{
+  chart axis/.style={draw=acGray!70, line width=0.6pt},
+  chart grid/.style={draw=acRule, line width=0.4pt},
+  chart label/.style={font=\scriptsize, text=acGray, inner sep=2pt},
+  chart curve/.style={draw=acMid, line width=1.2pt, line cap=round},
+  chart train/.style={circle, fill=acOrange, inner sep=0pt, minimum size=4.6pt},
+  chart test/.style={circle, draw=black!80, fill=white, line width=0.75pt,
+    inner sep=0pt, minimum size=4.6pt}
+}
+
+% Zebra tables in the theme palette: \zebra{first-shaded-row} before a tabular.
+\newcommand{\zebra}[1]{\rowcolors{#1}{acLight}{white}\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{7pt}\normalsize}
+
+% Numbered rows: \begin{numrows} 1 & text\\ ... \end{numrows}
+\newenvironment{numrows}{\zebra{1}\begin{tabular}{>{\bfseries\large\color{acMid}}c >{\raggedright\arraybackslash}p{\dimexpr\linewidth-1.7cm\relax}}}{\end{tabular}}
+
+% Ragged-right text: no stretched word spacing or ugly hyphenation in narrow blocks.
+\usepackage{ragged2e}
+\addtobeamertemplate{block begin}{}{\advance\rightskip 0pt plus 4em\relax}
+\setbeamerfont{block title}{size=\normalsize,series=\bfseries}
+\setbeamerfont{block body}{size=\normalsize}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\title{Машинное обучение и где оно обитает}
+\subtitle{Задачи, метрики качества, данные, модели и обучение}
+\author{Автор презентации: Павел Дылевский\\
+  Доработал и обновил: Алексей Чернуха}
+\date{По статье 1.3 «Машинное обучение» из учебника по ML (Яндекс)}
+
+\begin{document}
+
+\input{slides/01-title}
+\input{slides/02-intro}
+\input{slides/03-task}
+\input{slides/04-quality}
+\input{slides/05-data}
+\input{slides/06-model}
+
+\end{document}
