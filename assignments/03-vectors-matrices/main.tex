@@ -1,0 +1,26 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[russian]{academicworksheet}
+\usepackage{multicol}
+\usepackage{needspace}
+\usepackage{tikz}
+\usetikzlibrary{matrix,fit,backgrounds,positioning}
+\makeatletter
+\AddEnumerateCounter{\asbuk}{\@asbuk}{щ}
+\makeatother
+\setassignmentno{3}
+\setlength{\multicolsep}{0.4em}
+
+% Обозначения: векторы --- полужирные строчные буквы, матрицы --- прописные.
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+
+\title{Векторы и матрицы}
+\subtitle{Теоретические материалы и практикум}
+\author{ПРОЕКТ}
+\date{3 октября 2026}
+
+\begin{document}
+\maketitle
+\input{sections/01-theory}
+\input{sections/02-practice}
+\end{document}

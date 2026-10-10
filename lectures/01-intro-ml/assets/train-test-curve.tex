@@ -1,0 +1,49 @@
+% Train/test MSE vs polynomial degree 0..5 for the same data as fit-*.tex.
+% Train MSE on the 8 training points, test MSE on 400 held-out points
+% (numpy.polyfit; seed 7, noise 0.2).
+% train: 0.1126, 0.0992, 0.0102, 0.0050, 0.0041, 0.0011
+% test:  0.1082, 0.1029, 0.0356, 0.0380, 0.0393, 0.0477
+\begin{tikzpicture}[x=1.06cm,y=1cm]
+  \draw[chart grid] (0,0.000) -- (5.25,0.000);
+  \node[chart label,anchor=east] at (0,0.000) {0{,}000};
+  \draw[chart grid] (0,0.570) -- (5.25,0.570);
+  \node[chart label,anchor=east] at (0,0.570) {0{,}025};
+  \draw[chart grid] (0,1.140) -- (5.25,1.140);
+  \node[chart label,anchor=east] at (0,1.140) {0{,}050};
+  \draw[chart grid] (0,1.710) -- (5.25,1.710);
+  \node[chart label,anchor=east] at (0,1.710) {0{,}075};
+  \draw[chart grid] (0,2.280) -- (5.25,2.280);
+  \node[chart label,anchor=east] at (0,2.280) {0{,}100};
+  \draw[chart grid] (0,2.850) -- (5.25,2.850);
+  \node[chart label,anchor=east] at (0,2.850) {0{,}125};
+  \draw[chart axis] (0,0) -- (5.25,0);
+  \draw[chart axis] (0,0) -- (0,3.000);
+  \foreach \d in {0,...,5} {\draw[chart axis] (\d,0) -- (\d,-0.07); \node[chart label,anchor=north] at (\d,-0.07) {\d};}
+  \draw[acAccent!60, line width=0.6pt, dash pattern=on 2pt off 2pt] (2,0) -- (2,0.812);
+  \draw[acInk, line width=1.3pt, line join=round] plot coordinates {(0,2.567) (1,2.261) (2,0.233) (3,0.114) (4,0.093) (5,0.024)};
+  \draw[acOrange, line width=1.3pt, line join=round] plot coordinates {(0,2.467) (1,2.346) (2,0.812) (3,0.867) (4,0.895) (5,1.087)};
+  \fill[acInk] (0,2.567) circle (1.9pt);
+  \fill[acInk] (1,2.261) circle (1.9pt);
+  \fill[acInk] (2,0.233) circle (1.9pt);
+  \fill[acInk] (3,0.114) circle (1.9pt);
+  \fill[acInk] (4,0.093) circle (1.9pt);
+  \fill[acInk] (5,0.024) circle (1.9pt);
+  \fill[acOrange] (0,2.467) circle (1.9pt);
+  \fill[acOrange] (1,2.346) circle (1.9pt);
+  \fill[acOrange] (2,0.812) circle (1.9pt);
+  \fill[acOrange] (3,0.867) circle (1.9pt);
+  \fill[acOrange] (4,0.895) circle (1.9pt);
+  \fill[acOrange] (5,1.087) circle (1.9pt);
+  \draw[acAccent, line width=1.2pt] (2,0.812) circle (5.5pt);
+  \node[font=\scriptsize\bfseries, text=acAccent, anchor=east, inner sep=1pt] at (2-0.17,0.812) {оптимум};
+  % legend
+  \begin{scope}[shift={(3.35,2.800)}]
+    \fill[acCard] (-0.1,0.2) rectangle (1.15,-0.56);
+    \draw[acInk, line width=1.3pt] (0,0) -- (0.4,0); \fill[acInk] (0.2,0) circle (1.9pt);
+    \node[chart label, text=acText, anchor=west] at (0.48,0) {train};
+    \draw[acOrange, line width=1.3pt] (0,-0.36) -- (0.4,-0.36); \fill[acOrange] (0.2,-0.36) circle (1.9pt);
+    \node[chart label, text=acText, anchor=west] at (0.48,-0.36) {test};
+  \end{scope}
+  \node[chart label, anchor=north] at (2.625,-0.42) {Степень многочлена (сложность модели)};
+  \node[chart label, anchor=south, rotate=90] at (-0.78,1.425) {MSE};
+\end{tikzpicture}%

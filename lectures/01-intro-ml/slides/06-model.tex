@@ -1,0 +1,184 @@
+\section{Модель и обучение}
+
+\begin{frame}[c]{Модель и алгоритм обучения}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Модель --- способ описать мир}
+        «Земля плоская» --- тоже модель. В масштабе города она работает отлично,
+        а на маршруте Париж --- Лос-Анджелес ломается, и её приходится заменить.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Предсказательная модель}
+        \small
+        \centerline{$f(x;\theta) \to y$}
+        \smallskip
+        $x$ --- признаки объекта, $y$ --- таргет, $\theta$ --- параметры, которые подбираются по данным.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Простейшая модель: одна константа}
+  \small Всем квартирам предсказываем одну и ту же цену $c$, то есть $f(x)=c$.
+  Цены пяти квартир, млн руб.: \textbf{5, 6, 7, 8, 24}.
+
+  \smallskip
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{MAE}
+        \centerline{$\displaystyle \mathrm{MAE}=\frac1N\sum_{i=1}^{N}\lvert f(x_i)-y_i\rvert$}
+        \smallskip
+        Средний модуль ошибки: насколько в среднем промахиваемся.
+
+        \smallskip
+        \lead{Лучшая $c$ --- медиана: 7}
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{MSE}
+        \centerline{$\displaystyle \mathrm{MSE}=\frac1N\sum_{i=1}^{N}\bigl(f(x_i)-y_i\bigr)^2$}
+        \smallskip
+        Средний квадрат ошибки: большие промахи штрафуются сильнее.
+
+        \smallskip
+        \lead{Лучшая $c$ --- среднее: 10}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  {\footnotesize\color{acGray}
+  Медиана --- число посередине, если выстроить цены по порядку. Одна дорогая квартира в 24 млн
+  сдвинула среднее вверх, а медиану почти не тронула. Здесь $N$ --- число квартир, $i$ --- номер квартиры.\par}
+\end{frame}
+
+\begin{frame}[c]{Что нужно, чтобы обучить модель}
+  \begin{columns}[T]
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Модель}
+        \small
+        Формула с настраиваемыми числами $\theta$. Меняем $\theta$ --- меняются предсказания.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Функция потерь}
+        \small
+        Число, которое показывает, насколько модель ошибается. Чем меньше, тем лучше.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Алгоритм обучения}
+        \small
+        Подбирает $\theta$ так, чтобы потери стали меньше. Например, градиентный спуск:
+        понемногу меняем $\theta$ туда, где ошибка убывает.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \smallskip
+  \begin{block}{Градиентный спуск в одну строку}
+    \small
+    \centerline{$\theta \leftarrow \theta-\eta\,\nabla L(\theta)$}
+    \smallskip
+    \small Здесь $\eta$ --- размер шага, $\nabla L$ --- направление, в котором ошибка растёт быстрее
+    всего. Идём в противоположную сторону.
+  \end{block}
+\end{frame}
+
+\begin{frame}[c]{Параметры и гиперпараметры}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Параметры}
+        Числа внутри модели. Их подбирает алгоритм обучения по данным.
+        \begin{itemize}
+          \item коэффициенты $k$ и $b$ в прямой $y=kx+b$
+          \item веса нейросети
+          \item параметры $\theta$ из прошлого слайда
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Гиперпараметры}
+        Настройки самого обучения. Их задаёт человек до начала обучения.
+        \begin{itemize}
+          \item шаг $\eta$ в градиентном спуске
+          \item степень многочлена
+          \item число слоёв нейросети
+          \item сколько раз пройти по данным
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Недообучение и переобучение}
+  \footnotesize\color{acGray}
+  \textcolor{acOrange}{$\bullet$}~обучающие точки \qquad $\circ$~тестовые точки (новые данные)
+
+  \smallskip
+  \begin{columns}[T]
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Слишком простая}
+        \centering\input{assets/fit-underfit}\par
+        Прямая не ловит изгиб данных.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Нормальная}
+        \centering\input{assets/fit-good}\par
+        Улавливает общий тренд, не гонясь за каждой точкой.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Переобученная}
+        \centering\input{assets/fit-overfit}\par
+        Проходит почти через каждую обучающую точку, но между ними и на новых данных ошибается.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Ошибка на train и на test}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \centering
+      \input{assets/train-test-curve}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \small
+      \textbf{train} (тёмная линия) падает с ростом сложности, иногда до нуля.
+
+      \smallskip
+      \textbf{test} (оранжевая линия) сначала падает, потом снова растёт.
+
+      \smallskip
+      \lead{Оптимум --- модель не слишком простая и не слишком сложная.}
+
+      \smallskip
+      \footnotesize\color{acGray}Метрики считаем на тесте и никогда не смешиваем его с обучающей выборкой.
+      По горизонтали растёт сложность модели (степень многочлена от 0 до 5), по вертикали --- MSE.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{После обучения}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Деплой}
+        Выкатка в продакшен: эффективный код, параллельность, дружба с фреймворками.
+      \end{block}
+      \begin{block}{Мониторинг}
+        Следим за качеством, дообучаем и переобучаем на новых данных.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{A/B-тест}
+        Сравнение с предыдущей версией на случайных группах. Если хуже --- откат.
+      \end{block}
+      \begin{block}{Drift}
+        Data drift: меняются данные. Concept drift: меняется связь признаков и таргета.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
