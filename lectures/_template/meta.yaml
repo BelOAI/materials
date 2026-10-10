@@ -1,7 +1,7 @@
 title: "Название лекции"
 subtitle: "Краткий подзаголовок"
 date: "2026-01-01"
-description: "Опишите содержание лекции в 1–2 предложениях: темы, цели занятия, для кого предназначена."
+description: "Укажите темы лекции."
 lang: ru
 build: false
 
@@ -23,3 +23,6 @@ build: false
 #     label: Jupyter Notebook
 #   - path: materials/cheatsheet.pdf
 #     label: Шпаргалка
+
+# Для готового PDF раскомментируйте путь; он заменит TeX в публикации.
+# pdf: materials/lesson.pdf

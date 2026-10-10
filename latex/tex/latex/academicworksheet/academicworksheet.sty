@@ -31,13 +31,23 @@
 
 \RequirePackage[a4paper,margin=2cm]{geometry}
 \RequirePackage{amsmath,amssymb}
+\RequirePackage{array}
+\RequirePackage{microtype}
+\RequirePackage{url}
+% Ссылки могут переноситься и внутри длинного имени или идентификатора.
+\g@addto@macro\UrlBreaks{\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z\do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9}
+\Urlmuskip=0mu plus 1mu
+\RequirePackage{needspace}
 \RequirePackage{enumitem}
+\emergencystretch=1em
+\widowpenalty=10000
+\clubpenalty=10000
 \RequirePackage{xcolor}
 
-\definecolor{acw@accent}{HTML}{8A6530}
-\definecolor{acw@accentdark}{HTML}{4A3520}
+\definecolor{acw@accent}{HTML}{555555}
+\definecolor{acw@accentdark}{HTML}{222222}
 \definecolor{acw@rule}{HTML}{C6CBD2}
-\definecolor{acw@fill}{HTML}{F7F3EC}
+\definecolor{acw@fill}{HTML}{FFFFFF}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.5em}
@@ -66,7 +76,6 @@
   \vspace{0.2em}%
   {\small\color{acw@accent}\@author \quad\textbar\quad \@date}%
   \par\vspace{0.8em}%
-  \rule{\linewidth}{0.6pt}%
   \vspace{0.6em}%
   \endgroup
 }
@@ -75,18 +84,17 @@
 \renewcommand{\theacw@exercise}{\arabic{acw@exercise}}
 
 \newenvironment{exercise}{%
+  \needspace{4\baselineskip}%
   \refstepcounter{acw@exercise}%
   \par\vspace{0.75em}%
   {\color{acw@accentdark}\textbf{\ifacw@russian Задача\else Exercise\fi~\theacw@exercise.}}\par
   \vspace{0.35em}%
 }{%
   \par\vspace{0.25em}%
-  \noindent{\color{acw@rule}\rule{\linewidth}{0.4pt}}%
-  \par
 }
 
 \newcommand{\answerlines}[1]{%
-  \par\vspace{0.3em}%
+  \par\needspace{\dimexpr#1\baselineskip+\baselineskip\relax}\vspace{0.3em}%
   {\color{acw@rule}%
   \@tempcnta=0
   \loop\ifnum\@tempcnta<#1\relax
@@ -96,11 +104,10 @@
 }
 
 \newcommand{\answerbox}[1][3cm]{%
-  \par\vspace{0.3em}%
+  \par\needspace{\dimexpr#1+2\baselineskip\relax}\vspace{0.3em}%
   \noindent\fcolorbox{acw@rule}{acw@fill}{%
-    \parbox[t][#1][t]{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{%
-      \vspace{#1}%
-    }%
+    \rule{0pt}{#1}%
+    \makebox[\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax]{}%
   }%
   \par
 }

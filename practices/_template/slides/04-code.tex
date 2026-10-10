@@ -1,0 +1,13 @@
+\begin{frame}[fragile]{Фильтр в pandas}
+\begin{verbatim}
+import pandas as pd
+
+df = pd.DataFrame({
+    "area": [30, 50, 70],
+    "price": [3, 5, 7],
+})
+selected = df.loc[df["area"] > 40, "price"]
+print(selected.mean())  # 6.0
+\end{verbatim}
+  Условие строится по площади, а среднее вычисляется по цене.
+\end{frame}

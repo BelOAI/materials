@@ -1,0 +1,13 @@
+\begin{frame}[fragile]{Расчёт MAE на Python}
+\begin{verbatim}
+actual = [4, 6, 8]
+predicted = [5, 5, 9]
+errors = [abs(p - y)
+          for p, y in zip(predicted, actual)]
+mae = sum(errors) / len(errors)
+print(mae)  # 1.0
+\end{verbatim}
+  \medskip
+  Списки должны быть непустыми и равной длины.
+  Какой шаг кода соответствует вычислению ошибки одной квартиры?
+\end{frame}

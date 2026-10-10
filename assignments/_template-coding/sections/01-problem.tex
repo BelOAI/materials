@@ -5,9 +5,9 @@
 \end{problem}
 
 \begin{io}
-\textbf{Вход.} Первая строка содержит целое $n$ ($2 \leq n \leq 10^5$) и целое $t$. Вторая строка содержит $n$ целых чисел $a_i$ ($-10^9 \leq a_i \leq 10^9$).
+\textbf{Вход.} Первая строка содержит целое $n$ ($2 \leq n \leq 10^5$) и целое $t$ ($-2\cdot10^9 \leq t \leq 2\cdot10^9$). Вторая строка содержит $n$ целых чисел $a_i$ ($-10^9 \leq a_i \leq 10^9$).
 
-\textbf{Выход.} Два целых числа --- индексы $i$ и $j$ ($1 \leq i < j \leq n$) или \texttt{-1 -1}.
+\textbf{Выход.} Два целых числа --- индексы $i$ и $j$ ($1 \leq i < j \leq n$) или \texttt{-1 -1}. Если подходящих пар несколько, выведите любую.
 \end{io}
 
 \begin{example}
@@ -18,15 +18,15 @@
 \end{lstlisting}
 \noindent\textbf{Выход:}
 \begin{lstlisting}
-0 1
+1 2
 \end{lstlisting}
 
 \smallskip
-\noindent\textbf{Пояснение:} $a_0 + a_1 = 2 + 7 = 9$. Индексы выводятся с нуля.
+\noindent\textbf{Пояснение:} $a_1 + a_2 = 2 + 7 = 9$. Индексы выводятся с единицы.
 \end{example}
 
 \begin{constraints}
   \item Время: 1 с
   \item Память: 256 МБ
-  \item Решение должно работать за $O(n)$ по времени
+  \item Ожидаемая сложность решения --- $O(n)$ по времени
 \end{constraints}

@@ -12,26 +12,28 @@
 \AtBeginEnvironment{description}{%
   \setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}\setlength{\topsep}{2pt}}
 
+% Блок отделяется от текста заголовком и интервалом, без плашек.
 \setbeamertemplate{block begin}{%
-  \vskip4pt%
-  \begin{beamercolorbox}[colsep*=0pt,leftskip=6pt,rightskip=6pt]{block title}%
-    \vskip2pt\usebeamerfont*{block title}\insertblocktitle\vskip2pt%
-  \end{beamercolorbox}%
-  \nointerlineskip%
-  \usebeamerfont{block body}%
-  \begin{beamercolorbox}[colsep*=0pt,leftskip=6pt,rightskip=6pt,vmode]{block body}%
-    \vskip4pt}
-\setbeamertemplate{block end}{\vskip4pt\end{beamercolorbox}\vskip4pt}
+  \par\vskip6pt%
+  {\usebeamerfont{block title}\usebeamercolor[fg]{block title}\insertblocktitle\par}%
+  \vskip3pt%
+  \begingroup\usebeamerfont{block body}\RaggedRight}
+\setbeamertemplate{block end}{\par\endgroup\vskip6pt}
 
+% Таблицы растягиваются до текущей ширины, в том числе внутри колонок.
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+% Аргумент сохранён для совместимости; таблицы теперь без чередования заливок.
+\newcommand{\zebra}[1]{\renewcommand{\arraystretch}{1.2}}
+\newenvironment{numrows}{\par\smallskip\zebra{1}\tabularx{\linewidth}{@{}>{\bfseries}r Y@{}}}{\endtabularx\par}
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.12}
 
 \setbeamerfont{frametitle}{size=\large,series=\bfseries}
 \setbeamerfont{title}{size=\LARGE,series=\bfseries}
-\setbeamerfont{block title}{size=\small,series=\bfseries}
-\setbeamerfont{block body}{size=\small}
+\setbeamerfont{block title}{size=\normalsize,series=\bfseries}
+\setbeamerfont{block body}{size=\normalsize}
 
-\setbeamertemplate{itemize item}{\raisebox{0.25ex}{\rule{1.4ex}{0.45ex}}}
+\setbeamertemplate{itemize item}{\textbullet}
 \setbeamertemplate{itemize subitem}{\textendash}
 
 \newcommand{\tbd}[1]{{\color{acGray}\itshape[#1]}}
@@ -39,11 +41,8 @@
 \newcommand{\orient}{{\normalfont\small\color{acGray}\;--- ориентир}}
 
 \newcommand{\orientnote}[1][]{%
-  \vspace{0.55em}{\color{acRule}\hrule height 0.4pt}\vspace{0.35em}%
-  {\scriptsize\color{acGray}\textbf{Ориентировочные значения.}
-  Редакция технических требований v0.9 от 18.08.2026. Конфигурации приведены
-  для планирования; допускаются эквиваленты и использование имеющегося
-  оборудования. Итоговая редакция публикуется организаторами олимпиады. #1\par}%
+  \par\smallskip%
+  {\scriptsize\color{acGray}\textbf{Пример.} Значения приведены для иллюстрации; замените их данными своего занятия. #1\par}%
 }
 
 \newcommand{\photoframe}[3]{%
@@ -56,13 +55,5 @@
   \end{tikzpicture}%
 }
 
-\AtBeginSection[]{%
-\begin{frame}[plain]
-  \vfill
-  \hspace{0.05\paperwidth}\begin{minipage}{0.85\paperwidth}
-    {\color{acRule}\hrule height 0.8pt}\vspace{0.7em}
-    {\LARGE\bfseries\color{acDark}\insertsectionhead\par}
-    \vspace{0.7em}{\color{acRule}\hrule height 0.8pt}
-  \end{minipage}
-  \vfill
-\end{frame}}
+% Разделы остаются в структуре PDF, без дополнительных слайдов.
+\AtBeginSection[]{}

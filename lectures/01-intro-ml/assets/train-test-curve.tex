@@ -1,8 +1,8 @@
-% Train/test MSE vs polynomial degree 0..5 for the same data as fit-*.tex.
-% Train MSE on the 8 training points, test MSE on 400 held-out points
+% Train/validation MSE vs polynomial degree 0..5 for the same data as fit-*.tex.
+% Train MSE on the 8 training points, validation MSE on 400 held-out points
 % (numpy.polyfit; seed 7, noise 0.2).
 % train: 0.1126, 0.0992, 0.0102, 0.0050, 0.0041, 0.0011
-% test:  0.1082, 0.1029, 0.0356, 0.0380, 0.0393, 0.0477
+% validation:  0.1082, 0.1029, 0.0356, 0.0380, 0.0393, 0.0477
 \begin{tikzpicture}[x=1.06cm,y=1cm]
   \draw[chart grid] (0,0.000) -- (5.25,0.000);
   \node[chart label,anchor=east] at (0,0.000) {0{,}000};
@@ -42,7 +42,7 @@
     \draw[acInk, line width=1.3pt] (0,0) -- (0.4,0); \fill[acInk] (0.2,0) circle (1.9pt);
     \node[chart label, text=acText, anchor=west] at (0.48,0) {train};
     \draw[acOrange, line width=1.3pt] (0,-0.36) -- (0.4,-0.36); \fill[acOrange] (0.2,-0.36) circle (1.9pt);
-    \node[chart label, text=acText, anchor=west] at (0.48,-0.36) {test};
+    \node[chart label, text=acText, anchor=west] at (0.48,-0.36) {validation};
   \end{scope}
   \node[chart label, anchor=north] at (2.625,-0.42) {Степень многочлена (сложность модели)};
   \node[chart label, anchor=south, rotate=90] at (-0.78,1.425) {MSE};

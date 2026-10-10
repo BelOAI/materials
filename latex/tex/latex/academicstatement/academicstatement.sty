@@ -28,14 +28,23 @@
 \fi
 
 \RequirePackage[a4paper,margin=2cm]{geometry}
+\RequirePackage{microtype}
+\RequirePackage{url}
+% Ссылки могут переноситься и внутри длинного имени или идентификатора.
+\g@addto@macro\UrlBreaks{\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z\do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9}
+\Urlmuskip=0mu plus 1mu
+\RequirePackage{needspace}
 \RequirePackage{enumitem}
+\emergencystretch=1em
+\widowpenalty=10000
+\clubpenalty=10000
 \RequirePackage{xcolor}
 \RequirePackage{listings}
 
-\definecolor{acs@accent}{HTML}{8A6530}
-\definecolor{acs@accentdark}{HTML}{4A3520}
+\definecolor{acs@accent}{HTML}{555555}
+\definecolor{acs@accentdark}{HTML}{222222}
 \definecolor{acs@rule}{HTML}{C6CBD2}
-\definecolor{acs@fill}{HTML}{F7F3EC}
+\definecolor{acs@fill}{HTML}{FFFFFF}
 \definecolor{acs@codebg}{HTML}{F4F4F4}
 
 \setlength{\parindent}{0pt}
@@ -50,7 +59,7 @@
 \lstset{
   basicstyle=\ttfamily\small,
   backgroundcolor=\color{acs@codebg},
-  frame=single,
+  frame=none,
   rulecolor=\color{acs@rule},
   framerule=0.4pt,
   breaklines=true,
@@ -79,7 +88,6 @@
   \vspace{0.2em}%
   {\small\color{acs@accent}\@author \quad\textbar\quad \@date}%
   \par\vspace{0.8em}%
-  \rule{\linewidth}{0.6pt}%
   \vspace{0.6em}%
   \endgroup
 }
