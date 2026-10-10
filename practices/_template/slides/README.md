@@ -1,16 +1,12 @@
-# Slide fragments
+# Фрагменты слайдов
 
-Number files with a two-digit prefix so they sort in presentation order.
-Leave gaps (`10-`, `20-`) when you expect to insert slides later.
+Каждый файл содержит окружения `frame` и при необходимости команды `\section`. Класс документа и начало документа задаются только в `main.tex`.
 
-Each file contains `\begin{frame}...\end{frame}` blocks and optional `\section{}`.
-Do not put `\documentclass` or `\begin{document}` here.
+Используйте числовые префиксы для удобства, например `10-intro.tex`, `20-examples.tex`. Порядок показа определяют команды `\input` в `main.tex`, а не имена файлов.
 
-## Example slides in this template
+## Примеры шаблона
 
-Patterns taken from the full Academic-theme reference deck:
-
-| File | Pattern |
+| Файл | Пример |
 | ---- | ------- |
 | `01-title.tex` | Титульный слайд |
 | `02-outline.tex` | Содержание в двух колонках |
@@ -24,14 +20,6 @@ Patterns taken from the full Academic-theme reference deck:
 | `10-tech-table.tex` | Таблица с `\orient` в заголовке |
 | `11-packages-table.tex` | Длинная таблица + два блока в колонках |
 
-When copying the template, remove example files you do not need and rename the rest.
+При копировании шаблона удалите ненужные примеры и соответствующие команды `\input`. Изображения помещайте в `assets/`: путь к ним настроен в `main.tex`.
 
-## Theme macros
-
-- `\lead{текст}` — акцентный lead-in
-- `\tbd{текст}` — пометка черновика
-- `\orient` — метка «ориентир» в заголовке слайда
-- `\photoframe{ширина}{высота}{подпись}` — заглушка под фото
-- `\orientnote` — сноска под таблицей (см. `10-tech-table.tex`)
-
-Images go in `assets/`; `\graphicspath{{assets/}}` is set in `main.tex`.
+Общие команды и оформление описаны в [руководстве LaTeX](../../../latex/README.md).

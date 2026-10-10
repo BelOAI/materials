@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""Generate GitHub Pages index from session meta.yaml files and built artifacts."""
+"""Публикация манифеста материалов и оболочки сайта GitHub Pages."""
 
 from __future__ import annotations
 
-import html
+import json
 import re
 import shutil
 import sys
 from pathlib import Path
+from urllib.parse import quote, unquote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from meta_parser import (
     get_assignment_type,
-    get_assignment_type_label,
     get_flat,
     get_materials,
     get_references,
@@ -30,47 +30,6 @@ SITE_DIR = REPO_ROOT / "_site"
 FONTS_SRC = REPO_ROOT / "site" / "fonts"
 FONTS_DEST = SITE_DIR / "fonts"
 
-SITE = {
-    "lang": "ru",
-    "title": "BelOAI",
-    "subtitle": "Подготовка к олимпиаде по искусственному интеллекту",
-    "page_title": "BelOAI — материалы к занятиям",
-    "tagline": "Лекции, практики и домашние задания — слайды, PDF-задания, ноутбуки и ссылки.",
-    "download_pdf": "Скачать PDF",
-    "download_assignment": "Скачать задание",
-    "open_notebook": "Открыть ноутбук",
-    "download_material": "Скачать",
-    "references_label": "Ссылки",
-    "scheduled": "Проведение",
-    "issued": "Выдано",
-    "session_label_lecture": "Лекция",
-    "session_label_practice": "Практика",
-    "session_label_assignment": "Домашнее задание",
-    "assignment_type_math": "Математика",
-    "assignment_type_coding": "Программирование",
-    "filter_all": "Все",
-    "filter_lectures": "Лекции",
-    "filter_practices": "Практики",
-    "filter_assignments": "Задания",
-    "empty": "Пока нет опубликованных материалов.",
-    "count_one": "{} занятие",
-    "count_few": "{} занятия",
-    "count_many": "{} занятий",
-    "lecture_one": "{} лекция",
-    "lecture_few": "{} лекции",
-    "lecture_many": "{} лекций",
-    "practice_one": "{} практика",
-    "practice_few": "{} практики",
-    "practice_many": "{} практик",
-    "assignment_one": "{} задание",
-    "assignment_few": "{} задания",
-    "assignment_many": "{} заданий",
-    "license": "Материалы — CC BY 4.0",
-    "license_url": "https://creativecommons.org/licenses/by/4.0/",
-    "repo": "Исходники на GitHub",
-    "repo_url": "https://github.com/BelOAI/materials",
-}
-
 DEFAULT_TIME_SLOTS = {
     "1": "11:25–12:50",
     "2": "13:15–14:40",
@@ -82,22 +41,6 @@ KIND_ORDER = {
     "lecture": 1,
     "practice": 2,
 }
-
-MONTHS_RU = (
-    "",
-    "января",
-    "февраля",
-    "марта",
-    "апреля",
-    "мая",
-    "июня",
-    "июля",
-    "августа",
-    "сентября",
-    "октября",
-    "ноября",
-    "декабря",
-)
 
 
 def folder_kind(root_name: str) -> str:
@@ -113,17 +56,6 @@ def folder_kind(root_name: str) -> str:
 def session_number(folder_name: str) -> str:
     match = re.match(r"^(\d+)", folder_name)
     return match.group(1).lstrip("0") or match.group(1) if match else ""
-
-
-def format_date_ru(iso_date: str) -> str:
-    match = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", iso_date.strip())
-    if not match:
-        return iso_date
-    year, month, day = match.groups()
-    month_idx = int(month)
-    if not 1 <= month_idx <= 12:
-        return iso_date
-    return f"{int(day)} {MONTHS_RU[month_idx]} {year}"
 
 
 def resolve_time(meta: dict) -> str:
@@ -142,7 +74,9 @@ def resolve_slot_index(meta: dict) -> int:
             return int(match.group(1)) * 60 + int(match.group(2))
         return 0
     slot = get_flat(meta, "slot", DEFAULT_SLOT).strip() or DEFAULT_SLOT
-    return int(slot) if slot.isdigit() else 1
+    start = DEFAULT_TIME_SLOTS.get(slot, DEFAULT_TIME_SLOTS[DEFAULT_SLOT])
+    hour, minute = start.split("–")[0].split(":")
+    return int(hour) * 60 + int(minute)
 
 
 def parse_iso_date(iso_date: str) -> tuple[int, int, int]:
@@ -152,52 +86,21 @@ def parse_iso_date(iso_date: str) -> tuple[int, int, int]:
     return tuple(int(part) for part in match.groups())
 
 
-def format_scheduled_ru(iso_date: str, time: str = "") -> str:
-    date_part = format_date_ru(iso_date)
-    if not date_part:
-        return ""
-    time_part = time.strip()
-    if time_part:
-        return f"{date_part}, {time_part}"
-    return date_part
-
-
-def plural_ru(count: int, one: str, few: str, many: str) -> str:
-    n = abs(count) % 100
-    n1 = n % 10
-    if 11 <= n <= 19:
-        return many.format(count)
-    if n1 == 1:
-        return one.format(count)
-    if 2 <= n1 <= 4:
-        return few.format(count)
-    return many.format(count)
-
-
-def plural_sessions(count: int) -> str:
-    return plural_ru(
-        count,
-        SITE["count_one"],
-        SITE["count_few"],
-        SITE["count_many"],
-    )
-
-
-def session_label(kind: str) -> str:
-    if kind == "practice":
-        return SITE["session_label_practice"]
-    if kind == "assignment":
-        return SITE["session_label_assignment"]
-    return SITE["session_label_lecture"]
-
-
 def session_sort_key(entry: dict) -> tuple:
     date_tuple = parse_iso_date(entry["date"])
     kind_order = KIND_ORDER.get(entry["kind"], 9)
-    return (date_tuple, entry["slot_index"], kind_order, entry["slug"])
+    return (
+        date_tuple,
+        entry["kind"] == "assignment",
+        entry["slot_index"],
+        -kind_order,
+        entry["slug"],
+    )
 
 
-def discover_built_materials(slug: str, declared: list[dict[str, str]]) -> list[dict[str, str]]:
+def discover_built_materials(
+    slug: str, declared: list[dict[str, str]]
+) -> list[dict[str, str]]:
     built: list[dict[str, str]] = []
     out_dir = SITE_DIR / "materials" / slug
     if not out_dir.is_dir():
@@ -212,17 +115,22 @@ def discover_built_materials(slug: str, declared: list[dict[str, str]]) -> list[
         download_url = ""
         open_url = ""
         if (out_dir / base).exists():
-            download_url = f"materials/{slug}/{base}"
+            download_url = quote(f"materials/{slug}/{base}")
 
         if suffix == ".ipynb":
             html_name = f"{stem}.html"
             if (out_dir / html_name).exists():
-                open_url = f"materials/{slug}/{html_name}"
+                open_url = quote(f"materials/{slug}/{html_name}")
 
         if download_url or open_url:
             built.append(
                 {
-                    "label": item["label"],
+                    "label": (
+                        f"{item['label']} — {base}"
+                        if sum(other["label"] == item["label"] for other in declared)
+                        > 1
+                        else item["label"]
+                    ),
                     "download": download_url,
                     "open": open_url,
                     "is_notebook": suffix == ".ipynb",
@@ -260,8 +168,8 @@ def discover_sessions() -> list[dict]:
                 assignment_type = get_assignment_type(meta)
                 if not assignment_type:
                     print(
-                        f"Warning: skipping {session_dir}: "
-                        "assignment_type must be math or coding",
+                        f"Пропущено {session_dir}: "
+                        "assignment_type должен быть math или coding",
                         file=sys.stderr,
                     )
                     continue
@@ -277,30 +185,26 @@ def discover_sessions() -> list[dict]:
                 continue
 
             thumb = SITE_DIR / "thumbs" / f"{slug}.png"
-            thumb_href = ""
-            if pdf_exists:
-                thumb_href = pdf_rel
-            elif built_materials:
-                for material in built_materials:
-                    if material["open"]:
-                        thumb_href = material["open"]
-                        break
-                    if material["download"]:
-                        thumb_href = material["download"]
-                        break
-
+            thumb_url = (
+                quote(f"thumbs/{slug}.png") if pdf_exists and thumb.is_file() else ""
+            )
+            thumb_href = quote(pdf_rel) if thumb_url else ""
+            if kind == "practice" and not pdf_exists:
+                notebook = next(
+                    (file for file in built_materials if file["is_notebook"]), None
+                )
+                if notebook:
+                    name = Path(unquote(notebook["download"] or notebook["open"])).name
+                    preview_rel = f"thumbs/{slug}/{name}.svg"
+                    if (SITE_DIR / preview_rel).is_file():
+                        thumb_url = quote(preview_rel)
+                        thumb_href = notebook["open"] or notebook["download"]
             if kind == "assignment":
                 time = get_flat(meta, "time", "").strip()
                 slot_index = resolve_slot_index(meta) if time else 0
-                scheduled_display = format_scheduled_ru(
-                    get_flat(meta, "date", ""), time
-                )
             else:
                 time = resolve_time(meta)
                 slot_index = resolve_slot_index(meta)
-                scheduled_display = format_scheduled_ru(
-                    get_flat(meta, "date", ""), time
-                )
 
             entries.append(
                 {
@@ -313,10 +217,9 @@ def discover_sessions() -> list[dict]:
                     "date": get_flat(meta, "date", ""),
                     "time": time,
                     "slot_index": slot_index,
-                    "scheduled_display": scheduled_display,
                     "description": get_flat(meta, "description", ""),
-                    "pdf": pdf_rel if pdf_exists else "",
-                    "thumb": f"thumbs/{slug}.png" if thumb.exists() else "",
+                    "pdf": quote(pdf_rel) if pdf_exists else "",
+                    "thumb": thumb_url,
                     "thumb_href": thumb_href,
                     "materials": built_materials,
                     "references": references,
@@ -327,679 +230,44 @@ def discover_sessions() -> list[dict]:
     return entries
 
 
-def render_action_link(href: str, label: str, css_class: str = "session-action") -> str:
-    return (
-        f'<a class="{css_class}" href="{html.escape(href)}">'
-        f"{html.escape(label)}</a>"
-    )
-
-
-def render_material_actions(materials: list[dict]) -> str:
-    parts: list[str] = []
-    for material in materials:
-        if material["is_notebook"] and material["open"]:
-            parts.append(
-                render_action_link(
-                    material["open"],
-                    SITE["open_notebook"],
-                    "session-action session-action-primary",
-                )
+def build_manifest(entries: list[dict]) -> dict:
+    materials = []
+    for entry in entries:
+        item = {
+            key: entry[key]
+            for key in (
+                "kind",
+                "number",
+                "title",
+                "subtitle",
+                "description",
+                "date",
+                "time",
+                "materials",
+                "references",
             )
-            if material["download"]:
-                parts.append(
-                    render_action_link(
-                        material["download"],
-                        f"{SITE['download_material']} .ipynb",
-                    )
-                )
-        elif material["download"]:
-            parts.append(
-                render_action_link(
-                    material["download"],
-                    f"{SITE['download_material']} {material['label']}",
-                )
-            )
-    return "\n          ".join(parts)
-
-
-def render_reference_chips(references: list[dict]) -> str:
-    if not references:
-        return ""
-
-    chips: list[str] = []
-    for ref in references:
-        css = "session-ref"
-        if ref["kind"] == "contest":
-            css += " ref-contest"
-        chips.append(
-            f'<a class="{css}" href="{html.escape(ref["url"])}" '
-            f'target="_blank" rel="noopener noreferrer">'
-            f'{html.escape(ref["label"])}</a>'
-        )
-
-    inner = "\n        ".join(chips)
-    return f"""
-        <div class="session-refs">
-          <span class="session-refs-label">{html.escape(SITE["references_label"])}</span>
-          {inner}
-        </div>"""
-
-
-def render_session_row(entry: dict, index: int) -> str:
-    title = html.escape(entry["title"])
-    subtitle = html.escape(entry["subtitle"])
-    scheduled_display = html.escape(entry["scheduled_display"])
-    description = html.escape(entry["description"])
-    session_no = html.escape(entry["number"])
-    kind = entry["kind"]
-    kind_class = f"session-{kind}"
-    label = session_label(kind)
-
-    thumb_html = ""
-    if entry["thumb"]:
-        thumb = html.escape(entry["thumb"])
-        thumb_alt = html.escape(f"{label} {entry['number']}: {entry['title']}")
-        if entry["thumb_href"]:
-            thumb_href = html.escape(entry["thumb_href"])
-            thumb_inner = (
-                f'<a class="session-thumb-link" href="{thumb_href}">'
-                f'<img class="session-thumb" src="{thumb}" alt="{thumb_alt}">'
-                f"</a>"
-            )
-        else:
-            thumb_inner = f'<img class="session-thumb" src="{thumb}" alt="{thumb_alt}">'
-        thumb_html = f'<div class="session-thumb-wrap">{thumb_inner}</div>'
-
-    index_html = ""
-    if session_no:
-        index_html = f'<p class="session-index">{html.escape(label)} {session_no}</p>'
-
-    assignment_badge_html = ""
-    if kind == "assignment" and entry.get("assignment_type"):
-        type_label = get_assignment_type_label(entry["assignment_type"])
-        if type_label:
-            assignment_badge_html = (
-                f'<span class="session-type-badge">{html.escape(type_label)}</span>'
-            )
-
-    subtitle_html = f'<p class="session-subtitle">{subtitle}</p>' if subtitle else ""
-    desc_html = f'<p class="session-desc">{description}</p>' if description else ""
-    meta_label = SITE["issued"] if kind == "assignment" else SITE["scheduled"]
-    scheduled_html = (
-        f'<p class="session-meta"><span class="session-meta-label">{meta_label}</span> '
-        f'<time datetime="{html.escape(entry["date"])}">{scheduled_display}</time></p>'
-        if scheduled_display
-        else ""
-    )
-
-    actions: list[str] = []
-    if entry["pdf"]:
-        pdf_label = (
-            SITE["download_assignment"]
-            if kind == "assignment"
-            else SITE["download_pdf"]
-        )
-        actions.append(
-            render_action_link(
-                entry["pdf"],
-                pdf_label,
-                "session-action session-action-primary",
-            )
-        )
-    actions.append(render_material_actions(entry["materials"]))
-    actions_html = "\n          ".join(part for part in actions if part)
-    refs_html = render_reference_chips(entry["references"])
-
-    return f"""
-    <article class="session {kind_class}" data-kind="{html.escape(kind)}" style="--i: {index}">
-      <div class="session-card">
-        {thumb_html}
-        <div class="session-body">
-          {index_html}
-          <h2 class="session-title">{title}{assignment_badge_html}</h2>
-          {subtitle_html}
-          {desc_html}
-          {scheduled_html}
-          <div class="session-actions">
-            {actions_html}
-          </div>
-          {refs_html}
-        </div>
-      </div>
-    </article>"""
-
-
-def render_hero_count(entries: list[dict]) -> str:
-    if not entries:
-        return ""
-
-    lecture_count = sum(1 for entry in entries if entry["kind"] == "lecture")
-    practice_count = sum(1 for entry in entries if entry["kind"] == "practice")
-    assignment_count = sum(1 for entry in entries if entry["kind"] == "assignment")
-
-    parts = [html.escape(plural_sessions(len(entries)))]
-    breakdown: list[str] = []
-    if lecture_count:
-        breakdown.append(
-            html.escape(
-                plural_ru(
-                    lecture_count,
-                    SITE["lecture_one"],
-                    SITE["lecture_few"],
-                    SITE["lecture_many"],
-                )
-            )
-        )
-    if practice_count:
-        breakdown.append(
-            html.escape(
-                plural_ru(
-                    practice_count,
-                    SITE["practice_one"],
-                    SITE["practice_few"],
-                    SITE["practice_many"],
-                )
-            )
-        )
-    if assignment_count:
-        breakdown.append(
-            html.escape(
-                plural_ru(
-                    assignment_count,
-                    SITE["assignment_one"],
-                    SITE["assignment_few"],
-                    SITE["assignment_many"],
-                )
-            )
-        )
-    if breakdown:
-        parts.append(f'<span class="hero-count-breakdown">{" · ".join(breakdown)}</span>')
-
-    return f'<p class="hero-count">{" ".join(parts)}</p>'
-
-
-def render_filter_tabs() -> str:
-    tabs = [
-        ("all", SITE["filter_all"], ""),
-        ("lecture", SITE["filter_lectures"], "#lectures"),
-        ("practice", SITE["filter_practices"], "#practices"),
-        ("assignment", SITE["filter_assignments"], "#assignments"),
-    ]
-    buttons = "\n      ".join(
-        f'<button type="button" class="filter-tab" data-filter="{html.escape(kind)}" '
-        f'data-hash="{html.escape(hash_suffix)}">{html.escape(label)}</button>'
-        for kind, label, hash_suffix in tabs
-    )
-    return f"""
-    <nav class="session-filters" aria-label="Фильтр материалов">
-      {buttons}
-    </nav>"""
-
-
-def copy_fonts() -> None:
-    if not FONTS_SRC.is_dir():
-        raise SystemExit(
-            f"Missing fonts directory: {FONTS_SRC}\n"
-            "Run: bash scripts/vendor-fonts.sh"
-        )
-    shutil.copytree(FONTS_SRC, FONTS_DEST, dirs_exist_ok=True)
-
-
-def render_font_faces() -> str:
-    return """@font-face {
-      font-family: "Unbounded";
-      src: url("fonts/unbounded-latin-cyrillic.woff2") format("woff2");
-      font-weight: 200 900;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: "IBM Plex Sans";
-      src: url("fonts/ibm-plex-sans-latin-cyrillic.woff2") format("woff2");
-      font-weight: 100 700;
-      font-style: normal;
-      font-display: swap;
-    }"""
-
-
-def render_index(entries: list[dict]) -> str:
-    rows = "\n".join(render_session_row(e, i) for i, e in enumerate(entries))
-    if not rows.strip():
-        rows = f'<p class="empty">{SITE["empty"]}</p>'
-
-    count_html = render_hero_count(entries)
-    filter_html = render_filter_tabs()
-
-    page_title = html.escape(SITE["page_title"])
-    meta_description = html.escape(SITE["tagline"])
-
-    return f"""<!DOCTYPE html>
-<html lang="{SITE["lang"]}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="{meta_description}">
-  <meta name="theme-color" content="#172a4a">
-  <title>{page_title}</title>
-  <style>
-    {render_font_faces()}
-    :root {{
-      --ac-dark: #172a4a;
-      --ac-mid: #3e547a;
-      --ac-gray: #6c737c;
-      --ac-light: #eff1f4;
-      --ac-rule: #c6cbd2;
-      --content-width: 1100px;
-    }}
-    * {{ box-sizing: border-box; }}
-    body {{
-      margin: 0;
-      font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-      background: var(--ac-light);
-      color: #222;
-      line-height: 1.55;
-    }}
-    @keyframes fade-up {{
-      from {{
-        opacity: 0;
-        transform: translateY(12px);
-      }}
-      to {{
-        opacity: 1;
-        transform: translateY(0);
-      }}
-    }}
-    .site-hero {{
-      background: var(--ac-dark);
-      color: #fff;
-      padding: clamp(2.5rem, 8vw, 5rem) 1.5rem;
-    }}
-    .hero-inner {{
-      max-width: var(--content-width);
-      margin: 0 auto;
-      animation: fade-up 0.55s ease both;
-    }}
-    .hero-brand {{
-      margin: 0;
-      font-family: "Unbounded", "IBM Plex Sans", system-ui, sans-serif;
-      font-size: clamp(1.75rem, 4.5vw, 3rem);
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-    }}
-    .hero-subtitle {{
-      margin: 0.65rem 0 0;
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.82);
-    }}
-    .hero-tagline {{
-      margin: 1rem 0 0;
-      max-width: 36rem;
-      font-size: 1rem;
-      color: rgba(255, 255, 255, 0.65);
-    }}
-    .hero-count {{
-      margin: 1.25rem 0 0;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.5);
-      letter-spacing: 0.02em;
-    }}
-    .hero-count-breakdown {{
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.38);
-    }}
-    main {{
-      max-width: var(--content-width);
-      margin: 0 auto;
-      padding: 0 1.5rem 3.5rem;
-    }}
-    .session-list {{
-      margin-top: 2rem;
-    }}
-    .session-filters {{
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 2rem;
-    }}
-    .filter-tab {{
-      font: inherit;
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--ac-mid);
-      background: #fff;
-      border: 1px solid var(--ac-rule);
-      border-radius: 2px;
-      padding: 0.4rem 0.85rem;
-      cursor: pointer;
-      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-    }}
-    .filter-tab:hover {{
-      border-color: var(--ac-mid);
-      color: var(--ac-dark);
-    }}
-    .filter-tab.is-active {{
-      background: var(--ac-dark);
-      border-color: var(--ac-dark);
-      color: #fff;
-    }}
-    .filter-tab:focus-visible {{
-      outline: 2px solid var(--ac-mid);
-      outline-offset: 2px;
-    }}
-    .session.is-filtered {{
-      display: none;
-    }}
-    .session {{
-      border-bottom: 1px solid var(--ac-rule);
-      animation: fade-up 0.5s ease both;
-      animation-delay: calc(0.08s * var(--i) + 0.15s);
-    }}
-    .session-lecture {{
-      --session-dark: #172a4a;
-      --session-mid: #3e547a;
-    }}
-    .session-practice {{
-      --session-dark: #1a4a3d;
-      --session-mid: #2d7a62;
-    }}
-    .session-assignment {{
-      --session-dark: #4a3520;
-      --session-mid: #8a6530;
-    }}
-    .session-card {{
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: 1.5rem;
-      align-items: start;
-      padding: 1.5rem 0 1.5rem 1rem;
-      border-left: 3px solid var(--session-mid);
-    }}
-    .session-thumb-wrap {{
-      overflow: hidden;
-      border-radius: 2px;
-      background: #fff;
-    }}
-    .session-thumb-link {{
-      display: block;
-      color: inherit;
-      text-decoration: none;
-    }}
-    .session-thumb {{
-      display: block;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      transition: transform 0.25s ease;
-    }}
-    .session-assignment .session-thumb {{
-      aspect-ratio: 210 / 297;
-      object-fit: contain;
-      background: #fff;
-    }}
-    .session-thumb-link:hover .session-thumb {{
-      transform: scale(1.03);
-    }}
-    .session-body {{
-      min-width: 0;
-      padding-top: 0.1rem;
-    }}
-    .session-body:only-child {{
-      grid-column: 1 / -1;
-    }}
-    .session-index {{
-      margin: 0;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--session-mid);
-    }}
-    .session-title {{
-      margin: 0.35rem 0 0;
-      font-family: "Unbounded", "IBM Plex Sans", system-ui, sans-serif;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--session-dark);
-      line-height: 1.25;
-    }}
-    .session-type-badge {{
-      display: inline-block;
-      margin-left: 0.5rem;
-      padding: 0.1rem 0.45rem;
-      font-family: "IBM Plex Sans", system-ui, sans-serif;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      vertical-align: middle;
-      color: var(--session-mid);
-      border: 1px solid var(--session-mid);
-      border-radius: 2px;
-      background: rgba(255, 255, 255, 0.8);
-    }}
-    .session-subtitle {{
-      margin: 0.4rem 0 0;
-      font-size: 0.95rem;
-      color: var(--session-mid);
-    }}
-    .session-desc {{
-      margin: 0.55rem 0 0;
-      font-size: 0.92rem;
-      color: #3a3a3a;
-      max-width: 52rem;
-    }}
-    .session-meta {{
-      margin: 0.65rem 0 0;
-      font-size: 0.85rem;
-      color: var(--ac-gray);
-      font-variant-numeric: tabular-nums;
-    }}
-    .session-meta-label {{
-      color: var(--session-mid);
-      font-weight: 600;
-      margin-right: 0.35rem;
-    }}
-    .session-meta time {{
-      color: var(--ac-gray);
-    }}
-    .session-actions {{
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem 0.75rem;
-      margin-top: 0.85rem;
-    }}
-    .session-action {{
-      display: inline-flex;
-      align-items: center;
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--session-mid);
-      text-decoration: none;
-      padding: 0.2rem 0;
-      border-bottom: 1px solid transparent;
-      transition: color 0.15s ease, border-color 0.15s ease;
-    }}
-    .session-action:hover {{
-      color: var(--session-dark);
-      border-bottom-color: var(--session-mid);
-    }}
-    .session-action:focus-visible {{
-      outline: 2px solid var(--session-mid);
-      outline-offset: 3px;
-      border-radius: 2px;
-    }}
-    .session-action-primary {{
-      color: var(--session-dark);
-    }}
-    .session-refs {{
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.4rem 0.55rem;
-      margin-top: 0.75rem;
-    }}
-    .session-refs-label {{
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      color: var(--ac-gray);
-      margin-right: 0.15rem;
-    }}
-    .session-ref {{
-      display: inline-flex;
-      align-items: center;
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--session-mid);
-      text-decoration: none;
-      padding: 0.15rem 0.55rem;
-      border: 1px solid var(--ac-rule);
-      border-radius: 2px;
-      background: rgba(255, 255, 255, 0.7);
-      transition: background 0.15s ease, border-color 0.15s ease;
-    }}
-    .session-ref:hover {{
-      background: #fff;
-      border-color: var(--session-mid);
-      color: var(--session-dark);
-    }}
-    .session-ref:focus-visible {{
-      outline: 2px solid var(--session-mid);
-      outline-offset: 2px;
-    }}
-    .ref-contest {{
-      font-weight: 700;
-      color: var(--session-dark);
-      border-color: var(--session-mid);
-      background: #fff;
-    }}
-    .empty {{
-      margin: 3rem 0;
-      text-align: center;
-      color: var(--ac-gray);
-    }}
-    .site-footer {{
-      max-width: var(--content-width);
-      margin: 0 auto;
-      padding: 0 1.5rem 2.5rem;
-      font-size: 0.85rem;
-      color: var(--ac-gray);
-    }}
-    .site-footer p {{
-      margin: 0;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--ac-rule);
-    }}
-    .site-footer a {{
-      color: var(--ac-mid);
-      text-decoration: none;
-    }}
-    .site-footer a:hover {{
-      text-decoration: underline;
-    }}
-    @media (max-width: 640px) {{
-      .session-card {{
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }}
-    }}
-    @media (prefers-reduced-motion: reduce) {{
-      .hero-inner,
-      .session {{
-        animation: none;
-      }}
-      .session-thumb {{
-        transition: none;
-      }}
-      .session-thumb-link:hover .session-thumb {{
-        transform: none;
-      }}
-    }}
-  </style>
-</head>
-<body>
-  <header class="site-hero">
-    <div class="hero-inner">
-      <h1 class="hero-brand">{html.escape(SITE["title"])}</h1>
-      <p class="hero-subtitle">{html.escape(SITE["subtitle"])}</p>
-      <p class="hero-tagline">{html.escape(SITE["tagline"])}</p>
-      {count_html}
-    </div>
-  </header>
-  <main>
-    {filter_html}
-    <div class="session-list">
-      {rows}
-    </div>
-  </main>
-  <footer class="site-footer">
-    <p>
-      <a href="{html.escape(SITE["license_url"])}">{html.escape(SITE["license"])}</a>
-      ·
-      <a href="{html.escape(SITE["repo_url"])}">{html.escape(SITE["repo"])}</a>
-    </p>
-  </footer>
-  <script>
-    (function () {{
-      var tabs = document.querySelectorAll(".filter-tab");
-      var sessions = document.querySelectorAll(".session[data-kind]");
-      var hashMap = {{
-        "#lectures": "lecture",
-        "#practices": "practice",
-        "#assignments": "assignment"
-      }};
-
-      function applyFilter(kind) {{
-        sessions.forEach(function (session) {{
-          var show = kind === "all" || session.getAttribute("data-kind") === kind;
-          session.classList.toggle("is-filtered", !show);
-        }});
-        tabs.forEach(function (tab) {{
-          tab.classList.toggle("is-active", tab.getAttribute("data-filter") === kind);
-        }});
-      }}
-
-      function filterFromHash() {{
-        var hash = window.location.hash;
-        return hashMap[hash] || "all";
-      }}
-
-      tabs.forEach(function (tab) {{
-        tab.addEventListener("click", function () {{
-          var kind = tab.getAttribute("data-filter");
-          var hash = tab.getAttribute("data-hash");
-          if (hash) {{
-            window.location.hash = hash.slice(1);
-          }} else {{
-            history.replaceState(null, "", window.location.pathname + window.location.search);
-          }}
-          applyFilter(kind);
-        }});
-      }});
-
-      window.addEventListener("hashchange", function () {{
-        applyFilter(filterFromHash());
-      }});
-
-      applyFilter(filterFromHash());
-    }})();
-  </script>
-</body>
-</html>
-"""
+        }
+        item["id"] = entry["slug"]
+        for key in ("assignment_type", "pdf", "thumb", "thumb_href"):
+            if entry[key]:
+                item[key] = entry[key]
+        materials.append(item)
+    return {"version": 1, "materials": materials}
 
 
 def main() -> None:
     SITE_DIR.mkdir(parents=True, exist_ok=True)
-    copy_fonts()
+    if not FONTS_SRC.is_dir():
+        raise SystemExit("Нет шрифтов: выполните bash scripts/vendor-fonts.sh")
+    shutil.copytree(FONTS_SRC, FONTS_DEST, dirs_exist_ok=True)
     entries = discover_sessions()
-    index_path = SITE_DIR / "index.html"
-    index_path.write_text(render_index(entries), encoding="utf-8")
-    print(f"Wrote {index_path} ({len(entries)} session(s))")
+    (SITE_DIR / "materials.json").write_text(
+        json.dumps(build_manifest(entries), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    for name in ("index.html", "favicon.svg"):
+        shutil.copyfile(REPO_ROOT / "site" / name, SITE_DIR / name)
+    print(f"Опубликован манифест: {len(entries)} материалов")
 
 
 if __name__ == "__main__":

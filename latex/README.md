@@ -1,51 +1,30 @@
-# LaTeX theme — Academic Beamer and assignment packages
+# Оформление LaTeX
 
-In-repo TeX packages following a minimal [TDS layout](https://www.ctan.org/TDS-guidelines):
+Общие пакеты находятся в `latex/tex/latex/`. Скрипты сборки устанавливают `TEXINPUTS`, поэтому документы подключают пакеты через `\usepackage`, без относительных путей к стилям.
 
-```
-latex/tex/latex/
-  beamer/
-    beamerthemeAcademic.sty
-    beamerinnerthemeAcademic.sty
-    beamerouterthemeAcademic.sty
-    beamercolorthemeAcademic.sty
-    beamercolorthemeAcademicPractice.sty
-  academicbeamer/
-    academicbeamer.sty
-  academicworksheet/
-    academicworksheet.sty
-  academicstatement/
-    academicstatement.sty
-```
-
-Build scripts set:
-
-```bash
-export TEXINPUTS="$REPO_ROOT/latex/tex/latex//:${TEXINPUTS:-}"
-```
-
-so decks can `\usepackage{academicbeamer}` and assignments can `\usepackage{academicworksheet}` without relative `\input` paths.
-
-## Package: `academicbeamer`
+## Презентации
 
 ```latex
-\usepackage[russian]{academicbeamer}           % lecture (blue, default)
-\usepackage[practice,russian]{academicbeamer}  % practice (teal-green)
-\setshorttitle{Footer text \textbar\ Lecture 1}
+\usepackage[russian]{academicbeamer}          % лекция, синяя тема
+\usepackage[practice,russian]{academicbeamer} % практика, зелёная тема
+\setshorttitle{BelOAI \textbar\ Лекция 2}
 ```
 
-| Option | Description |
-| ------ | ----------- |
-| `russian` | `T2A` fontenc, Russian babel (default) |
-| `english` | `T1` fontenc, English babel |
-| `lecture` | Blue palette (default) |
-| `practice` | Teal-green palette for practice sessions |
+В документе используйте только один вариант подключения. Опции `russian` и `lecture` действуют по умолчанию; `english` включает английский язык, `practice` — тему практик.
 
-After loading, the **Academic** Beamer theme is active.
+Команды темы:
 
-## Package: `academicworksheet`
+- `\lead{текст}` — выделенное начало мысли;
+- `\tbd{текст}` — отметка черновика;
+- `\orient` — отметка «ориентир»;
+- `\photoframe{ширина}{высота}{подпись}` — место для изображения;
+- `\orientnote[дополнение]` — примечание к ориентировочным значениям.
 
-Math home task printouts (`assignments/` with `assignment_type: math`):
+Примеры компоновки находятся в [шаблоне слайдов](../lectures/_template/slides/README.md).
+
+## Задания
+
+Для математических листов:
 
 ```latex
 \documentclass[a4paper,11pt]{article}
@@ -53,57 +32,22 @@ Math home task printouts (`assignments/` with `assignment_type: math`):
 \setassignmentno{2}
 ```
 
-| Option | Description |
-| ------ | ----------- |
-| `russian` | `T2A` fontenc, Russian babel (default) |
-| `english` | `T1` fontenc, English babel |
+Используйте окружение `exercise`, команды `\answerlines{число}` и `\answerbox[высота]` для места под ответ.
 
-Helper macros: `exercise` environment, `\answerlines{n}`, `\answerbox[height]`.
+Для условий задач по программированию подключите `academicstatement` вместо `academicworksheet`. Доступны окружения `problem`, `io`, `example`, `constraints` и команда `\sampleio{ввод}{вывод}`. Оба пакета поддерживают `russian` (по умолчанию) и `english`.
 
-## Package: `academicstatement`
+## Где менять оформление
 
-Coding problem statements (`assignments/` with `assignment_type: coding`):
+| Изменение | Файл внутри `latex/tex/latex/` |
+| --- | --- |
+| Цвета лекций и практик | `beamer/beamercolorthemeAcademic.sty`, `beamer/beamercolorthemeAcademicPractice.sty` |
+| Заголовки, колонтитулы и поля | `beamer/beamerouterthemeAcademic.sty` |
+| Блоки, списки и команды темы | `beamer/beamerinnerthemeAcademic.sty` |
+| Зависимости темы | `beamer/beamerthemeAcademic.sty` |
+| Язык и шрифты презентаций | `academicbeamer/academicbeamer.sty` |
+| Математические листы | `academicworksheet/academicworksheet.sty` |
+| Условия задач | `academicstatement/academicstatement.sty` |
 
-```latex
-\documentclass[a4paper,11pt]{article}
-\usepackage[russian]{academicstatement}
-\setassignmentno{2}
-```
+Содержимое занятий храните в папках занятий, а не в стилях. После изменения общих пакетов выполните `make site`, чтобы пересобрать все материалы. Сборка и зависимости описаны в [общем руководстве](../scripts/README.md).
 
-Environments: `problem`, `io`, `example`, `constraints`; macro `\sampleio{input}{output}`.
-
-## Customisation
-
-| Change | Edit |
-| ------ | ---- |
-| Lecture colours | `beamercolorthemeAcademic.sty` |
-| Practice colours | `beamercolorthemeAcademicPractice.sty` |
-| Frametitle / footline / margins | `beamerouterthemeAcademic.sty` |
-| Blocks, lists, section dividers, macros | `beamerinnerthemeAcademic.sty` |
-| Shared dependencies | `beamerthemeAcademic.sty` |
-| Language / fonts | `academicbeamer.sty` |
-| Math worksheet layout | `academicworksheet/academicworksheet.sty` |
-| Coding statement layout | `academicstatement/academicstatement.sty` |
-
-## Helper macros (inner theme)
-
-- `\lead{text}` — highlighted lead-in
-- `\tbd{text}` — placeholder marker
-- `\orient` — “ориентир” tag for draft slides
-- `\photoframe{width}{height}{caption}` — image placeholder
-- `\orientnote[extra]` — disclaimer footnote for tables
-
-## Local build
-
-From repo root with `latexmkrc` in place:
-
-```bash
-cd lectures/01-project-setup
-latexmk -pdf main.tex
-```
-
-Or use `make session DIR=assignments/02-derivatives` from the repository root.
-
-## License
-
-The Academic Beamer theme and assignment packages are [MIT](../LICENSE-MIT). Copyright: Pavel Kasila and BelOAI Material Authors. See [`../LICENSE`](../LICENSE) and [`../LICENSING.md`](../LICENSING.md).
+Пакеты оформления распространяются по [MIT](../LICENSE-MIT). Авторы: Pavel Kasila и BelOAI Material Authors.

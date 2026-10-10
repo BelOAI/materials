@@ -1,47 +1,28 @@
-# Practices
+# Практики
 
-Hands-on practice sessions live in `practices/[number]-[name]/` with the same folder layout as lectures:
+Каждая практика находится в `practices/NN-topic/`. Структура такая же, как у [лекций](../lectures/README.md): `main.tex`, `meta.yaml`, `slides/`, при необходимости `assets/` и `materials/`. Нумерация практик независима от лекций.
 
-```
-practices/02-contest-warmup/
-  main.tex       # driver: use [practice] option for teal-green theme
-  meta.yaml      # site index metadata
-  slides/        # numbered slide fragments
-  assets/        # optional images
-  materials/     # notebooks, PDFs, archives
-```
-
-See [`../lectures/README.md`](../lectures/README.md) for the full `meta.yaml` schema, `references`, and `materials` blocks.
-
-## Naming
-
-Use a numeric prefix for human-readable labels on the site (e.g. «Практика 2»), e.g. `01-warmup`, `02-contest`. The **site sort order** is determined by `date` and `slot`/`time` in `meta.yaml`, not the folder prefix.
-
-Independent numbering from `lectures/` is fine — `lectures/03-foo` and `practices/03-foo` can coexist.
-
-Folders starting with `_` (e.g. `_template`) are excluded from CI builds.
-
-## Quick start
+## Добавить практику
 
 ```bash
-cp -R practices/_template practices/02-my-practice
-# edit meta.yaml (set build: true), main.tex, slides/*
-# add materials/ and references (contest links) as needed
-make session DIR=practices/02-my-practice
-make site   # regenerate index
+cp -R practices/_template practices/02-topic
 ```
 
-## Theme
-
-Practices use the teal-green palette:
+Заполните `meta.yaml`, установите `build: true`, обновите `main.tex` и содержимое `slides/`. Порядок слайдов задайте командами `\input`.
 
 ```latex
-\usepackage[practice,russian]{academicbeamer}  % or [practice,english]
+\documentclass[aspectratio=169,11pt,t]{beamer}
+\usepackage[practice,russian]{academicbeamer}
 \setshorttitle{BelOAI \textbar\ Практика 2}
 ```
 
-See [`../latex/README.md`](../latex/README.md) for all package options.
+Опция `practice` включает зелёную тему.
 
-## License
+```bash
+make session DIR=practices/02-topic
+make site
+```
 
-Practice slides, metadata, and assets are [CC BY 4.0](../LICENSE-CC-BY-4.0). Copyright: Pavel Kasila and BelOAI Material Authors. See [`../LICENSE`](../LICENSE) and [`../LICENSING.md`](../LICENSING.md).
+Для практики только с контестом достаточно `meta.yaml` с внешней ссылкой, без `main.tex`. Ноутбуки и файлы перечислите в `materials`. Подробнее: [метаданные и публикация](../scripts/README.md), [оформление LaTeX](../latex/README.md).
+
+Материалы этого раздела — [CC BY 4.0](../LICENSE-CC-BY-4.0). Авторы: Pavel Kasila и BelOAI Material Authors.

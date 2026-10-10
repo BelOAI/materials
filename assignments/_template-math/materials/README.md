@@ -1,18 +1,13 @@
-# Materials
+# Дополнительные файлы
 
-Place supplementary files for this assignment here and list them in `meta.yaml` under `materials:`.
-
-| File type | Published as |
-| --------- | ------------ |
-| `.ipynb` | Browsable HTML + downloadable notebook |
-| `.pdf`, `.zip`, `.csv`, `.py`, … | Direct download |
-
-Example `meta.yaml` entry:
+Поместите сюда ноутбуки, данные, архивы или шаблоны решений и перечислите их в `meta.yaml`:
 
 ```yaml
 materials:
-  - path: materials/dataset.csv
+  - path: materials/data.csv
     label: Данные
 ```
 
-Build copies files to `_site/materials/<assignment-slug>/` during `make site`.
+Сборка создаёт HTML-версию `.ipynb` и сохраняет исходный ноутбук для скачивания. Остальные файлы доступны для скачивания без преобразования. Подпись `label` необязательна.
+
+После изменения файлов выполните `make site` из корня репозитория. Подробнее: [сборка и публикация](../../../scripts/README.md).

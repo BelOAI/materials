@@ -1,32 +1,32 @@
 Copyright (c) 2026 Pavel Kasila and BelOAI Material Authors
 
-This repository uses two licenses, by path.
+Лицензия определяется путём файла.
+Правообладатели: Pavel Kasila и BelOAI Material Authors.
+Правила использования: LICENSING.md. Примеры авторства: ATTRIBUTION.md.
 
-Copyright holders: Pavel Kasila and BelOAI Material Authors. For
-attribution examples and redistribution rules, see LICENSING.md and
-ATTRIBUTION.md.
-
-Educational materials — CC BY 4.0
+Учебные материалы — CC BY 4.0:
   lectures/
   practices/
   assignments/
   README.md
-  generated lecture PDFs and the public course index copy
+  собранные учебные PDF, текст публичного каталога и данные материалов в манифесте
 
-  Copy, share, and adapt that material with attribution.
-  Full terms: LICENSE-CC-BY-4.0
+  Можно копировать, распространять и адаптировать с указанием авторства.
+  Полные условия: LICENSE-CC-BY-4.0
   https://creativecommons.org/licenses/by/4.0/
 
-Software — MIT License
+Программный код — MIT:
   latex/
   scripts/
+  site/ (кроме шрифтов и логотипа Python)
   Makefile
   latexmkrc
   .github/
+  AGENTS.md
 
-  Full terms: LICENSE-MIT
+  Полные условия: LICENSE-MIT
 
-Maintainer documentation (AGENTS.md and nested README files) follows
-the license of the tree it describes: lectures/README.md,
-practices/README.md, and assignments/README.md are CC BY 4.0;
-latex/README.md and AGENTS.md are MIT.
+Шрифты site/fonts/ — SIL Open Font License.
+Полные условия: site/fonts/OFL-Unbounded.txt и site/fonts/OFL-IBMPlexSans.txt.
+
+README разделов следуют лицензии соответствующего раздела.

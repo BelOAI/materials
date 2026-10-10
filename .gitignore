@@ -35,3 +35,8 @@ Thumbs.db
 
 __pycache__
 .venv-fonts/
+
+# Зависимости интерфейса и результаты проверки браузером
+node_modules/
+output/playwright/
+.playwright-cli/

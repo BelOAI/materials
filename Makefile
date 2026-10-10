@@ -2,7 +2,7 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SCRIPTS := $(REPO_ROOT)/scripts
 DIR ?=
 
-.PHONY: all session lecture materials site clean
+.PHONY: all session lecture materials site frontend test clean
 
 all: site
 
@@ -23,7 +23,14 @@ ifndef DIR
 endif
 	$(SCRIPTS)/build-materials.sh $(DIR)
 
-site:
+frontend:
+	npm --prefix $(REPO_ROOT)/site run build
+
+test:
+	python3 -m unittest discover -s scripts/tests
+	npm --prefix $(REPO_ROOT)/site test
+
+site: frontend
 	$(SCRIPTS)/build-all.sh
 	python3 $(SCRIPTS)/generate-site.py
 

@@ -1,44 +1,21 @@
-# Attribution
+# Как указать авторство
 
-How to credit BelOAI materials when reusing slides, PDFs, or adapted content under
-[CC BY 4.0](LICENSE-CC-BY-4.0).
+При использовании учебных материалов по [CC BY 4.0](LICENSE-CC-BY-4.0) укажите авторов, источник и лицензию.
 
-Copyright holders: **BelOAI Material Authors** and **Pavel Kasila**.
+## Материал без изменений
 
-Official license summary: https://creativecommons.org/licenses/by/4.0/
+> Материалы BelOAI. © Pavel Kasila и BelOAI Material Authors. Источник: https://beloai.github.io/materials/. Лицензия: CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/.
 
-## Slides and PDF (unchanged)
+Для конкретного занятия добавьте название и дату из его `meta.yaml`.
 
-**Russian:**
+## Материал с изменениями
 
-> © BelOAI Material Authors и Pavel Kasila, CC BY 4.0 — https://beloai.github.io/materials/
+> На основе материалов BelOAI: https://github.com/BelOAI/materials. © Pavel Kasila и BelOAI Material Authors, CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/. Изменения: [кратко опишите изменения].
 
-**English:**
+## Программный код
 
-> © BelOAI Material Authors and Pavel Kasila, CC BY 4.0 — https://beloai.github.io/materials/
-
-When a specific session is known, add its title and date from `meta.yaml`, for example:
-
-> «Введение в машинное обучение» (2026-09-01). © BelOAI Material Authors и Pavel Kasila, CC BY 4.0 — https://beloai.github.io/materials/
-
-## Adapted or translated material
-
-State that the work is based on BelOAI materials, link to the source repository
-(https://github.com/BelOAI/materials), keep the CC BY 4.0 link, and note your changes.
-
-**Russian example:**
-
-> Адаптировано на основе материалов BelOAI (https://github.com/BelOAI/materials). © BelOAI Material Authors и Pavel Kasila, CC BY 4.0. Изменения: [кратко опишите правки].
-
-**English example:**
-
-> Adapted from BelOAI materials (https://github.com/BelOAI/materials). © BelOAI Material Authors and Pavel Kasila, CC BY 4.0. Changes: [brief description].
-
-## MIT software (theme and build scripts)
-
-If you reuse the LaTeX theme or build scripts, include the copyright notice from
-[`LICENSE-MIT`](LICENSE-MIT):
+Для темы LaTeX и скриптов сохраняйте полный текст [MIT](LICENSE-MIT), включая исходное уведомление:
 
 > Copyright (c) 2026 Pavel Kasila and BelOAI Material Authors
 
-See [`LICENSING.md`](LICENSING.md) for the full path-based license map.
+Распределение лицензий по путям: [LICENSING.md](LICENSING.md).

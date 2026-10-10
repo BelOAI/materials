@@ -1,84 +1,35 @@
-# Assignments (home tasks)
+# Домашние задания
 
-Home task assignment sheets live in `assignments/[number]-[name]/`. They are **printable PDF worksheets** (LaTeX `article`), not slide decks.
+Задания находятся в `assignments/NN-topic/`. Это печатные документы класса `article`: `main.tex` подключает фрагменты из `sections/`, `meta.yaml` описывает задание на сайте, `materials/` содержит дополнительные файлы. Нумерация заданий независима от лекций и практик.
 
-Two variants:
+## Выбрать шаблон
 
-| Template | `assignment_type` | Package | Purpose |
-| -------- | ----------------- | ------- | ------- |
-| `_template-math/` | `math` | `academicworksheet` | Math exercises with answer space |
-| `_template-coding/` | `coding` | `academicstatement` | Coding problem statements |
-
-## Folder layout
-
-```
-assignments/02-linear-algebra/
-  main.tex          # article driver
-  meta.yaml         # site index metadata (assignment_type required)
-  sections/         # numbered \input{} fragments
-  materials/        # optional notebooks, data, starter code
-```
-
-See [`../lectures/README.md`](../lectures/README.md) for shared `meta.yaml` fields (`references`, `materials`, `date`, `build`, `hidden`).
-
-## Required meta.yaml field
-
-```yaml
-assignment_type: math   # or coding
-```
-
-The `date` field is the **issue date** (when the assignment was given). It controls sort order on the site.
-
-## Naming
-
-Use a numeric prefix for human-readable labels (e.g. «Домашнее задание 2»), e.g. `01-warmup`, `02-derivatives`. **Site sort order** is by `date` in `meta.yaml`, not the folder prefix.
-
-Folders starting with `_` (e.g. `_template-math`) are excluded from CI builds.
-
-## Quick start
-
-**Math worksheet:**
+| Вид задания | Шаблон | `assignment_type` | Пакет |
+| --- | --- | --- | --- |
+| Математика | `_template-math` | `math` | `academicworksheet` |
+| Программирование | `_template-coding` | `coding` | `academicstatement` |
 
 ```bash
-cp -R assignments/_template-math assignments/02-linear-algebra
-# edit meta.yaml (build: true, assignment_type: math), main.tex, sections/*
-make session DIR=assignments/02-linear-algebra
-make site
+cp -R assignments/_template-math assignments/04-topic
 ```
 
-**Coding problem statement:**
+Для программирования вместо `_template-math` используйте `_template-coding`. Заполните `meta.yaml`: `build: true`, `assignment_type`, название, описание и дату выдачи. Без корректного `assignment_type` запись не попадёт в каталог.
 
-```bash
-cp -R assignments/_template-coding assignments/02-two-sum
-# edit meta.yaml (build: true, assignment_type: coding), main.tex, sections/*
-make session DIR=assignments/02-two-sum
-make site
-```
-
-## LaTeX packages
-
-**Math** (`academicworksheet`):
+Обновите `main.tex`, номер задания и фрагменты в `sections/`:
 
 ```latex
 \documentclass[a4paper,11pt]{article}
-\usepackage[russian]{academicworksheet}
-\setassignmentno{2}
+\usepackage[russian]{academicworksheet} % или academicstatement
+\setassignmentno{4}
 ```
 
-Environments: `exercise`, `\answerlines{n}`, `\answerbox[height]`.
-
-**Coding** (`academicstatement`):
-
-```latex
-\documentclass[a4paper,11pt]{article}
-\usepackage[russian]{academicstatement}
-\setassignmentno{2}
+```bash
+make session DIR=assignments/04-topic
+make site
 ```
 
-Environments: `problem`, `io`, `example`, `constraints`, `\sampleio{input}{output}`.
+На сайте задания отмечаются янтарным цветом, видом задания и датой «Выдано». Время необязательно и задаётся через `time`.
 
-See [`../latex/README.md`](../latex/README.md) for all package options.
+Доступные команды пакетов: [LaTeX](../latex/README.md). Дополнительные файлы, ссылки и публикация: [общее руководство](../scripts/README.md).
 
-## License
-
-Assignment sources, metadata, and assets are [CC BY 4.0](../LICENSE-CC-BY-4.0). Copyright: Pavel Kasila and BelOAI Material Authors. See [`../LICENSE`](../LICENSE) and [`../LICENSING.md`](../LICENSING.md).
+Материалы этого раздела — [CC BY 4.0](../LICENSE-CC-BY-4.0). Авторы: Pavel Kasila и BelOAI Material Authors.

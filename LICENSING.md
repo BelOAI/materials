@@ -1,59 +1,26 @@
-# Licensing
+# Лицензирование
 
-This repository uses a **path-based dual license**. Copyright is held jointly by
-**Pavel Kasila** and **BelOAI Material Authors**.
+Репозиторий использует две лицензии в зависимости от пути. Правообладатели: **Pavel Kasila** и **BelOAI Material Authors**.
 
-## Overview
+| Материалы | Лицензия |
+| --- | --- |
+| `lectures/`, `practices/`, `assignments/`, главный `README.md` | [CC BY 4.0](LICENSE-CC-BY-4.0) |
+| Собранные учебные PDF, текст каталога и данные материалов в манифесте | [CC BY 4.0](LICENSE-CC-BY-4.0) |
+| `latex/`, `scripts/`, код интерфейса `site/`, `Makefile`, `latexmkrc`, `.github/`, `AGENTS.md` | [MIT](LICENSE-MIT) |
+| Шрифты в `site/fonts/` | SIL Open Font License, тексты лицензий рядом со шрифтами |
 
-| Path | License | What it covers |
-| ---- | ------- | -------------- |
-| `lectures/` | [CC BY 4.0](LICENSE-CC-BY-4.0) | Lecture slide sources, `meta.yaml`, assets |
-| `practices/` | [CC BY 4.0](LICENSE-CC-BY-4.0) | Practice slide sources, `meta.yaml`, assets |
-| `assignments/` | [CC BY 4.0](LICENSE-CC-BY-4.0) | Home task worksheet sources, `meta.yaml`, assets |
-| `README.md` | [CC BY 4.0](LICENSE-CC-BY-4.0) | Student-facing index copy |
-| Generated PDFs and site copy | [CC BY 4.0](LICENSE-CC-BY-4.0) | Built lecture PDFs and public index text |
-| `latex/` | [MIT](LICENSE-MIT) | Academic Beamer theme |
-| `scripts/`, `Makefile`, `latexmkrc`, `.github/` | [MIT](LICENSE-MIT) | Build tooling and CI |
+README разделов следуют лицензии соответствующего раздела. Краткая карта путей находится в [LICENSE](LICENSE). Полные официальные тексты лицензий сохраняются без изменений.
 
-Maintainer docs follow the tree they describe: [`lectures/README.md`](lectures/README.md), [`practices/README.md`](practices/README.md), and [`assignments/README.md`](assignments/README.md) are CC BY 4.0; [`latex/README.md`](latex/README.md) and [`AGENTS.md`](AGENTS.md) are MIT.
+Собранный интерфейс также содержит Lit под BSD-3-Clause; сборка сохраняет его лицензию в `_site/assets/LICENSE-Lit.txt`.
 
-The summary in [`LICENSE`](LICENSE) is authoritative for path boundaries. Full legal text:
+## Повторное использование
 
-- Educational materials: [`LICENSE-CC-BY-4.0`](LICENSE-CC-BY-4.0)
-- Software: [`LICENSE-MIT`](LICENSE-MIT)
+Для учебных материалов укажите авторов, ссылку на [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) и источник. Если материал изменён, опишите изменения. Не создавайте впечатление, что авторы одобряют вашу версию. [Примеры указания авторства](ATTRIBUTION.md).
 
-For practical attribution strings, see [`ATTRIBUTION.md`](ATTRIBUTION.md).
+При распространении программного кода сохраняйте уведомление об авторских правах и полный текст [MIT](LICENSE-MIT). Для шрифтов сохраняйте соответствующие уведомления OFL.
 
-## Redistribution
+## Происхождение шаблона
 
-### Educational materials (CC BY 4.0)
+Тема Beamer и основа сборки происходят из [pkasila/java-materials](https://github.com/pkasila/java-materials). Pavel Kasila является правообладателем обоих проектов.
 
-When you copy, share, or adapt slides or PDFs:
-
-1. Credit **BelOAI Material Authors** and **Pavel Kasila**.
-2. Link to the license: https://creativecommons.org/licenses/by/4.0/
-3. Indicate if you changed the material.
-4. Do not imply endorsement by the copyright holders.
-
-See [`ATTRIBUTION.md`](ATTRIBUTION.md) for ready-made attribution lines in Russian and English.
-
-### Software (MIT)
-
-When you redistribute theme or build tooling:
-
-1. Include the MIT copyright notice from [`LICENSE-MIT`](LICENSE-MIT).
-2. Include the MIT permission notice (full license text or a link to it).
-
-## Template provenance
-
-This repository was derived from
-[pkasila/java-materials](https://github.com/pkasila/java-materials) (LaTeX Beamer
-theme and build pipeline). Pavel Kasila is a joint copyright holder here, so no
-separate third-party license file is required for that lineage.
-
-## Related documents
-
-- [`LICENSE`](LICENSE) — short dual-license summary
-- [`LICENSE-CC-BY-4.0`](LICENSE-CC-BY-4.0) — unmodified Creative Commons legal text
-- [`LICENSE-MIT`](LICENSE-MIT) — MIT license for software
-- [`ATTRIBUTION.md`](ATTRIBUTION.md) — attribution examples for reusers
+Значок Python в `site/assets/python-logo.svg` — официальный логотип Python Software Foundation; [источник и условия использования](https://www.python.org/community/logos/). Он не входит в лицензию MIT на собственный код интерфейса.

@@ -36,6 +36,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm --prefix site ci
+
+      - name: Test manifest and frontend helpers
+        run: make test
+
       - name: Install TeX Live and poppler
         run: |
           sudo apt-get update
