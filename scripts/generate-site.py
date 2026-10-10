@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import html
+import json
 import re
 import shutil
 import sys
@@ -226,6 +227,7 @@ def discover_built_materials(slug: str, declared: list[dict[str, str]]) -> list[
                     "download": download_url,
                     "open": open_url,
                     "is_notebook": suffix == ".ipynb",
+                    "source": str(REPO_ROOT / slug / rel_path),
                 }
             )
 
@@ -385,23 +387,104 @@ def render_reference_chips(references: list[dict]) -> str:
         </div>"""
 
 
-def render_notebook_thumb(entry: dict, label: str, href: str) -> str:
-    """Preview tile for sessions that have a notebook but no PDF thumbnail."""
+def _cell_source(cell: dict) -> str:
+    source = cell.get("source", "")
+    return "".join(source) if isinstance(source, list) else str(source)
+
+
+def _clip(text: str, limit: int) -> str:
+    text = text.rstrip()
+    return text if len(text) <= limit else text[: limit - 1] + "…"
+
+
+def read_notebook_preview(path: str) -> dict | None:
+    """Pick the heading, first code cells and first output of a notebook."""
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        cells = data["cells"]
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+    heading = ""
+    for cell in cells:
+        if cell.get("cell_type") != "markdown":
+            continue
+        for line in _cell_source(cell).splitlines():
+            line = line.strip().lstrip("#").strip()
+            if line:
+                heading = line
+                break
+        if heading:
+            break
+
+    code_cells = []
+    output = ""
+    for cell in cells:
+        if cell.get("cell_type") != "code":
+            continue
+        lines = [ln for ln in _cell_source(cell).splitlines() if ln.strip()]
+        if not lines:
+            continue
+        if len(code_cells) < 2:
+            code_cells.append(
+                {"count": cell.get("execution_count"), "lines": lines[:2]}
+            )
+        if not output:
+            for out in cell.get("outputs", []):
+                text = out.get("text") or out.get("data", {}).get("text/plain") or ""
+                text = "".join(text) if isinstance(text, list) else str(text)
+                first = next((ln for ln in text.splitlines() if ln.strip()), "")
+                if first:
+                    output = first
+                    break
+        if len(code_cells) >= 2 and output:
+            break
+
+    if not heading and not code_cells:
+        return None
+    return {"heading": heading, "cells": code_cells, "output": output}
+
+
+def render_notebook_thumb(entry: dict, material: dict, href: str) -> str:
+    """Preview tile built from the notebook's own content (no PDF thumbnail)."""
     open_label = html.escape(f"{SITE['open_notebook']}: {entry['title']}")
-    bars = (
-        '<span class="nb-cell"><span class="nb-prompt">In [1]:</span>'
-        '<span class="nb-code"><i style="width:55%"></i></span></span>'
-        '<span class="nb-cell"><span class="nb-prompt">In [2]:</span>'
-        '<span class="nb-code"><i style="width:80%"></i><i style="width:46%"></i></span></span>'
-        '<span class="nb-out"><i style="width:62%"></i></span>'
-    )
+    preview = read_notebook_preview(material.get("source", ""))
+
+    if preview:
+        parts = []
+        if preview["heading"]:
+            parts.append(
+                f'<span class="nb-head">{html.escape(_clip(preview["heading"], 60))}</span>'
+            )
+        for index, cell in enumerate(preview["cells"], start=1):
+            number = cell["count"] if cell["count"] is not None else index
+            code = "".join(
+                f'<span class="nb-line">{html.escape(_clip(line, 44))}</span>'
+                for line in cell["lines"]
+            )
+            parts.append(
+                '<span class="nb-cell">'
+                f'<span class="nb-prompt">In [{html.escape(str(number))}]:</span>'
+                f'<span class="nb-code">{code}</span></span>'
+            )
+        if preview["output"]:
+            parts.append(
+                '<span class="nb-cell"><span class="nb-prompt">&nbsp;</span>'
+                f'<span class="nb-outline">{html.escape(_clip(preview["output"], 44))}</span></span>'
+            )
+        content = "".join(parts)
+    else:
+        content = (
+            '<span class="nb-head">Jupyter Notebook</span>'
+            '<span class="nb-cell"><span class="nb-prompt">In [1]:</span>'
+            '<span class="nb-code"><span class="nb-bar" style="width:55%"></span></span></span>'
+        )
+
     return (
         '<div class="session-thumb-wrap">'
         f'<a class="session-thumb-link" href="{html.escape(href)}" aria-label="{open_label}">'
         '<span class="session-thumb session-thumb-notebook" aria-hidden="true">'
-        '<span class="nb-badge">Jupyter Notebook</span>'
-        '<span class="nb-heading"><i></i></span>'
-        f"{bars}"
+        f"{content}"
         "</span></a></div>"
     )
 
@@ -433,12 +516,12 @@ def render_session_row(entry: dict, index: int) -> str:
 
     card_extra_class = ""
     if not thumb_html:
-        notebook_href = next(
-            (m["open"] for m in entry["materials"] if m["is_notebook"] and m["open"]),
-            "",
+        notebook = next(
+            (m for m in entry["materials"] if m["is_notebook"] and m["open"]),
+            None,
         )
-        if notebook_href:
-            thumb_html = render_notebook_thumb(entry, label, notebook_href)
+        if notebook:
+            thumb_html = render_notebook_thumb(entry, notebook, notebook["open"])
         else:
             card_extra_class = " session-card-no-thumb"
 
@@ -780,9 +863,9 @@ def render_index(entries: list[dict]) -> str:
     .session-thumb-notebook {{
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
-      padding: 0.6rem 0.75rem;
-      justify-content: center;
+      gap: 0.25rem;
+      padding: 0.5rem 0.65rem;
+      justify-content: flex-start;
       background: #fff;
       border: 1px solid var(--ac-rule);
       overflow: hidden;
@@ -790,22 +873,16 @@ def render_index(entries: list[dict]) -> str:
     .session-assignment .session-thumb-notebook {{
       aspect-ratio: 16 / 9;
     }}
-    .nb-badge {{
-      font-size: 0.5rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--session-mid);
-    }}
-    .nb-heading {{
+    .nb-head {{
       display: block;
-    }}
-    .nb-heading i {{
-      display: block;
-      width: 62%;
-      height: 0.45rem;
-      border-radius: 1px;
-      background: var(--session-dark);
+      font-family: "Unbounded", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--session-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }}
     .nb-cell {{
       display: flex;
@@ -814,33 +891,39 @@ def render_index(entries: list[dict]) -> str:
     }}
     .nb-prompt {{
       flex: none;
+      min-width: 1.7rem;
       font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
       font-size: 0.42rem;
-      line-height: 1.6;
+      line-height: 1.7;
       color: var(--session-mid);
-    }}
-    .nb-code, .nb-out {{
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
     }}
     .nb-code {{
       flex: 1;
-      padding: 0.22rem 0.3rem;
+      min-width: 0;
+      padding: 0.18rem 0.3rem;
       background: #eff1f4;
       border: 1px solid var(--ac-rule);
     }}
-    .nb-out {{
-      padding-left: 1.45rem;
+    .nb-line, .nb-outline {{
+      display: block;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.44rem;
+      line-height: 1.55;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }}
-    .nb-code i, .nb-out i {{
+    .nb-outline {{
+      flex: 1;
+      min-width: 0;
+      color: var(--ac-gray);
+    }}
+    .nb-bar {{
       display: block;
       height: 0.2rem;
       border-radius: 1px;
       background: var(--ac-rule);
-    }}
-    .nb-out i {{
-      background: #dde0e5;
     }}
     .session-body {{
       min-width: 0;
