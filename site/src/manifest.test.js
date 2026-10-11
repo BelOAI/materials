@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { validateManifest, countLabel, formatDate } from "./manifest.js";
+import { validateManifest, countLabel, formatDate, filterMaterials } from "./manifest.js";
 const item = () => ({
   id: "lectures/01-topic",
   kind: "lecture",
@@ -14,19 +14,22 @@ const item = () => ({
   materials: [],
   references: [],
 });
-const manifest = (material) => ({ version: 1, materials: [material] });
+const manifest = (material) => ({ version: 2, materials: [material], course: {
+  title: "Курс", description: "Описание", weeks: [{ slug: "topic", number: 0,
+    title: "Тема", description: "Описание", materials: [material.id] }],
+} });
 test("валидный и пустой каталог", () => {
   assert.equal(validateManifest(manifest(item()))[0].title, "Тема <&>");
-  assert.deepEqual(validateManifest({ version: 1, materials: [] }), []);
+  assert.deepEqual(validateManifest({ version: 2, materials: [], course: { title: "Курс", description: "Описание", weeks: [] } }), []);
 });
 test("версия, структура, повторяющиеся id и тип задания", () => {
   for (const data of [
     null,
-    { version: 2, materials: [] },
-    { version: 1 },
+    { version: 1, materials: [] },
+    { version: 2 },
     manifest({ ...item(), kind: "other" }),
     manifest({ ...item(), kind: "assignment" }),
-    { version: 1, materials: [item(), item()] },
+    { ...manifest(item()), materials: [item(), item()] },
     manifest({ ...item(), materials: [null] }),
   ]) {
     assert.throws(() => validateManifest(data));
@@ -102,4 +105,35 @@ test("превью ноутбука без PDF и адрес перехода", 
   assert.throws(() => validateManifest(manifest(data)));
   delete data.thumb_href;
   assert.throws(() => validateManifest(manifest(data)));
+});
+
+
+test("структура курса и однозначное назначение материалов", () => {
+  for (const mutate of [
+    (data) => { delete data.course; },
+    (data) => { data.course.weeks = []; },
+    (data) => { data.course.weeks[0].slug = "../topic"; },
+    (data) => { data.course.weeks[0].number = -1; },
+    (data) => { data.course.weeks[0].materials = ["unknown"]; },
+    (data) => { data.course.weeks[0].materials.push(item().id); },
+    (data) => { data.course.weeks.push({ ...data.course.weeks[0] }); },
+    (data) => { data.course.weeks[0].description = ""; },
+  ]) {
+    const data = manifest(item());
+    mutate(data);
+    assert.throws(() => validateManifest(data));
+  }
+});
+
+test("поиск по словам, регистр, подзаголовок и сочетание с фильтром", () => {
+  const materials = [
+    { ...item(), title: "Машинное обучение", subtitle: "Метрики качества", description: "Работа с данными" },
+    { ...item(), id: "practices/01", kind: "practice", title: "NumPy", subtitle: "Матрицы", description: "Работа с данными" },
+  ];
+  assert.equal(filterMaterials(materials, "all", "  ДАННЫМИ  ").length, 2);
+  assert.equal(filterMaterials(materials, "lecture", "данными").length, 1);
+  assert.equal(filterMaterials(materials, "all", "качества машинное").length, 1);
+  assert.equal(filterMaterials(materials, "all", "матрицы")[0].kind, "practice");
+  assert.equal(filterMaterials(materials, "practice", "качества").length, 0);
+  assert.equal(filterMaterials(materials, "all", "").length, 2);
 });

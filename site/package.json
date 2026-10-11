@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "esbuild src/materials-app.js --bundle --minify --format=esm --target=es2022 --outfile=../_site/assets/materials.js && esbuild src/site.css --minify --outfile=../_site/assets/site.css && cp node_modules/lit/LICENSE ../_site/assets/LICENSE-Lit.txt",
-    "test": "node --test src/manifest.test.js"
+    "test": "node --test src/*.test.js"
   },
   "dependencies": {
     "lit": "^3.3.1"

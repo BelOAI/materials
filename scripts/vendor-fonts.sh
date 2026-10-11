@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Download Unbounded and IBM Plex Sans (latin + cyrillic subsets) into site/fonts/.
+# Download local fonts with Latin and Cyrillic support into site/fonts/.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -26,6 +26,13 @@ curl -fsSL "${GOOGLE_FONTS}/ofl/unbounded/OFL.txt" \
   -o "${FONTS_DIR}/OFL-Unbounded.txt"
 curl -fsSL "${GOOGLE_FONTS}/ofl/ibmplexsans/OFL.txt" \
   -o "${FONTS_DIR}/OFL-IBMPlexSans.txt"
+
+curl -fsSL "${GOOGLE_FONTS}/ofl/ptsans/PT_Sans-Web-Regular.ttf" \
+  -o "${TMP_DIR}/pt-sans-regular.ttf"
+curl -fsSL "${GOOGLE_FONTS}/ofl/ptsans/PT_Sans-Web-Bold.ttf" \
+  -o "${TMP_DIR}/pt-sans-bold.ttf"
+curl -fsSL "${GOOGLE_FONTS}/ofl/ptsans/OFL.txt" \
+  -o "${FONTS_DIR}/OFL-PTSans.txt"
 
 "${PYTHON}" - "${TMP_DIR}" "${FONTS_DIR}" <<'PY'
 import sys
@@ -81,6 +88,12 @@ def subset_to_woff2(src: Path, dest: Path) -> None:
 for src_name, dest_name in FONTS:
     subset_to_woff2(tmp_dir / src_name, fonts_dir / dest_name)
     print(f"Wrote {fonts_dir / dest_name}")
+
+# PT Sans сохраняется полностью; меняется только формат контейнера.
+for weight in ("regular", "bold"):
+    font = TTFont(tmp_dir / f"pt-sans-{weight}.ttf")
+    font.flavor = "woff2"
+    font.save(fonts_dir / f"pt-sans-{weight}.woff2")
 PY
 
 echo "Fonts vendored to ${FONTS_DIR}"

@@ -29,4 +29,4 @@ make site
 
 Создайте папку лекции с `meta.yaml` и своим PDF, без обязательного `main.tex`. Укажите `pdf: materials/lecture.pdf` и `build: true`; заполните название, описание и дату. Если TeX тоже есть, указанный PDF имеет приоритет. `make tex DIR=…` собирает только локальную TeX-версию. Подробнее: [готовые PDF](../scripts/README.md#готовый-pdf-вместо-tex).
 
-Материалы этого раздела — [CC BY 4.0](../LICENSE-CC-BY-4.0). Авторы: Pavel Kasila и BelOAI Material Authors.
+Материалы этого раздела — [CC BY 4.0](../LICENSE-CC-BY-4.0). Авторы BelOAI.

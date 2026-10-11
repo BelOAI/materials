@@ -64,10 +64,15 @@ class PdfPipelineTest(unittest.TestCase):
             session = self.session(kind, 'pdf: own.pdf\nassignment_type: math\n')
             (session / 'own.pdf').write_bytes(b'%PDF-imported')
             self.run_build(session)
-        code = "import json,runpy; m=runpy.run_path('scripts/generate-site.py'); print(json.dumps(m['build_manifest'](m['discover_sessions']())))"
+        course = {"title": "Курс", "description": "Описание", "weeks": [{
+            "slug": "topic", "number": 0, "title": "Тема", "description": "Описание",
+            "materials": [f"{kind}/01-тема с пробелами" for kind in ("lectures", "practices", "assignments")],
+        }]}
+        (self.root / 'course.json').write_text(json.dumps(course), encoding='utf-8')
+        code = "import json,runpy; from pathlib import Path; m=runpy.run_path('scripts/generate-site.py'); entries=m['discover_sessions'](); print(json.dumps(m['build_manifest'](entries, m['load_course'](Path('.'), entries))))"
         result = subprocess.run([sys.executable, '-c', code], cwd=self.root, capture_output=True, text=True, check=True)
         manifest = json.loads(result.stdout)
-        self.assertEqual(manifest['version'], 1)
+        self.assertEqual(manifest['version'], 2)
         self.assertEqual(len(manifest['materials']), 3)
         for entry in manifest['materials']:
             self.assertIn('pdf', entry)

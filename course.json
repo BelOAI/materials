@@ -1,0 +1,20 @@
+{
+  "title": "Подготовка к BelOAI",
+  "description": "Материалы подготовки к олимпиаде по искусственному интеллекту. Лекции, практики и задания собраны по неделям.",
+  "weeks": [
+    {
+      "slug": "math-foundations",
+      "number": 0,
+      "title": "Математическая подготовка",
+      "description": "Повторение пределов и интегрального исчисления перед занятиями по машинному обучению.",
+      "materials": ["assignments/01-limits", "assignments/02-integrals"]
+    },
+    {
+      "slug": "intro-ml",
+      "number": 1,
+      "title": "Введение в машинное обучение",
+      "description": "Задачи машинного обучения, данные и метрики. Работа с NumPy и pandas, повторение векторов и матриц.",
+      "materials": ["lectures/01-intro-ml", "practices/01-numpy-pandas", "assignments/03-vectors-matrices"]
+    }
+  ]
+}
