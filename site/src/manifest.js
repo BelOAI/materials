@@ -27,7 +27,7 @@ const externalUrl = (value) => {
 };
 
 export function validateManifest(data) {
-  if (!isObject(data) || data.version !== 1 || !Array.isArray(data.materials)) {
+  if (!isObject(data) || data.version !== 2 || !Array.isArray(data.materials)) {
     throw new Error("Неподдерживаемый манифест");
   }
   const ids = new Set();
@@ -76,7 +76,39 @@ export function validateManifest(data) {
       throw new Error("Материал без ресурсов");
     }
   }
+  const course = data.course;
+  if (!isObject(course) || !["title", "description"].every(
+    (key) => isString(course[key]) && course[key].trim(),
+  ) || !Array.isArray(course.weeks)) throw new Error("Некорректный курс");
+  const assigned = new Set();
+  const slugs = new Set();
+  const numbers = new Set();
+  for (const week of course.weeks) {
+    if (!isObject(week) || !isString(week.slug) ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(week.slug) || slugs.has(week.slug) ||
+      !Number.isInteger(week.number) || week.number < 0 || numbers.has(week.number) ||
+      !["title", "description"].every((key) => isString(week[key]) && week[key].trim()) ||
+      !Array.isArray(week.materials) || !week.materials.length) {
+      throw new Error("Некорректная неделя");
+    }
+    slugs.add(week.slug);
+    numbers.add(week.number);
+    for (const id of week.materials) {
+      if (!ids.has(id) || assigned.has(id)) throw new Error("Некорректное назначение материала");
+      assigned.add(id);
+    }
+  }
+  if (assigned.size !== ids.size) throw new Error("Материал без недели");
   return data.materials;
+}
+
+export function filterMaterials(materials, kind, query) {
+  const words = query.toLocaleLowerCase("ru").trim().split(/\s+/).filter(Boolean);
+  return materials.filter((material) => {
+    const text = [material.title, material.subtitle, material.description]
+      .join(" ").toLocaleLowerCase("ru");
+    return (kind === "all" || material.kind === kind) && words.every((word) => text.includes(word));
+  });
 }
 
 export function countLabel(count) {

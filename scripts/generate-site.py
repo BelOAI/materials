@@ -19,6 +19,7 @@ from meta_parser import (
     get_references,
     parse_meta,
 )
+from course_site import load_course, publish_pages
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SESSION_ROOTS = (
@@ -230,7 +231,7 @@ def discover_sessions() -> list[dict]:
     return entries
 
 
-def build_manifest(entries: list[dict]) -> dict:
+def build_manifest(entries: list[dict], course: dict) -> dict:
     materials = []
     for entry in entries:
         item = {
@@ -252,21 +253,28 @@ def build_manifest(entries: list[dict]) -> dict:
             if entry[key]:
                 item[key] = entry[key]
         materials.append(item)
-    return {"version": 1, "materials": materials}
+    return {"version": 2, "course": course, "materials": materials}
 
 
 def main() -> None:
     SITE_DIR.mkdir(parents=True, exist_ok=True)
     if not FONTS_SRC.is_dir():
         raise SystemExit("Нет шрифтов: выполните bash scripts/vendor-fonts.sh")
-    shutil.copytree(FONTS_SRC, FONTS_DEST, dirs_exist_ok=True)
     entries = discover_sessions()
+    course = load_course(REPO_ROOT, entries)
+    manifest = build_manifest(entries, course)
+    shutil.copytree(FONTS_SRC, FONTS_DEST, dirs_exist_ok=True)
+    assets = REPO_ROOT / "site/assets"
+    if assets.is_dir():
+        shutil.copytree(assets, SITE_DIR / "assets", dirs_exist_ok=True)
+    for filename in ("LICENSE-CC-BY-4.0", "LICENSE-MIT"):
+        shutil.copyfile(REPO_ROOT / filename, SITE_DIR / filename)
     (SITE_DIR / "materials.json").write_text(
-        json.dumps(build_manifest(entries), ensure_ascii=False, indent=2) + "\n",
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    for name in ("index.html", "favicon.svg"):
-        shutil.copyfile(REPO_ROOT / "site" / name, SITE_DIR / name)
+    publish_pages(REPO_ROOT, SITE_DIR, manifest)
+    shutil.copyfile(REPO_ROOT / "site/favicon.svg", SITE_DIR / "favicon.svg")
     print(f"Опубликован манифест: {len(entries)} материалов")
 
 

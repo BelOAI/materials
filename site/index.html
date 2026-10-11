@@ -3,46 +3,56 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Материалы подготовки к BelOAI: лекции, практики, домашние задания, ноутбуки и ссылки."
-    />
-    <meta name="theme-color" content="#172a4a" />
-    <title>BelOAI — материалы к занятиям</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="assets/site.css" />
-    <script type="module" src="assets/materials.js"></script>
+    <meta name="description" content="$description" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#212529" media="(prefers-color-scheme: dark)" />
+    <title>$title — BelOAI</title>
+    <link rel="icon" href="${root}favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="${root}assets/site.css" />
+    <script type="module" src="${root}assets/materials.js"></script>
   </head>
-  <body>
-    <header class="site-hero">
-      <div class="shell">
-        <h1>BelOAI</h1>
-        <p class="hero-subtitle">
-          Подготовка к олимпиаде по искусственному интеллекту
-        </p>
-        <p class="hero-note">Лекции, практики и домашние задания</p>
+  <body data-root="$root" data-page="$page">
+    <course-shell root="$root" page="$page">
+    <a class="skip-link" href="#content">К содержимому</a>
+    <div class="course-layout">
+      <aside class="sidebar">
+        <header>
+          <a class="brand" href="$root">BelOAI</a>
+          <p class="brand-description">Подготовка к олимпиаде по искусственному интеллекту</p>
+          <p class="brand-note">Открытые материалы курса</p>
+          <div class="social-icons" aria-label="Соцсети BelOAI">
+            <a href="https://github.com/BelOAI" aria-label="GitHub BelOAI" title="GitHub BelOAI"><img src="${root}assets/fontawesome/github.svg" alt="" /></a>
+            <a href="https://instagram.com/beloaiby" aria-label="Instagram BelOAI" title="Instagram BelOAI"><img src="${root}assets/fontawesome/instagram.svg" alt="" /></a>
+            <a href="https://tiktok.com/@beloaiby" aria-label="TikTok BelOAI" title="TikTok BelOAI"><img src="${root}assets/fontawesome/tiktok.svg" alt="" /></a>
+            <a href="https://t.me/beloaiby" aria-label="Telegram BelOAI" title="Telegram BelOAI"><img src="${root}assets/fontawesome/telegram.svg" alt="" /></a>
+          </div>
+        </header>
+        <course-navigation>
+        <details class="course-menu" open>
+          <summary>Меню</summary>
+          <nav aria-label="Навигация курса">
+            $navigation
+            <hr />
+            <div class="community-links">
+              <strong>Сообщество</strong>
+              <ul>
+                <li><a href="https://github.com/BelOAI">GitHub</a></li>
+                <li><a href="https://instagram.com/beloaiby">Instagram</a></li>
+                <li><a href="https://tiktok.com/@beloaiby">TikTok</a></li>
+                <li><a href="https://t.me/beloaiby">Telegram</a></li>
+              </ul>
+            </div>
+            <hr />
+            <p class="legal-link"><a href="${root}license/"$license_current><img src="${root}assets/fontawesome/creative-commons.svg" alt="" />Лицензия</a></p>
+          </nav>
+        </details>
+        </course-navigation>
+      </aside>
+      <div class="workspace">
+        <main id="content" tabindex="-1">$content</main>
       </div>
-    </header>
-    <main class="shell" id="materials">
-      <materials-app
-        ><p class="status" role="status">Загрузка материалов…</p></materials-app
-      >
-      <noscript
-        ><p class="status">
-          Для просмотра списка включите JavaScript. Исходники доступны в
-          <a href="https://github.com/BelOAI/materials"
-            >репозитории материалов</a
-          >.
-        </p></noscript
-      >
-    </main>
-    <footer class="shell site-footer">
-      <p>
-        <a href="https://creativecommons.org/licenses/by/4.0/"
-          >Материалы — CC BY 4.0</a
-        >
-        · <a href="https://github.com/BelOAI/materials">Исходники на GitHub</a>
-      </p>
-    </footer>
+    </div>
+    <material-preview for="content"></material-preview>
+    </course-shell>
   </body>
 </html>
