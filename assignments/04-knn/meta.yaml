@@ -1,0 +1,11 @@
+title: "KNN с нуля"
+subtitle: "Нормализация, поиск соседей и визуализация"
+date: "2026-10-10"
+description: "Реализуйте min-max-нормализацию и KNN-классификатор, сравните метрики и исследуйте области решений."
+assignment_type: coding
+lang: ru
+build: true
+
+materials:
+  - path: materials/notebook.ipynb
+    label: Домашняя работа в Jupyter Notebook
