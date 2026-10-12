@@ -4,6 +4,7 @@ date: "2026-10-10"
 description: "Разбираемся, как KNN использует расстояния, как оценивать качество классификации и зачем масштабировать признаки."
 lang: ru
 build: true
+pdf: materials/lecture.pdf
 
 materials:
   - path: materials/lecture.pptx
