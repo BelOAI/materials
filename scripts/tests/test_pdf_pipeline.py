@@ -18,6 +18,7 @@ class PdfPipelineTest(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         shutil.copytree(ROOT / 'scripts', self.root / 'scripts', ignore=shutil.ignore_patterns('__pycache__'))
+        shutil.copytree(ROOT / 'site/assets', self.root / 'site/assets')
         shutil.copy(ROOT / 'Makefile', self.root / 'Makefile')
         self.bin = self.root / 'bin'
         self.bin.mkdir()
@@ -58,6 +59,23 @@ class PdfPipelineTest(unittest.TestCase):
                 self.assertTrue(self.target(s, 'thumbs', '.png').exists())
                 self.assertTrue((self.root / '_site/materials' / kind / s.name / 'data.csv').exists())
                 self.assertFalse((s / 'tex-runs').exists())
+
+    def test_assignment_notebook_preview_without_pdf(self):
+        session = self.session(
+            'assignments',
+            'assignment_type: coding\nmaterials:\n  - path: materials/task.ipynb\n',
+        )
+        (session / 'materials').mkdir()
+        (session / 'materials/task.ipynb').write_text(
+            json.dumps({'cells': [{'cell_type': 'code', 'source': 'answer = 42'}]}),
+            encoding='utf-8',
+        )
+        self.run_build(session)
+        preview = self.root / '_site/thumbs/assignments' / session.name / 'task.ipynb.svg'
+        svg = preview.read_text(encoding='utf-8')
+        self.assertIn('answer =', svg)
+        self.assertIn('>42</tspan>', svg)
+        self.assertFalse(self.target(session, 'thumbs', '.png').exists())
 
     def test_manifest_for_imported_pdf(self):
         for kind in ('lectures', 'practices', 'assignments'):

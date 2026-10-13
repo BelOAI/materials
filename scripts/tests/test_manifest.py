@@ -377,6 +377,34 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["thumb"], "thumbs/practices/01-files.png")
         self.assertEqual(entry["thumb_href"], "pdfs/practices/01-files.pdf")
 
+    def test_assignment_notebook_preview_and_pdf_priority(self):
+        self.session(
+            "assignments",
+            "04-knn",
+            "assignment_type: coding\nmaterials:\n  - path: materials/task.ipynb\n",
+        )
+        out = self.output / "materials/assignments/04-knn"
+        out.mkdir(parents=True)
+        (out / "task.ipynb").touch()
+        preview = self.output / "thumbs/assignments/04-knn/task.ipynb.svg"
+        preview.parent.mkdir(parents=True)
+        preview.touch()
+
+        entry = self.manifest()["materials"][0]
+        self.assertEqual(entry["kind"], "assignment")
+        self.assertEqual(entry["thumb"], "thumbs/assignments/04-knn/task.ipynb.svg")
+        self.assertEqual(entry["thumb_href"], "materials/assignments/04-knn/task.ipynb")
+
+        pdf = self.output / "pdfs/assignments/04-knn.pdf"
+        pdf.parent.mkdir(parents=True)
+        pdf.touch()
+        pdf_thumb = self.output / "thumbs/assignments/04-knn.png"
+        pdf_thumb.parent.mkdir(parents=True, exist_ok=True)
+        pdf_thumb.touch()
+        entry = self.manifest()["materials"][0]
+        self.assertEqual(entry["thumb"], "thumbs/assignments/04-knn.png")
+        self.assertEqual(entry["thumb_href"], "pdfs/assignments/04-knn.pdf")
+
 
 if __name__ == "__main__":
     unittest.main()

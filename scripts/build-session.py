@@ -58,14 +58,6 @@ def build_session(session: Path) -> None:
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
         print(f'Опубликован PDF: {target}', flush=True)
-        if shutil.which('pdftoppm'):
-            thumb.parent.mkdir(parents=True, exist_ok=True)
-            result = subprocess.run(['pdftoppm', '-scale-to', '1280', '-png', '-f', '1', '-l', '1', '-singlefile', str(target), str(thumb.with_suffix(''))])
-            if result.returncode:
-                thumb.unlink(missing_ok=True)
-                print(f'Предупреждение: не удалось создать превью {slug}', file=sys.stderr)
-        else:
-            print(f'Предупреждение: pdftoppm не найден, PDF {slug} опубликован без превью.', file=sys.stderr)
     subprocess.run([str(REPO_ROOT / 'scripts/build-materials.sh'), str(session)], check=True)
 
 

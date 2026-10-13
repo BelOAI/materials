@@ -39,7 +39,7 @@ PY
 )
 
 if [[ ${#MATERIAL_LINES[@]} -eq 0 ]]; then
-  python3 "${REPO_ROOT}/scripts/notebook_preview.py" "$SESSION_DIR"
+  python3 "${REPO_ROOT}/scripts/material_preview.py" "$SESSION_DIR"
   exit 0
 fi
 
@@ -86,4 +86,4 @@ if [[ $built -gt 0 ]]; then
   echo "Built ${built} material(s) for ${SESSION_SLUG}"
 fi
 
-python3 "${REPO_ROOT}/scripts/notebook_preview.py" "$SESSION_DIR"
+python3 "${REPO_ROOT}/scripts/material_preview.py" "$SESSION_DIR"

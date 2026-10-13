@@ -190,7 +190,7 @@ def discover_sessions() -> list[dict]:
                 quote(f"thumbs/{slug}.png") if pdf_exists and thumb.is_file() else ""
             )
             thumb_href = quote(pdf_rel) if thumb_url else ""
-            if kind == "practice" and not pdf_exists:
+            if not pdf_exists:
                 notebook = next(
                     (file for file in built_materials if file["is_notebook"]), None
                 )

@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parents[1]))
-from notebook_preview import build_preview, notebook_content, render_preview
+from material_preview import build_preview, notebook_content, render_preview
 
 
 class PreviewTests(unittest.TestCase):
@@ -97,6 +97,63 @@ class PreviewTests(unittest.TestCase):
             "text.ipynb", [{"cell_type": "markdown", "source": "# Только текст"}]
         )
         self.assertIsNone(notebook_content(path))
+
+    def test_assignment_notebook_preview_uses_same_code_fragment(self):
+        assignment = self.root / "assignments/04-knn"
+        assignment.mkdir(parents=True)
+        (assignment / "meta.yaml").write_text(
+            "assignment_type: coding\nmaterials:\n  - path: materials/task.ipynb\n",
+            encoding="utf-8",
+        )
+        materials = assignment / "materials"
+        materials.mkdir()
+        notebook = materials / "task.ipynb"
+        notebook.write_text(
+            json.dumps(
+                {
+                    "cells": [
+                        {"cell_type": "markdown", "source": "# Assignment"},
+                        {"cell_type": "code", "source": "answer = 42"},
+                        {
+                            "cell_type": "code",
+                            "source": "print(1)",
+                            "outputs": [{"output_type": "stream", "text": "cell output"}],
+                        },
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+        build_preview(assignment, self.output)
+        preview = self.output / "thumbs/assignments/04-knn/task.ipynb.svg"
+        svg = preview.read_text(encoding="utf-8")
+        self.assertIn("answer =", svg)
+        self.assertIn(">42</tspan>", svg)
+        self.assertNotIn("cell output", svg)
+
+    def test_pdf_preview_takes_priority_over_notebook(self):
+        import subprocess
+        from unittest.mock import patch
+
+        self.meta(["a.ipynb"])
+        self.notebook("a.ipynb", [{"cell_type": "code", "source": "print(1)"}])
+        pdf = self.output / "pdfs/practices/01-topic.pdf"
+        pdf.parent.mkdir(parents=True)
+        pdf.touch()
+        (self.output / "thumbs/practices/01-topic").mkdir(parents=True)
+        (self.output / "thumbs/practices/01-topic/stale.svg").touch()
+
+        def render_pdf(command, **kwargs):
+            Path(command[-1] + ".png").write_bytes(b"png")
+            return subprocess.CompletedProcess(command, 0, "", "")
+
+        with patch("material_preview.shutil.which", return_value="pdftoppm"), patch(
+            "material_preview.subprocess.run", side_effect=render_pdf
+        ):
+            build_preview(self.session, self.output)
+        self.assertTrue((self.output / "thumbs/practices/01-topic.png").is_file())
+        self.assertFalse((self.output / "thumbs/practices/01-topic/stale.svg").exists())
+        self.assertFalse((self.output / "thumbs/practices/01-topic/a.ipynb.svg").exists())
 
     def test_square_icon_and_code_layout(self):
         content = [

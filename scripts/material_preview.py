@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Миниатюра практики из текста ноутбука, без выполнения ячеек."""
+"""Создание превью PDF или Jupyter Notebook для учебного материала."""
 
 import base64
 import html
 import io
 import json
 import keyword
+import shutil
+import subprocess
 import sys
 import tokenize
 import xml.etree.ElementTree as ET
@@ -117,15 +119,55 @@ def render_preview(content):
 
 
 def build_preview(session_dir, site_dir):
-    if session_dir.parent.name != "practices":
+    if session_dir.parent.name not in ("lectures", "practices", "assignments"):
         return
-    slug = f"practices/{session_dir.name}"
+    slug = f"{session_dir.parent.name}/{session_dir.name}"
     output = site_dir / "thumbs" / slug
-    # Удаляем старую миниатюру при изменении или удалении ноутбука.
+    pdf_preview = site_dir / "thumbs" / f"{slug}.png"
+    pdf_preview.unlink(missing_ok=True)
     if output.is_dir():
-        for preview in output.glob("*.svg"):
-            preview.unlink()
-    if (site_dir / "pdfs" / f"{slug}.pdf").is_file():
+        shutil.rmtree(output)
+    else:
+        output.unlink(missing_ok=True)
+
+    pdf = site_dir / "pdfs" / f"{slug}.pdf"
+    if pdf.is_file():
+        if not shutil.which("pdftoppm"):
+            print(
+                f"Предупреждение: pdftoppm не найден, PDF {slug} опубликован без превью.",
+                file=sys.stderr,
+            )
+            return
+        pdf_preview.parent.mkdir(parents=True, exist_ok=True)
+        result = subprocess.run(
+            [
+                "pdftoppm",
+                "-scale-to",
+                "1280",
+                "-png",
+                "-f",
+                "1",
+                "-l",
+                "1",
+                "-singlefile",
+                str(pdf),
+                str(pdf_preview.with_suffix("")),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode or not pdf_preview.is_file():
+            pdf_preview.unlink(missing_ok=True)
+            print(
+                f"Предупреждение: не удалось создать превью PDF {slug}",
+                file=sys.stderr,
+            )
+        else:
+            print(f"Превью PDF: {pdf_preview}")
+        return
+
+    meta_path = session_dir / "meta.yaml"
+    if not meta_path.is_file():
         return
     for material in get_materials(parse_meta(session_dir / "meta.yaml")):
         source = session_dir / material["path"]
