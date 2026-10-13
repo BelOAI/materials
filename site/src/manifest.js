@@ -79,7 +79,7 @@ export function validateManifest(data) {
   const course = data.course;
   if (!isObject(course) || !["title", "description"].every(
     (key) => isString(course[key]) && course[key].trim(),
-  ) || !Array.isArray(course.weeks)) throw new Error("Некорректный курс");
+  ) || !Array.isArray(course.weeks)) throw new Error("Некорректная структура занятий");
   const assigned = new Set();
   const slugs = new Set();
   const numbers = new Set();

@@ -40,8 +40,8 @@ class ManifestTests(unittest.TestCase):
                 if not meta.parent.name.startswith("_")
             ]
         course = {
-            "title": "Курс <&>",
-            "description": "Описание курса",
+            "title": "Подготовка <&>",
+            "description": "Описание подготовки",
             "weeks": [
                 {
                     "slug": "topic",
@@ -190,7 +190,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(data["materials"][0]["id"], "lectures/01-topic")
         self.assertTrue((self.output / "fonts/test.woff2").is_file())
         home = (self.output / "index.html").read_text()
-        self.assertIn("Курс &lt;&amp;&gt;", home)
+        self.assertIn("Подготовка &lt;&amp;&gt;", home)
         self.assertIn('href="weeks/topic/"', home)
         week = (self.output / "weeks/topic/index.html").read_text()
         self.assertIn('href="../../pdfs/lectures/01-topic.pdf"', week)

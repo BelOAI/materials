@@ -64,7 +64,7 @@ class PdfPipelineTest(unittest.TestCase):
             session = self.session(kind, 'pdf: own.pdf\nassignment_type: math\n')
             (session / 'own.pdf').write_bytes(b'%PDF-imported')
             self.run_build(session)
-        course = {"title": "Курс", "description": "Описание", "weeks": [{
+        course = {"title": "Подготовка", "description": "Описание", "weeks": [{
             "slug": "topic", "number": 0, "title": "Тема", "description": "Описание",
             "materials": [f"{kind}/01-тема с пробелами" for kind in ("lectures", "practices", "assignments")],
         }]}

@@ -15,12 +15,12 @@ const item = () => ({
   references: [],
 });
 const manifest = (material) => ({ version: 2, materials: [material], course: {
-  title: "Курс", description: "Описание", weeks: [{ slug: "topic", number: 0,
+  title: "Подготовка", description: "Описание", weeks: [{ slug: "topic", number: 0,
     title: "Тема", description: "Описание", materials: [material.id] }],
 } });
 test("валидный и пустой каталог", () => {
   assert.equal(validateManifest(manifest(item()))[0].title, "Тема <&>");
-  assert.deepEqual(validateManifest({ version: 2, materials: [], course: { title: "Курс", description: "Описание", weeks: [] } }), []);
+  assert.deepEqual(validateManifest({ version: 2, materials: [], course: { title: "Подготовка", description: "Описание", weeks: [] } }), []);
 });
 test("версия, структура, повторяющиеся id и тип задания", () => {
   for (const data of [
@@ -108,7 +108,7 @@ test("превью ноутбука без PDF и адрес перехода", 
 });
 
 
-test("структура курса и однозначное назначение материалов", () => {
+test("структура занятий и однозначное назначение материалов", () => {
   for (const mutate of [
     (data) => { delete data.course; },
     (data) => { data.course.weeks = []; },

@@ -1,4 +1,4 @@
-"""Структура курса и статические страницы с прогрессивным улучшением."""
+"""Структура занятий и статические страницы с прогрессивным улучшением."""
 
 from __future__ import annotations
 
@@ -202,7 +202,7 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
         path: str, title: str, description: str, content: str, active: str, root: str
     ):
         about = link(
-            root, "О курсе", ' aria-current="page"' if active == "home" else ""
+            root, "О подготовке", ' aria-current="page"' if active == "home" else ""
         )
         nav = "<ul><li>" + about + '</li></ul><hr><ul class="week-navigation">'
         for week in weeks:
@@ -244,8 +244,8 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
         "",
         course["title"],
         course["description"],
-        f'<h1>О курсе</h1><p>{escape(course["description"])}</p>'
-        f'<h2>Программа курса</h2>{overview if weeks else "<p>Материалы курса пока не опубликованы.</p>"}',
+        f'<h1>О подготовке</h1><p>{escape(course["description"])}</p>'
+        f'<h2>Темы занятий</h2>{overview if weeks else "<p>Материалы для подготовки пока не опубликованы.</p>"}',
         "home",
         "./",
     )
@@ -309,7 +309,7 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
     page(
         "materials",
         "Все материалы",
-        "Лекции, практики и задания курса BelOAI.",
+        "Лекции, практики и задания для подготовки к BelOAI.",
         catalog,
         "catalog",
         "../",
