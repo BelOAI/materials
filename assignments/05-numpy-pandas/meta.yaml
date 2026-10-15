@@ -1,0 +1,16 @@
+title: "NumPy и pandas"
+subtitle: "Массивы, таблицы, CSV и JSON"
+date: "2026-10-15"
+description: "Решите 10 упражнений на NumPy и 4 задачи на pandas с чтением CSV и JSON в Jupyter Notebook, а задачи на векторы и матрицы — прямо в Яндекс.Контесте."
+assignment_type: coding
+lang: ru
+build: true
+
+materials:
+  - path: materials/homework.ipynb
+    label: Домашняя работа в Jupyter Notebook
+
+references:
+  - kind: contest
+    url: https://contest.yandex.ru/contest/101165/
+    label: Сдать решения

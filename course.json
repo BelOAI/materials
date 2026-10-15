@@ -14,7 +14,7 @@
       "number": 1,
       "title": "Введение в машинное обучение",
       "description": "Задачи машинного обучения, данные и метрики. Работа с NumPy и pandas, повторение векторов и матриц.",
-      "materials": ["lectures/01-intro-ml", "practices/01-numpy-pandas", "assignments/03-vectors-matrices"]
+      "materials": ["lectures/01-intro-ml", "practices/01-numpy-pandas", "assignments/03-vectors-matrices", "assignments/05-numpy-pandas"]
     },
     {
       "slug": "knn",
