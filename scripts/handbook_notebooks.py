@@ -1,0 +1,80 @@
+"""Синхронизация учебных ноутбуков с Markdown уроков: --write или --check."""
+from __future__ import annotations
+import argparse
+import json
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def render_notebook(title: str, text: str) -> dict:
+    solutions = []
+    def move(match):
+        solutions.append(match.group(1).strip())
+        return ''
+    text = re.sub(r'<details>\s*<summary>Решение</summary>\s*(.*?)\s*</details>', move, text, flags=re.S)
+    text += '\n\n## Решения задач\n\n' + ''.join(f'### Задача {i}\n\n{solution}\n\n' for i, solution in enumerate(solutions, 1))
+    cells = []
+    def markdown(value):
+        if value.strip():
+            cells.append({'cell_type': 'markdown', 'metadata': {}, 'source': value.strip().splitlines(keepends=True)})
+    markdown(f'# {title}\n\nАвторы BelOAI. CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
+    cursor = 0
+    for match in re.finditer(r'^```python\n(.*?)^```\s*$', text, re.M | re.S):
+        markdown(text[cursor:match.start()])
+        cells.append({'cell_type': 'code', 'metadata': {}, 'execution_count': None, 'outputs': [], 'source': (match.group(1).rstrip() + '\n').splitlines(keepends=True)})
+        cursor = match.end()
+    markdown(text[cursor:])
+    for index, cell in enumerate(cells):
+        cell['id'] = f'cell-{index:03}'
+    return {'cells': cells, 'metadata': {'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'}, 'language_info': {'name': 'python', 'version': '3.14'}}, 'nbformat': 4, 'nbformat_minor': 5}
+
+
+def synchronize(root: Path, write: bool = False) -> list[str]:
+    book = json.loads((root / 'handbook/handbook.json').read_text())
+    stale = []
+    titles = {lesson['id']: lesson['title'] for track in book['tracks']
+              for chapter in track['chapters'] for lesson in chapter['lessons']}
+    titles['start'] = book['start']['title']
+    for track in book['tracks']:
+        for chapter in track['chapters']:
+            for lesson in chapter['lessons']:
+                if lesson['status'] == 'planned' or not any(r['path'] == 'notebook.ipynb' for r in lesson.get('resources', [])):
+                    continue
+                folder = root / 'handbook' / lesson['id']
+                expected = render_notebook(lesson['title'], (folder / 'index.md').read_text())
+                destination = folder / 'notebook.ipynb'
+                if not destination.is_file() or json.loads(destination.read_text()) != expected:
+                    stale.append(lesson['id'])
+                    if write:
+                        destination.write_text(json.dumps(expected, ensure_ascii=False, indent=1) + '\n')
+    # Keep the old combined notebooks usable and point readers to current lessons.
+    for alias in book.get('aliases', []):
+        for resource in alias.get('resources', []):
+            if not resource['path'].endswith('.ipynb'):
+                continue
+            destination = root / 'handbook' / alias['id'] / resource['path']
+            document = json.loads(destination.read_text())
+            text = '## Уроки по этим темам\n\nМатериал этого ноутбука можно изучать по отдельным урокам:\n\n'
+            text += ''.join('- [' + titles[i] + '](../../' + i + '/)\n' for i in alias['lessons'])
+            expected = {'cell_type': 'markdown', 'id': 'lesson-links', 'metadata': {},
+                        'source': text.splitlines(keepends=True)}
+            if len(document['cells']) < 2 or document['cells'][1] != expected:
+                stale.append(alias['id'])
+                if write:
+                    document['cells'] = [c for c in document['cells'] if c.get('id') != 'lesson-links']
+                    document['cells'].insert(1, expected)
+                    destination.write_text(json.dumps(document, ensure_ascii=False, indent=1) + '\n')
+    return stale
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--write', action='store_true')
+    mode.add_argument('--check', action='store_true')
+    args = parser.parse_args()
+    stale = synchronize(ROOT, write=args.write)
+    if args.check and stale:
+        parser.exit(1, 'Не синхронизированы ноутбуки: ' + ', '.join(stale) + '\n')

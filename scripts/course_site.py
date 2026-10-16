@@ -190,49 +190,63 @@ def render_material(material: dict, root: str, show_description: bool = False) -
     </li>"""
 
 
+def write_page(
+    source: Path, output: Path, weeks: list,
+    path: str, title: str, description: str, content: str, active: str, root: str,
+    extra_navigation: str = "",
+    *, navigation_override: str | None = None, navigation_top: str = "",
+    brand_href: str | None = None, navigation_label: str = "Навигация по материалам",
+) -> None:
+    about = link(
+        root, "О подготовке", ' aria-current="page"' if active == "home" else ""
+    )
+    nav = "<ul><li>" + about + '</li></ul><hr><ul class="week-navigation">'
+    for week in weeks:
+        current = ' aria-current="page"' if active == week["slug"] else ""
+        href = escape(root + f'weeks/{week["slug"]}/', quote=True)
+        nav += (
+            f'<li><a href="{href}" title="{escape("Неделя " + str(week["number"]) + " · " + week["title"], quote=True)}"{current}>Неделя {week["number"]} '
+            f'<span class="nav-topic">{escape(week["title"])}</span></a></li>'
+        )
+    nav += (
+        "</ul><hr><ul><li>"
+        + link(
+            root + "materials/",
+            "Все материалы",
+            ' aria-current="page"' if active == "catalog" else "",
+        )
+        + '</li>'
+        + '<li><a href="https://github.com/BelOAI/materials">Исходники на GitHub</a></li></ul>'
+    )
+    nav = navigation_override if navigation_override is not None else nav + extra_navigation
+    template = Template((source / "site/index.html").read_text(encoding="utf-8"))
+    html = template.substitute(
+        title=escape(title),
+        description=escape(description, quote=True),
+        root=root,
+        page=active,
+        content=content,
+        navigation=nav,
+        navigation_top=navigation_top,
+        navigation_class="handbook-navigation" if active == "handbook" else "",
+        brand_href=escape(brand_href if brand_href is not None else root, quote=True),
+        navigation_label=escape(navigation_label, quote=True),
+        license_current=' aria-current="page"' if path == "license" else "",
+    )
+    dest = output / path / "index.html"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(html, encoding="utf-8")
+
+
 def publish_pages(source: Path, output: Path, manifest: dict) -> None:
     course = manifest["course"]
     weeks = course["weeks"]
     materials = {m["id"]: m for m in manifest["materials"]}
-    template = Template((source / "site/index.html").read_text(encoding="utf-8"))
     # Не оставляем страницы удалённых или скрытых недель.
     shutil.rmtree(output / "weeks", ignore_errors=True)
 
-    def page(
-        path: str, title: str, description: str, content: str, active: str, root: str
-    ):
-        about = link(
-            root, "О подготовке", ' aria-current="page"' if active == "home" else ""
-        )
-        nav = "<ul><li>" + about + '</li></ul><hr><ul class="week-navigation">'
-        for week in weeks:
-            current = ' aria-current="page"' if active == week["slug"] else ""
-            href = escape(root + f'weeks/{week["slug"]}/', quote=True)
-            nav += (
-                f'<li><a href="{href}" title="{escape("Неделя " + str(week["number"]) + " · " + week["title"], quote=True)}"{current}>Неделя {week["number"]} '
-                f'<span class="nav-topic">{escape(week["title"])}</span></a></li>'
-            )
-        nav += (
-            "</ul><hr><ul><li>"
-            + link(
-                root + "materials/",
-                "Все материалы",
-                ' aria-current="page"' if active == "catalog" else "",
-            )
-            + '</li><li><a href="https://github.com/BelOAI/materials">Исходники на GitHub</a></li></ul>'
-        )
-        html = template.substitute(
-            title=escape(title),
-            description=escape(description, quote=True),
-            root=root,
-            page=active,
-            content=content,
-            navigation=nav,
-            license_current=' aria-current="page"' if path == "license" else "",
-        )
-        dest = output / path / "index.html"
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text(html, encoding="utf-8")
+    def page(*args):
+        write_page(source, output, weeks, *args)
 
     overview = '<ul class="week-list">'
     for week in weeks:
@@ -323,7 +337,7 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
         '<a href="https://github.com/BelOAI/materials/blob/main/CONTRIBUTORS.md">'
         'Участники проекта</a>.</p>'
         '<h2>Учебные материалы</h2>'
-        '<p>Лекции, практики, задания, учебные PDF, тексты каталога и данные материалов '
+        '<p>Лекции, практики, задания, учебник, учебные PDF, тексты каталога и данные материалов '
         'распространяются по '
         '<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. '
         '<a href="../LICENSE-CC-BY-4.0">Полный текст лицензии</a>.</p>'
