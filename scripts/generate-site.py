@@ -20,6 +20,7 @@ from meta_parser import (
     parse_meta,
 )
 from course_site import load_course, publish_pages
+from handbook_site import publish_handbook
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SESSION_ROOTS = (
@@ -275,6 +276,8 @@ def main() -> None:
     )
     publish_pages(REPO_ROOT, SITE_DIR, manifest)
     shutil.copyfile(REPO_ROOT / "site/favicon.svg", SITE_DIR / "favicon.svg")
+    if (REPO_ROOT / "handbook/handbook.json").is_file():
+        publish_handbook(REPO_ROOT, SITE_DIR, course["weeks"])
     print(f"Опубликован манифест: {len(entries)} материалов")
 
 

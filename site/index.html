@@ -17,7 +17,7 @@
     <div class="course-layout">
       <aside class="sidebar">
         <header>
-          <a class="brand" href="$root">BelOAI</a>
+          <a class="brand" href="$brand_href">BelOAI</a>
           <p class="brand-description">Подготовка к олимпиаде по искусственному интеллекту</p>
           <p class="brand-note">Открытые учебные материалы</p>
           <div class="social-icons" aria-label="Соцсети BelOAI">
@@ -29,8 +29,10 @@
         </header>
         <course-navigation>
         <details class="course-menu" open>
-          <summary>Меню</summary>
-          <nav aria-label="Навигация по материалам">
+          <summary><span class="menu-label">Меню</span><span class="menu-close">Закрыть меню</span></summary>
+          <nav class="$navigation_class" aria-label="$navigation_label">
+            $navigation_top
+            <div class="navigation-body">
             $navigation
             <hr />
             <div class="community-links">
@@ -44,6 +46,7 @@
             </div>
             <hr />
             <p class="legal-link"><a href="${root}license/"$license_current><img src="${root}assets/fontawesome/creative-commons.svg" alt="" />Лицензия</a></p>
+            </div>
           </nav>
         </details>
         </course-navigation>

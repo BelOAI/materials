@@ -62,21 +62,7 @@ for line in "${MATERIAL_LINES[@]}"; do
   echo "Copied ${dest}"
 
   if [[ "${base##*.}" == "ipynb" ]]; then
-    stem="${base%.ipynb}"
-    if command -v jupyter >/dev/null 2>&1; then
-      if jupyter nbconvert \
-        --to html \
-        --output "${stem}.html" \
-        --output-dir "$OUT_DIR" \
-        "$dest" >/dev/null; then
-        echo "Rendered ${OUT_DIR}/${stem}.html"
-      else
-        rm -f "${OUT_DIR}/${stem}.html"
-        echo "Warning: notebook HTML export failed: ${base}" >&2
-      fi
-    else
-      echo "Warning: jupyter not found; skipped HTML for ${base}" >&2
-    fi
+    python3 "${REPO_ROOT}/scripts/notebook_export.py" "$dest"
   fi
 
   built=$((built + 1))
