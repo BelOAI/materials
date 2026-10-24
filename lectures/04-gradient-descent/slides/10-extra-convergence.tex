@@ -1,0 +1,159 @@
+\section{Extra: когда градиентный спуск сходится}
+
+\begin{frame}[c]{Выпуклая функция}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Определение}
+        \small
+        $f$ выпуклая, если для любых точек $a$, $b$ и любого $\lambda\in[0,1]$
+        \[f\bigl(\lambda a + (1-\lambda) b\bigr) \;\le\; \lambda f(a) + (1-\lambda) f(b).\]
+        Слева --- функция в точке между $a$ и $b$, справа --- хорда над ней:
+        \textbf{хорда не ниже графика.} Для гладкой функции то же самое: $f''(x) \ge 0$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \centering
+      \begin{tikzpicture}[x=1.0cm,y=0.55cm]
+        \draw[chart axis] (-1.6,0) -- (1.6,0);
+        \draw[chart curve,domain=-1.5:1.5,samples=50] plot (\x,{\x*\x});
+        \draw[acOrange,line width=1pt] (-1.2,1.44) -- (1,1);
+        \fill[acOrange] (-1.2,1.44) circle (1.8pt) (1,1) circle (1.8pt);
+        \draw[acGray,dashed] (-1.2,0) node[chart label,below] {$a$} -- (-1.2,1.44);
+        \draw[acGray,dashed] (1,0) node[chart label,below] {$b$} -- (1,1);
+        \draw[acGray,dashed] (0.12,0) node[chart label,below=7pt] {$\lambda a + (1-\lambda)b$} -- (0.12,1.1);
+        \fill[acDark] (0.12,0.0144) circle (1.6pt);
+        \fill[acOrange] (0.12,1.1) circle (1.6pt);
+        \node[chart label,anchor=west,text=acText] at (1.3,0.5) {выпуклая};
+      \end{tikzpicture}
+
+      \smallskip
+      \begin{tikzpicture}[x=1.0cm,y=0.55cm]
+        \draw[chart axis] (-1.6,-1) -- (1.6,-1);
+        \draw[chart curve,domain=-1.5:1.5,samples=60] plot (\x,{\x*\x*\x*\x-2*\x*\x});
+        \draw[acOrange,line width=1pt] (-1,-1) -- (1,-1);
+        \fill[acOrange] (-1,-1) circle (1.8pt) (1,-1) circle (1.8pt);
+        \node[chart label,anchor=west,text=acText,align=left] at (1.3,-0.4) {невыпуклая:\\хорда ниже};
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  \lead{Зачем это ГД:} у выпуклой функции любой локальный минимум --- глобальный.
+  Спускаясь вниз, не застрянем в «не той» яме.
+\end{frame}
+
+\begin{frame}[c]{Сильно выпуклая функция}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Определение}
+        \small
+        $f$ сильно выпуклая с константой $\mu > 0$, если для любых $a$, $b$
+        \[f(b) \;\ge\; f(a) + f'(a)(b - a) + \frac{\mu}{2}(b - a)^2.\]
+        Если есть вторая производная: $f''(x) \ge \mu$.
+      \end{block}
+      \begin{block}{«Растёт не медленнее параболы»}
+        \small
+        В любой точке $a$ под график можно подложить параболу с кривизной $\mu$.
+        Плоских участков нет: от минимума функция растёт хотя бы как $\frac{\mu}{2}x^2$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \centering
+      \begin{tikzpicture}[x=1.0cm,y=0.5cm]
+        \draw[chart axis] (-1.5,0) -- (1.3,0);
+        \begin{scope}
+          \clip (-1.5,-0.4) rectangle (1.3,2.1);
+          \draw[acOrange,line width=0.9pt,dashed,domain=-1.4:1.2,samples=40]
+            plot (\x,{0.4224-1.312*(\x+0.8)+0.5*(\x+0.8)^2});
+        \end{scope}
+        \draw[chart curve,domain=-1.4:1.2,samples=50] plot (\x,{0.5*\x*\x+0.25*(\x)^4});
+        \fill[acDark] (-0.8,0.4224) circle (1.8pt) node[chart label,anchor=south east] {$a$};
+        \node[chart label,anchor=west,text=acText,align=left] at (1.3,1.0) {$\frac12 x^2 + \frac14 x^4$, $\mu = 1$:\\парабола под\\графиком};
+      \end{tikzpicture}
+
+      \smallskip
+      \begin{tikzpicture}[x=1.0cm,y=0.5cm]
+        \draw[chart axis] (-1.3,0) -- (1.3,0);
+        \draw[acOrange,line width=0.9pt,dashed,domain=-1.2:1.2,samples=40] plot (\x,{0.5*\x*\x});
+        \draw[chart curve,domain=-1.05:1.05,samples=50] plot (\x,{(\x)^4});
+        \fill[acDark] (0,0) circle (1.8pt);
+        \node[chart label,anchor=west,text=acText,align=left] at (1.3,0.6) {$x^4$: у дна ниже\\любой параболы};
+      \end{tikzpicture}
+
+      \begin{block}{Смысл для ГД}
+        \footnotesize
+        Вдали от минимума градиент не крошечный: $|f'(x)| \ge \mu\,|x - x^*|$.
+        В $0{,}1$ от минимума наклон $x^2$ равен $0{,}2$, у $x^4$ --- $0{,}004$.
+        100 шагов ГД с $\eta = 0{,}1$: на $x^2$ до $2\cdot10^{-10}$, на $x^4$ --- до $0{,}11$.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Когда ГД сходится: липшицев градиент}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{$L$-гладкость}
+        \small
+        Градиент меняется не слишком быстро:
+        $\lVert\nabla f(a) - \nabla f(b)\rVert \le L\,\lVert a - b\rVert$.
+        Для одной переменной: $f''(x) \le L$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Зачем это нужно}
+        \small
+        Если наклон резко меняется, длинный шаг по старому градиенту уводит не туда.
+        При $L$-гладкости шаг $\eta < 2/L$ безопасен.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \smallskip
+  \centering
+  \begin{tikzpicture}[x=0.85cm,y=0.62cm]
+    \begin{scope}
+      \draw[chart axis] (-1.6,0) -- (1.6,0);
+      \draw[chart curve,domain=-1.45:1.45,samples=40] plot (\x,{\x*\x});
+      \foreach \a in {-1,0.5} \draw[acOrange,line width=0.8pt] ({\a-0.45},{\a*\a-0.9*\a}) -- ({\a+0.45},{\a*\a+0.9*\a});
+      \node[chart label,anchor=north,text=acText] at (0,-0.1) {$x^2$: $f'' = 2$, значит $L = 2$};
+    \end{scope}
+    \begin{scope}[xshift=4.6cm]
+      \draw[chart axis] (-1.6,0) -- (1.6,0);
+      \draw[chart curve] (-1.4,1.4) -- (0,0) -- (1.4,1.4);
+      \draw[acOrange,line width=0.8pt] (-1.0,1.0) -- (-0.4,0.4);
+      \draw[acOrange,line width=0.8pt] (0.4,0.4) -- (1.0,1.0);
+      \node[chart label,anchor=north,text=acText] at (0,-0.1) {$|x|$: наклон прыгает с $-1$ на $1$};
+    \end{scope}
+    \begin{scope}[xshift=9.2cm]
+      \draw[chart axis] (-1.6,0) -- (1.6,0);
+      \draw[chart curve,domain=-1.2:1.2,samples=50] plot (\x,{\x*\x*\x*\x});
+      \node[chart label,anchor=north,text=acText] at (0,-0.1) {$x^4$: $f'' = 12x^2$ растёт};
+    \end{scope}
+  \end{tikzpicture}
+
+  \smallskip
+  \raggedright\footnotesize\color{acGray}Вспомните прошлую неделю: у параболы $(t-3)^2 + 2$ вторая производная равна 2,
+  то есть $L = 2$ и $2/L = 1$. Отсюда условие сходимости $0 < \eta < 1$.
+\end{frame}
+
+\begin{frame}[c]{Что гарантирует теория}
+  \centering
+  \zebra{2}\small
+  \begin{tabular}{>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{1.6cm}>{\raggedright\arraybackslash}p{6.6cm}}
+    \textbf{Условия} & \textbf{Шаг} & \textbf{Что получаем}\\
+    $L$-гладкая и выпуклая & $\eta \le 1/L$ & $f(w_k) - f^* \le \dfrac{\lVert w_0 - w^*\rVert^2}{2\eta k}$: ошибка падает как $1/k$\\
+    $L$-гладкая и $\mu$-сильно выпуклая & $\eta = 1/L$ & $\lVert w_k - w^*\rVert^2 \le \bigl(1 - \tfrac{\mu}{L}\bigr)^k \lVert w_0 - w^*\rVert^2$: как геометрическая прогрессия\\
+    $L$-гладкая, невыпуклая & $\eta \le 1/L$ & $\nabla f(w_k) \to 0$, но это может быть локальный минимум или седло\\
+  \end{tabular}
+
+  \medskip
+  \raggedright\small
+  \lead{Число обусловленности $\kappa = L/\mu$.} Чем оно больше, тем медленнее множитель $1 - 1/\kappa$.
+  У «оврага» $x^2 + 20y^2$ вторые производные 2 и 40: $\mu = 2$, $L = 40$, $\kappa = 20$.
+  После нормализации линии уровня --- круги, $\kappa \approx 1$.
+
+  \medskip
+  {\footnotesize\color{acGray}MSE линейной регрессии выпукла всегда, а сильно выпукла,
+  если признаки линейно независимы.\par}
+\end{frame}

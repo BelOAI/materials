@@ -1,0 +1,63 @@
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[aspectratio=169,11pt,t]{beamer}
+\usepackage[russian]{academicbeamer}
+\setshorttitle{BelOAI~\textbar~Лекция 4}
+
+\usetikzlibrary{arrows.meta,positioning,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18,
+  gd end/.style={only marks,mark=*,mark size=1.3pt,mark options={fill=acOrange,draw=acOrange}},
+  gd end hidden/.style={only marks,mark=*,mark size=1.3pt,mark options={fill=white,draw=acOrange}}}
+\graphicspath{{assets/}}
+
+% Deck-local styling, same as lecture 1.
+\definecolor{acOrange}{RGB}{225,115,45}
+\colorlet{acAccent}{acMid}
+\colorlet{acInk}{acDark}
+\colorlet{acCard}{white}
+\colorlet{acText}{black!85}
+\tikzset{
+  chart axis/.style={draw=acGray!70, line width=0.6pt},
+  chart label/.style={font=\scriptsize, text=acGray, inner sep=2pt},
+  chart curve/.style={draw=acMid, line width=1.2pt, line cap=round},
+  level line/.style={draw=acMid!55, line width=0.6pt},
+  gd path/.style={draw=acOrange, line width=1pt, line join=round},
+  gd point/.style={circle, fill=acOrange, inner sep=0pt, minimum size=3.6pt},
+  flow box/.style={rectangle, rounded corners=2pt, minimum height=0.85cm, inner xsep=6pt,
+    text=white, font=\small\bfseries, align=center},
+  flow arrow/.style={-{Stealth[length=2.2mm]}, line width=1.1pt, color=acGray}
+}
+
+% Zebra tables in the theme palette: \zebra{first-shaded-row} before a tabular.
+\newcommand{\zebra}[1]{\rowcolors{#1}{acLight}{white}\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{7pt}\normalsize}
+
+% Numbered rows: \begin{numrows} 1 & text\\ ... \end{numrows}
+\newenvironment{numrows}{\zebra{1}\begin{tabular}{>{\bfseries\large\color{acMid}}c >{\raggedright\arraybackslash}p{\dimexpr\linewidth-1.7cm\relax}}}{\end{tabular}}
+
+% Ragged-right text: no stretched word spacing or ugly hyphenation in narrow blocks.
+\usepackage{ragged2e}
+\addtobeamertemplate{block begin}{}{\advance\rightskip 0pt plus 4em\relax}
+\setbeamerfont{block title}{size=\normalsize,series=\bfseries}
+\setbeamerfont{block body}{size=\normalsize}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\title{Как учится модель}
+\subtitle{Данные, проверка качества, производные и градиентный спуск}
+\author{Алексей Чернуха}
+\date{24 октября 2026}
+
+\begin{document}
+
+\input{slides/01-title}
+\input{slides/02-recap}
+\input{slides/03-datasets}
+\input{slides/04-lifecycle}
+\input{slides/05-derivative}
+\input{slides/06-gradient}
+\input{slides/07-descent}
+\input{slides/08-final}
+\input{slides/09-extra-matrix}
+\input{slides/10-extra-convergence}
+
+\end{document}

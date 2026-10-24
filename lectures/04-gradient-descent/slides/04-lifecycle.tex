@@ -1,0 +1,162 @@
+\section{Жизнь модели}
+
+\begin{frame}[c]{Путь модели: от данных до инференса}
+  \centering
+  \begin{tikzpicture}[node distance=0.45cm]
+    \node[flow box,fill=acDark] (data) {Данные};
+    \node[flow box,fill=acDark,right=of data] (split) {Разбиение};
+    \node[flow box,fill=acMid,right=of split] (train) {Обучение};
+    \node[flow box,fill=acMid,right=of train] (val) {Валидация};
+    \node[flow box,fill=acOrange,right=of val] (test) {Тест};
+    \node[flow box,fill=acDark,right=of test] (inf) {Инференс};
+    \foreach \a/\b in {data/split,split/train,train/val,val/test,test/inf}
+      \draw[flow arrow] (\a) -- (\b);
+    \draw[flow arrow] (val.north) to[out=135,in=45] node[chart label,above] {меняем гиперпараметры} (train.north);
+  \end{tikzpicture}
+
+  \medskip
+  \begin{columns}[T]
+    \begin{column}{0.31\textwidth}
+      \begin{block}{train}
+        \small
+        Подбираем параметры $w$: минимизируем ошибку градиентным спуском.
+        Здесь же считаем среднее и std для нормализации.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{validation}
+        \small
+        Выбираем гиперпараметры: $k$ в KNN, шаг $\eta$, число итераций.
+        Смотрим сколько угодно раз.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{test}
+        \small
+        Один раз в конце, чтобы честно сообщить качество.
+        Подсмотрели и поменяли модель --- тест испорчен.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Инференс: модель в работе}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Что происходит}
+        \small
+        Приходит новый объект без ответа. Модель только считает $\hat y = f(x; w)$.
+        Параметры $w$ заморожены, градиенты не считаем.
+      \end{block}
+      \begin{block}{Та же предобработка}
+        \small
+        Нормализуем новый объект средним и std \textbf{с train}, а не по новым данным.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Что важно}
+        \small
+        \begin{itemize}
+          \item скорость: ответ нужен за миллисекунды
+          \item память: модель должна влезть в телефон или сервер
+          \item стоимость: инференс идёт миллионы раз, обучение --- один
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Кросс-валидация}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \centering
+      \begin{tikzpicture}[x=0.95cm,y=0.48cm]
+        \foreach \r/\acc in {1/0{,}82,2/0{,}86,3/0{,}84,4/0{,}88,5/0{,}85} {
+          \foreach \c in {1,...,5} {
+            \ifnum\c=\r
+              \fill[acOrange] (\c-1,-\r) rectangle ++(0.92,0.8);
+            \else
+              \fill[acLight] (\c-1,-\r) rectangle ++(0.92,0.8);
+            \fi
+          }
+          \node[chart label,anchor=east] at (-0.1,-\r+0.4) {\r};
+          \node[chart label,anchor=west,text=acText] at (5,-\r+0.4) {\acc};
+        }
+        \node[chart label,anchor=south] at (2.46,-0.1) {выборка, разбитая на 5 частей};
+        \node[chart label,anchor=south,text=acText] at (5.5,-0.1) {acc};
+      \end{tikzpicture}
+
+      \smallskip
+      {\footnotesize\color{acGray}\textcolor{acOrange}{$\blacksquare$}~валидация \quad
+      \textcolor{acLight!80!black}{$\blacksquare$}~обучение\par}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{$k$-fold}
+        \small
+        Делим train на $k$ частей. $k$ раз обучаем модель заново,
+        каждый раз проверяем на новой части.
+      \end{block}
+      \begin{block}{Что получаем}
+        \small
+        Не одно число, а пять: \\
+        \centerline{$\text{acc} = 0{,}85 \pm 0{,}02$}
+        Видно и среднее качество, и насколько оно скачет.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  {\footnotesize\color{acGray}Минус: обучаем модель $k$ раз. Для маленьких данных это почти всегда того стоит.\par}
+\end{frame}
+
+\begin{frame}[c]{Модель B лучше модели A?}
+  \lead{Вопрос.} На тесте модель A дала accuracy $0{,}85$, а модель B --- $0{,}86$. Берём B?
+
+  \medskip
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Тест из 100 объектов}
+        \small
+        Разница --- \textbf{один} объект. Погрешность accuracy примерно
+        \[\pm 2\sqrt{\tfrac{p(1-p)}{n}} = \pm 2\sqrt{\tfrac{0{,}85\cdot0{,}15}{100}} \approx \pm 0{,}07.\]
+        Разница $0{,}01$ тонет в шуме.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Тест из 10\,000 объектов}
+        \small
+        Та же формула даёт погрешность около $\pm 0{,}007$.
+        Разница $0{,}01$ уже похожа на настоящую.
+      \end{block}
+      \begin{block}{Правило на практике}
+        \small
+        Если разница меньше разброса между фолдами, не верим ей.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  {\footnotesize\color{acGray}Откуда формула: каждый объект теста --- «монетка», угаданная с вероятностью $p$.
+  Доля угаданных из $n$ имеет стандартное отклонение $\sqrt{p(1-p)/n}$ (биномиальное распределение),
+  а в $\pm 2$ стандартных отклонения попадает около 95\,\% случаев.\par}
+\end{frame}
+
+\begin{frame}[c]{На каком этапе это происходит?}
+  \begin{numrows}
+    1 & Выбрать число соседей $k$ в KNN\\
+    2 & Посчитать среднее и std признаков для нормализации\\
+    3 & Показать пользователю рекомендации в приложении\\
+    4 & Сообщить итоговую accuracy в отчёте\\
+    5 & Сделать шаг градиентного спуска\\
+  \end{numrows}
+\end{frame}
+
+\begin{frame}[c]{Ответы: этапы}
+  \begin{numrows}
+    1 & Валидация (или кросс-валидация): это гиперпараметр\\
+    2 & Обучение: только по train, иначе утечка\\
+    3 & Инференс\\
+    4 & Тест, один раз\\
+    5 & Обучение\\
+  \end{numrows}
+\end{frame}
