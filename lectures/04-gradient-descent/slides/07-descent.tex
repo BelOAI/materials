@@ -1,0 +1,273 @@
+\section{Градиентный спуск}
+
+\begin{frame}[c,fragile]{Градиентный спуск для $k$ параметров}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Алгоритм}
+        \small
+        \begin{enumerate}\setlength\itemsep{0.25em}
+          \item Начальное $w$: нули или случайные числа.
+          \item Считаем $\nabla L(w)$ по всем объектам.
+          \item Обновляем \textbf{все} параметры сразу:
+            \(w \leftarrow w - \eta\,\nabla L(w)\)
+          \item Повторяем, пока $\lVert\nabla L\rVert$ не станет маленьким
+            или не кончится лимит итераций.
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Код}
+        \small
+\begin{semiverbatim}
+w = np.zeros(k)
+for step in range(1000):
+    err = X @ w - y
+    grad = 2 / n * X.T @ err
+    if np.linalg.norm(grad) < eps:
+        break
+    w = w - lr * grad
+\end{semiverbatim}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  {\footnotesize\color{acGray}Если функция не парабола, минимумов может быть несколько:
+  куда придём, зависит от стартовой точки.\par}
+\end{frame}
+
+\begin{frame}[c]{Стохастический градиентный спуск (SGD)}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Проблема}
+        \small
+        Шаг ГД --- проход по \textbf{всем} $n$ объектам. При $n = 10^7$ это долго.
+      \end{block}
+      \begin{block}{Идея}
+        \small
+        Градиент по случайному батчу из $B$ объектов, например $B = 64$:
+        \[\nabla L \approx \frac{2}{B}\,X_B^\top (X_B w - y_B)\]
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.85]
+        \foreach \c in {0.4,1.2,2.4,4} {
+          \draw[level line] (0,0) ellipse ({sqrt(\c)} and {0.6*sqrt(\c)});
+        }
+        \draw[gd path,draw=acDark] (-1.9,0.6) -- (-1.15,0.36) -- (-0.6,0.19) -- (-0.25,0.08) -- (-0.05,0.02);
+        \draw[gd path] (-1.9,0.6) -- (-1.5,0.15) -- (-1.25,0.62) -- (-0.8,0.05) -- (-0.7,0.4)
+          -- (-0.3,-0.1) -- (-0.15,0.22) -- (0.05,-0.05);
+        \fill[acDark] (0,0) circle (1.6pt);
+        \node[chart label,anchor=north] at (0,-1.35) {\textcolor{acDark}{---}~ГД \quad \textcolor{acOrange}{---}~SGD};
+      \end{tikzpicture}
+
+      \smallskip
+      \raggedright\small
+      Шаги SGD шумные, но каждый в $n/B$ раз дешевле.
+      Проход по всем данным батчами --- \textbf{эпоха}.
+      Так учат почти все нейросети.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Зачем нормализовать признаки}
+  \small
+  200 квартир: площадь 30--120\,м\textsuperscript{2}, комнат 1--4. Цена $\approx 0{,}05\cdot\text{площадь} + 0{,}8\cdot\text{комнаты}$.
+
+  \medskip
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Без нормализации}
+        \small
+        Первый градиент из $w = 0$:
+        \[\nabla L = \begin{pmatrix} -936\\ -30\end{pmatrix}\]
+        По площади в 30 раз больше: значения признака больше, а в $g_j$ стоит множитель $x_{ij}$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Шаг один на всех}
+        \small
+        Шаг ограничен «площадью». При таком шаге вес комнат еле двигается.
+        \smallskip
+        \zebra{2}\small
+        \begin{tabular}{lr}
+          \textbf{Шаг $\eta$} & \textbf{Итераций}\\
+          $10^{-3}$ & расходится\\
+          $3\cdot10^{-4}$ & расходится\\
+          $10^{-4}$ & 21\,404\\
+        \end{tabular}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Овраг и круг}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.78]
+        \useasboundingbox (-3.7,-1.6) rectangle (3.7,1.6);
+        \foreach \c in {0.8,2.5,6,12.8} {
+          \draw[level line] (0,0) ellipse ({sqrt(\c)} and {sqrt(\c/20)});
+        }
+        \draw[gd path] plot coordinates {(-2.60,0.55) (-2.37,-0.44) (-2.15,0.35) (-1.96,-0.28)
+          (-1.78,0.23) (-1.62,-0.18) (-1.48,0.14) (-1.34,-0.12) (-1.22,0.09) (-1.11,-0.07)
+          (-1.01,0.06) (-0.92,-0.05) (-0.84,0.04)};
+        \fill[acDark] (0,0) circle (1.6pt);
+      \end{tikzpicture}
+
+      \smallskip
+      \lead{Без нормализации}\\
+      \small Линии уровня вытянуты. ГД скачет поперёк оврага и медленно ползёт вдоль.
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.78]
+        \useasboundingbox (-3.7,-1.6) rectangle (3.7,1.6);
+        \foreach \r in {0.5,1,1.5} {
+          \draw[level line] (0,0) circle (\r);
+        }
+        \draw[gd path] plot coordinates {(-1.20,0.90) (-0.48,0.36) (-0.19,0.14) (-0.08,0.06) (-0.03,0.02)};
+        \fill[acDark] (0,0) circle (1.6pt);
+      \end{tikzpicture}
+
+      \smallskip
+      \lead{После стандартизации}\\
+      \small Градиенты одного порядка, можно взять большой шаг:
+      $\eta = 0{,}3$ --- \textbf{11} итераций вместо 21\,404.
+    \end{column}
+  \end{columns}
+
+  \medskip
+  {\footnotesize\color{acGray}Стандартизация: $x' = (x - \text{среднее})/\text{std}$.
+  Среднее и std считаем только на train.\par}
+\end{frame}
+
+\begin{frame}[c]{Слишком большой шаг}
+  \small $L(w_1, w_2) = w_1^2 + 3w_2^2$, старт в одной и той же точке. Листайте: каждый клик --- один шаг ГД.
+  Пунктир --- часть шага, скрытая за передней стенкой чаши.
+
+  \smallskip
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{axis}[width=6.2cm,height=4.9cm,view={35}{50},
+            xmin=-2,xmax=2,ymin=-1.6,ymax=1.6,zmin=0,zmax=12,
+            xlabel={$w_1$},ylabel={$w_2$},zlabel={$L$},
+            ticks=none,axis lines=box,axis line style={draw=acGray!50},
+            label style={font=\scriptsize,text=acGray},
+            colormap={ac}{color=(acLight) color=(acMid!70)},
+            title={\small $\eta = 0{,}1$: спускаемся},title style={text=acDark}]
+          \addplot3[surf,shader=faceted interp,draw=white,line width=0.2pt,opacity=0.75,
+            domain=-2:2,y domain=-1.6:1.6,samples=21,samples y=21]
+            {min(x^2+3*y^2,12)};
+          \only<2->{\addplot3[gd path] coordinates {(-1.600,0.800,4.480) (-1.280,0.320,1.946)};
+            \addplot3[gd end] coordinates {(-1.280,0.320,1.946)};}
+          \only<3->{\addplot3[gd path] coordinates {(-1.280,0.320,1.946) (-1.024,0.128,1.098)};
+            \addplot3[gd end] coordinates {(-1.024,0.128,1.098)};}
+          \only<4->{\addplot3[gd path] coordinates {(-1.024,0.128,1.098) (-0.819,0.051,0.679)};
+            \addplot3[gd end] coordinates {(-0.819,0.051,0.679)};}
+          \only<5->{\addplot3[gd path] coordinates {(-0.819,0.051,0.679) (-0.655,0.020,0.431)};
+            \addplot3[gd end] coordinates {(-0.655,0.020,0.431)};}
+          \only<6->{\addplot3[gd path] coordinates {(-0.655,0.020,0.431) (-0.524,0.008,0.275)};
+            \addplot3[gd end] coordinates {(-0.524,0.008,0.275)};}
+          \only<7->{\addplot3[gd path] coordinates {(-0.524,0.008,0.275) (-0.419,0.003,0.176)};
+            \addplot3[gd end] coordinates {(-0.419,0.003,0.176)};}
+          \addplot3[only marks,mark=*,mark size=1.8pt,mark options={fill=acDark,draw=acDark}] coordinates {(-1.600,0.800,4.480)};
+          \addplot3[only marks,mark=x,mark size=2.5pt,acDark,thick] coordinates {(0,0,0)};
+        \end{axis}
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{axis}[width=6.2cm,height=4.9cm,view={35}{50},
+            xmin=-2,xmax=2,ymin=-1.6,ymax=1.6,zmin=0,zmax=12,
+            xlabel={$w_1$},ylabel={$w_2$},zlabel={$L$},
+            ticks=none,axis lines=box,axis line style={draw=acGray!50},
+            label style={font=\scriptsize,text=acGray},
+            colormap={ac}{color=(acLight) color=(acMid!70)},
+            title={\small $\eta = 0{,}35$: перепрыгиваем},title style={text=acDark}]
+          \addplot3[surf,shader=faceted interp,draw=white,line width=0.2pt,opacity=0.75,
+            domain=-2:2,y domain=-1.6:1.6,samples=21,samples y=21]
+            {min(x^2+3*y^2,12)};
+          \only<2->{\addplot3[gd path] coordinates {(-1.600,0.800,4.480) (-0.607,-0.690,2.771)};
+            \addplot3[gd path,dash pattern=on 1.6pt off 1.3pt] coordinates {(-0.607,-0.690,2.771) (-0.480,-0.880,2.554)};
+            \addplot3[gd end hidden] coordinates {(-0.480,-0.880,2.554)};}
+          \only<3->{\addplot3[gd path,dash pattern=on 1.6pt off 1.3pt] coordinates {(-0.480,-0.880,2.554) (-0.436,-0.640,2.590)};
+            \addplot3[gd path] coordinates {(-0.436,-0.640,2.590) (-0.144,0.968,2.832)};
+            \addplot3[gd end] coordinates {(-0.144,0.968,2.832)};}
+          \only<4->{\addplot3[gd path] coordinates {(-0.144,0.968,2.832) (-0.061,-0.699,3.300)};
+            \addplot3[gd path,dash pattern=on 1.6pt off 1.3pt] coordinates {(-0.061,-0.699,3.300) (-0.043,-1.065,3.403)};
+            \addplot3[gd end hidden] coordinates {(-0.043,-1.065,3.403)};}
+          \only<5->{\addplot3[gd path,dash pattern=on 1.6pt off 1.3pt] coordinates {(-0.043,-1.065,3.403) (-0.039,-0.747,3.504)};
+            \addplot3[gd path] coordinates {(-0.039,-0.747,3.504) (-0.013,1.171,4.116)};
+            \addplot3[gd end] coordinates {(-0.013,1.171,4.116)};}
+          \only<6->{\addplot3[gd path] coordinates {(-0.013,1.171,4.116) (-0.005,-1.042,4.894)};
+            \addplot3[gd path,dash pattern=on 1.6pt off 1.3pt] coordinates {(-0.005,-1.042,4.894) (-0.004,-1.288,4.980)};
+            \addplot3[gd end hidden] coordinates {(-0.004,-1.288,4.980)};}
+          \only<7->{\addplot3[gd path,dash pattern=on 1.6pt off 1.3pt] coordinates {(-0.004,-1.288,4.980) (-0.004,-1.085,5.058)};
+            \addplot3[gd path] coordinates {(-0.004,-1.085,5.058) (-0.001,1.417,6.026)};
+            \addplot3[gd end] coordinates {(-0.001,1.417,6.026)};}
+          \addplot3[only marks,mark=*,mark size=1.8pt,mark options={fill=acDark,draw=acDark}] coordinates {(-1.600,0.800,4.480)};
+          \addplot3[only marks,mark=x,mark size=2.5pt,acDark,thick] coordinates {(0,0,0)};
+        \end{axis}
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \smallskip
+  \visible<7>{\lead{Справа шаг перелетает дно оврага, и каждый раз мы оказываемся всё выше:
+  ГД расходится.}}
+\end{frame}
+
+\begin{frame}[c]{Расписание шага}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \begin{block}{Проблема}
+        \small
+        Большой шаг быстро подводит к минимуму, но дальше прыгает вокруг него.
+        Маленький шаг медленный с самого начала.
+      \end{block}
+      \begin{block}{Решение}
+        \small
+        Начинаем с большого шага и уменьшаем его:
+        \[\eta_t = \frac{\eta_0}{1 + t/T}\]
+      \end{block}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \centering
+      \begin{tikzpicture}[x=1.45cm,y=5.5cm]
+        \foreach \v in {0,0.1,0.2,0.3,0.4} {
+          \draw[draw=acRule,line width=0.4pt] (0,\v) -- (4,\v);
+          \node[chart label,anchor=east] at (0,\v) {\v};
+        }
+        \draw[chart axis] (0,0) -- (4.05,0);
+        \draw[chart axis] (0,0) -- (0,0.42);
+        \foreach \t/\l in {0/0,1/100,2/200,3/300,4/400} \node[chart label,anchor=north] at (\t,0) {\l};
+        \begin{scope}
+          \clip (0,0) rectangle (4.05,0.42);
+          \draw[acOrange,line width=1.1pt,line join=round] plot coordinates {(0.00,2.124) (0.10,0.353) (0.20,0.193) (0.30,0.196) (0.40,0.199) (0.50,0.203) (0.60,0.195) (0.70,0.198) (0.80,0.191) (0.90,0.224) (1.00,0.226) (1.10,0.201) (1.20,0.194) (1.30,0.207) (1.40,0.195) (1.50,0.205) (1.60,0.193) (1.70,0.198) (1.80,0.190) (1.90,0.197) (2.00,0.172) (2.10,0.230) (2.20,0.175) (2.30,0.203) (2.40,0.174) (2.50,0.182) (2.60,0.207) (2.70,0.200) (2.80,0.216) (2.90,0.197) (3.00,0.178) (3.10,0.187) (3.20,0.216) (3.30,0.211) (3.40,0.222) (3.50,0.178) (3.60,0.220) (3.70,0.171) (3.80,0.169) (3.90,0.171) (3.99,0.195)};
+          \draw[acDark,line width=1.1pt,line join=round] plot coordinates {(0.00,2.124) (0.10,0.426) (0.20,0.179) (0.30,0.138) (0.40,0.130) (0.50,0.126) (0.60,0.098) (0.70,0.095) (0.80,0.102) (0.90,0.105) (1.00,0.086) (1.10,0.077) (1.20,0.091) (1.30,0.087) (1.40,0.078) (1.50,0.075) (1.60,0.072) (1.70,0.072) (1.80,0.066) (1.90,0.071) (2.00,0.065) (2.10,0.067) (2.20,0.066) (2.30,0.073) (2.40,0.062) (2.50,0.062) (2.60,0.063) (2.70,0.066) (2.80,0.063) (2.90,0.067) (3.00,0.063) (3.10,0.061) (3.20,0.065) (3.30,0.066) (3.40,0.069) (3.50,0.054) (3.60,0.056) (3.70,0.053) (3.80,0.052) (3.90,0.053) (3.99,0.049)};
+        \end{scope}
+        \node[chart label,anchor=north] at (2,-0.06) {шаг SGD (батч 8)};
+        \node[chart label,anchor=south,rotate=90] at (-0.5,0.21) {до оптимума};
+        \begin{scope}[shift={(1.6,0.39)}]
+          \fill[white] (-0.08,0.025) rectangle (2.45,-0.075);
+          \draw[acOrange,line width=1.1pt] (0,0) -- (0.3,0);
+          \node[chart label,anchor=west,text=acText] at (0.35,0) {$\eta = 0{,}1$};
+          \draw[acDark,line width=1.1pt] (0,-0.05) -- (0.3,-0.05);
+          \node[chart label,anchor=west,text=acText] at (0.35,-0.05) {$\eta_t = 0{,}1/(1 + t/30)$};
+        \end{scope}
+      \end{tikzpicture}
+
+      \smallskip
+      \raggedright\footnotesize\color{acGray}Линейная регрессия на синтетике, 1000 объектов,
+      среднее по 20 запускам. С постоянным шагом застреваем около $0{,}2$,
+      с убывающим доходим до $0{,}05$. Другие расписания: делить шаг пополам каждые $T$ шагов,
+      умножать на $\gamma < 1$ на каждом шаге.
+    \end{column}
+  \end{columns}
+\end{frame}

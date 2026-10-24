@@ -1,0 +1,41 @@
+\section{Повторение}
+
+\begin{frame}[c]{Что было на прошлой неделе}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \centering
+      \begin{tikzpicture}[x=0.75cm,y=0.55cm]
+        \draw[chart axis] (-0.3,0) -- (6.3,0) node[chart label,anchor=west] {$w$};
+        \draw[chart axis] (0,-0.3) -- (0,5.2) node[chart label,anchor=south] {MSE};
+        \draw[chart curve,domain=0.2:5.8,samples=60] plot (\x,{0.5*(\x-3)^2+0.6});
+        % tangent at w=1: slope -2
+        \draw[acOrange,line width=0.9pt,dashed] (0.2,4.2) -- (2.2,0.2);
+        \fill[acOrange] (1,2.6) circle (2.4pt);
+        \node[chart label,anchor=west] at (1.1,2.75) {$w_k$};
+        \draw[-{Stealth[length=2mm]},acOrange,line width=1.1pt] (1,-0.7) -- (2.4,-0.7);
+        \node[chart label,anchor=north,text=acOrange] at (1.7,-0.75) {шаг $-\eta\,L'(w_k)$};
+        \draw[acOrange!60,dashed] (1,2.6) -- (1,-0.7);
+        \fill[acDark] (3,0.6) circle (2pt);
+        \node[chart label,anchor=north] at (3.3,0.45) {минимум};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Линейная регрессия}
+        \small
+        Модель $\hat y = w x + b$, ошибка
+        $\mathrm{MSE}=\frac1n\sum (\hat y_i-y_i)^2$.
+      \end{block}
+      \begin{block}{Градиентный спуск в 1D}
+        \small
+        \centerline{$w_{k+1} = w_k - \eta\,L'(w_k)$}
+        \smallskip
+        Производная показывает наклон. Идём в сторону убывания, шаг $\eta$ выбираем сами:
+        маленький --- медленно, большой --- разлетаемся.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  \lead{Сегодня:} откуда берутся данные, как честно проверить модель и как считать градиент,
+  когда параметров много.
+\end{frame}

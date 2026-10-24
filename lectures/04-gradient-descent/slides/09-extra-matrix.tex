@@ -1,0 +1,176 @@
+\section{Extra: матричное дифференцирование}
+
+\begin{frame}[c]{Что такое производная по вектору и по матрице}
+  \small Правило одно: \lead{производная --- это таблица частных производных, по одной на каждую пару
+  «что меняется --- по чему меняем».}
+
+  \medskip
+  \zebra{2}\small\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{llll}
+    \textbf{Что по чему} & \textbf{Результат} & \textbf{Форма} & \textbf{Пример}\\
+    число по вектору $w$ & градиент: $(\nabla f)_j = \partial f/\partial w_j$ & как $w$ & $w_1^2 + 3w_2 \ \to\ (2w_1;\ 3)$\\
+    число по матрице $W$ & элемент $(i,j)$: $\partial f/\partial W_{ij}$ & как $W$ & веса слоя нейросети\\
+    вектор $g$ по вектору $w$ & матрица Якоби: $J_{ij} = \partial g_i/\partial w_j$ & $m\times k$ & $Xw \ \to\ J = X$\\
+  \end{tabular}
+
+  \medskip
+  \raggedright
+  Смысл везде тот же, что у обычной производной: при маленьком сдвиге $h$
+  \[f(w + h) \approx f(w) + \nabla f(w)^\top h, \qquad g(w + h) \approx g(w) + J\,h.\]
+\end{frame}
+
+\begin{frame}[c]{Цепное правило для векторов}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Правило}
+        \small
+        Если $u = g(w)$, а $L = f(u)$ --- число, то
+        \[\nabla_w L = J^\top\,\nabla_u f,\]
+        где $J$ --- матрица Якоби внутренней функции $g$.
+        Как в школе: производная внешней, умноженная на производную внутренней.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Пример: MSE}
+        \small
+        $L = \lVert u\rVert^2$, \ $u = Xw - y$.
+        \begin{itemize}
+          \item внешняя: $\nabla_u \lVert u\rVert^2 = 2u$
+          \item внутренняя: $J = X$
+        \end{itemize}
+        \[\nabla_w L = X^\top\cdot 2u = 2X^\top(Xw - y)\]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  \lead{Вот откуда берётся $X^\top$:} транспонированная матрица Якоби. Формы тоже сходятся:
+  $(k\times n)\cdot(n\times 1) = k\times 1$.
+\end{frame}
+
+\begin{frame}[c]{Матричные производные: шпаргалка}
+  \lead{Те же правила, что в школе, только для векторов.} Здесь $w$, $a$ --- векторы длины $k$.
+
+  \medskip
+  \centering
+  \zebra{2}\small\setlength{\tabcolsep}{5pt}
+  \begin{tabular}{lll}
+    \textbf{Одно число} & \textbf{Вектор} & \textbf{Почему}\\
+    $(a w)' = a$ & $\nabla_w\,(a^\top w) = a$ & $a_1 w_1 + \dots + a_k w_k$ по $w_j$: $a_j$\\
+    $(w^2)' = 2w$ & $\nabla_w\,(w^\top w) = 2w$ & $w_1^2 + \dots + w_k^2$ по $w_j$: $2w_j$\\
+    $(a w^2)' = 2aw$ & $\nabla_w\,(w^\top A w) = 2Aw$ & если $A = A^\top$\\
+    $\bigl((xw - y)^2\bigr)' = 2x(xw-y)$ & $\nabla_w\lVert Xw - y\rVert^2 = 2X^\top(Xw - y)$ & цепное правило\\
+  \end{tabular}
+
+  \medskip
+  \raggedright\small
+  В последней строке: внешняя функция --- $\lVert u\rVert^2 = u^\top u$, внутренняя --- $u = Xw - y$.
+  Множитель $x$ из одномерного случая превращается в $X^\top$.
+\end{frame}
+
+\begin{frame}[c]{Градиент MSE в одну строку}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Раскроем квадрат}
+        \small
+        \[\lVert Xw - y\rVert^2 = w^\top X^\top X\, w \;-\; 2\,y^\top X w \;+\; y^\top y\]
+        По шпаргалке, слагаемое за слагаемым:
+        \begin{itemize}
+          \item $w^\top (X^\top X)\, w$ \ $\to$ \ $2X^\top X w$ \ {\footnotesize\color{acGray}($X^\top X$ симметричная)}
+          \item $-2\,(X^\top y)^\top w$ \ $\to$ \ $-2X^\top y$
+          \item $y^\top y$ \ $\to$ \ $0$: не зависит от $w$
+        \end{itemize}
+        \[\nabla_w \mathrm{MSE} = \frac1n\bigl(2X^\top X w - 2X^\top y\bigr) = \frac2n X^\top(Xw - y)\]
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Сверим}
+        \small
+        Тот же ответ, что мы получили циклом по объектам. Два способа --- одна формула.
+      \end{block}
+      \begin{block}{Попробуйте}
+        \small
+        $f(w) = w^\top w + a^\top w$, где $a = (1;\ -2)$. Найдите $\nabla f$ и точку, где он равен нулю.
+
+        \smallskip
+        \visible<2>{\textbf{Ответ:} $\nabla f = 2w + a$, ноль при $w = -a/2 = (-0{,}5;\ 1)$.}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{Несколько слоёв: цепное правило по цепочке}
+  \small Маленькая нейросеть: $\hat y = w_2\,\sigma(w_1 x)$, ошибка $L = (\hat y - y)^2$.
+  Каждый слой --- одна простая функция.
+
+  \medskip
+  \centering
+  \begin{tikzpicture}[
+      val/.style={circle,draw=acMid,fill=acLight,minimum size=0.75cm,inner sep=0pt,font=\small},
+      op/.style={rectangle,rounded corners=2pt,fill=acDark,text=white,font=\scriptsize\bfseries,
+        minimum height=0.55cm,inner sep=3pt},
+      fwd/.style={-{Stealth[length=2mm]},line width=0.9pt,color=acGray},
+      bwd/.style={-{Stealth[length=2mm]},line width=0.9pt,color=acOrange}]
+    \node[val] (x) at (0,0) {$x$};
+    \node[op] (o1) at (1.35,0) {$\times w_1$};
+    \node[val] (z) at (2.7,0) {$z$};
+    \node[op] (o2) at (4.05,0) {$\sigma$};
+    \node[val] (h) at (5.4,0) {$h$};
+    \node[op] (o3) at (6.75,0) {$\times w_2$};
+    \node[val] (yh) at (8.1,0) {$\hat y$};
+    \node[op] (o4) at (9.6,0) {$(\cdot - y)^2$};
+    \node[val,draw=acOrange] (L) at (11.1,0) {$L$};
+    \foreach \a/\b in {x/o1,o1/z,z/o2,o2/h,h/o3,o3/yh,yh/o4,o4/L} \draw[fwd] (\a) -- (\b);
+    \node[chart label,anchor=south] at (5.55,0.45) {прямой проход: считаем значения};
+    \draw[bwd] (L.south) to[out=-150,in=-30] node[chart label,below,text=acOrange] {$2(\hat y - y)$} (yh.south);
+    \draw[bwd] (yh.south) to[out=-150,in=-30] node[chart label,below,text=acOrange] {$w_2$} (h.south);
+    \draw[bwd] (h.south) to[out=-150,in=-30] node[chart label,below,text=acOrange] {$\sigma'(z)$} (z.south);
+    \draw[bwd] (z.south) to[out=-150,in=-30] node[chart label,below,text=acOrange] {$x$} (x.south);
+    \node[chart label,anchor=north,text=acOrange] at (5.55,-1.45) {обратный проход: перемножаем локальные производные};
+  \end{tikzpicture}
+
+  \medskip
+  \[\frac{\partial L}{\partial w_1} = \underbrace{2(\hat y - y)}_{\partial L/\partial \hat y}\cdot
+    \underbrace{w_2}_{\partial \hat y/\partial h}\cdot
+    \underbrace{\sigma'(z)}_{\partial h/\partial z}\cdot
+    \underbrace{x}_{\partial z/\partial w_1}\]
+
+  \raggedright\small
+  \lead{Это и есть backpropagation.} Каждый слой знает только свою производную, а произведения
+  справа налево переиспользуются для всех слоёв.
+\end{frame}
+
+\begin{frame}[c]{Backpropagation на числах}
+  \small $x = 1$, $y = 1$, $w_1 = 0{,}5$, $w_2 = 2$, $\sigma$ --- сигмоида, $\sigma'(z) = \sigma(z)\bigl(1 - \sigma(z)\bigr)$.
+
+  \medskip
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Прямой проход}
+        \small
+        \begin{tabular}{@{}ll@{}}
+          $z = w_1 x$ & $= 0{,}5$\\
+          $h = \sigma(z)$ & $\approx 0{,}622$\\
+          $\hat y = w_2 h$ & $\approx 1{,}245$\\
+          $L = (\hat y - y)^2$ & $\approx 0{,}060$\\
+        \end{tabular}
+      \end{block}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Обратный проход}
+        \small
+        \begin{tabular}{@{}ll@{}}
+          $\partial L/\partial \hat y = 2(\hat y - y)$ & $\approx 0{,}490$\\
+          $\partial L/\partial w_2 = 0{,}490\cdot h$ & $\approx \mathbf{0{,}305}$\\
+          $\partial L/\partial h = 0{,}490\cdot w_2$ & $\approx 0{,}980$\\
+          $\partial L/\partial z = 0{,}980\cdot\sigma'(z)$ & $\approx 0{,}230$\\
+          $\partial L/\partial w_1 = 0{,}230\cdot x$ & $\approx \mathbf{0{,}230}$\\
+        \end{tabular}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  {\footnotesize\color{acGray}В настоящей сети вместо чисел векторы и матрицы, а произведения матричные:
+  как $X^\top$ в градиенте MSE. PyTorch делает обратный проход сам: \texttt{loss.backward()}.\par}
+\end{frame}

@@ -1,0 +1,281 @@
+\section{Откуда берутся датасеты}
+
+\begin{frame}[c]{Откуда берутся данные}
+  \begin{columns}[T]
+    \begin{column}{0.23\textwidth}
+      \begin{block}{Готовые}
+        \small
+        Kaggle, Hugging Face, UCI. Быстро, но задачу за вас уже кто-то сформулировал.
+      \end{block}
+    \end{column}
+    \begin{column}{0.23\textwidth}
+      \begin{block}{Собранные}
+        \small
+        Логи сервиса, парсинг сайтов, датчики, фото на телефон.
+      \end{block}
+    \end{column}
+    \begin{column}{0.23\textwidth}
+      \begin{block}{Размеченные}
+        \small
+        Объекты есть, ответов нет. Ответы ставят люди: эксперты или краудсорсинг.
+      \end{block}
+    \end{column}
+    \begin{column}{0.23\textwidth}
+      \begin{block}{Синтетические}
+        \small
+        Сгенерированы по формуле или другой моделью.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  \lead{Чаще всего самое долгое в ML-проекте --- не обучение, а сбор и чистка данных.}
+\end{frame}
+
+\begin{frame}[c]{MNIST: рукописные цифры}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \centering
+      \input{assets/digits}
+
+      \smallskip
+      {\footnotesize\color{acGray}Настоящие рукописные цифры 8$\times$8 пикселей из набора UCI ---
+      младшего брата MNIST. В MNIST картинки 28$\times$28.\par}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Что это}
+        \small
+        70\,000 цифр: 60\,000 для обучения, 10\,000 для теста. Первый датасет почти
+        любого курса по ML.
+      \end{block}
+      \begin{block}{Как собирали}
+        \small
+        Исходно в NIST одну часть цифр писали сотрудники Бюро переписи США,
+        другую --- школьники. Школьники писали заметно небрежнее.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{MNIST: в чём была ловушка}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \node[chart label,text=acText] at (1.6,1.2) {Исходное разбиение NIST};
+        \node[flow box,fill=acMid,minimum width=2.9cm] (tr) at (0,0.5) {train\\сотрудники};
+        \node[flow box,fill=acOrange,minimum width=2.9cm] (te) at (3.2,0.5) {test\\школьники};
+        \node[flow box,fill=acDark,minimum width=6.1cm] (mix) at (1.6,-1.6) {MNIST: в train и test всех поровну};
+        \draw[flow arrow] (tr) -- (mix.north -| tr);
+        \draw[flow arrow] (te) -- (mix.north -| te);
+        \node[chart label,fill=white] at (1.6,-0.55) {перемешали};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Вопрос}
+        \small
+        В исходном разбиении NIST модель учили на аккуратных цифрах, а проверяли
+        на небрежных. Что пойдёт не так?
+      \end{block}
+      \pause
+      \begin{block}{Ответ}
+        \small
+        Train и test из разных распределений: на тесте ошибок намного больше,
+        и непонятно, плоха модель или данные. В MNIST обе части поделили поровну.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{ImageNet: 14 миллионов картинок}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \centering
+      \begin{tikzpicture}[
+          cat/.style={rectangle,rounded corners=2pt,fill=acLight,draw=acMid!40,
+            font=\scriptsize,inner sep=3pt,minimum height=0.5cm},
+          edge/.style={draw=acGray!70,line width=0.6pt},
+          level distance=0.95cm]
+        \node[cat,fill=acDark,text=white] (r) at (0,0) {объект};
+        \node[cat] (an) at (-1.7,-1) {животное};
+        \node[cat] (ar) at (1.7,-1) {артефакт};
+        \node[cat] (dog) at (-2.6,-2) {собака};
+        \node[cat] (cat) at (-0.8,-2) {кошка};
+        \node[cat] (car) at (1.0,-2) {машина};
+        \node[cat] (ins) at (2.6,-2) {инструмент};
+        \node[cat,fill=acOrange!25] (h) at (-3.25,-3) {хаски};
+        \node[cat,fill=acOrange!25] (t) at (-1.95,-3) {такса};
+        \node[cat,fill=acOrange!25] (s) at (-0.7,-3) {сиамская};
+        \node[cat,fill=acOrange!25] (cab) at (0.95,-3) {кабриолет};
+        \node[cat,fill=acOrange!25] (sc) at (2.6,-3) {отвёртка};
+        \foreach \a/\b in {r/an,r/ar,an/dog,an/cat,ar/car,ar/ins,dog/h,dog/t,cat/s,car/cab,ins/sc}
+          \draw[edge] (\a) -- (\b);
+      \end{tikzpicture}
+
+      \smallskip
+      {\footnotesize\color{acGray}Классы образуют дерево понятий (WordNet). Всего около 22 тысяч классов.\par}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Что это}
+        \small
+        Проект Фей-Фей Ли (2009). Для соревнования ILSVRC взяли 1000 классов
+        и 1,2 млн картинок для обучения.
+      \end{block}
+      \begin{block}{Почему важен}
+        \small
+        На нём в 2012 году нейросеть AlexNet сильно обогнала все остальные методы.
+        С этого начался бум глубокого обучения.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{ImageNet: как разметить 14 миллионов картинок}
+  \centering
+  \begin{tikzpicture}[node distance=0.5cm]
+    \node[flow box,fill=acDark,text width=2.6cm] (a) {Поиск картинок\\по слову «хаски»};
+    \node[flow box,fill=acMid,text width=2.6cm,right=of a] (b) {Вопрос людям:\\«есть ли тут хаски?»};
+    \node[flow box,fill=acMid,text width=2.6cm,right=of b] (c) {Несколько человек\\на каждую картинку};
+    \node[flow box,fill=acOrange,text width=2.6cm,right=of c] (d) {Голосование\\большинством};
+    \foreach \x/\y in {a/b,b/c,c/d} \draw[flow arrow] (\x) -- (\y);
+  \end{tikzpicture}
+
+  \medskip
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Краудсорсинг}
+        \small
+        Работу делили на крошечные задания и раздавали тысячам людей через
+        Amazon Mechanical Turk. Одно задание --- несколько секунд и пара центов.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Почему не один человек}
+        \small
+        Люди ошибаются и устают. Если трое из пяти сказали «да», ответу можно верить
+        больше, чем одному голосу.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]{reCAPTCHA: вы тоже размечали данные}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{recaptcha-words}
+
+      \smallskip
+      \raggedright\small
+      \lead{2007.} Два слова из отсканированных книг. Одно система знает --- по нему проверяют,
+      что вы человек. Второе не смогла прочитать программа --- его читаете вы.
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \centering
+      \includegraphics[width=0.75\linewidth]{recaptcha-house}
+
+      \smallskip
+      \begin{tikzpicture}[x=0.55cm,y=0.55cm]
+        \foreach \i in {0,1,2} \foreach \j in {0,1,2}
+          \fill[acLight] (\i*1.1,-\j*1.1) rectangle ++(1,-1);
+        \foreach \i/\j in {0/0,2/1,1/2} {
+          \fill[acDark] (\i*1.1+0.38,-\j*1.1-0.12) rectangle ++(0.24,-0.62);
+          \fill[red!70] (\i*1.1+0.5,-\j*1.1-0.24) circle (0.07);
+          \fill[yellow!80!orange] (\i*1.1+0.5,-\j*1.1-0.43) circle (0.07);
+          \fill[green!60!black] (\i*1.1+0.5,-\j*1.1-0.62) circle (0.07);
+        }
+        \node[chart label,anchor=west,text=acText,align=left] at (3.5,-1.6) {Выберите\\все светофоры};
+      \end{tikzpicture}
+
+      \smallskip
+      \raggedright\small
+      \lead{Позже.} Номера домов с Google Street View, затем светофоры, машины и переходы ---
+      разметка для карт и беспилотников.
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}[c]{Волк или хаски?}
+  \small Учим классификатор отличать волков от хаски. Вот часть обучающей выборки:
+
+  \medskip
+  \centering
+  \begin{minipage}[t]{0.235\linewidth}\centering\includegraphics[width=\linewidth]{wolf-snow-1}\\[-1pt]{\scriptsize\color{acGray}волк\par}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\centering\includegraphics[width=\linewidth]{wolf-snow-2}\\[-1pt]{\scriptsize\color{acGray}волк\par}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\centering\includegraphics[width=\linewidth]{husky-grass-1}\\[-1pt]{\scriptsize\color{acGray}хаски\par}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\centering\includegraphics[width=\linewidth]{husky-grass-2}\\[-1pt]{\scriptsize\color{acGray}хаски\par}\end{minipage}
+
+  \medskip
+  \raggedright
+  \lead{Вопрос.} Точность на отложенной выборке из таких же фото хорошая. Что может пойти не так?
+
+\end{frame}
+
+\begin{frame}[c]{Волк или хаски: ответ}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{husky-snow}\\[2pt]
+      {\small\color{acOrange}\bfseries Ответ модели: волк\par}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{block}{Модель смотрела на снег}
+        \small
+        Все волки в обучении стояли на снегу, все хаски --- на траве.
+        Проще всего отличать их по фону. Хаски на снегу --- «волк».
+      \end{block}
+      \begin{block}{Эксперимент (2016)}
+        \small
+        Исследователи специально собрали такую выборку, чтобы показать: высокая точность
+        ещё не значит, что модель поняла задачу.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \medskip
+  \lead{Модель выучит любую закономерность, которая помогает на train,}
+  даже если она случайна. Такие проблемы надо ловить при сборе данных.
+
+\end{frame}
+
+\begin{frame}[c]{Задание: собираем датасет листьев}
+  \lead{Обсудим вместе.} Хотим, чтобы модель по фото листа определяла дерево.
+
+  \medskip
+  \begin{numrows}
+    1 & Какие классы? Сколько фото на класс нужно минимум?\\
+    2 & Фон, свет, ракурс: одинаковые или разные? Что будет в каждом случае?\\
+    3 & Как называть файлы и где хранить ответ (породу)?\\
+    4 & Если один лист сфотографирован 5 раз, можно ли эти фото раскидать в train и test?\\
+    5 & Как проверить, что другой человек разметил так же?\\
+  \end{numrows}
+\end{frame}
+
+\begin{frame}[c]{Ответы: правила сбора}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Разнообразие}
+        \small
+        Разные фоны, освещение и телефоны внутри \textbf{каждого} класса.
+        Если все клёны сняты на асфальте, а все дубы на траве, модель выучит асфальт.
+      \end{block}
+      \begin{block}{Баланс}
+        \small
+        Примерно одинаковое число фото на класс, иначе accuracy обманет.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Утечка}
+        \small
+        Фото одного листа --- одна группа. Группа целиком идёт либо в train, либо в test.
+        Иначе тест проверяет память, а не умение обобщать.
+      \end{block}
+      \begin{block}{Единый формат}
+        \small
+        Инструкция для всех: имя файла, папка класса, таблица с метаданными.
+        Тогда датасеты всех учеников можно склеить в один.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}

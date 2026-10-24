@@ -1,0 +1,63 @@
+\section{Итоги}
+
+\begin{frame}[c]{Проверь себя}
+  \begin{numrows}
+    1 & Почему фото одного листа нельзя раскидать по train и test?\\
+    2 & Кросс-валидация дала $0{,}84 \pm 0{,}03$ и $0{,}85 \pm 0{,}03$. Какая модель лучше?\\
+    3 & $X$ имеет форму $500\times 4$. Какой формы $\nabla L$?\\
+    4 & Чем шаг SGD отличается от шага ГД?\\
+    5 & ГД расходится уже при маленьком шаге. Что проверить первым делом?\\
+  \end{numrows}
+\end{frame}
+
+\begin{frame}[c]{Ответы}
+  \begin{numrows}
+    1 & Тест будет проверять память, а не обобщение: утечка\\
+    2 & Сказать нельзя: разница меньше разброса\\
+    3 & $4\times1$, как у $w$\\
+    4 & Градиент по случайному батчу, а не по всем объектам\\
+    5 & Масштаб признаков и формулу градиента\\
+  \end{numrows}
+\end{frame}
+
+\begin{frame}[c]{На практике: восстановление коэффициентов}
+  \small
+  Даны точки $(x, f(x))$, где
+  \[f(x) = \bigl((a+\varepsilon_a)\sin x + (b+\varepsilon_b)\ln x\bigr)^2 + (c+\varepsilon_c)\,x^2,
+    \qquad \varepsilon \in [-0{,}001;\ 0{,}001].\]
+  Нужно найти $a$, $b$, $c$ с точностью $10^{-2}$.
+
+  \medskip
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Подумайте}
+        \small
+        \begin{itemize}
+          \item Что здесь данные, а что параметры?
+          \item Чему равна $\partial f/\partial a$? А $\partial f/\partial c$?
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \visible<2>{%
+      \begin{block}{Подсказка}
+        \small
+        $\sin x$, $\ln x$, $x^2$ не зависят от $a$, $b$, $c$ ---
+        это просто столбцы признаков:
+
+        \smallskip
+        \centering\footnotesize
+        \zebra{2}\footnotesize
+        \begin{tabular}{rrrr}
+          $x$ & $\sin x$ & $\ln x$ & $x^2$\\
+          $0{,}5$ & $0{,}479$ & $-0{,}693$ & $0{,}25$ \\
+          $1$ & $0{,}841$ & $0{,}000$ & $1$ \\
+          $2$ & $0{,}909$ & $0{,}693$ & $4$\\
+        \end{tabular}
+      \end{block}}
+    \end{column}
+  \end{columns}
+
+  \smallskip
+  {\footnotesize\color{acGray}Задача: \url{https://coderun.yandex.ru/problem/coefficients-restoration}\par}
+\end{frame}
