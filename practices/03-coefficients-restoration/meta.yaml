@@ -1,0 +1,14 @@
+title: "Практика: восстановление коэффициентов"
+subtitle: "Градиентный спуск по трём параметрам"
+date: "2026-10-24"
+description: "Решаем задачу с CodeRun: выводим градиент по a, b, c, проверяем его численно, подбираем шаг и находим коэффициенты градиентным спуском. В ноутбуке есть подсказки и решения под спойлерами."
+lang: ru
+build: true
+
+references:
+  - label: Задача на CodeRun
+    url: https://coderun.yandex.ru/problem/coefficients-restoration
+
+materials:
+  - path: materials/notebook.ipynb
+    label: Jupyter Notebook
