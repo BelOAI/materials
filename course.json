@@ -28,7 +28,7 @@
       "number": 4,
       "title": "Как учится модель",
       "description": "Сбор данных, честная проверка качества, производные и градиентный спуск.",
-      "materials": ["lectures/04-gradient-descent", "practices/03-coefficients-restoration"]
+      "materials": ["lectures/04-gradient-descent", "practices/04-coefficients-restoration"]
     }
   ]
 }
