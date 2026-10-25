@@ -11,7 +11,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from handbook_site import load_handbook, publish_handbook, validate_links, PageLinks, lesson_routes
+from handbook_site import load_handbook, publish_handbook, validate_links, PageLinks, lesson_routes, lesson_path, contextual_html
 from handbook_notebooks import synchronize
 from course_site import write_page
 
@@ -52,15 +52,24 @@ class HandbookTests(unittest.TestCase):
     def test_curriculum_and_hierarchy(self):
         book = load_handbook(ROOT)
         lessons = book['_lessons']
-        seen = set()
-        for phase in book['curriculum']['phases']:
-            self.assertTrue(phase['learning_outcomes'])
-            for identifier in phase['lessons']:
-                self.assertNotIn(identifier, seen)
-                self.assertTrue(set(lessons[identifier]['prerequisites']).issubset(seen), identifier)
-                seen.add(identifier)
-        self.assertEqual(seen, {i for i, item in lessons.items() if not item.get('optional')})
-        self.assertEqual(book['curriculum']['phases'][0]['lessons'], book['reading_order'])
+        self.assertEqual({h['slug'] for h in book['handbooks']}, {'python', 'math', 'ml'})
+        for handbook in book['handbooks']:
+            included = [i for section in handbook['sections'] for i in section['lessons']]
+            self.assertEqual(len(included), len(set(included)))
+            routes = lesson_routes(book, handbook)
+            self.assertEqual(routes[0][0], handbook['introduction'])
+            self.assertEqual({i for route in routes for i in route}, set(included) | {handbook['introduction']})
+            self.assertEqual(set(routes[0][1:]), {i for i in included if not lessons[i].get('optional')})
+        ml = book['handbooks'][2]
+        self.assertEqual([s['title'] for s in ml['sections']], [
+            'Настройка среды', 'Классическое ML', 'Основы глубокого обучения',
+            'Нейросети своими руками', 'Как они учатся', 'Продвинутая математика ИИ'])
+        included = {i for section in ml['sections'] for i in section['lessons']}
+        self.assertIn(NUMPY, included)
+        self.assertIn('python/pytorch-tools/autograd', included)
+        self.assertIn('math/calculus/partial-derivatives', included)
+        self.assertNotIn(FIRST, included)
+        self.assertFalse(any(i.startswith('math/mathematical-notation/') for i in included))
         for track in book['tracks']:
             for chapter in track['chapters']:
                 self.assertEqual(len(chapter['id'].split('/')), 2)
@@ -81,7 +90,6 @@ class HandbookTests(unittest.TestCase):
             lambda: self.first().update(prerequisites=['python/basic-constructs']),
             lambda: self.first().update(prerequisites=[NUMPY]),
             lambda: self.book['start'].update(prerequisites=[FIRST]),
-            lambda: self.book.update(reading_order=list(reversed(self.book['reading_order']))),
             lambda: self.book['start'].update(date='2026-02-30'),
             lambda: self.first().update(build=False),
             lambda: self.first()['resources'][0].update(path='../../../../README.md'),
@@ -98,18 +106,22 @@ class HandbookTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     load_handbook(self.root)
 
-    def test_invalid_full_routes_fail_publication(self):
+    def test_invalid_handbook_definitions_fail_publication(self):
         original = copy.deepcopy(self.book)
         changes = [
-            lambda: self.book.update(curriculum=None),
-            lambda: self.book['curriculum'].update(phases=[]),
-            lambda: self.book['curriculum']['phases'][1].update(slug='first-model'),
-            lambda: self.book['curriculum']['phases'][1]['lessons'].reverse(),
-            lambda: self.book['curriculum']['phases'][1]['lessons'].pop(),
-            lambda: self.book['curriculum']['phases'][1]['lessons'].append(FIRST),
-            lambda: self.book['curriculum']['phases'][1]['lessons'].append('math/discrete-math/graphs'),
-            lambda: self.book['curriculum']['phases'][1]['lessons'].append('missing'),
-            lambda: self.book['curriculum']['phases'][0]['lessons'].pop(),
+            lambda: self.book.update(handbooks=None),
+            lambda: self.book.update(handbooks=[]),
+            lambda: self.book['handbooks'][1].update(slug='python'),
+            lambda: self.book['handbooks'][0].update(introduction='../outside'),
+            lambda: self.book['handbooks'][0].update(sections=[]),
+            lambda: self.book['handbooks'][0]['sections'][1].update(slug='basic-constructs'),
+            lambda: self.book['handbooks'][0]['sections'][0].update(slug='start'),
+            lambda: self.book['handbooks'][0]['sections'][0].update(slug='first-programs'),
+            lambda: self.book['handbooks'][0]['sections'][0].update(lessons=[]),
+            lambda: self.book['handbooks'][0]['sections'][0]['lessons'].pop(),
+            lambda: self.book['handbooks'][0]['sections'][0]['lessons'].append(FIRST),
+            lambda: self.book['handbooks'][0]['sections'][0]['lessons'].append('missing'),
+            lambda: self.book['handbooks'][0]['sections'][0]['lessons'].append('start'),
         ]
         for change in changes:
             with self.subTest(change=change):
@@ -118,6 +130,11 @@ class HandbookTests(unittest.TestCase):
                 self.write()
                 with self.assertRaises(ValueError):
                     load_handbook(self.root)
+        self.book = copy.deepcopy(original)
+        self.write()
+        (self.root / 'handbook/ml/start/index.md').unlink()
+        with self.assertRaises(ValueError):
+            load_handbook(self.root)
 
     @patch('handbook_site.export_notebook', return_value=False)
     def test_pages_navigation_resources_and_legacy_anchors(self, export):
@@ -168,25 +185,59 @@ class HandbookTests(unittest.TestCase):
         self.assertIn('handbook/python/functions-files/functions-arguments/#как-определить-функцию', legacy_html)
         expected_exports = sum(r['path'].endswith('.ipynb') for item in [*book['_lessons'].values(), *book['aliases']] for r in item.get('resources', []))
         self.assertEqual(export.call_count, expected_exports)
-        # Each page offers exactly one continuation in the agreed learning route.
-        for route in lesson_routes(book):
-            for index, identifier in enumerate(route):
-                html = (self.output / 'handbook' / identifier / 'index.html').read_text()
-                root = '../' * (len(identifier.split('/')) + 1)
-                for offset, rel in [(-1, 'prev'), (1, 'next')]:
-                    if 0 <= index + offset < len(route):
-                        self.assertEqual(html.count(f'rel="{rel}"'), 1, identifier)
-                        self.assertIn(f'href="{root}handbook/{route[index + offset]}/"',
-                                      re.search(r'<nav class="week-pagination".*?</nav>', html).group(), identifier)
-                    else:
-                        self.assertNotIn(f'rel="{rel}"', html, identifier)
-                self.assertNotIn('reading-next', html)
-        optional_routes = lesson_routes(book)[1:]
+        # Общий исходник получает навигацию и переходы текущего учебника.
+        for handbook in book['handbooks']:
+            for route in lesson_routes(book, handbook):
+                for index, identifier in enumerate(route):
+                    destination = lesson_path(handbook, identifier)
+                    html = (self.output / 'handbook' / destination / 'index.html').read_text()
+                    sidebar = html.split('<aside class="sidebar">')[1].split('</aside>')[0]
+                    self.assertEqual(sidebar.count('aria-current="page"'), 1, destination)
+                    self.assertEqual(sidebar.count('class="handbook-track"'), 1)
+                    root = '../' * (len(destination.split('/')) + 1)
+                    for offset, rel in [(-1, 'prev'), (1, 'next')]:
+                        if 0 <= index + offset < len(route):
+                            self.assertEqual(html.count(f'rel="{rel}"'), 1, destination)
+                            target = lesson_path(handbook, route[index + offset])
+                            self.assertIn(f'href="{root}handbook/{target}/"',
+                                          re.search(r'<nav class="week-pagination".*?</nav>', html).group(), destination)
+                        else:
+                            self.assertNotIn(f'rel="{rel}"', html, destination)
+        optional_routes = lesson_routes(book, book['handbooks'][2])[1:]
         self.assertIn(['ml/additional-topics/time-series', 'ml/additional-topics/forecasting'], optional_routes)
         self.assertIn(['ml/additional-topics/logical-ai', 'ml/additional-topics/logical-inference',
                        'ml/additional-topics/knowledge-ml'], optional_routes)
-        self.assertEqual({i for route in lesson_routes(book) for i in route}, set(book['_lessons']))
+        guide = PageLinks((self.output / 'handbook/start/index.html').read_text())
+        self.assertTrue({'как-двигаться-по-учебнику', 'где-выполнять-примеры',
+                         'библиотеки-для-продолжения-python'}.issubset(guide.ids))
+        hub = (self.output / 'handbook/index.html').read_text()
+        for handbook in book['handbooks']:
+            self.assertIn(handbook['title'], hub)
+        contextual = (self.output / 'handbook/ml/python/numerical-data/numpy-arrays/index.html').read_text()
+        self.assertIn('Учебник машинного обучения', contextual)
+        self.assertNotIn('Базовые конструкции', contextual)
+        self.assertIn('href="../../../../python/numerical-data/numpy-arrays/notebook.ipynb" download', contextual)
+        self.assertFalse((self.output / 'handbook/ml/python/numerical-data/numpy-arrays/notebook.ipynb').exists())
+        contextual_math = (self.output / 'handbook/ml/math/probability-statistics/density-normal/index.html').read_text()
+        self.assertIn('src="../../../../data/figures/normal.svg"', contextual_math)
         validate_links(self.output)
+
+    def test_contextual_links_keep_source_resolution_and_book_context(self):
+        book = load_handbook(ROOT)
+        ml = book['handbooks'][2]
+        html = ('<a href="../numpy-indexing/?mode=1&amp;x=2#формы">Далее</a>'
+                '<a href="../../basic-constructs/input-output/">Основы</a>'
+                '<a href="#локально">Якорь</a>'
+                '<img src="../../../data/figures/normal.svg" />'
+                "<a href='notebook.ipynb'>Ноутбук</a>"
+                '<a href="https://example.org/x">Внешняя</a>')
+        result = contextual_html(html, NUMPY, 'ml/' + NUMPY, ml, book['_lessons'])
+        self.assertIn('href="../numpy-indexing/?mode=1&amp;x=2#формы"', result)
+        self.assertIn('href="../../../../python/basic-constructs/input-output/"', result)
+        self.assertIn('href="#локально"', result)
+        self.assertIn('src="../../../../data/figures/normal.svg"', result)
+        self.assertIn("href='../../../../python/numerical-data/numpy-arrays/notebook.ipynb'", result)
+        self.assertIn('href="https://example.org/x"', result)
 
     def test_draft_is_not_advertised_on_main_site(self):
         # The draft exists in the source tree but must not enter public navigation.
@@ -237,7 +288,8 @@ class HandbookTests(unittest.TestCase):
         programme = (ROOT / 'handbook/PROGRAM.md').read_text()
         for track in book['tracks']:
             for chapter in track['chapters']:
-                self.assertIn(chapter['title'], programme)
+                if track['slug'] != 'ml':
+                    self.assertIn(chapter['title'], programme)
                 for lesson in chapter['lessons']:
                     with self.subTest(lesson=lesson['id']):
                         self.assertIn(lesson['title'], programme)
@@ -259,8 +311,6 @@ class HandbookTests(unittest.TestCase):
                             self.assertIn('самопровер', text.lower())
                         if lesson['id'].startswith('ml/additional-topics/'):
                             self.assertTrue(lesson.get('optional'))
-        for identifier in book['reading_order']:
-            self.assertFalse(identifier.startswith(('math/calculus/', 'math/probability-statistics/')))
         optional = {i for i, lesson in book['_lessons'].items() if lesson.get('optional')}
         for lesson in book['_lessons'].values():
             if not lesson.get('optional'):

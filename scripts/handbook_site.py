@@ -1,14 +1,15 @@
-"""Оглавление и страницы учебника: раздел → глава → урок."""
+"""Самостоятельные учебники на общем каталоге уроков и общей оболочке."""
 from __future__ import annotations
 import json
+import posixpath
 import re
 import shutil
 import subprocess
 from datetime import date
-from html import escape
+from html import escape, unescape
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import unquote, urlsplit, urljoin, urlunsplit
 from course_site import link, write_page
 from notebook_export import export_notebook
 
@@ -107,37 +108,37 @@ def load_handbook(source: Path) -> dict:
         visited.add(identifier)
     for identifier in lessons:
         visit(identifier)
-    route = book.get('reading_order')
-    if not isinstance(route, list) or not route or len(set(route)) != len(route):
-        raise ValueError('Неверный путь обучения')
-    seen = set()
-    for identifier in route:
-        if identifier not in lessons or lessons[identifier]['status'] == 'planned' or not set(lessons[identifier].get('prerequisites', [])).issubset(seen):
-            raise ValueError('Путь обучения не учитывает предварительные знания')
-        seen.add(identifier)
-    curriculum = book.get('curriculum')
-    phases = curriculum.get('phases') if isinstance(curriculum, dict) else None
-    if not isinstance(phases, list) or not phases:
-        raise ValueError('Необходим общий маршрут обучения')
-    seen, phase_ids = set(), set()
-    for phase in phases:
-        if (not isinstance(phase, dict) or not identifier_ok(phase.get('slug'), 1)
-                or phase['slug'] in phase_ids or not nonempty(phase.get('title'))
-                or not isinstance(phase.get('learning_outcomes'), list)
-                or not phase['learning_outcomes'] or not all(nonempty(v) for v in phase['learning_outcomes'])
-                or not isinstance(phase.get('lessons'), list) or not phase['lessons']):
-            raise ValueError('Неверный этап общего маршрута')
-        phase_ids.add(phase['slug'])
-        for identifier in phase['lessons']:
-            if (not isinstance(identifier, str) or identifier not in lessons or identifier in seen
-                    or lessons[identifier].get('optional')
-                    or not set(lessons[identifier].get('prerequisites', [])).issubset(seen)):
-                raise ValueError('Общий маршрут не учитывает предварительные знания')
-            seen.add(identifier)
-    if seen != {i for i, lesson in lessons.items() if not lesson.get('optional')}:
-        raise ValueError('Общий маршрут должен охватывать все обязательные уроки')
-    if phases[0]['lessons'] != route:
-        raise ValueError('Первый этап должен совпадать с путём к первому эксперименту')
+    handbooks = book.get('handbooks')
+    if not isinstance(handbooks, list) or not handbooks:
+        raise ValueError('Необходимы самостоятельные учебники')
+    handbook_ids = set()
+    for handbook in handbooks:
+        slug = handbook.get('slug') if isinstance(handbook, dict) else None
+        if (slug not in track_ids or slug in handbook_ids
+                or not all(nonempty(handbook.get(k)) for k in ('title', 'description'))
+                or handbook.get('introduction') != slug + '/start'):
+            raise ValueError('Некорректный учебник')
+        handbook_ids.add(slug)
+        local_file(base, handbook['introduction'] + '/index.md')
+        sections = handbook.get('sections')
+        if not isinstance(sections, list) or not sections:
+            raise ValueError('Необходимо оглавление учебника')
+        seen, section_ids = set(), set()
+        for section in sections:
+            if (not isinstance(section, dict) or not identifier_ok(section.get('slug'), 1)
+                    or section['slug'] in {'start', 'data'} | section_ids
+                    or not all(nonempty(section.get(k)) for k in ('title', 'description'))
+                    or not isinstance(section.get('lessons'), list) or not section['lessons']):
+                raise ValueError('Некорректный раздел учебника')
+            section_ids.add(section['slug'])
+            for identifier in section['lessons']:
+                if not isinstance(identifier, str) or identifier not in owners or identifier in seen:
+                    raise ValueError('Неизвестный урок или повтор включения в учебник')
+                seen.add(identifier)
+        if not {i for i in owners if i.startswith(slug + '/')}.issubset(seen):
+            raise ValueError('Учебник должен включать все собственные уроки')
+    if handbook_ids != track_ids:
+        raise ValueError('Для каждого предмета необходим самостоятельный учебник')
     optional = {i for i, lesson in lessons.items() if lesson.get('optional')}
     if any(optional.intersection(lesson.get('prerequisites', []))
            for lesson in lessons.values() if not lesson.get('optional')):
@@ -160,19 +161,30 @@ def load_handbook(source: Path) -> dict:
                 raise ValueError('Неверный старый якорь')
             anchors.add(anchor['id'])
         validate_resources(base / alias['id'], alias)
+    section_paths = {h['slug'] + '/' + section['slug'] for h in handbooks for section in h['sections']}
+    if (section_paths | {h['introduction'] for h in handbooks}).intersection(aliases):
+        raise ValueError('Страница учебника занимает старый адрес')
     book['_lessons'], book['_chapters'], book['_owners'] = lessons, chapters, owners
     return book
 
 
-def lesson_routes(book):
-    """Основной маршрут и отдельные связанные необязательные ветки."""
+def lesson_path(handbook, identifier):
+    """Адрес урока в контексте учебника без перемещения исходника."""
+    return identifier if identifier.startswith(handbook['slug'] + '/') else handbook['slug'] + '/' + identifier
+
+
+def lesson_routes(book, handbook):
+    """Маршрут учебника и отдельные связанные необязательные ветки."""
     lessons = book['_lessons']
-    routes = [[identifier for phase in book['curriculum']['phases']
-               for identifier in phase['lessons'] if lessons[identifier]['status'] != 'planned']]
+    included = {i for section in handbook['sections'] for i in section['lessons']}
+    routes = [[handbook['introduction']] + [i for section in handbook['sections']
+               for i in section['lessons'] if not lessons[i].get('optional')
+               and lessons[i]['status'] != 'planned']]
     for chapter in book['_chapters'].values():
         branch = []
         for lesson in chapter['lessons']:
-            if not lesson.get('optional') or lesson['status'] == 'planned':
+            if (lesson['id'] not in included or not lesson.get('optional')
+                    or lesson['status'] == 'planned'):
                 if branch:
                     routes.append(branch)
                 branch = []
@@ -184,6 +196,27 @@ def lesson_routes(book):
         if branch:
             routes.append(branch)
     return routes
+
+
+def contextual_html(html, identifier, destination, handbook, lessons):
+    """Разрешать URL относительно исходного урока, затем учитывать контекст."""
+    included = {i for section in handbook['sections'] for i in section['lessons']} if handbook else set()
+    def replace(match):
+        href = unescape(match[3])
+        url = urlsplit(href)
+        if not url.path or url.scheme or url.netloc or url.path.startswith('/'):
+            return match[0]
+        target = urlsplit(urljoin('https://handbook.invalid/handbook/' + identifier + '/', href))
+        path = unquote(target.path)
+        # Только страницы уроков меняют контекст; файлы и данные общие.
+        candidate = path.removeprefix('/handbook/').removesuffix('index.html').rstrip('/')
+        if candidate in included and candidate in lessons:
+            path = '/handbook/' + lesson_path(handbook, candidate) + '/'
+        relative = posixpath.relpath(path, '/handbook/' + destination)
+        if path.endswith('/'):
+            relative += '/'
+        return match[1] + '=' + match[2] + escape(urlunsplit(('', '', relative, url.query, url.fragment)), quote=True) + match[2]
+    return re.sub(r"\b(href|src)=([\"'])(.*?)\2", replace, html)
 
 
 class PageLinks(HTMLParser):
@@ -226,11 +259,15 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     book = load_handbook(source)
     lessons = book['_lessons']
     published = [item for item in lessons.values() if item['status'] != 'planned']
+    handbooks = {h['slug']: h for h in book['handbooks']}
+    introductions = {h['introduction']: {'id': h['introduction'], 'title': 'Как пользоваться учебником'}
+                     for h in handbooks.values()}
+    texts = published + list(introductions.values())
     result = subprocess.run(['node', str(source / 'site/render-handbook.mjs')], input=json.dumps([
         {'name': item['id'], 'source': (source / 'handbook' / item['id'] / 'index.md').read_text(encoding='utf-8')}
-        for item in published
+        for item in texts
     ]), text=True, capture_output=True, check=True)
-    rendered = dict(zip((item['id'] for item in published), json.loads(result.stdout)))
+    rendered = dict(zip((item['id'] for item in texts), json.loads(result.stdout)))
     shutil.rmtree(output / 'handbook', ignore_errors=True)
     data = source / 'handbook/data'
     if data.is_dir():
@@ -249,51 +286,69 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
                 + ' data-nav-label="' + escape(text, quote=True) + '"><span class="nav-label">'
                 + escape(text) + '</span></a>')
 
-    def label(item, root, current='', navigation=False):
+    def label(item, root, handbook=None, current='', navigation=False):
         text = item['title'] + (' (дополнительно)' if item.get('optional') else '')
         if item.get('status') == 'planned':
             return escape(text) + ' <span class="chapter-unavailable">(ещё нет текста)</span>'
+        included = handbook and any(item['id'] in section['lessons'] for section in handbook['sections'])
+        path = lesson_path(handbook, item['id']) if included else item['id']
+        if handbook and item['id'] == 'start':
+            path = handbook['introduction']
         if navigation:
-            return navigation_link(root + 'handbook/' + item['id'] + '/', text, item['id'] == current)
-        return link(root + 'handbook/' + item['id'] + '/', text, ' aria-current="page"' if item['id'] == current else '')
+            return navigation_link(root + 'handbook/' + path + '/', text, path == current)
+        return link(root + 'handbook/' + path + '/', text)
 
-    def listing(items, root):
-        return '<ol>' + ''.join('<li>' + label(item, root) + '</li>' for item in items) + '</ol>'
+    def listing(items, root, handbook=None):
+        return '<ol>' + ''.join('<li>' + label(item, root, handbook) + '</li>' for item in items) + '</ol>'
 
-    def navigation(root, current, owner=None):
+    def section_title(handbook, section):
+        number = handbook['sections'].index(section) + (0 if handbook['slug'] == 'ml' else 1)
+        return f'{number}. {section["title"]}'
+
+    def navigation(root, current, handbook=None, owner=None):
         def navlink(identifier, title):
             return navigation_link(root + 'handbook/' + (identifier + '/' if identifier else ''), title, identifier == current)
-        top = '<div class="handbook-links"><ul><li>' + link(root, '← На основной сайт') + '</li><li>' + navlink('', 'Учебник') + '</li><li>' + navlink('start', 'Как пользоваться учебником') + '</li></ul></div>'
-        nav = '<div class="handbook-tree">'
-        for track in book['tracks']:
-            nav += '<section class="handbook-track" aria-label="' + escape(track['title'], quote=True) + '"><div class="track-title">' + navlink(track['slug'], track['title']) + '</div>'
-            for number, chapter in enumerate(track['chapters'], 1):
-                opened = ' open' if chapter['id'] == current or (owner and owner['id'] == chapter['id']) else ''
-                nav += '<details class="handbook-chapter"' + opened + '><summary><span class="chapter-title">' + escape(f'{number}. {chapter["title"]}') + '</span></summary><ul><li>' + navlink(chapter['id'], 'Обзор главы') + '</li>'
-                nav += ''.join('<li>' + label(item, root, current, navigation=True) + '</li>' for item in chapter['lessons']) + '</ul></details>'
+        top = '<div class="handbook-links"><ul><li>' + link(root, '← На основной сайт') + '</li><li>' + navlink('', 'Учебники') + '</li></ul></div>'
+        nav = '<div class="handbook-tree"><ul>'
+        for h in handbooks.values():
+            nav += '<li>' + navlink(h['slug'], h['title']) + '</li>'
+        nav += '</ul>'
+        if current == 'start':
+            nav += '<ul><li>' + navlink('start', 'Как пользоваться учебниками') + '</li></ul>'
+        if handbook:
+            nav += '<section class="handbook-track" aria-label="' + escape(handbook['title'], quote=True) + '"><div class="track-title">' + navlink(handbook['introduction'], 'Как пользоваться учебником') + '</div>'
+            for section in handbook['sections']:
+                identifier = handbook['slug'] + '/' + section['slug']
+                opened = ' open' if section is owner or identifier == current else ''
+                nav += '<details class="handbook-chapter"' + opened + '><summary><span class="chapter-title">' + escape(section_title(handbook, section)) + '</span></summary><ul><li>' + navlink(identifier, 'Обзор раздела') + '</li>'
+                nav += ''.join('<li>' + label(lessons[i], root, handbook, current, navigation=True) + '</li>' for i in section['lessons']) + '</ul></details>'
             nav += '</section>'
         return top, nav + '</div>'
 
-    def page(identifier, title, description, content, owner=None):
+    draft_note = '<p class="draft-note"><span class="draft-badge">Черновик</span><span>Материалы дорабатываются и будут дополняться.</span></p>'
+
+    def page(identifier, title, description, content, handbook=None, owner=None):
         path = 'handbook' + ('/' + identifier if identifier else '')
         root = '../' * len(Path(path).parts)
         content = content.replace('</h1>', '</h1>' + draft_note, 1)
-        navigation_top, navigation_body = navigation(root, identifier, owner)
+        navigation_top, navigation_body = navigation(root, identifier, handbook, owner)
         write_page(source, output, weeks, path, title, description,
                    '<div class="handbook-content">' + content + '</div>', 'handbook', root,
-                   navigation_override=navigation_body, navigation_top=navigation_top, brand_href=root + 'handbook/',
+                   navigation_override=navigation_body, navigation_top=navigation_top,
+                   brand_href=root + 'handbook/' + (handbook['slug'] + '/' if handbook else ''),
                    navigation_label='Оглавление учебника')
         dest = output / path / 'index.html'
         html = dest.read_text(encoding='utf-8').replace('</head>', f'<link rel="stylesheet" href="{root}assets/katex/katex.min.css" />\n</head>')
         dest.write_text(html, encoding='utf-8')
 
-    def resources(item, destination):
+    def resources(item):
+        # Каждый исходный ресурс и HTML-превью публикуются один раз.
         content = ''
         if item.get('resources'):
             content = '<h2>Файлы урока</h2><ul>'
             for resource in item['resources']:
                 src = local_file(source / 'handbook' / item['id'], resource['path'])
-                dest = output / 'handbook' / destination / resource['path']
+                dest = output / 'handbook' / item['id'] / resource['path']
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(src, dest)
                 content += '<li>' + link(resource['path'], resource['label'], ' download')
@@ -305,54 +360,81 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             content += '<h2>Дополнительные материалы</h2><ul>' + ''.join('<li>' + link(ref['url'], ref['label']) + '</li>' for ref in item['references']) + '</ul>'
         return content
 
-    def crumbs(root, track, chapter, title):
-        return '<nav class="breadcrumbs" aria-label="Путь к уроку"><ol><li>' + link(root + 'handbook/', 'Учебник') + '</li><li>' + link(root + 'handbook/' + track['slug'] + '/', track['title']) + '</li><li>' + link(root + 'handbook/' + chapter['id'] + '/', chapter['title']) + '</li><li aria-current="page">' + escape(title) + '</li></ol></nav>'
+    resource_html = {item['id']: resources(item) for item in [*published, *book.get('aliases', [])]}
 
-    draft_note = '<p class="draft-note"><span class="draft-badge">Черновик</span><span>Материалы дорабатываются и будут дополняться.</span></p>'
+    def crumbs(root, handbook, title, section=None):
+        content = '<nav class="breadcrumbs" aria-label="Путь к уроку"><ol><li>' + link(root + 'handbook/', 'Учебники') + '</li><li>' + link(root + 'handbook/' + handbook['slug'] + '/', handbook['title']) + '</li>'
+        if section:
+            content += '<li>' + link(root + 'handbook/' + handbook['slug'] + '/' + section['slug'] + '/', section['title']) + '</li>'
+        return content + '<li aria-current="page">' + escape(title) + '</li></ol></nav>'
 
-    overview = '<h1>Учебник BelOAI</h1><p>' + escape(book['description']) + '</p><p>Достаточно школьной арифметики; опыт программирования не нужен.</p><p>' + link('python/basic-constructs/input-output/', 'Начать первый урок →') + ' · ' + link('start/', 'Как пользоваться учебником') + '</p>'
-    overview += '<ul>'
-    for track in book['tracks']:
-        overview += '<li>' + link(track['slug'] + '/', track['title']) + ' — ' + escape(track['description']) + '</li>'
-        track_content = '<h1>' + escape(track['title']) + '</h1><p>' + escape(track['description']) + '</p>'
-        for chapter in track['chapters']:
-            track_content += '<h2>' + link('../../handbook/' + chapter['id'] + '/', chapter['title']) + '</h2>' + listing(chapter['lessons'], '../../')
-            chapter_root = '../../../'
-            content = '<nav class="breadcrumbs" aria-label="Путь к главе"><ol><li>' + link(chapter_root + 'handbook/', 'Учебник') + '</li><li>' + link(chapter_root + 'handbook/' + track['slug'] + '/', track['title']) + '</li></ol></nav>'
-            content += '<h1>' + escape(chapter['title']) + '</h1><p>' + escape(chapter['description']) + '</p>' + listing(chapter['lessons'], chapter_root)
-            page(chapter['id'], chapter['title'], chapter['description'], content, chapter)
-        page(track['slug'], track['title'], track['description'], track_content)
+    overview = '<h1>Учебники BelOAI</h1><p>' + escape(book['description']) + '</p><ul>'
+    for handbook in handbooks.values():
+        overview += '<li>' + link(handbook['slug'] + '/', handbook['title']) + ' — ' + escape(handbook['description']) + '</li>'
     page('', book['title'], book['description'], overview + '</ul>')
-    routes = lesson_routes(book)
-    route_by_lesson = {identifier: route for route in routes for identifier in route}
-    for item in published:
-        identifier = item['id']
-        root = '../' * (len(identifier.split('/')) + 1)
-        owner = book['_owners'].get(identifier)
-        content = crumbs(root, owner[0], owner[1], item['title']) if owner else ''
-        content += '<h1>' + escape(item['title']) + '</h1>'
-        if item.get('prerequisites'):
-            content += '<h2>Перед началом</h2>' + listing([lessons[i] for i in item['prerequisites']], root)
-        content += '<nav class="lesson-toc" aria-label="Оглавление урока"><h2>В этом уроке</h2><ul>' + ''.join('<li>' + link('#' + heading['id'], heading['text']) + '</li>' for heading in rendered[identifier]['toc'] if heading['level'] == 2) + '</ul></nav>'
-        content += rendered[identifier]['html'] + resources(item, identifier)
-        if identifier in route_by_lesson:
-            available = route_by_lesson[identifier]
-            index = available.index(identifier)
-            title = 'Переходы между уроками'
-            content += '<nav class="week-pagination" aria-label="' + title + '">'
+
+    for handbook in handbooks.values():
+        slug = handbook['slug']
+        routes = lesson_routes(book, handbook)
+        route_by_lesson = {i: route for route in routes for i in route}
+        section_by_lesson = {i: section for section in handbook['sections'] for i in section['lessons']}
+
+        def pagination(identifier, root):
+            if identifier not in route_by_lesson:
+                return ''
+            route = route_by_lesson[identifier]
+            index = route.index(identifier)
+            content = '<nav class="week-pagination" aria-label="Переходы между уроками">'
             for offset, text, rel in [(-1, '← ', 'prev'), (1, 'Далее: ', 'next')]:
-                if 0 <= index + offset < len(available):
-                    neighbor = lessons[available[index + offset]]
-                    content += link(root + 'handbook/' + neighbor['id'] + '/', text + neighbor['title'], f' rel="{rel}"')
-            content += '</nav>'
-        page(identifier, item['title'], item.get('description', item['title']), content, owner[1] if owner else None)
+                if 0 <= index + offset < len(route):
+                    neighbor = route[index + offset]
+                    title = (lessons.get(neighbor) or introductions[neighbor])['title']
+                    content += link(root + 'handbook/' + lesson_path(handbook, neighbor) + '/', text + title, f' rel="{rel}"')
+            return content + '</nav>'
+
+        content = '<h1>' + escape(handbook['title']) + '</h1><p>' + escape(handbook['description']) + '</p><p>' + link('../../handbook/' + handbook['introduction'] + '/', 'Начать: как пользоваться учебником →') + '</p>'
+        for section in handbook['sections']:
+            identifier = slug + '/' + section['slug']
+            content += '<h2>' + link('../../handbook/' + identifier + '/', section_title(handbook, section)) + '</h2><p>' + escape(section['description']) + '</p>'
+            root = '../../../'
+            section_content = crumbs(root, handbook, section['title']) + '<h1>' + escape(section_title(handbook, section)) + '</h1><p>' + escape(section['description']) + '</p>'
+            if slug == 'ml' and section is handbook['sections'][0]:
+                section_content += '<p>' + link(root + 'handbook/' + handbook['introduction'] + '/#среда-и-библиотеки', 'Настроить среду и скачать данные') + '</p>'
+            section_content += listing([lessons[i] for i in section['lessons']], root, handbook)
+            page(identifier, section['title'], section['description'], section_content, handbook, section)
+        page(slug, handbook['title'], handbook['description'], content, handbook)
+
+        for identifier in [handbook['introduction'], *section_by_lesson]:
+            item = lessons.get(identifier) or introductions[identifier]
+            if item.get('status') == 'planned':
+                continue
+            destination = lesson_path(handbook, identifier)
+            root = '../' * (len(destination.split('/')) + 1)
+            section = section_by_lesson.get(identifier)
+            content = crumbs(root, handbook, item['title'], section) + '<h1>' + escape(item['title']) + '</h1>'
+            if item.get('prerequisites'):
+                content += '<h2>Перед началом</h2>' + listing([lessons[i] for i in item['prerequisites']], root, handbook)
+            content += '<nav class="lesson-toc" aria-label="Оглавление урока"><h2>В этом уроке</h2><ul>' + ''.join('<li>' + link('#' + heading['id'], heading['text']) + '</li>' for heading in rendered[identifier]['toc'] if heading['level'] == 2) + '</ul></nav>'
+            content += contextual_html(rendered[identifier]['html'] + resource_html.get(identifier, ''), identifier, destination, handbook, lessons)
+            content += pagination(identifier, root)
+            page(destination, item['title'], item.get('description', item['title']), content, handbook, section)
+
+    # Прежние страницы глав ML остаются доступными как обзоры исходных тем.
+    section_paths = {h['slug'] + '/' + s['slug'] for h in handbooks.values() for s in h['sections']}
+    for identifier, chapter in book['_chapters'].items():
+        if identifier not in section_paths:
+            handbook = handbooks[identifier.split('/')[0]]
+            content = '<h1>' + escape(chapter['title']) + '</h1><p>' + escape(chapter['description']) + '</p>' + listing(chapter['lessons'], '../../../', handbook)
+            page(identifier, chapter['title'], chapter['description'], content, handbook)
+
+    start = lessons['start']
+    page('start', start['title'], start['title'], '<h1>' + escape(start['title']) + '</h1>' + rendered['start']['html'] + resource_html['start'])
     for alias in book.get('aliases', []):
         root = '../../../'
         content = '<h1>' + escape(alias['title']) + '</h1><p>Выберите урок:</p>' + listing([lessons[i] for i in alias['lessons']], root)
         content += '<ul class="lesson-transition">' + ''.join('<li id="' + escape(a['id'], quote=True) + '">' + link(root + 'handbook/' + a['target'].split('#')[0] + '/' + ('#' + a['target'].split('#', 1)[1] if '#' in a['target'] else ''), a['label']) + '</li>' for a in alias.get('anchors', [])) + '</ul>'
-        content += resources(alias, alias['id'])
-        owner = book['_owners'][alias['lessons'][0]][1]
-        page(alias['id'], alias['title'], alias['title'], content, owner)
+        content += resource_html[alias['id']]
+        page(alias['id'], alias['title'], alias['title'], content, handbooks[alias['id'].split('/')[0]])
     # Keep the draft out of search results, including notebook HTML previews.
     for path in (output / 'handbook').rglob('*.html'):
         html = path.read_text(encoding='utf-8')
