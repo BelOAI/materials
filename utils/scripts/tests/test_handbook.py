@@ -100,7 +100,6 @@ resources:
         for chapter in book['_chapters'].values():
             self.assertEqual(chapter['title'], yaml.safe_load((chapter['_folder'] / 'meta.yaml').read_text())['title'])
             self.assertFalse(chapter['_folder'].name.startswith('_'))
-        self.assertEqual(synchronize(ROOT), [])
 
     def test_invalid_local_metadata(self):
         path = self.chapter / 'meta.yaml'

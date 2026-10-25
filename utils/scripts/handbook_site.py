@@ -65,6 +65,14 @@ def read_metadata(folder):
             raise ValueError('Необходимы slug, title, description, status и authors')
         if item['status'] != 'planned' and not isinstance(item.get('build'), bool):
             raise ValueError('Для текста необходимо build: true')
+        if not isinstance(item.get('references', []), list):
+            raise ValueError('Неверные внешние ссылки')
+        for ref in item.get('references', []):
+            if (not isinstance(ref, dict) or not nonempty(ref.get('label'))
+                    or not isinstance(ref.get('url'), str)
+                    or urlsplit(ref['url']).scheme not in {'http', 'https'}
+                    or not urlsplit(ref['url']).netloc):
+                raise ValueError('Неверная внешняя ссылка')
         return item
     except (yaml.YAMLError, ValueError) as error:
         raise ValueError(f'{path}: {error}') from error
@@ -293,7 +301,11 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
                 if export_notebook(target, dependencies=dependencies):
                     content += ' · ' + link(str(Path(resource['path']).with_suffix('.html')), 'Открыть в браузере')
             content += '</li>'
-        return '<h2>Файлы</h2><ul>' + content + '</ul>' if content else ''
+        content = '<h2>Файлы</h2><ul>' + content + '</ul>' if content else ''
+        if item.get('references'):
+            content += '<h2>Дополнительные материалы</h2><ul>' + ''.join(
+                '<li>' + link(ref['url'], ref['label']) + '</li>' for ref in item['references']) + '</ul>'
+        return content
 
     for item in texts:
         publish_files_html = publish_files(item)

@@ -13,8 +13,6 @@ async (page) => {
     await page.goto(base + 'handbooks/ml/' + slug + '/');
     assert(await page.locator('main h1').isVisible(), slug + ': readable page');
     assert(await page.locator('meta[name="robots"]').first().getAttribute('content') === 'noindex, nofollow', slug + ': noindex');
-    assert(await page.locator('.week-pagination a, a[download]').count() === 0, slug + ': no fake lessons');
-    if (slug !== 'intro') assert(await page.locator('.section-planned').isVisible(), slug + ': planned');
   }
   for (const path of ['python/', 'math/', 'python/basic-constructs/input-output/notebook.ipynb', 'math/calculus/limits/', 'ml/knn/', 'ml/data-experiment/', 'ml/classical-models/linear-models/', 'ml/_paragraph-template/']) {
     for (const prefix of ['handbooks/', 'handbook/']) {

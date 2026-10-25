@@ -8,7 +8,7 @@ from pathlib import Path
 from repo_paths import REPO_ROOT as ROOT
 
 
-def render_notebook(title: str, text: str) -> dict:
+def render_notebook(title: str, text: str, assets: Path | None = None) -> dict:
     solutions = []
     def move(match):
         solutions.append(match.group(1).strip())
@@ -18,7 +18,21 @@ def render_notebook(title: str, text: str) -> dict:
     cells = []
     def markdown(value):
         if value.strip():
-            cells.append({'cell_type': 'markdown', 'metadata': {}, 'source': value.strip().splitlines(keepends=True)})
+            attachments = {}
+            def embed(match):
+                if assets is None:
+                    return match[0]
+                path = (assets / match[2]).resolve()
+                if not path.is_relative_to(assets.resolve()) or not path.is_file() or path.suffix != '.svg':
+                    return match[0]
+                name = path.name
+                attachments[name] = {'image/svg+xml': path.read_text(encoding='utf-8')}
+                return f'![{match[1]}](attachment:{name})'
+            value = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', embed, value)
+            cell = {'cell_type': 'markdown', 'metadata': {}, 'source': value.strip().splitlines(keepends=True)}
+            if attachments:
+                cell['attachments'] = attachments
+            cells.append(cell)
     markdown(f'# {title}\n\nАвторы BelOAI. CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
     cursor = 0
     for match in re.finditer(r'^```python\n(.*?)^```\s*$', text, re.M | re.S):
@@ -41,7 +55,7 @@ def synchronize(root: Path, write: bool = False) -> list[str]:
         resources = [r for r in item.get('resources', []) if r['path'] == 'notebook.ipynb']
         if not resources:
             raise ValueError(f"{item['id']}: sync_notebook требует ресурс notebook.ipynb")
-        expected = render_notebook(item['title'], item['_content'].read_text())
+        expected = render_notebook(item['title'], item['_content'].read_text(), assets=item['_folder'])
         destination = item['_folder'] / 'notebook.ipynb'
         if not destination.is_file() or json.loads(destination.read_text()) != expected:
             stale.append(item['id'])

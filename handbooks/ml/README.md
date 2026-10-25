@@ -2,7 +2,7 @@
 
 [Читать на сайте](https://materials.beloai.by/handbooks/ml/) · [Программа](../PROGRAM.md)
 
-Учебник находится в разработке: доступно введение, остальные главы запланированы.
+Учебник находится в разработке: доступны введение и первое занятие Classic ML; остальные материалы готовятся.
 
 0. [Intro](00-intro/README.md)
 1. [Classic ML](01-classic-ml/README.md)
@@ -12,3 +12,5 @@
 5. [Math of AI](05-math-of-ai/README.md)
 
 Для авторов: [шаблон параграфа](_paragraph-template/README.md) и [руководство по сборке](../../utils/scripts/README.md#учебник-машинного-обучения).
+
+Первое занятие: [От задачи к первому эксперименту](01-classic-ml/01-first-experiment/content.md).

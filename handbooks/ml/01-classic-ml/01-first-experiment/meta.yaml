@@ -1,0 +1,12 @@
+title: "От задачи к первому эксперименту"
+status: "draft"
+build: true
+date: "2026-10-25"
+topics: ["Объекты, признаки и целевая переменная", "Регрессия и классификация", "Обучающая и тестовая части", "Постоянный прогноз: медиана и самый частый класс", "Средний модуль ошибки и доля верных ответов"]
+learning_outcomes: ["Отделять доступные признаки от ответа и сведений из будущего.", "Строить постоянный прогноз только по обучающим данным.", "Вычислять MAE и accuracy на новых примерах."]
+resources: [{"path": "notebook.ipynb", "label": "Практика и решения (.ipynb)"}, {"path": "media/experiment.svg", "label": "Схема эксперимента (.svg)"}]
+references: [{"label": "BelOAI — задачи, данные, метрики и постоянная модель", "url": "https://github.com/BelOAI/materials/tree/dev/course/lectures/01-intro-ml"}, {"label": "ODS.ai — классические модели ML, данные и признаки", "url": "https://ods.ai/tracks/classic-models-autumn26"}]
+slug: "first-experiment"
+authors: ["Авторы BelOAI"]
+sync_notebook: true
+description: "Признаки, ответы, постоянный прогноз, MAE и accuracy на новых данных."

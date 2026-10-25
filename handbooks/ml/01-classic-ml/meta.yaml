@@ -1,7 +1,9 @@
 slug: classic-ml
 title: Classic ML
 description: Классические методы машинного обучения.
-status: planned
+status: draft
 authors:
   - Авторы BelOAI
-paragraphs: []
+paragraphs:
+  - 01-first-experiment
+build: true
