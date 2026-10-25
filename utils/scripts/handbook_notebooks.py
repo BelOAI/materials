@@ -8,7 +8,8 @@ from pathlib import Path
 from repo_paths import REPO_ROOT as ROOT
 
 
-def render_notebook(title: str, text: str, assets: Path | None = None) -> dict:
+def render_notebook(title: str, text: str, assets: Path | None = None,
+                    authors: list[str] | None = None) -> dict:
     solutions = []
     def move(match):
         solutions.append(match.group(1).strip())
@@ -33,7 +34,10 @@ def render_notebook(title: str, text: str, assets: Path | None = None) -> dict:
             if attachments:
                 cell['attachments'] = attachments
             cells.append(cell)
-    markdown(f'# {title}\n\nАвторы BelOAI. CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
+    author_line = ', '.join(authors or ['Авторы BelOAI'])
+    if authors and author_line != 'Авторы BelOAI':
+        author_line = ('Автор: ' if len(authors) == 1 else 'Авторы: ') + author_line
+    markdown(f'# {title}\n\n{author_line}. CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
     cursor = 0
     for match in re.finditer(r'^```python\n(.*?)^```\s*$', text, re.M | re.S):
         markdown(text[cursor:match.start()])
@@ -55,7 +59,8 @@ def synchronize(root: Path, write: bool = False) -> list[str]:
         resources = [r for r in item.get('resources', []) if r['path'] == 'notebook.ipynb']
         if not resources:
             raise ValueError(f"{item['id']}: sync_notebook требует ресурс notebook.ipynb")
-        expected = render_notebook(item['title'], item['_content'].read_text(), assets=item['_folder'])
+        expected = render_notebook(item['title'], item['_content'].read_text(), assets=item['_folder'],
+                                   authors=item['authors'])
         destination = item['_folder'] / 'notebook.ipynb'
         if not destination.is_file() or json.loads(destination.read_text()) != expected:
             stale.append(item['id'])

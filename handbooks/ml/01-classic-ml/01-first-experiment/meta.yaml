@@ -7,6 +7,6 @@ learning_outcomes: ["Отделять доступные признаки от �
 resources: [{"path": "notebook.ipynb", "label": "Практика и решения (.ipynb)"}, {"path": "media/experiment.svg", "label": "Схема эксперимента (.svg)"}]
 references: [{"label": "BelOAI — задачи, данные, метрики и постоянная модель", "url": "https://github.com/BelOAI/materials/tree/dev/course/lectures/01-intro-ml"}, {"label": "ODS.ai — классические модели ML, данные и признаки", "url": "https://ods.ai/tracks/classic-models-autumn26"}]
 slug: "first-experiment"
-authors: ["Авторы BelOAI"]
+authors: ["Алексей Толстиков"]
 sync_notebook: true
 description: "Признаки, ответы, постоянный прогноз, MAE и accuracy на новых данных."
