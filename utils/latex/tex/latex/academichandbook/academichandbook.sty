@@ -63,10 +63,12 @@
 \raggedbottom
 \floatplacement{figure}{H}
 % Pandoc bounds the image by textheight without allowing room for its caption.
+% maxsizebox avoids adjustbox's reuse of the global Gin width/height defaults
+% installed by Pandoc 2.x, which would scale the already-sized graphic twice.
 \let\handbookincludegraphics\includegraphics
 \renewcommand{\includegraphics}[2][]{%
-  \adjustbox{max height=.78\textheight,max width=\linewidth}{%
-    \handbookincludegraphics[#1]{#2}}}
+  \maxsizebox*{\linewidth}{.78\textheight}{%
+    \handbookincludegraphics[width=!,height=!,keepaspectratio,#1]{#2}}}
 \widowpenalty=10000
 \clubpenalty=10000
 \displaywidowpenalty=10000

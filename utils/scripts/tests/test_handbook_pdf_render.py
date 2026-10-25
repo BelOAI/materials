@@ -19,6 +19,77 @@ from repo_paths import REPO_ROOT
 
 @unittest.skipUnless(os.environ.get('PDF_RENDER_TESTS') == '1', 'Нужно PDF_RENDER_TESTS=1 и окружение utils/pdf')
 class HandbookPdfRenderingTests(unittest.TestCase):
+    def test_graphics_dimensions_with_legacy_and_current_pandoc_defaults(self):
+        import pymupdf
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as temp:
+            folder = Path(temp)
+            colors = {'logo': (0.1, 0.2, 0.7), 'wide': (0.1, 0.8, 0.2), 'tall': (0.8, 0.2, 0.1)}
+            for name, width, height in [('logo', 141.25, 18.79), ('wide', 400, 200), ('tall', 100, 400)]:
+                document = pymupdf.open()
+                page = document.new_page(width=width, height=height)
+                page.draw_rect(page.rect, color=None, fill=colors[name])
+                document.save(folder / f'{name}.pdf')
+                if name == 'wide':
+                    page.get_pixmap().save(folder / 'raster.png')
+                document.close()
+            legacy = r'''
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+'''
+            template = r'''
+\documentclass[a4paper,10pt]{article}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath,amssymb,graphicx,hyperref}
+%GRAPHICS_DEFAULTS%
+\usepackage{academichandbook}
+\renewcommand{\handbooklogo}{logo.pdf}
+\title{Синтетический документ}
+\begin{document}
+\includegraphics[width=.85\linewidth]{wide.pdf}
+\clearpage
+\includegraphics[width=.85\linewidth]{tall.pdf}
+\clearpage
+\includegraphics[width=.85\linewidth]{raster.png}
+\end{document}
+'''
+            env = dict(os.environ, TEXINPUTS=str(REPO_ROOT / 'utils/latex/tex/latex') + '//' + os.pathsep + os.environ.get('TEXINPUTS', ''))
+            for mode, defaults in [('current', ''), ('legacy', legacy)]:
+                with self.subTest(mode=mode):
+                    (folder / 'sizing.tex').write_text(template.replace('%GRAPHICS_DEFAULTS%', defaults))
+                    for _ in range(2):
+                        result = subprocess.run(['pdflatex', '-halt-on-error', '-interaction=nonstopmode', 'sizing.tex'],
+                                                cwd=folder, env=env, text=True, capture_output=True)
+                        self.assertEqual(result.returncode, 0, result.stdout[-3000:])
+                    with pymupdf.open(folder / 'sizing.pdf') as document:
+                        self.assertEqual(len(document), 3)
+                        # olymp's 175 mm text width, 250 mm text height; PDF uses bp.
+                        pt_per_mm = 72 / 25.4
+                        width = .85 * 175 * pt_per_mm
+                        height = .78 * 250 * pt_per_mm
+                        for page in document:
+                            logos = [path['rect'] for path in page.get_drawings()
+                                     if path['fill'] and all(abs(a - b) < .01 for a, b in zip(path['fill'], colors['logo']))]
+                            self.assertEqual(len(logos), 1)
+                            self.assertAlmostEqual(logos[0].width, 34 * pt_per_mm, delta=.5)
+                            self.assertAlmostEqual(logos[0].width / logos[0].height, 141.25 / 18.79, delta=.02)
+                        for page, name, expected_width, expected_height in [
+                                (document[0], 'wide', width, width / 2),
+                                (document[1], 'tall', height / 4, height)]:
+                            boxes = [path['rect'] for path in page.get_drawings()
+                                     if path['fill'] and all(abs(a - b) < .01 for a, b in zip(path['fill'], colors[name]))]
+                            self.assertEqual(len(boxes), 1)
+                            self.assertAlmostEqual(boxes[0].width, expected_width, delta=.5)
+                            self.assertAlmostEqual(boxes[0].height, expected_height, delta=.5)
+                        raster = pymupdf.Rect(document[2].get_image_info()[0]['bbox'])
+                        self.assertAlmostEqual(raster.width, width, delta=.5)
+                        self.assertAlmostEqual(raster.height, width / 2, delta=.5)
+
     def test_logo_cache_and_font_dependencies(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
