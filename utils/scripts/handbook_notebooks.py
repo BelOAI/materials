@@ -7,9 +7,10 @@ import re
 from pathlib import Path
 
 from repo_paths import REPO_ROOT as ROOT
+from authorship import normalize_authors, authors_markdown
 
 
-def render_notebook(title: str, text: str, assets: Path | None = None) -> dict:
+def render_notebook(title: str, text: str, assets: Path | None = None, authors=None) -> dict:
     solutions = []
     def move(match):
         solutions.append(match.group(1).strip())
@@ -34,7 +35,9 @@ def render_notebook(title: str, text: str, assets: Path | None = None) -> dict:
             if attachments:
                 cell['attachments'] = attachments
             cells.append(cell)
-    markdown(f'# {title}\n\nАвторы BelOAI. CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
+    authors = normalize_authors(authors)
+    credit = authors_markdown(authors)
+    markdown(f'# {title}\n\n{credit + chr(10) + chr(10) if credit else ""}CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
     cursor = 0
     for match in re.finditer(r'^```python\n(.*?)^```\s*$', text, re.M | re.S):
         markdown(text[cursor:match.start()])
@@ -43,7 +46,7 @@ def render_notebook(title: str, text: str, assets: Path | None = None) -> dict:
     markdown(text[cursor:])
     for index, cell in enumerate(cells):
         cell['id'] = f'cell-{index:03}'
-    return {'cells': cells, 'metadata': {'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'}, 'language_info': {'name': 'python', 'version': '3.14'}}, 'nbformat': 4, 'nbformat_minor': 5}
+    return {'cells': cells, 'metadata': {'authors': authors, 'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'}, 'language_info': {'name': 'python', 'version': '3.14'}}, 'nbformat': 4, 'nbformat_minor': 5}
 
 
 def synchronize(root: Path, write: bool = False) -> list[str]:
@@ -56,7 +59,7 @@ def synchronize(root: Path, write: bool = False) -> list[str]:
         resources = [r for r in item.get('resources', []) if r['path'] == 'notebook.ipynb']
         if not resources:
             raise ValueError(f"{item['id']}: sync_notebook требует ресурс notebook.ipynb")
-        expected = render_notebook(item['title'], item['_content'].read_text(), assets=item['_folder'])
+        expected = render_notebook(item['title'], item['_content'].read_text(), assets=item['_folder'], authors=item['authors'])
         destination = item['_folder'] / 'notebook.ipynb'
         if not destination.is_file() or json.loads(destination.read_text()) != expected:
             stale.append(item['id'])

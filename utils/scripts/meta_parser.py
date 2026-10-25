@@ -69,10 +69,10 @@ def parse_meta(path: Path) -> dict[str, Any]:
     return data
 
 
-def _parse_list_block(lines: list[str], start: int) -> tuple[list[dict[str, str]], int]:
-    items: list[dict[str, str]] = []
+def _parse_list_block(lines: list[str], start: int) -> tuple[list[dict[str, str] | str], int]:
+    items: list[dict[str, str] | str] = []
     i = start
-    current: dict[str, str] | None = None
+    current: dict[str, str] | str | None = None
 
     while i < len(lines):
         raw = lines[i]
@@ -93,11 +93,13 @@ def _parse_list_block(lines: list[str], start: int) -> tuple[list[dict[str, str]
                 parsed = _parse_scalar(remainder)
                 if parsed:
                     current[parsed[0]] = parsed[1]
+                else:
+                    current = _strip_quotes(remainder)
             i += 1
             continue
 
         parsed = _parse_scalar(stripped)
-        if parsed and current is not None:
+        if parsed and isinstance(current, dict):
             current[parsed[0]] = parsed[1]
         i += 1
 

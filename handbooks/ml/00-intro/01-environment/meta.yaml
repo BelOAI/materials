@@ -3,8 +3,8 @@ title: Настройка среды
 description: Google Colab, Python 3.14, Jupyter и библиотеки для примеров.
 status: draft
 build: true
-authors:
-  - Авторы BelOAI
 resources:
   - path: requirements.txt
     label: Библиотеки для примеров
+authors:
+  - name: BelOAI

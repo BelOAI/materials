@@ -29,4 +29,4 @@ make -f build/Makefile site
 
 Создайте папку практики с `meta.yaml` и своим PDF, без обязательного `main.tex`. Укажите `pdf: materials/practice.pdf` и `build: true`; заполните название, описание и дату. Если TeX тоже есть, указанный PDF имеет приоритет. `make -f build/Makefile tex DIR=…` собирает только локальную TeX-версию. Подробнее: [готовые PDF](../../utils/scripts/README.md#готовый-pdf-вместо-tex).
 
-Материалы этого раздела — [CC BY 4.0](../../LICENSE-CC-BY-4.0). Авторы BelOAI.
+Материалы этого раздела — [CC BY 4.0](../../LICENSE-CC-BY-4.0). Авторы указаны в метаданных каждого материала.

@@ -13,3 +13,6 @@ references:
 materials:
   - path: materials/notebook.ipynb
     label: Jupyter Notebook
+
+authors:
+  - name: "Алексей Чернуха"

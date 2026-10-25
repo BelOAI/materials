@@ -5,3 +5,6 @@ description: "Повторите определения и свойства пр
 assignment_type: math
 lang: ru
 build: true
+
+authors:
+  - name: "Павел Косило"

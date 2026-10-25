@@ -9,3 +9,6 @@ build: true
 materials:
   - path: materials/notebook.ipynb
     label: Домашняя работа в Jupyter Notebook
+
+authors:
+  - name: "Виктория Кулевцова"

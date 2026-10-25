@@ -1,9 +1,9 @@
 slug: intro
-title: Intro
+title: Введение
 description: Начало работы с учебником и подготовка среды.
 status: draft
-authors:
-  - Авторы BelOAI
 paragraphs:
   - 01-environment
 build: true
+authors:
+  - name: BelOAI

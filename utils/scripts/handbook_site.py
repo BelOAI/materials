@@ -12,6 +12,7 @@ from urllib.parse import unquote, urlsplit, urlunsplit
 
 import yaml
 from course_site import link, write_page
+from authorship import normalize_authors, authors_html
 from handbook_redirects import publish_legacy_handbook, write_redirect
 from notebook_export import export_notebook
 
@@ -59,10 +60,11 @@ def read_metadata(folder):
         if (not isinstance(item, dict) or not isinstance(item.get('slug'), str)
                 or not SLUG.fullmatch(item['slug']) or item['slug'] in {'data', 'media', 'start'}
                 or not all(nonempty(item.get(k)) for k in ('title', 'description'))
-                or item.get('status') not in STATUSES
-                or not isinstance(item.get('authors'), list) or not item['authors']
-                or not all(nonempty(a) for a in item['authors'])):
+                or item.get('status') not in STATUSES):
             raise ValueError('Необходимы slug, title, description, status и authors')
+        item['authors'] = normalize_authors(item.get('authors'))
+        if item['status'] != 'planned' and not item['authors']:
+            raise ValueError('Для текста необходимо указать авторов')
         if item['status'] != 'planned' and not isinstance(item.get('build'), bool):
             raise ValueError('Для текста необходимо build: true')
         if not isinstance(item.get('references', []), list):
@@ -325,7 +327,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             overview += note
             content += note
         else:
-            content += '<p class="authors">Авторы: ' + escape(', '.join(section['authors'])) + '</p>' + section.get('_html', '')
+            content += authors_html(section['authors']) + section.get('_html', '')
             if section['lessons']:
                 content += '<ol>'
                 for para_id in section['lessons']:
@@ -341,7 +343,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     for item in book['_lessons'].values():
         if item['status'] == 'planned':
             continue
-        content = '<p class="authors">Авторы: ' + escape(', '.join(item['authors'])) + '</p>'
+        content = authors_html(item['authors'])
         content += '<nav class="lesson-toc" aria-label="Оглавление параграфа"><ul>' + ''.join('<li>' + link('#' + h['id'], h['text']) + '</li>' for h in rendered[item['id']]['toc'] if h['level'] == 2) + '</ul></nav>'
         content += item['_html'] + pagination(item['id'], route, by_id)
         page(item['id'], item['title'], item['description'], content)

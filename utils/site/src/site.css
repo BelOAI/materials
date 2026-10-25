@@ -291,3 +291,5 @@ body[data-page="handbook"] .breadcrumbs a { min-width: 0; }
 @media (prefers-color-scheme: dark) {
   .handbook-content .draft-badge { background: #493812; color: #ffe5a3; border-color: #a88638; }
 }
+
+.material .authors { margin: 4px 0 8px; color: var(--muted); font-size: .9em; }

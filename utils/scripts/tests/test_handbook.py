@@ -73,7 +73,7 @@ title: Пример
 description: Проверка ресурсов.
 status: draft
 build: true
-authors: [BelOAI]
+authors: [Fixture Writer]
 sync_notebook: true
 resources:
   - path: data/sample.csv
@@ -87,7 +87,7 @@ resources:
             (folder / d).mkdir()
         (folder / 'data/sample.csv').write_text('x\n1\n')
         (folder / 'media/image.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10"/></svg>')
-        (folder / 'notebook.ipynb').write_text(json.dumps(render_notebook('Пример', text, assets=folder)))
+        (folder / 'notebook.ipynb').write_text(json.dumps(render_notebook('Пример', text, assets=folder, authors=['Fixture Writer'])))
         return folder
 
     @patch('handbook_site.export_notebook', return_value=False)
@@ -107,7 +107,7 @@ resources:
         cases = ['title: [', original + 'slug: duplicate\n']
         item = yaml.safe_load(original)
         for updates in [dict(slug='../escape'), dict(slug='intro'), dict(status='unknown'), dict(status='draft'),
-                        dict(authors=[]), dict(paragraphs=None), dict(paragraphs=['../outside']),
+                        dict(authors=['']), dict(paragraphs=None), dict(paragraphs=['../outside']),
                         dict(paragraphs=['01-missing']), dict(paragraphs=['_paragraph-template']),
                         dict(paragraphs=['01-missing', '01-missing']), dict(resources=[{'path':'../../../../LICENSE','label':'Bad'}])]:
             cases.append(yaml.safe_dump(item | updates))
@@ -176,7 +176,7 @@ resources:
         html = (dest / 'index.html').read_text()
         self.assertIn('media/image.svg', html)
         self.assertIn('<math', html)
-        self.assertIn('Авторы: BelOAI', html)
+        self.assertIn('Автор: Fixture Writer', html)
         self.assertTrue((dest / 'notebook.html').is_file())
         self.assertIn('noindex, nofollow', (dest / 'notebook.html').read_text())
         self.assertFalse((dest / 'meta.yaml').exists())

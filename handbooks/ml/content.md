@@ -16,7 +16,7 @@ ML-хендбук предназначен для школьников, кото
 
 ## От кого
 
-Хендбук подготовлен авторами BelOAI. Список участников проекта доступен в [репозитории](https://github.com/BelOAI/materials/blob/main/CONTRIBUTORS.md).
+Автор приветственного текста — **Ростислав Свечников**. Список участников проекта доступен в [репозитории](https://github.com/BelOAI/materials/blob/main/CONTRIBUTORS.md).
 
 Материалы открыты: их можно использовать и адаптировать с указанием авторства в соответствии с [лицензией CC BY 4.0](https://github.com/BelOAI/materials/blob/main/LICENSE-CC-BY-4.0).
 

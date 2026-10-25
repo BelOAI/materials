@@ -8,3 +8,6 @@ build: true
 materials:
   - path: materials/notebook.ipynb
     label: Jupyter Notebook
+
+authors:
+  - name: "Виктория Кулевцова"
