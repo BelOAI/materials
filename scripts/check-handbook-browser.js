@@ -17,8 +17,8 @@ async (page) => {
       const headings = await page.locator('.handbook-chapter > summary').allTextContents();
       const titles = ['Environment', 'Classic ML', 'DL basics', 'DIY with NN', 'How they learn!', 'Advanced math of AI'];
       assert(JSON.stringify(headings) === JSON.stringify(titles.map((title, i) => `${i}. ${title}`)), 'Exact six ML sections');
-      assert(await page.locator('.section-planned').count() === 6, 'Six planned sections');
-      assert(await page.locator('.handbook-chapter a').count() === 6, 'No ML lesson links');
+      assert(await page.locator('.section-planned').count() === 5, 'Five sections await authored lessons');
+      assert(await page.locator('.handbook-chapter a').count() === 7, 'Six section links and one ML lesson');
     }
     for (const url of await page.locator('.handbook-navigation a').evaluateAll(links => links.map(a => a.href))) {
       if (url.startsWith(base + 'handbook/')) pages.add(url);
@@ -63,6 +63,7 @@ async (page) => {
   for (const [from, to] of [
     ['python/functions-files/functions-arguments', 'python/functions-files/scope'],
     ['math/linear-algebra/projections', 'math/linear-algebra/linear-decompositions'],
+    ['ml/start', 'ml/classic-ml/first-experiment'],
   ]) {
     await page.goto(base + 'handbook/' + from + '/');
     const next = page.locator('.week-pagination a[rel="next"]');
@@ -74,7 +75,7 @@ async (page) => {
   assert(new URL(await page.locator('a[download]').first().getAttribute('href'), page.url()).href === base + 'handbook/python/numerical-data/numpy-arrays/notebook.ipynb', 'Python notebook remains downloadable');
   await page.locator('.handbook-tree').getByRole('link', { name: 'Учебник математики', exact: true }).click();
   assert(page.url() === base + 'handbook/math/', 'Switch handbooks');
-  for (const slug of ['environment', 'classic-ml', 'dl-basics', 'diy-nn', 'how-they-learn', 'advanced-math']) {
+  for (const slug of ['environment', 'dl-basics', 'diy-nn', 'how-they-learn', 'advanced-math']) {
     await page.goto(base + 'handbook/ml/' + slug + '/');
     assert(await page.locator('.section-planned').textContent().then(text => text.includes('Раздел запланирован')), 'ML section is planned: ' + slug);
     assert(await page.locator('.week-pagination a, a[download]').count() === 0, 'No fake ML lessons or downloads');
@@ -83,7 +84,10 @@ async (page) => {
     assert((await page.request.get(base + 'handbook/' + path)).status() === 404, 'Removed ML URL: ' + path);
   }
   await page.goto(base + 'handbook/ml/start/');
-  assert(await page.locator('.week-pagination a').count() === 0, 'ML introduction has no lesson continuation');
+  assert(await page.locator('.week-pagination a[rel=next]').count() === 1, 'ML introduction continues to first lesson');
+  await page.goto(base + 'handbook/ml/classic-ml/first-experiment/');
+  assert(await page.locator('.week-pagination a[rel=next]').count() === 0, 'No unwritten continuation');
+  assert(await page.locator('.handbook-content details').count() === 20, 'Ten questions with hints and answers');
   const lesson = base + 'handbook/math/linear-algebra/matrices-products/';
   await page.goto(lesson);
   assert(await page.locator('.katex math').count() > 0, 'MathML rendered');
@@ -107,7 +111,7 @@ async (page) => {
     await page.emulateMedia({ colorScheme });
     for (const width of [360, 768, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      for (const path of ['python/basic-constructs/input-output/', 'python/numerical-data/numpy-indexing/', 'python/pytorch-tools/datasets-loaders/', 'math/calculus/jacobian-check/', 'math/probability-statistics/density-normal/', 'ml/environment/', 'ml/classic-ml/', 'ml/advanced-math/']) {
+      for (const path of ['python/basic-constructs/input-output/', 'python/numerical-data/numpy-indexing/', 'python/pytorch-tools/datasets-loaders/', 'math/calculus/jacobian-check/', 'math/probability-statistics/density-normal/', 'ml/environment/', 'ml/classic-ml/', 'ml/classic-ml/first-experiment/', 'ml/advanced-math/']) {
         await page.goto(base + 'handbook/' + path);
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), path + ': no page overflow at ' + width);
         if (width < 992) {

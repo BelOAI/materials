@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def render_notebook(title: str, text: str) -> dict:
+def render_notebook(title: str, text: str, assets: Path | None = None) -> dict:
     solutions = []
     def move(match):
         solutions.append(match.group(1).strip())
@@ -18,7 +18,21 @@ def render_notebook(title: str, text: str) -> dict:
     cells = []
     def markdown(value):
         if value.strip():
-            cells.append({'cell_type': 'markdown', 'metadata': {}, 'source': value.strip().splitlines(keepends=True)})
+            attachments = {}
+            def embed(match):
+                if assets is None:
+                    return match[0]
+                path = (assets / match[2]).resolve()
+                if not path.is_relative_to(assets.resolve()) or not path.is_file() or path.suffix != '.svg':
+                    return match[0]
+                name = path.name
+                attachments[name] = {'image/svg+xml': path.read_text(encoding='utf-8')}
+                return f'![{match[1]}](attachment:{name})'
+            value = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', embed, value)
+            cell = {'cell_type': 'markdown', 'metadata': {}, 'source': value.strip().splitlines(keepends=True)}
+            if attachments:
+                cell['attachments'] = attachments
+            cells.append(cell)
     markdown(f'# {title}\n\nАвторы BelOAI. CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
     cursor = 0
     for match in re.finditer(r'^```python\n(.*?)^```\s*$', text, re.M | re.S):
@@ -43,7 +57,7 @@ def synchronize(root: Path, write: bool = False) -> list[str]:
                 if lesson['status'] == 'planned' or not any(r['path'] == 'notebook.ipynb' for r in lesson.get('resources', [])):
                     continue
                 folder = root / 'handbook' / lesson['id']
-                expected = render_notebook(lesson['title'], (folder / 'index.md').read_text())
+                expected = render_notebook(lesson['title'], (folder / 'index.md').read_text(), assets=folder)
                 destination = folder / 'notebook.ipynb'
                 if not destination.is_file() or json.loads(destination.read_text()) != expected:
                     stale.append(lesson['id'])

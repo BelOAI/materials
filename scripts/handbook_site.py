@@ -308,7 +308,8 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
         return '<ol>' + ''.join('<li>' + label(item, root, handbook) + '</li>' for item in items) + '</ol>'
 
     def section_title(handbook, section):
-        number = handbook['sections'].index(section) + (0 if handbook['slug'] == 'ml' else 1)
+        has_environment = handbook['slug'] == 'ml' and handbook['sections'][0]['slug'] == 'environment'
+        number = handbook['sections'].index(section) + (0 if has_environment else 1)
         return f'{number}. {section["title"]}'
 
     def navigation(root, current, handbook=None, owner=None):

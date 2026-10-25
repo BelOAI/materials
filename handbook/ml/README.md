@@ -2,7 +2,7 @@
 
 [Читать на сайте](https://materials.beloai.by/handbook/ml/) · [Введение](start/index.md) · [Программа](../PROGRAM.md#учебник-машинного-обучения)
 
-Учебник находится на этапе планирования. Разделы пока не содержат уроков и ноутбуков.
+Для школьников 10–11 классов. Нужны основы Python и школьная математика.
 
 0. [Environment](environment/README.md)
 1. [Classic ML](classic-ml/README.md)
@@ -11,4 +11,4 @@
 4. [How they learn!](how-they-learn/README.md)
 5. [Advanced math of AI](advanced-math/README.md)
 
-[Проект программы на 30 тем](../ML-PROGRAM.md) · [Правила подготовки занятий](../guidelines/content.md)
+[Программа на 30 тем](../ML-Curriculum.md) · [Правила подготовки занятий](../guidelines/content.md)
