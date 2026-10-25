@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="330" viewBox="0 0 720 330" role="img" aria-labelledby="env-choice-title env-choice-description">
+ <title id="env-choice-title">Четыре способа настроить среду для ML</title>
+ <desc id="env-choice-description">Colab работает в браузере без установки; macOS, Linux и Windows требуют Python, виртуальной среды и VS Code с расширениями Python и Jupyter.</desc>
+ <rect width="720" height="330" fill="#ffffff"/>
+ <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+ <text x="360" y="30" font-family="DejaVu Sans, sans-serif" font-size="18" fill="#0f172a" text-anchor="middle" font-weight="bold">Выберите способ работы</text>
+ <rect x="20" y="55" width="160" height="150" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+ <text x="100" y="90" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#0f172a" text-anchor="middle" font-weight="bold">Google Colab</text>
+ <text x="100" y="120" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="normal">браузер</text>
+ <text x="100" y="145" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="normal">ничего не ставить</text>
+ <text x="100" y="185" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#475569" text-anchor="middle" font-weight="normal">~5 минут</text>
+ <rect x="195" y="55" width="160" height="150" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+ <text x="275" y="90" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#0f172a" text-anchor="middle" font-weight="bold">macOS</text>
+ <text x="275" y="120" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="normal">VS Code</text>
+ <text x="275" y="145" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="normal">Python + venv</text>
+ <text x="275" y="185" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#475569" text-anchor="middle" font-weight="normal">~20 минут</text>
+ <rect x="370" y="55" width="160" height="150" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+ <text x="450" y="90" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#0f172a" text-anchor="middle" font-weight="bold">Linux</text>
+ <text x="450" y="120" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="normal">VS Code</text>
+ <text x="450" y="145" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="normal">Python + venv</text>
+ <text x="450" y="185" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#475569" text-anchor="middle" font-weight="normal">~20 минут</text>
+ <rect x="545" y="55" width="160" height="150" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+ <text x="625" y="90" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#0f172a" text-anchor="middle" font-weight="bold">Windows</text>
+ <text x="625" y="120" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="normal">VS Code</text>
+ <text x="625" y="145" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="normal">Python + venv</text>
+ <text x="625" y="185" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#475569" text-anchor="middle" font-weight="normal">~20 минут</text>
+ <rect x="20" y="235" width="680" height="70" rx="6" fill="#fff7ed" stroke="#b45309" stroke-width="1.5"/>
+ <text x="360" y="262" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="bold">Всё одинаково после настройки:</text>
+ <text x="360" y="285" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="normal">открыть .ipynb → выбрать ядро → выполнять ячейки сверху вниз</text>
+</svg>

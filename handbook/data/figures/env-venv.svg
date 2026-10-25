@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="250" viewBox="0 0 720 250" role="img" aria-labelledby="env-venv-title env-venv-description">
+ <title id="env-venv-title">Виртуальная среда внутри папки проекта</title>
+ <desc id="env-venv-description">Папка проекта содержит .venv с собственным Python и библиотеками, файл requirements.txt и ноутбуки; VS Code выбирает Python из .venv.</desc>
+ <rect width="720" height="250" fill="#ffffff"/>
+ <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+ <rect x="20" y="30" width="330" height="190" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+ <text x="35" y="58" font-family="DejaVu Sans, sans-serif" font-size="15" fill="#0f172a" text-anchor="start" font-weight="bold">ml-handbook/</text>
+ <rect x="40" y="72" width="300" height="42" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+ <text x="52" y="99" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#0f172a" text-anchor="start" font-weight="normal">.venv/  — свой Python и библиотеки</text>
+ <text x="52" y="142" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#0f172a" text-anchor="start" font-weight="normal">requirements.txt</text>
+ <text x="52" y="167" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#0f172a" text-anchor="start" font-weight="normal">knn.ipynb</text>
+ <text x="52" y="192" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#0f172a" text-anchor="start" font-weight="normal">gliders.csv</text>
+ <line x1="350" y1="93" x2="420" y2="93" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+ <rect x="425" y="60" width="275" height="70" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+ <text x="562" y="90" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#0f172a" text-anchor="middle" font-weight="bold">VS Code: ядро</text>
+ <text x="562" y="112" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle" font-weight="normal">Python 3.14 (.venv)</text>
+ <text x="562" y="170" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#475569" text-anchor="middle" font-weight="normal">Системный Python не меняется,</text>
+ <text x="562" y="190" font-family="DejaVu Sans, sans-serif" font-size="13" fill="#475569" text-anchor="middle" font-weight="normal">проекты не мешают друг другу</text>
+</svg>
