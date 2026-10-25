@@ -6,6 +6,6 @@
 
 [Текст](content.md) · [Ноутбук для практики](notebook.ipynb) · [Обучающие данные](data/train.csv) · [Тестовые данные](data/test.csv) · [Ответы для проверки](data/test_answers.csv) · [Схема](media/experiment.svg)
 
-PDF для просмотра: `py -3 utils/scripts/build-handbook-pdf.py handbooks/ml/01-classic-ml/01-first-experiment` из корня репозитория. Общий стиль описан в [правилах PDF](../../../pdf/README.md).
+PDF для просмотра: `py -3 utils/scripts/build-handbook-pdf.py handbooks/ml/01-classic-ml/01-first-experiment` из корня репозитория. Общий стиль описан в [правилах PDF](../../../../utils/pdf/README.md).
 
 Для разбора примера нужны основы Python: функции, списки и словари; среднее и доли. Для самостоятельной практики нужен pandas. Оставьте ноутбук рядом с папкой `data`; откройте файл ответов после выбора прогноза. Все CSV содержат синтетические учебные данные. Их можно воспроизвести командой `py -3 handbooks/ml/01-classic-ml/01-first-experiment/data/generate.py` из корня репозитория.

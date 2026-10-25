@@ -25,10 +25,11 @@ def render_notebook(title: str, text: str, assets: Path | None = None, authors=N
                 if assets is None:
                     return match[0]
                 path = (assets / match[2]).resolve()
-                if not path.is_relative_to(assets.resolve()) or not path.is_file() or path.suffix != '.svg':
+                if not path.is_relative_to(assets.resolve()) or not path.is_file() or path.suffix not in {'.svg', '.png'}:
                     return match[0]
                 name = path.name
-                attachments[name] = {'image/svg+xml': base64.b64encode(path.read_bytes()).decode('ascii')}
+                mime = {'.svg': 'image/svg+xml', '.png': 'image/png'}[path.suffix]
+                attachments[name] = {mime: base64.b64encode(path.read_bytes()).decode('ascii')}
                 return f'![{match[1]}](attachment:{name})'
             value = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', embed, value)
             cell = {'cell_type': 'markdown', 'metadata': {}, 'source': value.strip().splitlines(keepends=True)}
