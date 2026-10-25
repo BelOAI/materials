@@ -4,12 +4,12 @@
 
 [Текст](content.md) · [Ноутбук](notebook.ipynb) · [Четыре шага](media/pipeline.svg) · [Сигмоида](media/sigmoid.svg) · [Пороги](media/thresholds.svg)
 
-Нужны основы Python, признаки и ответы, обучающая и тестовая части, доли и степени. Линейная сумма, сигмоида и смысл логарифмической ошибки вводятся в тексте. Для практики нужны NumPy и scikit-learn из [среды учебника](../../00-intro/01-environment/requirements.txt). Данные digits входят в scikit-learn; скачивать их отдельно не нужно.
+Опирается на занятия 1.1–1.4: признаки и ответы, accuracy и постоянный прогноз, масштаб признаков, линейная сумма и подбор коэффициентов, решающее дерево. Сигмоида и логарифмическая ошибка вводятся в тексте. Для практики нужны NumPy и scikit-learn из [среды учебника](../../00-intro/01-environment/requirements.txt). Данные digits входят в scikit-learn; скачивать их отдельно не нужно.
 
 ## Основа занятия
 
 - [Программа, тема 1.6](../../CURRICULUM.md): вероятностный ответ, выбор порога и сравнение логистической регрессии с деревом на одном разбиении.
-- [Занятие 1.1](../01-first-experiment/content.md): признаки, ответы и независимая оценка. [Занятие 1.2](../02-nearest-neighbors/content.md): переход от признаков к классу и масштабирование.
+- [Занятие 1.1](../01-first-experiment/content.md): признаки, accuracy, постоянный прогноз. Занятия 1.2–1.4 текст считает пройденными: масштаб признаков, линейная оценка и подбор коэффициентов, дерево и его глубина.
 - [Руководство scikit-learn: логистическая регрессия](https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression): формула сигмоиды и логарифмической ошибки. Адаптация: два признака письма и вычисление одной вероятности вручную.
 - [Документация LogisticRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html): обучение через `fit`, порядок столбцов `predict_proba` задаётся `classes_`.
 - [Документация digits](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html): изображения рукописных цифр 8 × 8, яркости от 0 до 16. Исходный набор — Optical Recognition of Handwritten Digits (UCI); в практике используется поставляемая с scikit-learn копия его тестовой части, которую здесь делим на собственные обучающую, проверочную и тестовую части.
