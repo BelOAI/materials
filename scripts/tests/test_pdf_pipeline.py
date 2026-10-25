@@ -168,3 +168,54 @@ class PdfPipelineTest(unittest.TestCase):
         self.assertTrue(self.target(s).exists())
         subprocess.run(['make', 'clean'], cwd=self.root, env=self.env, check=True, capture_output=True)
         self.assertTrue((s / 'slides.pdf').exists())
+
+    def cached_tex_session(self):
+        session = self.session()
+        (session / 'main.tex').write_text('source')
+        counter = self.root / 'tex-count'
+        (self.bin / 'pdflatex').write_text(
+            f'#!{sys.executable}\nfrom pathlib import Path\n'
+            "Path('main.pdf').write_bytes(b'%PDF-tex')\n"
+            f"with Path({str(counter)!r}).open('a') as stream: stream.write('run\\n')\n"
+        )
+        return session, counter
+
+    def test_warm_cache_restores_after_output_cleanup(self):
+        session, counter = self.cached_tex_session()
+        self.run_build(session)
+        outputs = self.root / '_site'
+        before = {str(p.relative_to(outputs)): p.read_bytes() for p in outputs.rglob('*') if p.is_file()}
+        shutil.rmtree(outputs)
+        (session / 'main.pdf').unlink()
+        result = self.run_build(session)
+        self.assertIn('CACHE HIT sessions', result.stdout)
+        self.assertEqual((session / 'main.pdf').read_bytes(), self.target(session).read_bytes())
+        self.assertEqual(counter.read_text().splitlines(), ['run', 'run'])
+        self.assertEqual(before, {str(p.relative_to(outputs)): p.read_bytes() for p in outputs.rglob('*') if p.is_file()})
+
+    def test_source_style_environment_and_corrupt_cache_rebuild(self):
+        session, counter = self.cached_tex_session()
+        self.run_build(session)
+        (session / 'main.tex').write_text('changed')
+        self.assertIn('CACHE MISS', self.run_build(session).stdout)
+        style = self.root / 'latex/tex/latex/test.sty'
+        style.parent.mkdir(parents=True)
+        style.write_text('style')
+        self.assertIn('CACHE MISS', self.run_build(session).stdout)
+        self.env['BUILD_ENV_ID'] = 'new-image'
+        self.assertIn('CACHE MISS', self.run_build(session).stdout)
+        for file in (self.root / '.cache/build/sessions').rglob('*.pdf'):
+            file.write_bytes(b'corrupt')
+        self.assertIn('CACHE MISS', self.run_build(session).stdout)
+        self.assertEqual(len(counter.read_text().splitlines()), 10)
+
+    def test_cached_session_disabling_and_deletion_remove_outputs(self):
+        session = self.session(extra='pdf: own.pdf\n')
+        (session / 'own.pdf').write_bytes(b'%PDF-good')
+        self.run_build(session)
+        (session / 'meta.yaml').write_text('build: false\n')
+        subprocess.run(['bash', str(self.root / 'scripts/build-all.sh')], env=self.env, check=True, capture_output=True)
+        self.assertFalse(self.target(session).exists())
+        shutil.rmtree(session)
+        subprocess.run(['bash', str(self.root / 'scripts/build-all.sh')], env=self.env, check=True, capture_output=True)
+        self.assertFalse(self.target(session).exists())

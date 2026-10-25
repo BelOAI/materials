@@ -1,0 +1,8 @@
+**
+!.github/
+!.github/ci/
+!.github/ci/Dockerfile
+!.github/ci/requirements.txt
+!handbook/
+!handbook/start/
+!handbook/start/requirements.txt

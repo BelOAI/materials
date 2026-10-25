@@ -350,26 +350,14 @@ for cell in json.loads(Path(sys.argv[1]).read_text())["cells"]:
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_all_notebooks_execute_with_clean_kernel(self):
-        import nbformat
-        from nbclient import NotebookClient
-        from jupyter_client import KernelManager
+        from notebook_checks import check_notebooks
         book = load_handbook(ROOT)
         items = [*book['_lessons'].values(), *book['aliases']]
-        paths = {ROOT / 'handbook' / item['id'] / r['path'] for item in items for r in item.get('resources', []) if r['path'].endswith('.ipynb')}
-        for path in sorted(paths):
-            with self.subTest(notebook=path), tempfile.TemporaryDirectory() as folder:
-                shutil.copyfile(ROOT / 'handbook/data/gliders.csv', Path(folder) / 'gliders.csv')
-                document = nbformat.read(path, as_version=4)
-                nbformat.validate(document)
-                manager = KernelManager(kernel_name='python3')
-                manager.kernel_spec.argv = [sys.executable, '-m', 'ipykernel_launcher', '-f', '{connection_file}']
-                client = NotebookClient(document, km=manager, timeout=120, resources={'metadata': {'path': folder}})
-                try:
-                    client.execute(cleanup_kc=True)
-                finally:
-                    if manager.has_kernel:
-                        manager.shutdown_kernel(now=True)
-                self.assertFalse(any(o.output_type == 'error' for c in document.cells if c.cell_type == 'code' for o in c.outputs))
+        paths = {ROOT / 'handbook' / item['id'] / r['path'] for item in items
+                 for r in item.get('resources', []) if r['path'].endswith('.ipynb')}
+        for path, error in check_notebooks(paths, ROOT / 'handbook/data/gliders.csv'):
+            with self.subTest(notebook=path):
+                self.assertIsNone(error, f'{path}: {error}')
 
 
 if __name__ == '__main__':

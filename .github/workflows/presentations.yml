@@ -2,7 +2,7 @@ name: Presentations
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
     paths:
       - 'handbook/**'
       - 'lectures/**'
@@ -15,7 +15,11 @@ on:
       - '.github/workflows/**'
       - 'Makefile'
       - 'latexmkrc'
+      - '.github/ci/**'
+      - '.dockerignore'
+  workflow_dispatch:
   pull_request:
+    branches: [main, dev]
     paths:
       - 'handbook/**'
       - 'lectures/**'
@@ -28,85 +32,116 @@ on:
       - '.github/workflows/**'
       - 'Makefile'
       - 'latexmkrc'
+      - '.github/ci/**'
+      - '.dockerignore'
+
+permissions:
+  contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: build-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: site/package-lock.json
-
-      - name: Install frontend dependencies
-        run: npm --prefix site ci
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.14'
-          cache: pip
-          cache-dependency-path: handbook/start/requirements.txt
-
-      - name: Install handbook and notebook dependencies
-        run: |
-          python -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install -r handbook/start/requirements.txt
-          python -m pip install jupyter nbconvert nbclient nbformat ipykernel
-
-      - name: Test manifest and frontend helpers
-        run: make test
-
-      - name: Install TeX Live and poppler
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            texlive-latex-base \
-            texlive-latex-recommended \
-            texlive-latex-extra \
-            texlive-fonts-recommended \
-            texlive-lang-cyrillic \
-            texlive-pictures \
-            texlive-science \
-            poppler-utils \
-            make
-
-      - name: Build presentations and site
-        run: make site
-
-      - name: Upload site artifact (pull request)
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
-        with:
-          name: presentations-site
-          path: _site
-
-      - name: Upload Pages artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-
-  deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: build
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      contents: read
+      packages: write
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Identify environment
+        id: environment
+        env:
+          ENV_HASH: ${{ hashFiles('.github/ci/**', 'handbook/start/requirements.txt') }}
+        run: |
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/ci:${ENV_HASH}" >> "$GITHUB_OUTPUT"
+          echo "hash=${ENV_HASH}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull existing environment
+        id: image
+        env:
+          IMAGE: ${{ steps.environment.outputs.image }}
+        run: |
+          if docker pull "$IMAGE"; then
+            echo 'found=true' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build environment
+        if: steps.image.outputs.found != 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .github/ci/Dockerfile
+          load: true
+          tags: ${{ steps.environment.outputs.image }}
+          cache-from: type=gha,scope=ci-image
+          cache-to: type=gha,scope=ci-image,mode=max
+
+      - name: Publish environment
+        if: steps.image.outputs.found != 'true' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
+        env:
+          IMAGE: ${{ steps.environment.outputs.image }}
+        run: docker push "$IMAGE"
+
+      - name: Restore build cache
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/build
+          key: build-v1-${{ runner.os }}-${{ steps.environment.outputs.hash }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            build-v1-${{ runner.os }}-${{ steps.environment.outputs.hash }}-
+
+      - name: Test and build
+        env:
+          IMAGE: ${{ steps.environment.outputs.image }}
+          BUILD_ENV_ID: ${{ steps.environment.outputs.hash }}
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" \
+            -e HOME=/tmp -e BUILD_ENV_ID -e NOTEBOOK_TEST_WORKERS=2 \
+            -v "$PWD:/work" "$IMAGE" bash scripts/ci-build.sh
+
+      - name: Save build cache
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/build
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+
+      - name: Upload site
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}-${{ github.sha }}
+          overwrite: true
+          path: _site
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Summary
+        if: always()
+        env:
+          ENV_HASH: ${{ steps.environment.outputs.hash }}
+          IMAGE_HIT: ${{ steps.image.outputs.found }}
+          CACHE_KEY: ${{ steps.cache.outputs.cache-matched-key }}
+        run: |
+          {
+            echo '## Сборка сайта'
+            echo "Окружение: Python 3.14, Node.js 24 LTS; ${ENV_HASH}"
+            echo "Готовый образ: ${IMAGE_HIT:-false}; восстановлен кэш: ${CACHE_KEY:-нет}"
+            if test -f .cache/ci-summary.md; then cat .cache/ci-summary.md; fi
+            echo "[Артефакт и логи](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
+          } >> "$GITHUB_STEP_SUMMARY"
