@@ -17,3 +17,14 @@ function CodeBlock(block)
     pandoc.RawBlock('latex', '\\end{samepage}'),
   }
 end
+
+-- Leave room for a heading and a short block underneath at every nesting depth.
+function Header(block)
+  if not FORMAT:match('latex') then
+    return nil
+  end
+  return {
+    pandoc.RawBlock('latex', '\\Needspace{6\\baselineskip}'),
+    block,
+  }
+end

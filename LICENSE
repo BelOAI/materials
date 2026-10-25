@@ -6,7 +6,7 @@ Copyright (c) 2026 BelOAI Authors. Общее обозначение автор�
 
 | Материалы | Лицензия |
 | --- | --- |
-| `course/`, `handbooks/`, главный `README.md`, авторские описания и ссылки в `handbooks/ml/references/` | [CC BY 4.0](LICENSE-CC-BY-4.0) |
+| `course/`, `handbooks/`, перенесённый профиль `utils/pdf/`, главный `README.md`, авторские описания и ссылки в `handbooks/ml/references/` | [CC BY 4.0](LICENSE-CC-BY-4.0) |
 | Собранные учебные страницы, PDF и файлы учебников, тексты каталога и учебные данные манифеста | [CC BY 4.0](LICENSE-CC-BY-4.0) |
 | Собственный код `utils/scripts/`, `utils/site/`, общие стили `utils/latex/`, `build/`, `.github/` и инструкции `AGENTS.md` | [MIT](LICENSE-MIT) |
 | Шрифты `utils/site/fonts/` | SIL Open Font License; полные тексты находятся рядом со шрифтами |

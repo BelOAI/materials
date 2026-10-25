@@ -210,6 +210,10 @@ CI запускает `npm ci`, `make -f build/Makefile test` и `make -f build/
 
 Не коммитьте `_site/`, `main.pdf`, вспомогательные файлы LaTeX и `node_modules/`. Лицензии описаны в [LICENSE](../../LICENSE).
 
+## PDF учебников
+
+Отдельная инкрементальная сборка: `make -f build/Makefile handbook-pdf [DIR=handbooks/ml] [JOBS=2]`. Создаёт PDF параграфов, глав и книг в `output/pdf/`, используя общий кэш. Обычная сборка сайта её не запускает. Зависимости, параметры и проверки: [руководство PDF](../pdf/README.md).
+
 ## Учебник машинного обучения
 
 ML-хендбук доступен по прямому адресу `/handbooks/ml/`. Текст главной страницы берётся из `handbooks/ml/content.md`, программа — из `handbooks/ml/CURRICULUM.md` и публикуется как `/handbooks/ml/curriculum/`. Отдельных учебников Python и математики больше нет. Не добавляйте черновик в общее меню курса до отдельного решения о выпуске. Страницы и HTML-превью получают `noindex, nofollow`.
