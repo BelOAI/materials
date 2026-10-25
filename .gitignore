@@ -40,3 +40,9 @@ __pycache__
 node_modules/
 output/playwright/
 .playwright-cli/
+
+# Кэш сборки
+.cache/
+
+# Объединённый артефакт Pages
+_pages/

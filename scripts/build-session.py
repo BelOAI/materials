@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 from meta_parser import get_flat, parse_meta
+from build_cache import Cache, fingerprint, source_files
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -31,6 +32,13 @@ def build_session(session: Path) -> None:
             shutil.rmtree(folder)
     meta_path = session / 'meta.yaml'
     meta = parse_meta(meta_path) if meta_path.is_file() else {}
+    cache = Cache('sessions', fingerprint(
+        source_files(session) + source_files(REPO_ROOT / 'latex')
+        + [REPO_ROOT / 'scripts' / name for name in (
+            'build-session.py', 'build-presentation.sh', 'build-materials.sh',
+            'session-slug.sh', 'material_preview.py', 'notebook_export.py',
+            'meta_parser.py', 'parse-meta.py')]
+        + [REPO_ROOT / 'latexmkrc'], slug))
     source = None
     if 'pdf' in meta:
         value = get_flat(meta, 'pdf').strip()
@@ -51,7 +59,11 @@ def build_session(session: Path) -> None:
             raise ValueError(f'Не удалось прочитать PDF: {value}')
         if info.get('Encrypted', '').strip().startswith('yes'):
             raise ValueError(f'PDF защищён шифрованием; сохраните незашифрованную копию: {value}')
-    elif (session / 'main.tex').is_file():
+    if cache.restore(site):
+        if 'pdf' not in meta and (session / 'main.tex').is_file():
+            shutil.copyfile(target, session / 'main.pdf')
+        return
+    if 'pdf' not in meta and (session / 'main.tex').is_file():
         subprocess.run([str(REPO_ROOT / 'scripts/build-presentation.sh'), str(session), '--local'], check=True)
         source = session / 'main.pdf'
     if source:
@@ -59,6 +71,12 @@ def build_session(session: Path) -> None:
         shutil.copyfile(source, target)
         print(f'Опубликован PDF: {target}', flush=True)
     subprocess.run([str(REPO_ROOT / 'scripts/build-materials.sh'), str(session)], check=True)
+    materials = list((site / 'materials' / slug).rglob('*'))
+    if any(p.suffix == '.ipynb' and not p.with_suffix('.html').is_file() for p in materials):
+        return
+    if source and not thumb.is_file():
+        return
+    cache.save(site, [target, thumb, *materials, *list((site / 'thumbs' / slug).rglob('*'))])
 
 
 if __name__ == '__main__':
