@@ -15,8 +15,10 @@ async (page) => {
     assert(await page.locator('.handbook-track').count() === 1, slug + ': only current handbook tree');
     if (slug === 'ml') {
       const headings = await page.locator('.handbook-chapter > summary').allTextContents();
-      assert(headings.length === 6 && headings[0].startsWith('0.') && headings[5].startsWith('5.'), 'ML has six numbered sections');
-      assert(!headings.some(text => text.includes('Базовые конструкции') || text.includes('Математическая запись')), 'ML excludes basic courses');
+      const titles = ['Environment', 'Classic ML', 'DL basics', 'DIY with NN', 'How they learn!', 'Advanced math of AI'];
+      assert(JSON.stringify(headings) === JSON.stringify(titles.map((title, i) => `${i}. ${title}`)), 'Exact six ML sections');
+      assert(await page.locator('.section-planned').count() === 6, 'Six planned sections');
+      assert(await page.locator('.handbook-chapter a').count() === 6, 'No ML lesson links');
     }
     for (const url of await page.locator('.handbook-navigation a').evaluateAll(links => links.map(a => a.href))) {
       if (url.startsWith(base + 'handbook/')) pages.add(url);
@@ -61,10 +63,6 @@ async (page) => {
   for (const [from, to] of [
     ['python/functions-files/functions-arguments', 'python/functions-files/scope'],
     ['math/linear-algebra/projections', 'math/linear-algebra/linear-decompositions'],
-    ['ml/first-experiment/split-baseline', 'ml/python/numerical-data/numpy-arrays'],
-    ['ml/python/numerical-data/visualization', 'ml/python/ml-tools/training-evaluation'],
-    ['ml/representations/embeddings', 'ml/python/pytorch-tools/tensors'],
-    ['ml/python/pytorch-tools/model-modes', 'ml/neural-networks/neural-networks'],
   ]) {
     await page.goto(base + 'handbook/' + from + '/');
     const next = page.locator('.week-pagination a[rel="next"]');
@@ -72,14 +70,20 @@ async (page) => {
     await next.click();
     assert(page.url() === base + 'handbook/' + to + '/', from + ': current handbook route');
   }
-  await page.goto(base + 'handbook/ml/python/numerical-data/numpy-arrays/');
-  assert((await page.locator('a[download]').first().getAttribute('href')).includes('python/numerical-data/numpy-arrays/notebook.ipynb'), 'Shared notebook uses source URL');
+  await page.goto(base + 'handbook/python/numerical-data/numpy-arrays/');
+  assert(new URL(await page.locator('a[download]').first().getAttribute('href'), page.url()).href === base + 'handbook/python/numerical-data/numpy-arrays/notebook.ipynb', 'Python notebook remains downloadable');
   await page.locator('.handbook-tree').getByRole('link', { name: 'Учебник математики', exact: true }).click();
   assert(page.url() === base + 'handbook/math/', 'Switch handbooks');
-  await page.goto(base + 'handbook/ml/additional-topics/ranking/');
-  assert(await page.locator('.week-pagination a[rel="next"]').count() === 0, 'Independent optional branches are separate');
-  await page.goto(base + 'handbook/ml/additional-topics/logical-ai/');
-  assert(await page.locator('.week-pagination a[rel="prev"]').count() === 0, 'Logic has its own entry');
+  for (const slug of ['environment', 'classic-ml', 'dl-basics', 'diy-nn', 'how-they-learn', 'advanced-math']) {
+    await page.goto(base + 'handbook/ml/' + slug + '/');
+    assert(await page.locator('.section-planned').textContent().then(text => text.includes('Раздел запланирован')), 'ML section is planned: ' + slug);
+    assert(await page.locator('.week-pagination a, a[download]').count() === 0, 'No fake ML lessons or downloads');
+  }
+  for (const path of ['ml/data-experiment/', 'ml/knn/', 'ml/knn/notebook.ipynb', 'ml/classical-models/linear-models/', 'ml/python/numerical-data/numpy-arrays/']) {
+    assert((await page.request.get(base + 'handbook/' + path)).status() === 404, 'Removed ML URL: ' + path);
+  }
+  await page.goto(base + 'handbook/ml/start/');
+  assert(await page.locator('.week-pagination a').count() === 0, 'ML introduction has no lesson continuation');
   const lesson = base + 'handbook/math/linear-algebra/matrices-products/';
   await page.goto(lesson);
   assert(await page.locator('.katex math').count() > 0, 'MathML rendered');
@@ -90,7 +94,7 @@ async (page) => {
   const heading = page.locator('nav[aria-label="Оглавление урока"] a').first();
   await heading.click();
   assert(new URL(page.url()).hash.length > 1, 'Lesson heading anchor');
-  for (const path of ['python/first-programs/', 'python/numpy/', 'math/vectors-distances/', 'ml/data-experiment/', 'ml/knn/']) {
+  for (const path of ['python/first-programs/', 'python/numpy/', 'math/vectors-distances/']) {
     await page.goto(base + 'handbook/' + path);
     const transition = page.locator('.lesson-transition a').first();
     assert(await transition.count() === 1, 'Old address: ' + path);
@@ -103,7 +107,7 @@ async (page) => {
     await page.emulateMedia({ colorScheme });
     for (const width of [360, 768, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      for (const path of ['python/basic-constructs/input-output/', 'ml/python/numerical-data/numpy-indexing/', 'ml/math/probability-statistics/density-normal/', 'python/pytorch-tools/datasets-loaders/', 'math/calculus/jacobian-check/', 'ml/nearest-neighbors/selection-evaluation/', 'math/probability-statistics/density-normal/', 'ml/language-models/attention/', 'ml/independent-solution/final-submission/']) {
+      for (const path of ['python/basic-constructs/input-output/', 'python/numerical-data/numpy-indexing/', 'python/pytorch-tools/datasets-loaders/', 'math/calculus/jacobian-check/', 'math/probability-statistics/density-normal/', 'ml/environment/', 'ml/classic-ml/', 'ml/advanced-math/']) {
         await page.goto(base + 'handbook/' + path);
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), path + ': no page overflow at ' + width);
         if (width < 992) {
@@ -125,7 +129,7 @@ async (page) => {
   }
   // Плотность, независимая прокрутка и переносы в обеих темах.
   const inspectNavigation = async (target, width, minimum) => {
-    await target.goto(base + 'handbook/ml/neural-networks/training-diagnostics/');
+    await target.goto(base + 'handbook/math/probability-statistics/hypotheses/');
     if (width < 992) await target.locator('.course-menu > summary').click();
     await target.waitForFunction(() => {
       const a = document.querySelector('.handbook-tree [aria-current="page"]');
@@ -189,7 +193,7 @@ async (page) => {
   }
   // Регрессии мобильного оверлея: прокрутка, фокус, Escape и смена ширины.
   await page.setViewportSize({ width: 360, height: 800 });
-  await page.goto(base + 'handbook/ml/neural-networks/training-diagnostics/');
+  await page.goto(base + 'handbook/math/probability-statistics/hypotheses/');
   const overlay = page.locator('.course-menu');
   const toggle = overlay.locator(':scope > summary');
   await toggle.click();
@@ -215,7 +219,7 @@ async (page) => {
   await page.waitForFunction(() => !document.querySelector('.course-menu').open);
   await toggle.click();
   await overlay.getByRole('link', { name: 'Как пользоваться учебником', exact: true }).click();
-  assert(page.url() === base + 'handbook/ml/start/', 'Link navigates to current handbook introduction');
+  assert(page.url() === base + 'handbook/math/start/', 'Link navigates to current handbook introduction');
   assert(!await page.locator('.course-menu').evaluate(el => el.open), 'Menu closes on navigation');
   const context = await page.context().browser().newContext({ javaScriptEnabled: false, viewport: { width: 360, height: 900 } });
   const staticPage = await context.newPage();

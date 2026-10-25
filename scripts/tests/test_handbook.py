@@ -18,7 +18,10 @@ from course_site import write_page
 ROOT = Path(__file__).resolve().parents[2]
 FIRST = 'python/basic-constructs/input-output'
 NUMPY = 'python/numerical-data/numpy-arrays'
-KNN = 'ml/nearest-neighbors/distance-voting'
+ML_TITLES = ['Environment', 'Classic ML', 'DL basics', 'DIY with NN',
+             'How they learn!', 'Advanced math of AI']
+ML_SLUGS = ['environment', 'classic-ml', 'dl-basics', 'diy-nn',
+            'how-they-learn', 'advanced-math']
 
 
 class HandbookTests(unittest.TestCase):
@@ -61,19 +64,20 @@ class HandbookTests(unittest.TestCase):
             self.assertEqual({i for route in routes for i in route}, set(included) | {handbook['introduction']})
             self.assertEqual(set(routes[0][1:]), {i for i in included if not lessons[i].get('optional')})
         ml = book['handbooks'][2]
-        self.assertEqual([s['title'] for s in ml['sections']], [
-            'Настройка среды', 'Классическое ML', 'Основы глубокого обучения',
-            'Нейросети своими руками', 'Как они учатся', 'Продвинутая математика ИИ'])
-        included = {i for section in ml['sections'] for i in section['lessons']}
-        self.assertIn(NUMPY, included)
-        self.assertIn('python/pytorch-tools/autograd', included)
-        self.assertIn('math/calculus/partial-derivatives', included)
-        self.assertNotIn(FIRST, included)
-        self.assertFalse(any(i.startswith('math/mathematical-notation/') for i in included))
+        self.assertEqual([s['title'] for s in ml['sections']], ML_TITLES)
+        self.assertEqual([s['slug'] for s in ml['sections']], ML_SLUGS)
+        self.assertTrue(all(s.get('status') == 'planned' and s['lessons'] == []
+                            for s in ml['sections']))
+        self.assertFalse(any(i.startswith('ml/') for i in lessons))
+        self.assertFalse(any(a['id'].startswith('ml/') for a in book['aliases']))
         for track in book['tracks']:
             for chapter in track['chapters']:
                 self.assertEqual(len(chapter['id'].split('/')), 2)
-                self.assertNotIn('status', chapter)
+                if track['slug'] == 'ml':
+                    self.assertEqual(chapter['status'], 'planned')
+                    self.assertEqual(chapter['lessons'], [])
+                else:
+                    self.assertNotIn('status', chapter)
                 for lesson in chapter['lessons']:
                     self.assertTrue(lesson['id'].startswith(chapter['id'] + '/'))
                     self.assertEqual(len(lesson['id'].split('/')), 3)
@@ -82,6 +86,9 @@ class HandbookTests(unittest.TestCase):
         original = copy.deepcopy(self.book)
         changes = [
             lambda: self.first().update(status='unknown'),
+            lambda: self.book['tracks'][2]['chapters'][0].pop('status'),
+            lambda: self.book['tracks'][2]['chapters'][0].update(status='draft'),
+            lambda: self.book['tracks'][0]['chapters'][0].update(status='planned'),
             lambda: self.first().update(id='math/basic-constructs/input-output'),
             lambda: self.book['tracks'][0]['chapters'][0].update(lessons=[]),
             lambda: self.book['tracks'][0]['chapters'][1].update(id=self.book['tracks'][0]['chapters'][0]['id']),
@@ -110,6 +117,9 @@ class HandbookTests(unittest.TestCase):
         original = copy.deepcopy(self.book)
         changes = [
             lambda: self.book.update(handbooks=None),
+            lambda: self.book['handbooks'][2]['sections'][0].pop('status'),
+            lambda: self.book['handbooks'][2]['sections'][0].update(status='draft'),
+            lambda: self.book['handbooks'][0]['sections'][0].update(status='planned'),
             lambda: self.book.update(handbooks=[]),
             lambda: self.book['handbooks'][1].update(slug='python'),
             lambda: self.book['handbooks'][0].update(introduction='../outside'),
@@ -145,7 +155,7 @@ class HandbookTests(unittest.TestCase):
         self.assertFalse(stale.exists())
         book = load_handbook(ROOT)
         for item in [*book['_lessons'].values(), *book['_chapters'].values(), *book['aliases']]:
-            if item.get('status') == 'planned':
+            if item.get('status') == 'planned' and item['id'] in book['_lessons']:
                 self.assertFalse((self.output / 'handbook' / item['id'] / 'index.html').exists())
                 continue
             path = self.output / 'handbook' / item['id'] / 'index.html'
@@ -171,11 +181,12 @@ class HandbookTests(unittest.TestCase):
         self.assertIn('aria-label="Путь к уроку"', html)
         self.assertIn('aria-label="Оглавление урока"', html)
         self.assertIn('rel="next"', html)
-        knn = (self.output / 'handbook' / KNN / 'index.html').read_text()
-        self.assertIn('<math', knn)
-        self.assertIn('<details>', knn)
-        self.assertIn('language-python', knn)
-        self.assertIn('href="notebook.ipynb" download', knn)
+        numpy = (self.output / 'handbook' / NUMPY / 'index.html').read_text()
+        self.assertIn('<details>', numpy)
+        self.assertIn('language-python', numpy)
+        self.assertIn('href="notebook.ipynb" download', numpy)
+        math_html = (self.output / 'handbook/math/linear-algebra/vectors-distances/index.html').read_text()
+        self.assertIn('<math', math_html)
         for alias in book['aliases']:
             parsed = PageLinks((self.output / 'handbook' / alias['id'] / 'index.html').read_text())
             self.assertTrue({a['id'] for a in alias['anchors']}.issubset(parsed.ids))
@@ -203,16 +214,23 @@ class HandbookTests(unittest.TestCase):
                                           re.search(r'<nav class="week-pagination".*?</nav>', html).group(), destination)
                         else:
                             self.assertNotIn(f'rel="{rel}"', html, destination)
-        optional_routes = lesson_routes(book, book['handbooks'][2])[1:]
-        self.assertIn(['ml/additional-topics/time-series', 'ml/additional-topics/forecasting'], optional_routes)
-        self.assertIn(['ml/additional-topics/logical-ai', 'ml/additional-topics/logical-inference',
-                       'ml/additional-topics/knowledge-ml'], optional_routes)
+        self.assertEqual(lesson_routes(book, book['handbooks'][2]), [['ml/start']])
         guide = PageLinks((self.output / 'handbook/start/index.html').read_text())
         self.assertTrue({'как-двигаться-по-учебнику', 'где-выполнять-примеры',
                          'библиотеки-для-продолжения-python'}.issubset(guide.ids))
         hub = (self.output / 'handbook/index.html').read_text()
         for handbook in book['handbooks']:
             self.assertIn(handbook['title'], hub)
+        validate_links(self.output)
+
+    @patch('handbook_site.export_notebook', return_value=False)
+    def test_included_lessons_can_still_share_resources(self, export):
+        section = self.book['handbooks'][2]['sections'][1]
+        section.pop('status')
+        section['lessons'] = [NUMPY, 'python/numerical-data/numpy-indexing',
+                              'math/probability-statistics/density-normal']
+        self.write()
+        publish_handbook(self.root, self.output, [])
         contextual = (self.output / 'handbook/ml/python/numerical-data/numpy-arrays/index.html').read_text()
         self.assertIn('Учебник машинного обучения', contextual)
         self.assertNotIn('Базовые конструкции', contextual)
@@ -222,9 +240,37 @@ class HandbookTests(unittest.TestCase):
         self.assertIn('src="../../../../data/figures/normal.svg"', contextual_math)
         validate_links(self.output)
 
+    @patch('handbook_site.export_notebook', return_value=False)
+    def test_ml_skeleton_removes_old_outputs_and_has_no_fake_lessons(self, export):
+        source = ROOT / 'handbook/ml'
+        self.assertEqual({p.name for p in source.iterdir() if p.is_dir()}, set(ML_SLUGS) | {'start'})
+        self.assertEqual(list(source.rglob('*.ipynb')), [])
+        self.assertEqual([p.relative_to(source).as_posix() for p in source.rglob('index.md')], ['start/index.md'])
+        for old in ('ml/knn/index.html', 'ml/knn/notebook.ipynb',
+                    'ml/classical-models/linear-models/index.html',
+                    'ml/python/numerical-data/numpy-arrays/index.html'):
+            stale = self.output / 'handbook' / old
+            stale.parent.mkdir(parents=True, exist_ok=True)
+            stale.write_text('old')
+        publish_handbook(self.root, self.output, [])
+        ml = self.output / 'handbook/ml'
+        expected = {'index.html', 'start/index.html'} | {slug + '/index.html' for slug in ML_SLUGS}
+        self.assertEqual({p.relative_to(ml).as_posix() for p in ml.rglob('*') if p.is_file()}, expected)
+        overview = (ml / 'index.html').read_text()
+        for number, (slug, title) in enumerate(zip(ML_SLUGS, ML_TITLES)):
+            self.assertIn(f'{number}. {title}', overview)
+            html = (ml / slug / 'index.html').read_text()
+            self.assertIn('Раздел запланирован.', html)
+            self.assertNotIn('rel="next"', html)
+            self.assertNotIn('notebook.ipynb', html)
+            self.assertNotIn('<ol></ol>', html)
+        self.assertNotIn('rel="next"', (ml / 'start/index.html').read_text())
+        validate_links(self.output)
+
     def test_contextual_links_keep_source_resolution_and_book_context(self):
         book = load_handbook(ROOT)
-        ml = book['handbooks'][2]
+        ml = copy.deepcopy(book['handbooks'][2])
+        ml['sections'][1]['lessons'] = [NUMPY, 'python/numerical-data/numpy-indexing']
         html = ('<a href="../numpy-indexing/?mode=1&amp;x=2#формы">Далее</a>'
                 '<a href="../../basic-constructs/input-output/">Основы</a>'
                 '<a href="#локально">Якорь</a>'
@@ -335,7 +381,7 @@ class HandbookTests(unittest.TestCase):
         self.assertEqual([c for c in repaired['cells'] if c['cell_type'] == 'code'], code)
         self.assertEqual(repaired['cells'][1]['id'], 'lesson-links')
 
-    def test_first_experiment_works_without_optional_packages(self):
+    def test_first_python_lesson_works_without_optional_packages(self):
         runner = '''import json,sys
 from pathlib import Path
 ns={}
@@ -344,7 +390,7 @@ for cell in json.loads(Path(sys.argv[1]).read_text())["cells"]:
 '''
         with tempfile.TemporaryDirectory() as folder:
             shutil.copyfile(ROOT / 'handbook/data/gliders.csv', Path(folder) / 'gliders.csv')
-            for identifier in [FIRST, 'ml/first-experiment/split-baseline', 'ml/nearest-neighbors/selection-evaluation']:
+            for identifier in [FIRST]:
                 path = ROOT / 'handbook' / identifier / 'notebook.ipynb'
                 result = subprocess.run([sys.executable, '-I', '-S', '-c', runner, str(path)], cwd=folder, capture_output=True, text=True)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

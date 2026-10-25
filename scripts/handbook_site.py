@@ -64,7 +64,10 @@ def load_handbook(source: Path) -> dict:
         for chapter in track['chapters']:
             if not isinstance(chapter, dict) or not identifier_ok(chapter.get('id'), 2) or not chapter['id'].startswith(track['slug'] + '/') or chapter['id'] in chapters or not all(nonempty(chapter.get(k)) for k in ('title', 'description')):
                 raise ValueError('Некорректная глава')
-            if not isinstance(chapter.get('lessons'), list) or not chapter['lessons']:
+            if (chapter.get('status') not in (None, 'planned')
+                    or not isinstance(chapter.get('lessons'), list)
+                    or (not chapter['lessons'] and chapter.get('status') != 'planned')
+                    or (chapter.get('status') == 'planned' and chapter['lessons'])):
                 raise ValueError('Глава должна содержать уроки')
             chapters[chapter['id']] = chapter
             for lesson in chapter['lessons']:
@@ -128,7 +131,10 @@ def load_handbook(source: Path) -> dict:
             if (not isinstance(section, dict) or not identifier_ok(section.get('slug'), 1)
                     or section['slug'] in {'start', 'data'} | section_ids
                     or not all(nonempty(section.get(k)) for k in ('title', 'description'))
-                    or not isinstance(section.get('lessons'), list) or not section['lessons']):
+                    or section.get('status') not in (None, 'planned')
+                    or not isinstance(section.get('lessons'), list)
+                    or (not section['lessons'] and section.get('status') != 'planned')
+                    or (section.get('status') == 'planned' and section['lessons'])):
                 raise ValueError('Некорректный раздел учебника')
             section_ids.add(section['slug'])
             for identifier in section['lessons']:
@@ -396,11 +402,14 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
         for section in handbook['sections']:
             identifier = slug + '/' + section['slug']
             content += '<h2>' + link('../../handbook/' + identifier + '/', section_title(handbook, section)) + '</h2><p>' + escape(section['description']) + '</p>'
+            if section.get('status') == 'planned':
+                content += '<p class="section-planned">Раздел запланирован.</p>'
             root = '../../../'
             section_content = crumbs(root, handbook, section['title']) + '<h1>' + escape(section_title(handbook, section)) + '</h1><p>' + escape(section['description']) + '</p>'
-            if slug == 'ml' and section is handbook['sections'][0]:
-                section_content += '<p>' + link(root + 'handbook/' + handbook['introduction'] + '/#среда-и-библиотеки', 'Настроить среду и скачать данные') + '</p>'
-            section_content += listing([lessons[i] for i in section['lessons']], root, handbook)
+            if section.get('status') == 'planned':
+                section_content += '<p class="section-planned">Раздел запланирован. Учебные материалы ещё не опубликованы.</p>'
+            else:
+                section_content += listing([lessons[i] for i in section['lessons']], root, handbook)
             page(identifier, section['title'], section['description'], section_content, handbook, section)
         page(slug, handbook['title'], handbook['description'], content, handbook)
 
@@ -419,7 +428,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             content += pagination(identifier, root)
             page(destination, item['title'], item.get('description', item['title']), content, handbook, section)
 
-    # Прежние страницы глав ML остаются доступными как обзоры исходных тем.
+    # Главы, не совпадающие с разделами оглавления, получают отдельные обзоры.
     section_paths = {h['slug'] + '/' + s['slug'] for h in handbooks.values() for s in h['sections']}
     for identifier, chapter in book['_chapters'].items():
         if identifier not in section_paths:
