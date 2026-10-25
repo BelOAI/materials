@@ -40,7 +40,7 @@ jobs:
       - name: Assemble production and dev
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/assemble-pages.py
+        run: python3 utils/scripts/assemble-pages.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _pages

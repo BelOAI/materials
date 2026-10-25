@@ -3,6 +3,6 @@
 !.github/ci/
 !.github/ci/Dockerfile
 !.github/ci/requirements.txt
-!handbook/
-!handbook/start/
-!handbook/start/requirements.txt
+!handbooks/
+!handbooks/start/
+!handbooks/start/requirements.txt
