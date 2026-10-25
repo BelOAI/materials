@@ -20,5 +20,7 @@ RUN python -m pip install --no-cache-dir -r /opt/ci/pdf-requirements.txt \
  && python -m playwright install --with-deps --no-shell chromium \
  && chmod -R a+rX /opt/playwright \
  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends git \
+ && rm -rf /var/lib/apt/lists/*
 ENV OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 WORKDIR /work
