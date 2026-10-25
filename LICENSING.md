@@ -4,7 +4,7 @@
 
 | Материалы | Лицензия |
 | --- | --- |
-| `lectures/`, `practices/`, `assignments/`, `handbook/`, главный `README.md` | [CC BY 4.0](LICENSE-CC-BY-4.0) |
+| `lectures/`, `practices/`, `assignments/`, `handbook/`, авторские описания и ссылки в `references/`, главный `README.md` | [CC BY 4.0](LICENSE-CC-BY-4.0) |
 | Собранные страницы и файлы учебника, учебные PDF, текст каталога и данные материалов в манифесте | [CC BY 4.0](LICENSE-CC-BY-4.0) |
 | `latex/`, `scripts/`, код интерфейса `site/`, `Makefile`, `latexmkrc`, `.github/`, `AGENTS.md` | [MIT](LICENSE-MIT) |
 | Шрифты в `site/fonts/` | SIL Open Font License, тексты лицензий рядом со шрифтами |
@@ -14,6 +14,8 @@ README разделов следуют лицензии соответствую
 Собранный интерфейс также содержит Lit под BSD-3-Clause; сборка сохраняет его лицензию в `_site/assets/LICENSE-Lit.txt`.
 
 Сборка учебника поставляет KaTeX под MIT; текст лицензии находится в `_site/assets/katex/LICENSE`. markdown-it и markdown-it-texmath используются только при сборке и распространяются под MIT.
+
+В `references/` размещены авторские описания и ссылки на внешние источники. Лицензии репозитория не распространяются на материалы по этим ссылкам.
 
 ## Повторное использование
 
