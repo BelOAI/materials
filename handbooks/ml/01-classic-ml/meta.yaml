@@ -1,11 +1,11 @@
 slug: classic-ml
-title: Classic ML
+title: Классическое машинное обучение
 description: Классические методы машинного обучения.
 status: draft
-authors:
-  - Авторы BelOAI
 paragraphs:
   - 01-first-experiment
   - 04-decision-trees
   - 05-clustering-kmeans
 build: true
+authors:
+  - name: Алексей Чернуха

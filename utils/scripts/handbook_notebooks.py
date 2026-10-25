@@ -1,15 +1,16 @@
 """Синхронизация учебных ноутбуков с Markdown уроков: --write или --check."""
 from __future__ import annotations
 import argparse
+import base64
 import json
 import re
 from pathlib import Path
 
 from repo_paths import REPO_ROOT as ROOT
+from authorship import normalize_authors, authors_markdown
 
 
-def render_notebook(title: str, text: str, assets: Path | None = None,
-                    authors: list[str] | None = None) -> dict:
+def render_notebook(title: str, text: str, assets: Path | None = None, authors=None) -> dict:
     solutions = []
     def move(match):
         solutions.append(match.group(1).strip())
@@ -27,17 +28,16 @@ def render_notebook(title: str, text: str, assets: Path | None = None,
                 if not path.is_relative_to(assets.resolve()) or not path.is_file() or path.suffix != '.svg':
                     return match[0]
                 name = path.name
-                attachments[name] = {'image/svg+xml': path.read_text(encoding='utf-8')}
+                attachments[name] = {'image/svg+xml': base64.b64encode(path.read_bytes()).decode('ascii')}
                 return f'![{match[1]}](attachment:{name})'
             value = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', embed, value)
             cell = {'cell_type': 'markdown', 'metadata': {}, 'source': value.strip().splitlines(keepends=True)}
             if attachments:
                 cell['attachments'] = attachments
             cells.append(cell)
-    author_line = ', '.join(authors or ['Авторы BelOAI'])
-    if authors and author_line != 'Авторы BelOAI':
-        author_line = ('Автор: ' if len(authors) == 1 else 'Авторы: ') + author_line
-    markdown(f'# {title}\n\n{author_line}. CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
+    authors = normalize_authors(authors)
+    credit = authors_markdown(authors)
+    markdown(f'# {title}\n\n{credit + chr(10) + chr(10) if credit else ""}CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
     cursor = 0
     for match in re.finditer(r'^```python\n(.*?)^```\s*$', text, re.M | re.S):
         markdown(text[cursor:match.start()])
@@ -46,7 +46,7 @@ def render_notebook(title: str, text: str, assets: Path | None = None,
     markdown(text[cursor:])
     for index, cell in enumerate(cells):
         cell['id'] = f'cell-{index:03}'
-    return {'cells': cells, 'metadata': {'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'}, 'language_info': {'name': 'python', 'version': '3.14'}}, 'nbformat': 4, 'nbformat_minor': 5}
+    return {'cells': cells, 'metadata': {'authors': authors, 'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'}, 'language_info': {'name': 'python', 'version': '3.14'}}, 'nbformat': 4, 'nbformat_minor': 5}
 
 
 def synchronize(root: Path, write: bool = False) -> list[str]:
@@ -59,8 +59,7 @@ def synchronize(root: Path, write: bool = False) -> list[str]:
         resources = [r for r in item.get('resources', []) if r['path'] == 'notebook.ipynb']
         if not resources:
             raise ValueError(f"{item['id']}: sync_notebook требует ресурс notebook.ipynb")
-        expected = render_notebook(item['title'], item['_content'].read_text(), assets=item['_folder'],
-                                   authors=item['authors'])
+        expected = render_notebook(item['title'], item['_content'].read_text(), assets=item['_folder'], authors=item['authors'])
         destination = item['_folder'] / 'notebook.ipynb'
         if not destination.is_file() or json.loads(destination.read_text()) != expected:
             stale.append(item['id'])

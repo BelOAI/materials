@@ -12,6 +12,7 @@ from urllib.parse import unquote, urlsplit, urlunsplit
 
 import yaml
 from course_site import link, write_page
+from authorship import normalize_authors, authors_html
 from handbook_redirects import publish_legacy_handbook, write_redirect
 from notebook_export import export_notebook
 
@@ -59,10 +60,11 @@ def read_metadata(folder):
         if (not isinstance(item, dict) or not isinstance(item.get('slug'), str)
                 or not SLUG.fullmatch(item['slug']) or item['slug'] in {'data', 'media', 'start'}
                 or not all(nonempty(item.get(k)) for k in ('title', 'description'))
-                or item.get('status') not in STATUSES
-                or not isinstance(item.get('authors'), list) or not item['authors']
-                or not all(nonempty(a) for a in item['authors'])):
+                or item.get('status') not in STATUSES):
             raise ValueError('Необходимы slug, title, description, status и authors')
+        item['authors'] = normalize_authors(item.get('authors'))
+        if item['status'] != 'planned' and not item['authors']:
+            raise ValueError('Для текста необходимо указать авторов')
         if item['status'] != 'planned' and not isinstance(item.get('build'), bool):
             raise ValueError('Для текста необходимо build: true')
         if not isinstance(item.get('references', []), list):
@@ -112,17 +114,17 @@ def load_handbook(source: Path, *, allow_missing_synced=False) -> dict:
     book = json.loads(local_file(base, 'handbooks.json').read_text(encoding='utf-8'))
     if not isinstance(book, dict) or not all(nonempty(book.get(k)) for k in ('title', 'description')):
         raise ValueError('Необходимы название и описание каталога')
-    start = book.get('start')
-    if not isinstance(start, dict) or not nonempty(start.get('title')) or start.get('source') != 'start/index.md':
-        raise ValueError('Необходимы общие инструкции')
-    start.update(id='start', _folder=base / 'start', _content=local_file(base, start['source']))
-    validate_resources(start['_folder'], start)
     if not isinstance(book.get('handbooks'), list) or len(book['handbooks']) != 1:
         raise ValueError('Ожидается ML-хендбук')
     handbook = book['handbooks'][0]
     if (not isinstance(handbook, dict) or handbook.get('slug') != 'ml'
             or not all(nonempty(handbook.get(k)) for k in ('title', 'description'))):
         raise ValueError('Некорректный ML-хендбук')
+    handbook.update(id='ml', _folder=base / 'ml', _content=local_file(base / 'ml', 'content.md'))
+    book['_pages'] = []
+    if (base / 'ml/CURRICULUM.md').is_file():
+        book['_pages'].append(dict(id='ml/curriculum', title='Программа учебника',
+                                  _folder=base / 'ml', _content=local_file(base / 'ml', 'CURRICULUM.md')))
     sections, paragraphs, identifiers = [], {}, set()
     for folder in ordered_folders(base / 'ml', handbook.get('chapters')):
         chapter = read_metadata(folder)
@@ -222,7 +224,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     book = load_handbook(source)
     handbook = book['handbooks'][0]
     sections = handbook['sections']
-    items = [book['start'], *sections, *book['_lessons'].values()]
+    items = [handbook, *book['_pages'], *sections, *book['_lessons'].values()]
     texts = [item for item in items if '_content' in item]
     result = subprocess.run(['node', str(source / 'utils/site/render-handbook.mjs')], input=json.dumps([
         {'name': item['id'], 'source': item['_content'].read_text(encoding='utf-8')} for item in texts
@@ -249,6 +251,9 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
         root = '../' * len(Path(path).parts)
         top = '<div class="handbook-links"><ul><li>' + link(root, '← На основной сайт') + '</li><li>' + navlink('', 'Учебники', identifier) + '</li></ul></div>'
         nav = '<div class="handbook-tree"><ul><li>' + navlink('ml', handbook['title'], identifier) + '</li></ul>'
+        if book['_pages']:
+            nav += '<ul>' + ''.join('<li>' + navlink(item['id'], item['title'], identifier) + '</li>'
+                                    for item in book['_pages']) + '</ul>'
         if identifier.startswith('ml'):
             nav += '<section class="handbook-track" aria-label="Оглавление ML">'
             for section in sections:
@@ -259,10 +264,10 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
                     nav += '<li>' + (navlink(para_id, item['title'], identifier) if item['status'] != 'planned' else escape(item['title']) + ' (ещё нет текста)') + '</li>'
                 nav += '</ul></details>'
             nav += '</section>'
-        else:
-            nav += '<ul><li>' + navlink('start', book['start']['title'], identifier) + '</li></ul>'
         nav += '</div>'
-        body = '<h1>' + escape(heading) + '</h1><p class="draft-note"><span class="draft-badge">Черновик</span><span>Материалы дорабатываются и будут дополняться.</span></p>' + content
+        body = content if re.search(r'<h1\b', content) else '<h1>' + escape(heading) + '</h1>' + content
+        note = '<p class="draft-note"><span class="draft-badge">Черновик</span><span>Материалы дорабатываются и будут дополняться.</span></p>'
+        body = re.sub(r'(</h1>)', lambda match: match[0] + note, body, count=1)
         write_page(source, output, weeks, path, heading, description,
                    '<div class="handbook-content">' + body + '</div>', 'handbook', root,
                    navigation_override=nav, navigation_top=top, brand_href=root + 'handbooks/ml/',
@@ -310,8 +315,8 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     for item in texts:
         publish_files_html = publish_files(item)
         item['_html'] = source_links(rendered[item['id']]['html'], item, items, source) + publish_files_html
-    page('', book['title'], book['description'], '<p>' + escape(book['description']) + '</p><ul><li>' + link('ml/', handbook['title']) + '</li><li>' + link('start/', book['start']['title']) + '</li></ul>')
-    overview = '<p>' + escape(handbook['description']) + '</p>'
+    page('', book['title'], book['description'], '<p>' + escape(book['description']) + '</p><ul><li>' + link('ml/', handbook['title']) + '</li></ul>')
+    overview = handbook['_html']
     route = ['ml/intro'] + [p['id'] for p in book['_lessons'].values() if p['status'] != 'planned']
     by_id = {item['id']: item for item in texts}
     for section in sections:
@@ -322,7 +327,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             overview += note
             content += note
         else:
-            content += '<p class="authors">Авторы: ' + escape(', '.join(section['authors'])) + '</p>' + section.get('_html', '')
+            content += authors_html(section['authors']) + section.get('_html', '')
             if section['lessons']:
                 content += '<ol>'
                 for para_id in section['lessons']:
@@ -333,14 +338,16 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             content += pagination(section['id'], route, by_id)
         page(section['id'], title(section), section['description'], content)
     page('ml', handbook['title'], handbook['description'], overview)
+    for item in book['_pages']:
+        page(item['id'], item['title'], item['title'], item['_html'])
     for item in book['_lessons'].values():
         if item['status'] == 'planned':
             continue
-        content = '<p class="authors">Авторы: ' + escape(', '.join(item['authors'])) + '</p>'
+        content = authors_html(item['authors'])
         content += '<nav class="lesson-toc" aria-label="Оглавление параграфа"><ul>' + ''.join('<li>' + link('#' + h['id'], h['text']) + '</li>' for h in rendered[item['id']]['toc'] if h['level'] == 2) + '</ul></nav>'
         content += item['_html'] + pagination(item['id'], route, by_id)
         page(item['id'], item['title'], item['description'], content)
-    page('start', book['start']['title'], book['start']['title'], book['start']['_html'])
+    write_redirect(output / 'handbooks/start/index.html', '../ml/intro/')
     for old, new in REDIRECTS.items():
         write_redirect(output / 'handbooks/ml' / old / 'index.html', '../' + new + '/')
     for path in (output / 'handbooks').rglob('*.html'):

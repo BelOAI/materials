@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     texlive-fonts-recommended texlive-lang-cyrillic texlive-pictures texlive-science \
     poppler-utils \
  && rm -rf /var/lib/apt/lists/*
-COPY handbooks/start/requirements.txt /opt/ci/handbook-requirements.txt
+COPY handbooks/ml/00-intro/01-environment/requirements.txt /opt/ci/handbook-requirements.txt
 RUN python -m pip install --no-cache-dir torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu \
  && python -m pip install --no-cache-dir -r /opt/ci/handbook-requirements.txt
 COPY .github/ci/requirements.txt /opt/ci/requirements.txt

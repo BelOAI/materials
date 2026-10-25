@@ -9,3 +9,6 @@ pdf: materials/lecture.pdf
 materials:
   - path: materials/lecture.pptx
     label: Презентация PowerPoint
+
+authors:
+  - name: "Виктория Кулевцова"

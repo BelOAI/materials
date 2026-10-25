@@ -1,17 +1,17 @@
 # Учебник машинного обучения
 
-[Читать на сайте](https://materials.beloai.by/handbooks/ml/) · [Программа](../PROGRAM.md)
+[Читать на сайте](https://materials.beloai.by/handbooks/ml/) · [Программа](CURRICULUM.md)
 
-[Настроить среду: Colab, Python 3.14 и Jupyter](00-intro/content.md#подготовка-среды).
+[Настроить среду: Colab, Python 3.14 и Jupyter](00-intro/01-environment/content.md).
 
-Учебник находится в разработке: доступны введение и первое занятие Classic ML; остальные материалы готовятся.
+Учебник находится в разработке: доступны введение и первое занятие по классическому машинному обучению; остальные материалы готовятся.
 
-0. [Intro](00-intro/README.md)
-1. [Classic ML](01-classic-ml/README.md)
-2. [DL basics](02-dl-basics/README.md)
-3. [NN in practice](03-nn-in-practice/README.md)
-4. [How NNs learn](04-how-nns-learn/README.md)
-5. [Math of AI](05-math-of-ai/README.md)
+0. [Введение](00-intro/README.md)
+1. [Классическое машинное обучение](01-classic-ml/README.md)
+2. [Основы глубокого обучения](02-dl-basics/README.md)
+3. [Нейросети на практике](03-nn-in-practice/README.md)
+4. [Как учатся нейросети](04-how-nns-learn/README.md)
+5. [Математика ИИ](05-math-of-ai/README.md)
 
 Для авторов: [шаблон параграфа](_paragraph-template/README.md) и [руководство по сборке](../../utils/scripts/README.md#учебник-машинного-обучения).
 

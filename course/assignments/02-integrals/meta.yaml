@@ -5,3 +5,6 @@ description: "Повторите таблицу первообразных, св
 assignment_type: math
 lang: ru
 build: true
+
+authors:
+  - name: "Павел Косило"

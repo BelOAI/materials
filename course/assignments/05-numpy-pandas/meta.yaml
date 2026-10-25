@@ -14,3 +14,6 @@ references:
   - kind: contest
     url: https://contest.yandex.ru/contest/101165/
     label: Сдать решения
+
+authors:
+  - name: "Алексей Чернуха"

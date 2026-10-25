@@ -11,6 +11,7 @@ from pathlib import Path
 from string import Template
 
 from meta_parser import get_flat, parse_meta
+from authorship import normalize_authors, authors_html
 
 KINDS = {"lecture": "Лекции", "practice": "Практики", "assignment": "Задания"}
 LABELS = {"lecture": "Лекция", "practice": "Практика", "assignment": "Задание"}
@@ -186,6 +187,7 @@ def render_material(material: dict, root: str, show_description: bool = False) -
     return f"""<li class="material" data-id="{escape(m['id'], quote=True)}" data-kind="{m['kind']}">
       {name} <span class="material-meta">({meta})</span>
       {f'<p class="material-description">{escape(description)}</p>' if show_description and description else ''}
+      {authors_html(m.get('_authors'))}
       {files}{references}
     </li>"""
 
@@ -241,7 +243,11 @@ def write_page(
 def publish_pages(source: Path, output: Path, manifest: dict) -> None:
     course = manifest["course"]
     weeks = course["weeks"]
-    materials = {m["id"]: m for m in manifest["materials"]}
+    materials = {}
+    for item in manifest['materials']:
+        meta = source / 'course' / item['id'] / 'meta.yaml'
+        authors = normalize_authors(parse_meta(meta).get('authors')) if meta.is_file() else []
+        materials[item['id']] = dict(item, _authors=authors)
     # Не оставляем страницы удалённых или скрытых недель.
     shutil.rmtree(output / "weeks", ignore_errors=True)
 
@@ -314,7 +320,7 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
     catalog += (
         "".join(
             render_material(m, "../", show_description=True)
-            for m in manifest["materials"]
+            for m in materials.values()
         )
         + "</ul></materials-catalog>"
     )
@@ -341,7 +347,7 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
         'распространяются по '
         '<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. '
         '<a href="../LICENSE-CC-BY-4.0">Полный текст лицензии</a>.</p>'
-        '<p>При повторном использовании укажите «Авторы BelOAI», источник и лицензию. '
+        '<p>При повторном использовании укажите авторов и роли из подписи конкретного материала, источник и лицензию. '
         'Если материал изменён, опишите изменения. Не создавайте впечатление, '
         'что авторы одобряют вашу версию.</p>'
         '<p>Пример атрибуции: «Материалы BelOAI. © Авторы BelOAI. '

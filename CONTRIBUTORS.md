@@ -1,3 +1,7 @@
 - [atolstikov](https://github.com/atolstikov)
-- [BlackAlexYT](https://github.com/BlackAlexYT)
-- [pkasila](https://github.com/pkasila)
+- [Алексей Чернуха (BlackAlexYT)](https://github.com/BlackAlexYT)
+- [Павел Косило (pkasila)](https://github.com/pkasila)
+- [Виктория Кулевцова](https://github.com/lamposhka)
+- [Максим Банцевич](https://github.com/Wotmer)
+- [Ростислав Свечников](https://github.com/Noxlip)
+- Павел Дылевский

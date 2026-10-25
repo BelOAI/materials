@@ -5,3 +5,6 @@ description: "Повторите операции над векторами и �
 assignment_type: math
 lang: ru
 build: true
+
+authors:
+  - name: "Алексей Чернуха"

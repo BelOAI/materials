@@ -10,6 +10,7 @@ import tempfile
 
 import pymupdf
 import yaml
+from authorship import authors_markdown
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -20,7 +21,7 @@ def print_source(article: Path, scratch: Path) -> Path:
     source = (article / "content.md").read_text(encoding="utf-8")
     metadata = yaml.safe_load(article.joinpath("meta.yaml").read_text(encoding="utf-8"))
     title = metadata["title"]
-    authors = ", ".join(metadata.get("authors", []))
+    byline_text = authors_markdown(metadata.get("authors", []))
 
     for index, match in enumerate(re.finditer(r"!\[[^]]*\]\(([^)]+\.svg)\)", source)):
         svg_path = (article / match.group(1)).resolve()
@@ -42,8 +43,7 @@ def print_source(article: Path, scratch: Path) -> Path:
     source = re.sub(r"(?m)^(### \d+\.)", r"\\Needspace{8\\baselineskip}\n\n\1", source)
     source = source.replace("## Самопроверка", "\\begingroup\\small\\setlength{\\parskip}{2pt}\n\n## Самопроверка", 1)
     source += "\n\n\\endgroup\n"
-    label = "Автор" if len(metadata.get("authors", [])) == 1 and not authors.startswith("Авторы") else "Авторы"
-    byline = f"**{label}:** {authors}\n\n" if authors else ""
+    byline = f"**{byline_text}**\n\n" if byline_text else ""
     source = f"# {title}\n\n{byline}" + source
 
     output = scratch / "chapter.md"

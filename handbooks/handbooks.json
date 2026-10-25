@@ -1,16 +1,6 @@
 {
   "title": "Учебники BelOAI",
   "description": "Учебник машинного обучения и инструкции запуска примеров.",
-  "start": {
-    "title": "Как пользоваться учебником",
-    "source": "start/index.md",
-    "resources": [
-      {
-        "path": "requirements.txt",
-        "label": "Библиотеки для примеров"
-      }
-    ]
-  },
   "handbooks": [
     {
       "slug": "ml",
