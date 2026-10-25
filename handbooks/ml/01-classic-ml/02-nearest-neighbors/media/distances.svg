@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="240" viewBox="0 0 420 240" role="img" aria-labelledby="title desc">
+  <title id="title">Два способа измерить расстояние</title>
+  <desc id="desc">От точки (5, 2) до точки (8, 6) по координатным линиям нужно пройти 3 вправо и 4 вверх, всего 7. Прямой отрезок между ними имеет длину 5.</desc>
+  <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse" x="50" y="40"><path d="M40 0H0V40" fill="none" stroke="var(--figure-grid)"/></pattern></defs>
+  <rect x="1" y="1" width="418" height="238" rx="18" fill="var(--figure-surface)" stroke="var(--figure-border)"/>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --figure-surface: #f8fafc; --figure-panel: #fff; --figure-border: #e2e8f0;
+      --figure-ink: #17212b; --figure-muted: #64748b; --figure-axis: #94a3b8;
+      --figure-grid: #dce5ef; --figure-blue: #2563eb; --figure-purple: #7c3aed;
+      --figure-orange: #ea580c; --figure-query: #d97706; --figure-query-label: #b45309;
+      --figure-blue-tint: #eff6ff; --figure-orange-tint: #fff7ed; --figure-purple-tint: #f5f3ff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --figure-surface: #212529; --figure-panel: #2b3035; --figure-border: #495057;
+        --figure-ink: #dee2e6; --figure-muted: #adb5bd; --figure-axis: #8b98a5;
+        --figure-grid: #3b454f; --figure-blue: #8ac1ff; --figure-purple: #c4a7ff;
+        --figure-orange: #ffb86c; --figure-query: #ffbf69; --figure-query-label: #ffbf69;
+        --figure-blue-tint: #22384c; --figure-orange-tint: #443225; --figure-purple-tint: #352d49;
+      }
+    }
+    @media print {
+      :root {
+        --figure-surface: #f8fafc; --figure-panel: #fff; --figure-border: #e2e8f0;
+        --figure-ink: #17212b; --figure-muted: #64748b; --figure-axis: #94a3b8;
+        --figure-grid: #dce5ef; --figure-blue: #2563eb; --figure-purple: #7c3aed;
+        --figure-orange: #ea580c; --figure-query: #d97706; --figure-query-label: #b45309;
+        --figure-blue-tint: #eff6ff; --figure-orange-tint: #fff7ed; --figure-purple-tint: #f5f3ff;
+      }
+    }
+    svg { fill: var(--figure-ink); }
+    text{font-family:Arial,sans-serif;font-size:16px}.bold{font-weight:700}</style>
+  <rect x="30" y="10" width="180" height="210" rx="10" fill="url(#grid)"/>
+  <path d="M50 30V200H210" fill="none" stroke="var(--figure-axis)" stroke-width="1.5"/>
+  <path d="M50 200H170V40" fill="none" stroke="var(--figure-orange)" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M50 200L170 40" fill="none" stroke="var(--figure-blue)" stroke-width="4"/>
+  <path d="M158 200V188H170" fill="none" stroke="var(--figure-orange)" stroke-width="1.5"/>
+  <circle cx="50" cy="200" r="6" fill="var(--figure-panel)" stroke="var(--figure-ink)" stroke-width="2"/>
+  <circle cx="170" cy="40" r="6" fill="var(--figure-panel)" stroke="var(--figure-ink)" stroke-width="2"/>
+  <text x="31" y="225" class="bold">(5, 2)</text>
+  <text x="132" y="24" class="bold">(8, 6)</text>
+  <text x="104" y="220" fill="var(--figure-orange)">3</text>
+  <text x="181" y="126" fill="var(--figure-orange)">4</text>
+  <text x="89" y="111" fill="var(--figure-blue)" class="bold">5</text>
+  <rect x="232" y="35" width="172" height="74" rx="12" fill="var(--figure-orange-tint)"/>
+  <path d="M248 53H271V44" fill="none" stroke="var(--figure-orange)" stroke-width="3"/>
+  <text x="248" y="76" class="bold">По координатам</text>
+  <text x="248" y="98">3 + 4 = 7</text>
+  <rect x="232" y="125" width="172" height="74" rx="12" fill="var(--figure-blue-tint)"/>
+  <path d="M248 146L275 134" fill="none" stroke="var(--figure-blue)" stroke-width="3"/>
+  <text x="248" y="166" class="bold">Напрямую</text>
+  <text x="248" y="188">5</text>
+</svg>
