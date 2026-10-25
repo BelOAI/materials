@@ -12,25 +12,4 @@
 
 ## Среда и библиотеки
 
-Скачайте ноутбук урока и откройте его в [Google Colab](https://colab.research.google.com/). Выполняйте ячейки сверху вниз сочетанием Shift+Enter. Перед проверкой решения перезапустите сеанс и выполните всё по порядку.
-
-Если параграф содержит файлы данных, загрузите их в рабочую папку Colab рядом с ноутбуком.
-
-Для локального запуска установите Python 3.14, создайте виртуальную среду и установите Jupyter:
-
-```bash
-python3 -m venv .venv
-# Linux / macOS:
-source .venv/bin/activate
-# Windows PowerShell: .venv\Scripts\Activate.ps1
-python -m pip install jupyter
-```
-
-Скачайте [список библиотек](requirements.txt) и выполните в активированной среде:
-
-```bash
-python -m pip install -r requirements.txt
-jupyter notebook
-```
-
-В Colab загрузите `requirements.txt` и выполните `%pip install -r requirements.txt` в отдельной ячейке. Если среда попросит, перезапустите сеанс. Установка требует интернета; учебные примеры работают на обычном процессоре без скачивания внешних моделей.
+Полная настройка [Google Colab, Python 3.14 и Jupyter](../ml/00-intro/content.md#подготовка-среды) находится во введении ML-хендбука.

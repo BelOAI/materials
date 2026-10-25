@@ -2,6 +2,8 @@
 
 [Читать на сайте](https://materials.beloai.by/handbooks/ml/) · [Программа](../PROGRAM.md)
 
+[Настроить среду: Colab, Python 3.14 и Jupyter](00-intro/content.md#подготовка-среды).
+
 Учебник находится в разработке: доступны введение и первое занятие Classic ML; остальные материалы готовятся.
 
 0. [Intro](00-intro/README.md)
