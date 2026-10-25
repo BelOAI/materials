@@ -1,0 +1,1 @@
+To work on the handbook follow the guidelines stored in @/handbooks/guidelines/ directory.

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="260" viewBox="0 0 420 260" role="img" aria-labelledby="title desc">
+  <title id="title">После изменения масштаба ближайший сосед меняется</title>
+  <desc id="desc">В каждом столбце герои упорядочены по расстоянию до нового. Слева: Б 55, А 156, Г 250, В 351. Справа, после деления здоровья на 100: Г 2,5, В 4,5, Б 5,5, А 7,5. Синие метки — воины, фиолетовые — маги. Длина полосы показывает расстояние в единицах своего столбца.</desc>
+  <rect x="1" y="1" width="418" height="258" rx="18" fill="var(--figure-surface)" stroke="var(--figure-border)"/>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --figure-surface: #f8fafc; --figure-panel: #fff; --figure-border: #e2e8f0;
+      --figure-ink: #17212b; --figure-muted: #64748b; --figure-axis: #94a3b8;
+      --figure-grid: #dce5ef; --figure-blue: #2563eb; --figure-purple: #7c3aed;
+      --figure-orange: #ea580c; --figure-query: #d97706; --figure-query-label: #b45309;
+      --figure-blue-tint: #eff6ff; --figure-orange-tint: #fff7ed; --figure-purple-tint: #f5f3ff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --figure-surface: #212529; --figure-panel: #2b3035; --figure-border: #495057;
+        --figure-ink: #dee2e6; --figure-muted: #adb5bd; --figure-axis: #8b98a5;
+        --figure-grid: #3b454f; --figure-blue: #8ac1ff; --figure-purple: #c4a7ff;
+        --figure-orange: #ffb86c; --figure-query: #ffbf69; --figure-query-label: #ffbf69;
+        --figure-blue-tint: #22384c; --figure-orange-tint: #443225; --figure-purple-tint: #352d49;
+      }
+    }
+    @media print {
+      :root {
+        --figure-surface: #f8fafc; --figure-panel: #fff; --figure-border: #e2e8f0;
+        --figure-ink: #17212b; --figure-muted: #64748b; --figure-axis: #94a3b8;
+        --figure-grid: #dce5ef; --figure-blue: #2563eb; --figure-purple: #7c3aed;
+        --figure-orange: #ea580c; --figure-query: #d97706; --figure-query-label: #b45309;
+        --figure-blue-tint: #eff6ff; --figure-orange-tint: #fff7ed; --figure-purple-tint: #f5f3ff;
+      }
+    }
+    svg { fill: var(--figure-ink); }
+    text{font-family:Arial,sans-serif;font-size:16px}.bold{font-weight:700}.blue{fill:var(--figure-blue)}.purple{fill:var(--figure-purple)}.track{stroke:var(--figure-border);stroke-width:7;stroke-linecap:round}.bar{stroke-width:7;stroke-linecap:round}</style>
+  <text x="210" y="28" text-anchor="middle" class="bold">Кто ближе к новому герою?</text>
+  <rect x="12" y="43" width="192" height="202" rx="12" fill="var(--figure-panel)" stroke="var(--figure-border)"/>
+  <rect x="216" y="43" width="192" height="202" rx="12" fill="var(--figure-panel)" stroke="var(--figure-border)"/>
+  <text x="108" y="68" text-anchor="middle" class="bold">Исходные числа</text>
+  <text x="312" y="68" text-anchor="middle" class="bold">Здоровье в сотнях</text>
+  <rect x="21" y="80" width="174" height="29" rx="8" fill="var(--figure-blue-tint)"/>
+  <rect x="225" y="80" width="174" height="29" rx="8" fill="var(--figure-purple-tint)"/>
+  <text x="31" y="100" class="bold blue">Б</text><text x="183" y="100" text-anchor="end">55</text>
+  <text x="31" y="132" class="blue">А</text><text x="183" y="132" text-anchor="end">156</text>
+  <text x="31" y="164" class="purple">Г</text><text x="183" y="164" text-anchor="end">250</text>
+  <text x="31" y="196" class="purple">В</text><text x="183" y="196" text-anchor="end">351</text>
+  <path d="M57 95H131 M57 127H131 M57 159H131 M57 191H131" class="track"/>
+  <path d="M57 95H68.6 M57 127H89.9" class="bar" stroke="var(--figure-blue)"/>
+  <path d="M57 159H109.7 M57 191H131" class="bar" stroke="var(--figure-purple)"/>
+  <text x="235" y="100" class="bold purple">Г</text><text x="387" y="100" text-anchor="end">2,5</text>
+  <text x="235" y="132" class="purple">В</text><text x="387" y="132" text-anchor="end">4,5</text>
+  <text x="235" y="164" class="blue">Б</text><text x="387" y="164" text-anchor="end">5,5</text>
+  <text x="235" y="196" class="blue">А</text><text x="387" y="196" text-anchor="end">7,5</text>
+  <path d="M261 95H335 M261 127H335 M261 159H335 M261 191H335" class="track"/>
+  <path d="M261 95H285.7 M261 127H305.4" class="bar" stroke="var(--figure-purple)"/>
+  <path d="M261 159H315.3 M261 191H335" class="bar" stroke="var(--figure-blue)"/>
+  <text x="108" y="226" text-anchor="middle" class="blue bold">Ближайший — воин</text>
+  <text x="312" y="226" text-anchor="middle" class="purple bold">Ближайший — маг</text>
+</svg>

@@ -1,0 +1,41 @@
+{
+  "title": "Подготовка к BelOAI",
+  "description": "Материалы для подготовки к олимпиаде по искусственному интеллекту. Лекции, практики и задания собраны по неделям.",
+  "weeks": [
+    {
+      "slug": "math-foundations",
+      "number": 0,
+      "title": "Математическая подготовка",
+      "description": "Повторение пределов и интегрального исчисления перед занятиями по машинному обучению.",
+      "materials": ["assignments/01-limits", "assignments/02-integrals"]
+    },
+    {
+      "slug": "intro-ml",
+      "number": 1,
+      "title": "Введение в машинное обучение",
+      "description": "Задачи машинного обучения, данные и метрики. Работа с NumPy и pandas, повторение векторов и матриц.",
+      "materials": ["lectures/01-intro-ml", "practices/01-numpy-pandas", "assignments/03-vectors-matrices", "assignments/05-numpy-pandas"]
+    },
+    {
+      "slug": "knn",
+      "number": 2,
+      "title": "Меры близости и KNN",
+      "description": "Расстояния между объектами, масштабирование признаков и метод ближайших соседей.",
+      "materials": ["lectures/02-knn", "practices/02-knn", "assignments/04-knn"]
+    },
+    {
+      "slug": "lin-reg",
+      "number": 3,
+      "title": "Линейная регрессия",
+      "description": "Линейная модель, средняя квадратичная ошибка и обучение градиентным спуском. Практика на NumPy.",
+      "materials": ["lectures/03-lin-reg", "practices/03-lin-reg"]
+    },
+    {
+      "slug": "gradient-descent",
+      "number": 4,
+      "title": "Как учится модель",
+      "description": "Сбор данных, честная проверка качества, производные и градиентный спуск.",
+      "materials": ["lectures/04-gradient-descent", "practices/04-coefficients-restoration"]
+    }
+  ]
+}

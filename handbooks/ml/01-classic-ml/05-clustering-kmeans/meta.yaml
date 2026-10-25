@@ -1,0 +1,29 @@
+title: "Кластеризация и K-means"
+slug: clustering-kmeans
+description: "Два шага K-means на восьми точках и кластеризация классического набора Iris."
+status: draft
+build: true
+date: "2026-10-25"
+authors:
+  - Авторы BelOAI
+topics:
+  - Кластеризация без правильных ответов
+  - Распределение по ближайшему центру
+  - Пересчёт центров групп
+  - Влияние начальных центров
+  - Сумма квадратов расстояний
+  - Классический набор «Ирисы»
+learning_outcomes:
+  - Выполнять два шага K-means для небольшого набора точек.
+  - Сравнивать группировки при разных начальных центрах.
+  - Объяснять, что измеряет сумма квадратов расстояний до центров.
+resources:
+  - path: media/two-starts.svg
+    label: Схема двух запусков (.svg)
+  - path: media/iris-scatter.svg
+    label: Ирисы — виды и группы K-means (.svg)
+references:
+  - label: ODS.ai — курс по классическим моделям ML
+    url: https://ods.ai/tracks/classic-models-autumn26
+  - label: scikit-learn — набор данных Iris
+    url: https://scikit-learn.org/stable/datasets/toy_dataset.html#iris-plants-dataset

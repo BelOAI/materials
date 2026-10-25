@@ -1,0 +1,13 @@
+title: "Практика: расстояния, нормализация и KNN"
+subtitle: "Исследуем соседей, метрики и области решений"
+date: "2026-10-10"
+description: "Исследуем поведение KNN на исходных и нормализованных данных, сравниваем метрики и значения k."
+lang: ru
+build: true
+
+materials:
+  - path: materials/notebook.ipynb
+    label: Jupyter Notebook
+
+authors:
+  - name: "Виктория Кулевцова"

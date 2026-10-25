@@ -1,0 +1,12 @@
+slug: classic-ml
+title: Классическое машинное обучение
+description: Классические методы машинного обучения.
+status: draft
+paragraphs:
+  - 01-first-experiment
+  - 02-nearest-neighbors
+  - 04-decision-trees
+  - 05-clustering-kmeans
+build: true
+authors:
+  - name: Алексей Чернуха

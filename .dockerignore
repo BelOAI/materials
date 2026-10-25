@@ -3,6 +3,11 @@
 !.github/ci/
 !.github/ci/Dockerfile
 !.github/ci/requirements.txt
-!handbook/
-!handbook/start/
-!handbook/start/requirements.txt
+!handbooks/
+!handbooks/ml/
+!handbooks/ml/00-intro/
+!handbooks/ml/00-intro/01-environment/
+!handbooks/ml/00-intro/01-environment/requirements.txt
+!utils/
+!utils/pdf/
+!utils/pdf/requirements.txt

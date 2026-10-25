@@ -1,33 +1,40 @@
-Copyright (c) 2026 BelOAI Authors
+# Лицензирование и авторство
 
-Лицензия определяется путём файла.
-Авторство: Авторы BelOAI.
-Правила использования: LICENSING.md. Примеры авторства: ATTRIBUTION.md.
+Copyright (c) 2026 BelOAI Authors. Общее обозначение авторства — **Авторы BelOAI**. [Участники проекта](CONTRIBUTORS.md) перечислены отдельно; этот список не является реестром юридических правообладателей.
 
-Учебные материалы — CC BY 4.0:
-  lectures/
-  practices/
-  assignments/
-  handbook/
-  README.md
-  собранные страницы и файлы учебника, учебные PDF, текст публичного каталога и данные материалов в манифесте
+## Лицензии по путям
 
-  Можно копировать, распространять и адаптировать с указанием авторства.
-  Полные условия: LICENSE-CC-BY-4.0
-  https://creativecommons.org/licenses/by/4.0/
+| Материалы | Лицензия |
+| --- | --- |
+| `course/`, `handbooks/`, перенесённый профиль `utils/pdf/`, главный `README.md`, авторские описания и ссылки в `handbooks/ml/references/` | [CC BY 4.0](LICENSE-CC-BY-4.0) |
+| Собранные учебные страницы, PDF и файлы учебников, тексты каталога и учебные данные манифеста | [CC BY 4.0](LICENSE-CC-BY-4.0) |
+| Собственный код `utils/scripts/`, `utils/site/`, общие стили `utils/latex/`, `build/`, `.github/` и инструкции `AGENTS.md` | [MIT](LICENSE-MIT) |
+| Шрифты `utils/site/fonts/` | SIL Open Font License; полные тексты находятся рядом со шрифтами |
 
-Программный код — MIT:
-  latex/
-  scripts/
-  site/ (кроме шрифтов и логотипа Python)
-  Makefile
-  latexmkrc
-  .github/
-  AGENTS.md
+README разделов следуют лицензии своего раздела. Для сторонних компонентов действуют исключения ниже. Полные официальные тексты лицензий не изменены.
 
-  Полные условия: LICENSE-MIT
+## Повторное использование и атрибуция
 
-Шрифты site/fonts/ — SIL Open Font License.
-Полные условия: site/fonts/OFL-Unbounded.txt и site/fonts/OFL-IBMPlexSans.txt.
+Для конкретного учебного материала укажите авторов и роли из его подписи или метаданных, источник и CC BY 4.0. Для введения и настройки среды используется подпись «BelOAI». Общее обозначение «Авторы BelOAI» относится к проекту в целом и не заменяет известные имена авторов отдельных материалов. Если вы изменили материал, перечислите изменения. Не создавайте впечатление, что авторы одобряют вашу версию. Подписи внутри занятий сохраняются отдельно; для конкретного занятия добавьте его название и дату из `meta.yaml`.
 
-README разделов следуют лицензии соответствующего раздела.
+Без изменений:
+
+> Материалы BelOAI. © Авторы BelOAI. Источник: https://materials.beloai.by/. Лицензия: CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/.
+
+С изменениями:
+
+> На основе материалов BelOAI: https://github.com/BelOAI/materials. © Авторы BelOAI, CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/. Изменения: [кратко опишите изменения].
+
+Для программного кода сохраняйте полный текст MIT и исходное уведомление `Copyright (c) 2026 BelOAI Authors`.
+
+## Происхождение и сторонние компоненты
+
+Тема Beamer и основа сборки происходят из [pkasila/java-materials](https://github.com/pkasila/java-materials).
+
+- `utils/latex/tex/latex/olymp/` — сторонний olymp.sty, MIT, Copyright (c) 2005–2013 Olymp.sty Developers Group. Оригинальные LICENSE и AUTHORS сохранены рядом; локальные изменения описаны в README пакета.
+- Шрифты сопровождаются собственными уведомлениями OFL в `utils/site/fonts/`.
+- Lit распространяется под BSD-3-Clause; сборка публикует его лицензию в `assets/LICENSE-Lit.txt`.
+- KaTeX распространяется под MIT; сборка публикует его лицензию в `assets/katex/LICENSE`. Используемые при сборке markdown-it и markdown-it-texmath также распространяются под MIT.
+- Значок Python в `utils/site/assets/python-logo.svg` — официальный логотип Python Software Foundation. [Источник и условия использования](https://www.python.org/community/logos/). На него не распространяется MIT собственного кода интерфейса.
+- Иконки в `utils/site/assets/fontawesome/` — Font Awesome Free 6.7.2, CC BY 4.0. [Источник](https://github.com/FortAwesome/Font-Awesome/tree/6.7.2/svgs/brands), [официальный текст лицензии](utils/site/assets/fontawesome/LICENSE.txt). Они не входят в MIT собственного кода; товарные знаки принадлежат соответствующим владельцам.
+- В `handbooks/ml/references/` находятся только описания и ссылки. Лицензии репозитория не распространяются на материалы внешних источников.

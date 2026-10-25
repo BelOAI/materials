@@ -3,3 +3,4 @@ nbconvert==7.17.0
 nbclient==0.10.4
 nbformat==5.10.4
 ipykernel==7.2.0
+PyYAML==6.0.3

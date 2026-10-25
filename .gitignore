@@ -18,8 +18,9 @@
 *.lof
 *.lot
 
-# Generated session PDFs (built by CI / make)
+# Generated local PDFs
 **/main.pdf
+handbooks/ml/01-classic-ml/01-first-experiment/content.pdf
 
 # GitHub Pages site output
 _site/
@@ -39,6 +40,8 @@ __pycache__
 # Зависимости интерфейса и результаты проверки браузером
 node_modules/
 output/playwright/
+output/pdf/
+output/release/
 .playwright-cli/
 
 # Кэш сборки

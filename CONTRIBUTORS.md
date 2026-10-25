@@ -1,11 +1,9 @@
 # Участники проекта
 
-- [atolstikov](https://github.com/atolstikov)
-- [BlackAlexYT](https://github.com/BlackAlexYT)
-- [pkasila](https://github.com/pkasila)
-
-Список поддерживается вручную. При добавлении нового участника указывайте подтверждённый профиль GitHub. Это список участников проекта, а не перечень юридических правообладателей.
-
-## Происхождение шаблона
-
-Тема Beamer и основа сборки происходят из [pkasila/java-materials](https://github.com/pkasila/java-materials).
+- [Алексей Толстиков (@atolstikov)](https://github.com/atolstikov)
+- [Алексей Чернуха (@BlackAlexYT)](https://github.com/BlackAlexYT)
+- [Павел Косило (@pkasila)](https://github.com/pkasila)
+- [Виктория Кулевцова (@lamposhka)](https://github.com/lamposhka)
+- [Максим Банцевич (@Wotmer)](https://github.com/Wotmer)
+- [Ростислав Свечников (@Noxlip)](https://github.com/Noxlip)
+- Павел Дылевский

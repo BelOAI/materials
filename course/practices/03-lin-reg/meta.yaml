@@ -1,0 +1,12 @@
+title: "Практика: линейная регрессия"
+date: "2026-10-17"
+description: "Обучаем линейную регрессию в NumPy, считаем MSE, строим графики и сравниваем шаги обучения."
+lang: ru
+build: true
+
+materials:
+  - path: materials/notebook.ipynb
+    label: Jupyter Notebook
+
+authors:
+  - name: "Максим Банцевич"

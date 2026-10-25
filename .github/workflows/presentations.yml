@@ -4,36 +4,26 @@ on:
   push:
     branches: [main, dev]
     paths:
-      - 'handbook/**'
-      - 'lectures/**'
-      - 'practices/**'
-      - 'assignments/**'
-      - 'latex/**'
-      - 'scripts/**'
-      - 'site/**'
-      - 'course.json'
+      - 'handbooks/**'
+      - 'course/lectures/**'
+      - 'course/practices/**'
+      - 'course/assignments/**'
+      - 'utils/latex/**'
+      - 'utils/pdf/**'
+      - 'utils/scripts/**'
+      - 'utils/site/**'
+      - 'course/course.json'
       - '.github/workflows/**'
-      - 'Makefile'
-      - 'latexmkrc'
+      - 'build/**'
       - '.github/ci/**'
       - '.dockerignore'
+      - 'LICENSE'
+      - 'LICENSE-MIT'
+      - 'LICENSE-CC-BY-4.0'
   workflow_dispatch:
   pull_request:
+    types: [opened, synchronize, reopened, edited]
     branches: [main, dev]
-    paths:
-      - 'handbook/**'
-      - 'lectures/**'
-      - 'practices/**'
-      - 'assignments/**'
-      - 'latex/**'
-      - 'scripts/**'
-      - 'site/**'
-      - 'course.json'
-      - '.github/workflows/**'
-      - 'Makefile'
-      - 'latexmkrc'
-      - '.github/ci/**'
-      - '.dockerignore'
 
 permissions:
   contents: read
@@ -57,7 +47,7 @@ jobs:
       - name: Identify environment
         id: environment
         env:
-          ENV_HASH: ${{ hashFiles('.github/ci/**', 'handbook/start/requirements.txt') }}
+          ENV_HASH: ${{ hashFiles('utils/pdf/requirements.txt', '.github/ci/**', 'handbooks/ml/00-intro/01-environment/requirements.txt') }}
         run: |
           echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/ci:${ENV_HASH}" >> "$GITHUB_OUTPUT"
           echo "hash=${ENV_HASH}" >> "$GITHUB_OUTPUT"
@@ -103,9 +93,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: .cache/build
-          key: build-v1-${{ runner.os }}-${{ steps.environment.outputs.hash }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: build-v2-${{ runner.os }}-${{ steps.environment.outputs.hash }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
-            build-v1-${{ runner.os }}-${{ steps.environment.outputs.hash }}-
+            build-v2-${{ runner.os }}-${{ steps.environment.outputs.hash }}-
 
       - name: Test and build
         env:
@@ -114,7 +104,7 @@ jobs:
         run: |
           docker run --rm --user "$(id -u):$(id -g)" \
             -e HOME=/tmp -e BUILD_ENV_ID -e NOTEBOOK_TEST_WORKERS=2 \
-            -v "$PWD:/work" "$IMAGE" bash scripts/ci-build.sh
+            -v "$PWD:/work" "$IMAGE" bash utils/scripts/ci-build.sh
 
       - name: Save build cache
         uses: actions/cache/save@v4
@@ -122,10 +112,25 @@ jobs:
           path: .cache/build
           key: ${{ steps.cache.outputs.cache-primary-key }}
 
+      - name: Record PR source
+        if: github.event_name == 'pull_request'
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          python3 - <<'PYTHON'
+          import json, os
+          from pathlib import Path
+          Path('_site/build-source.json').write_text(json.dumps({
+              'head_sha': os.environ['HEAD_SHA'], 'merge_sha': os.environ['GITHUB_SHA'],
+              'run_id': int(os.environ['GITHUB_RUN_ID']), 'pr': int(os.environ['PR_NUMBER']),
+          }) + '\n')
+          PYTHON
+
       - name: Upload site
         uses: actions/upload-artifact@v4
         with:
-          name: site-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}-${{ github.sha }}
+          name: site-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}-${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           overwrite: true
           path: _site
           retention-days: 90

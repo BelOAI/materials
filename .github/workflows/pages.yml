@@ -2,14 +2,15 @@ name: Publish Pages
 
 on:
   workflow_run:
-    workflows: [Presentations]
-    branches: [main, dev]
+    workflows: [Presentations, Preview lifecycle]
     types: [completed]
   workflow_dispatch:
 
 permissions:
   contents: read
   actions: read
+  deployments: write
+  pull-requests: read
   pages: write
   id-token: write
 
@@ -20,10 +21,9 @@ concurrency:
 jobs:
   publish:
     if: >-
-      (github.event_name == 'workflow_dispatch' &&
-       github.ref == format('refs/heads/{0}', github.event.repository.default_branch)) ||
+      (github.event_name == 'workflow_dispatch' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)) ||
       (github.event.workflow_run.conclusion == 'success' &&
-       (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch') &&
+       contains(fromJSON('["push", "workflow_dispatch", "pull_request", "pull_request_target", "delete"]'), github.event.workflow_run.event) &&
        github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     environment:
@@ -37,13 +37,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.14'
-      - name: Assemble production and dev
+      - name: Assemble live environments
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/assemble-pages.py
+        run: python3 utils/scripts/assemble-pages.py
+      - name: Mark dev and PR deployments in progress
+        id: previews
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 utils/scripts/preview-deployments.py prepare
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _pages
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Update dev and PR deployments
+        if: always() && steps.previews.outcome != 'skipped'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOY_RESULT: ${{ steps.deployment.outcome }}
+        run: python3 utils/scripts/preview-deployments.py finish
