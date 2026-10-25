@@ -1,0 +1,1 @@
+Materials in handbook must be delivered as high school student friendly materials not focusing on deep mathematical basis just on general understading of math concepts
