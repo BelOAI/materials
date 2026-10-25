@@ -24,9 +24,6 @@ class HandbookTests(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         base = self.root / 'handbooks'
-        (base / 'start').mkdir(parents=True)
-        (base / 'start/index.md').write_text('## Запуск\n\nИнструкция.\n')
-        (base / 'start/requirements.txt').write_text('# fixture\n')
         folders = []
         # Техническая фикстура независима от содержания реального учебника.
         for index, slug in enumerate(['intro', 'classic-ml', 'dl-basics', 'nn-in-practice', 'how-nns-learn', 'math-of-ai']):
@@ -38,10 +35,9 @@ class HandbookTests(unittest.TestCase):
                         status='draft' if index == 0 else 'planned', paragraphs=[])
             if index == 0:
                 item['build'] = True
-                (folder / 'content.md').write_text('## Fixture\n\n[Guide](../../start/)\n')
+                (folder / 'content.md').write_text('## Fixture\n\n[Guide](content.md)\n')
             (folder / 'meta.yaml').write_text(yaml.safe_dump(item))
         (base / 'handbooks.json').write_text(json.dumps(dict(title='Fixture', description='Fixture.',
-            start=dict(title='Guide', source='start/index.md', resources=[dict(path='requirements.txt', label='Requirements')]),
             handbooks=[dict(slug='ml', title='ML', description='Fixture.', chapters=folders)])))
         (self.root / 'utils/site').mkdir(parents=True)
         for name in ('index.html', 'render-handbook.mjs'):

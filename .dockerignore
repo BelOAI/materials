@@ -5,4 +5,4 @@
 !.github/ci/requirements.txt
 !handbooks/
 !handbooks/start/
-!handbooks/start/requirements.txt
+!handbooks/ml/00-intro/01-environment/requirements.txt

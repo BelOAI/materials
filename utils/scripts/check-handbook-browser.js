@@ -25,10 +25,8 @@ async (page) => {
       await page.waitForURL(base + 'handbooks/ml/' + target + '/?from=old#content');
     }
   }
-  await page.goto(base + 'handbooks/ml/intro/');
-  await page.getByRole('main').getByRole('link', { name: 'общем руководстве' }).click();
-  await page.waitForURL(base + 'handbooks/start/#среда-и-библиотеки');
-  const download = page.getByRole('link', { name: 'Библиотеки для примеров', exact: true });
+  await page.goto(base + 'handbooks/ml/intro/environment/');
+  const download = page.locator('main a[download]').first();
   assert((await page.request.get(new URL(await download.getAttribute('href'), page.url()).href)).ok(), 'Environment requirements download');
   for (const scheme of ['light', 'dark']) {
     await page.emulateMedia({ colorScheme: scheme });

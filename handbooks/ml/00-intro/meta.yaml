@@ -4,5 +4,6 @@ description: Введение, аудитория и подготовка сре
 status: draft
 authors:
   - Авторы BelOAI
-paragraphs: []
+paragraphs:
+  - 01-environment
 build: true

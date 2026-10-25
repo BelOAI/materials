@@ -61,7 +61,7 @@ jobs:
       - name: Identify environment
         id: environment
         env:
-          ENV_HASH: ${{ hashFiles('.github/ci/**', 'handbooks/start/requirements.txt') }}
+          ENV_HASH: ${{ hashFiles('.github/ci/**', 'handbooks/ml/00-intro/01-environment/requirements.txt') }}
         run: |
           echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/ci:${ENV_HASH}" >> "$GITHUB_OUTPUT"
           echo "hash=${ENV_HASH}" >> "$GITHUB_OUTPUT"

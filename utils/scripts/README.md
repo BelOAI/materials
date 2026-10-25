@@ -186,7 +186,7 @@ Workflow `.github/workflows/presentations.yml` проверяет изменен
 
 ### Окружение и кэш CI
 
-Окружение — Python 3.14 и Node.js 24 LTS, TeX Live, Poppler и CPU PyTorch. Dockerfile и фиксированные версии инструментов находятся в `.github/ci/`; библиотеки примеров — в `handbooks/start/requirements.txt`. После изменения зависимостей хеш окружения меняется автоматически. Образ `ghcr.io/beloai/materials/ci:<хеш>` публикуется из `main`/`dev` через `GITHUB_TOKEN` с `packages: write`; организация должна разрешать создание пакетов. PR используют готовый образ либо собирают локальный, без публикации. Buildx восстанавливает слои из кэша GitHub Actions.
+Окружение — Python 3.14 и Node.js 24 LTS, TeX Live, Poppler и CPU PyTorch. Dockerfile и фиксированные версии инструментов находятся в `.github/ci/`; библиотеки примеров — в `handbooks/ml/00-intro/01-environment/requirements.txt`. После изменения зависимостей хеш окружения меняется автоматически. Образ `ghcr.io/beloai/materials/ci:<хеш>` публикуется из `main`/`dev` через `GITHUB_TOKEN` с `packages: write`; организация должна разрешать создание пакетов. PR используют готовый образ либо собирают локальный, без публикации. Buildx восстанавливает слои из кэша GitHub Actions.
 
 CI запускает `npm ci`, `make -f build/Makefile test` и `make -f build/Makefile site` внутри образа. Все ноутбуки проверяются каждый раз: `NOTEBOOK_TEST_WORKERS=2` выполняет два одновременно в отдельных процессах и чистых ядрах; локально по умолчанию используется один процесс. Число внутренних потоков NumPy/PyTorch ограничено в образе.
 
@@ -214,11 +214,11 @@ CI запускает `npm ci`, `make -f build/Makefile test` и `make -f build/
 
 ML-хендбук доступен по прямому адресу `/handbooks/ml/`. Он содержит шесть глав; опубликованы введение и первый параграф Classic ML. Отдельных учебников Python и математики больше нет. Не добавляйте черновик в общее меню курса до отдельного решения о выпуске. Страницы и HTML-превью получают `noindex, nofollow`.
 
-`handbooks/handbooks.json` хранит название каталога, общие инструкции (`start`) и ML-хендбук (`handbooks`). В `chapters` перечислены папки глав в порядке чтения. Номер папки не входит в публичный URL: `03-nn-in-practice` публикуется как `/handbooks/ml/nn-in-practice/`.
+`handbooks/handbooks.json` хранит название каталога и ML-хендбук (`handbooks`). В `chapters` перечислены папки глав в порядке чтения. Номер папки не входит в публичный URL: `03-nn-in-practice` публикуется как `/handbooks/ml/nn-in-practice/`.
 
 Глава содержит `README.md` с назначением и оглавлением, `meta.yaml` с метаданными, необязательный `content.md` и пронумерованные папки параграфов. В YAML обязательны `slug`, `title`, `description`, `status`, `authors` (список) и `paragraphs` (упорядоченный список имён папок). YAML — единственный источник метаданных. Не повторяйте их в общем JSON.
 
-Статусы: `planned`, `draft`, `reviewed`. Пустая глава допустима только как `planned`; она не содержит текста и параграфов. Готовая к сборке глава требует `build: true` и текст либо параграфы. Введение — глава `00-intro` с `content.md`.
+Статусы: `planned`, `draft`, `reviewed`. Пустая глава допустима только как `planned`; она не содержит текста и параграфов. Готовая к сборке глава требует `build: true` и текст либо параграфы. Введение — глава `00-intro` с `content.md`; настройка среды — её параграф `01-environment`. Отдельной папки `start` нет.
 
 Для параграфа скопируйте `handbooks/ml/_paragraph-template/` внутрь главы как `01-<slug>`, заполните метаданные и добавьте папку в `paragraphs`. Переведите главу из `planned` в `draft` с `build: true`. Назначение параграфа и правила подготовки находятся в README, текст — в `content.md`, изображения — в `media/`, данные — в `data/`. Ссылки из текста: `media/image.svg`, `data/sample.csv`. Служебные файлы и шаблон не публикуются. Порядок задаётся списком YAML, а не сортировкой папок.
 
@@ -234,7 +234,7 @@ HTML-превью используют общий кэш экспорта. Ег�
 
 Формулы записывайте как `$…$` и `$$…$$`. KaTeX публикуется локально с лицензией. Пишите собственные тексты; заимствования сопровождайте источником и условиями использования.
 
-Для тестов установите `handbooks/start/requirements.txt` и `.github/ci/requirements.txt` в виртуальную среду Python 3.14. В CI используются Node.js 24 LTS и CPU PyTorch. Сборка: `make -f build/Makefile handbooks` или `make -f build/Makefile site`.
+Для тестов установите `handbooks/ml/00-intro/01-environment/requirements.txt` и `.github/ci/requirements.txt` в виртуальную среду Python 3.14. В CI используются Node.js 24 LTS и CPU PyTorch. Сборка: `make -f build/Makefile handbooks` или `make -f build/Makefile site`.
 
 После сборки проверьте навигацию и каталог в браузере:
 
