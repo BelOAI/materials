@@ -10,7 +10,7 @@
 python3 -m pip install -r utils/pdf/requirements.txt
 python3 -m playwright install chromium --no-shell
 # Debian / Ubuntu
-sudo apt-get install pandoc texlive-xetex texlive-latex-extra texlive-lang-cyrillic \
+sudo apt-get install pandoc lmodern texlive-xetex texlive-latex-extra texlive-lang-cyrillic \
   poppler-utils fontconfig fonts-liberation fonts-dejavu-core
 # macOS: дополнительно установите MacTeX или соответствующий набор TeX Live
 brew install pandoc poppler fontconfig
