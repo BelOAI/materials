@@ -24,6 +24,13 @@
       "materials": ["lectures/02-knn", "practices/02-knn", "assignments/04-knn"]
     },
     {
+      "slug": "lin-reg",
+      "number": 3,
+      "title": "Линейная регрессия",
+      "description": "Линейная модель, средняя квадратичная ошибка и обучение градиентным спуском. Практика на NumPy.",
+      "materials": ["lectures/03-lin-reg", "practices/03-lin-reg"]
+    },
+    {
       "slug": "gradient-descent",
       "number": 4,
       "title": "Как учится модель",
