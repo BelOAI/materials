@@ -78,7 +78,8 @@ class HandbookPdfRenderingTests(unittest.TestCase):
                     ('\n\n<!-- handbook-contributors -->\n' if slug == 'alpha' else ''))
                 (paragraph / 'figure.svg').write_text(
                     '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="200">'
-                    '<rect width="80" height="200" fill="white"/><text x="4" y="25">Vector</text></svg>')
+                    '<rect width="80" height="200" fill="white"/>'
+                    '<text x="4" y="25" font-family="Liberation Serif, serif">Vector</text></svg>')
                 content = '''## Проверка текста {#target}
 
 Русский текст и Latin text. Символы: → ← ⇒ ≈ ≤ ≥ ≠ −.
@@ -156,10 +157,21 @@ print("short")
                                 self.assertLess(block[3], footer.y0 - 12, 'Подпись не должна касаться колонтитула')
                     fonts = subprocess.check_output(['pdffonts', str(pdf)], text=True)
                     self.assertNotIn('Type 3', fonts)
+                    # Chromium keeps SVG typography in imported Form XObjects.
+                    # Only direct page resources belong to the LaTeX reader;
+                    # imported figures may legitimately use Liberation/DejaVu.
+                    main_fonts = '\n'.join(font[3] for page in document
+                                           for font in page.get_fonts(full=True) if font[6] == 0)
                     for forbidden in ('Liberation', 'DejaVu', 'LMRoman', 'LMSans'):
-                        self.assertNotIn(forbidden, fonts)
+                        self.assertNotIn(forbidden, main_fonts)
+                    figure_fonts = {span['font'] for page in document
+                                    for block in page.get_text('dict')['blocks'] if block['type'] == 0
+                                    for line in block['lines'] for span in line['spans'] if span['text'] == 'Vector'}
+                    self.assertTrue(figure_fonts, 'Текст SVG должен сохраняться в PDF')
+                    self.assertTrue(figure_fonts.isdisjoint(font.split('+')[-1] for font in main_fonts.splitlines()),
+                                    'SVG использует собственный импортированный шрифт')
                     self.assertIn('Unbounded', fonts)
                     self.assertIn('IBMPlexSans', fonts)
-                    self.assertRegex(fonts, r'(SFRM|SFBX|CMR)')
-                    self.assertRegex(fonts, r'(SFTT|CMTT)')
+                    self.assertRegex(main_fonts, r'(SFRM|SFBX|CMR)')
+                    self.assertRegex(main_fonts, r'(SFTT|CMTT)')
                     document.close()
