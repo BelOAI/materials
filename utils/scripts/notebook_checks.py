@@ -15,7 +15,8 @@ def execute_notebook(arguments):
 
 
 def _execute_notebook(arguments):
-    path, data = map(Path, arguments[:2])
+    path = Path(arguments[0])
+    data = Path(arguments[1]) if arguments[1] else None
     timeout = arguments[2] if len(arguments) > 2 else 120
     import nbformat
     from nbclient import NotebookClient
@@ -23,7 +24,10 @@ def _execute_notebook(arguments):
     from jupyter_core.utils import run_sync
 
     with tempfile.TemporaryDirectory() as folder:
-        shutil.copyfile(data, Path(folder) / data.name)
+        shutil.copytree(path.parent, folder, dirs_exist_ok=True,
+                        ignore=shutil.ignore_patterns('__pycache__', '.cache', '_*'))
+        if data:
+            shutil.copyfile(data, Path(folder) / data.name)
         document = nbformat.read(path, as_version=4)
         nbformat.validate(document)
         manager = AsyncKernelManager(kernel_name='python3')
@@ -43,9 +47,9 @@ def _execute_notebook(arguments):
     return str(path), None
 
 
-def check_notebooks(paths, data):
+def check_notebooks(paths, data=None):
     workers = max(1, int(os.environ.get('NOTEBOOK_TEST_WORKERS', '1')))
-    arguments = [(str(path), str(data)) for path in sorted(paths)]
+    arguments = [(str(path), str(data) if data else None) for path in sorted(paths)]
     if workers == 1:
         return list(map(execute_notebook, arguments))
     with ProcessPoolExecutor(max_workers=workers) as pool:

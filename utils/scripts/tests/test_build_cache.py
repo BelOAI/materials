@@ -62,6 +62,14 @@ class BuildCacheTests(unittest.TestCase):
             html.unlink()
             self.assertTrue(export_notebook(notebook))
             self.assertEqual(run.call_count, 1)
+            metadata = self.root / 'meta.yaml'
+            metadata.write_text('status: draft')
+            self.assertTrue(export_notebook(notebook, dependencies=[metadata]))
+            self.assertTrue(export_notebook(notebook, dependencies=[metadata]))
+            self.assertEqual(run.call_count, 2)
+            metadata.write_text('status: reviewed')
+            self.assertTrue(export_notebook(notebook, dependencies=[metadata]))
+            self.assertEqual(run.call_count, 3)
             notebook.write_text('{"changed": true}')
             run.side_effect = None
             run.return_value.returncode = 1

@@ -32,40 +32,21 @@ def render_notebook(title: str, text: str) -> dict:
 
 
 def synchronize(root: Path, write: bool = False) -> list[str]:
-    book = json.loads((root / 'handbooks/handbooks.json').read_text())
+    from handbook_site import load_handbook
+    book = load_handbook(root, allow_missing_synced=True)
     stale = []
-    titles = {lesson['id']: lesson['title'] for track in book['tracks']
-              for chapter in track['chapters'] for lesson in chapter['lessons']}
-    titles['start'] = book['start']['title']
-    for track in book['tracks']:
-        for chapter in track['chapters']:
-            for lesson in chapter['lessons']:
-                if lesson['status'] == 'planned' or not any(r['path'] == 'notebook.ipynb' for r in lesson.get('resources', [])):
-                    continue
-                folder = root / 'handbooks' / lesson['id']
-                expected = render_notebook(lesson['title'], (folder / 'index.md').read_text())
-                destination = folder / 'notebook.ipynb'
-                if not destination.is_file() or json.loads(destination.read_text()) != expected:
-                    stale.append(lesson['id'])
-                    if write:
-                        destination.write_text(json.dumps(expected, ensure_ascii=False, indent=1) + '\n')
-    # Keep the old combined notebooks usable and point readers to current lessons.
-    for alias in book.get('aliases', []):
-        for resource in alias.get('resources', []):
-            if not resource['path'].endswith('.ipynb'):
-                continue
-            destination = root / 'handbooks' / alias['id'] / resource['path']
-            document = json.loads(destination.read_text())
-            text = '## Уроки по этим темам\n\nМатериал этого ноутбука можно изучать по отдельным урокам:\n\n'
-            text += ''.join('- [' + titles[i] + '](../../' + i + '/)\n' for i in alias['lessons'])
-            expected = {'cell_type': 'markdown', 'id': 'lesson-links', 'metadata': {},
-                        'source': text.splitlines(keepends=True)}
-            if len(document['cells']) < 2 or document['cells'][1] != expected:
-                stale.append(alias['id'])
-                if write:
-                    document['cells'] = [c for c in document['cells'] if c.get('id') != 'lesson-links']
-                    document['cells'].insert(1, expected)
-                    destination.write_text(json.dumps(document, ensure_ascii=False, indent=1) + '\n')
+    for item in book['_lessons'].values():
+        if item['status'] == 'planned' or not item.get('sync_notebook'):
+            continue
+        resources = [r for r in item.get('resources', []) if r['path'] == 'notebook.ipynb']
+        if not resources:
+            raise ValueError(f"{item['id']}: sync_notebook требует ресурс notebook.ipynb")
+        expected = render_notebook(item['title'], item['_content'].read_text())
+        destination = item['_folder'] / 'notebook.ipynb'
+        if not destination.is_file() or json.loads(destination.read_text()) != expected:
+            stale.append(item['id'])
+            if write:
+                destination.write_text(json.dumps(expected, ensure_ascii=False, indent=1) + '\n')
     return stale
 
 
