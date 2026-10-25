@@ -18,8 +18,9 @@
 *.lof
 *.lot
 
-# Generated session PDFs (built by CI / make)
+# Generated local PDFs
 **/main.pdf
+handbooks/ml/01-classic-ml/01-first-experiment/content.pdf
 
 # GitHub Pages site output
 _site/

@@ -50,4 +50,5 @@ clean:
 		-o -name '*.nav' -o -name '*.snm' -o -name '*.vrb' -o -name '*.fls' \
 		-o -name '*.fdb_latexmk' -o -name '*.synctex.gz' -o -name 'main.pdf' \
 	\) -delete 2>/dev/null || true
+	rm -f "$(REPO_ROOT)/handbooks/ml/01-classic-ml/01-first-experiment/content.pdf"
 	rm -rf "$(REPO_ROOT)/_site"
