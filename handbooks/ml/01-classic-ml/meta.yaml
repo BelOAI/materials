@@ -7,6 +7,8 @@ paragraphs:
   - 02-nearest-neighbors
   - 04-decision-trees
   - 05-clustering-kmeans
+  - 07-features-regularization
+  - 08-honest-evaluation
 build: true
 authors:
   - name: Алексей Чернуха
