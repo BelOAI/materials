@@ -1,0 +1,105 @@
+name: Handbook PDF
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# All releases are serialized so Latest and the moving preview tag cannot race.
+concurrency:
+  group: handbook-releases
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.source.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Validate source
+        id: source
+        env:
+          RELEASE_REF: ${{ github.ref }}
+        run: python3 utils/scripts/handbook-release.py validate
+      - name: Identify environment
+        id: environment
+        env:
+          ENV_HASH: ${{ hashFiles('utils/pdf/requirements.txt', '.github/ci/**', 'handbooks/ml/00-intro/01-environment/requirements.txt') }}
+        run: |
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/ci:${ENV_HASH}" >> "$GITHUB_OUTPUT"
+          echo "hash=${ENV_HASH}" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - name: Pull existing environment
+        id: image
+        env:
+          IMAGE: ${{ steps.environment.outputs.image }}
+        run: |
+          if docker pull "$IMAGE"; then echo 'found=true' >> "$GITHUB_OUTPUT"; fi
+      - name: Build environment
+        if: steps.image.outputs.found != 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .github/ci/Dockerfile
+          load: true
+          tags: ${{ steps.environment.outputs.image }}
+          cache-from: type=gha,scope=ci-image
+          cache-to: type=gha,scope=ci-image,mode=max
+      - uses: actions/cache@v4
+        with:
+          path: .cache/build
+          key: handbook-pdf-${{ runner.os }}-${{ steps.environment.outputs.hash }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            handbook-pdf-${{ runner.os }}-${{ steps.environment.outputs.hash }}-
+      - name: Test and render handbook
+        env:
+          IMAGE: ${{ steps.environment.outputs.image }}
+          BUILD_ENV_ID: ${{ steps.environment.outputs.hash }}
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" \
+            -e HOME=/tmp -e BUILD_ENV_ID -e NOTEBOOK_TEST_WORKERS=2 \
+            -v "$PWD:/work" "$IMAGE" bash utils/scripts/ci-handbook-pdf.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: handbook-pdf-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/release/
+          if-no-files-found: error
+          retention-days: 90
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # Publishing code is always taken from main, never from a release tag.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - uses: actions/download-artifact@v4
+        with:
+          name: handbook-pdf-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/release/
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REF: ${{ github.ref }}
+          RELEASE_SHA: ${{ needs.build.outputs.sha }}
+        run: python3 utils/scripts/handbook-release.py publish

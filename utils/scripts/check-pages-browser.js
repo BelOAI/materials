@@ -5,7 +5,9 @@ async (page) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   const resources = new Set();
-  for (const [name, base] of [['main', production], ['dev', production + 'dev/']]) {
+  const info = await (await page.request.get(production + 'build-info.json')).json();
+  for (const [name, item] of Object.entries(info)) {
+    const base = new URL(item.root || (name === 'main' ? '' : 'dev/'), production).href;
     const manifestResponse = await page.request.get(base + 'materials.json');
     assert(manifestResponse.ok(), name + ': manifest');
     const manifest = await manifestResponse.json();
@@ -17,8 +19,8 @@ async (page) => {
     for (const width of [360, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
       await page.goto(base);
-      assert(await page.getByRole('complementary', { name: 'Тестовая версия' }).count() === (name === 'dev' ? 1 : 0), name + ': banner');
-      if (name === 'dev') assert(await page.locator('meta[name="robots"]').getAttribute('content') === 'noindex, nofollow', 'dev: noindex');
+      assert(await page.getByRole('complementary', { name: 'Тестовая версия' }).count() === (name === 'main' ? 0 : 1), name + ': banner');
+      if (name !== 'main') assert(await page.locator('meta[name="robots"]').first().getAttribute('content') === 'noindex, nofollow', name + ': noindex');
       await page.locator('.skip-link').focus();
       await page.keyboard.press('Enter');
       assert(await page.evaluate(() => document.activeElement.id) === 'content', name + ': skip link');
@@ -34,11 +36,13 @@ async (page) => {
       }
       await page.goto(base + 'materials/');
       const search = page.getByRole('searchbox');
-      await search.fill(manifest.materials[0].title);
-      await page.waitForFunction(() => location.search.includes('q='));
-      assert(await page.locator('.catalog-list > .material:visible').count() > 0, name + ': search');
-      await page.reload();
-      assert(await page.getByRole('searchbox').inputValue() === manifest.materials[0].title, name + ': persisted search');
+      if (manifest.materials.length) {
+        await search.fill(manifest.materials[0].title);
+        await page.waitForFunction(() => location.search.includes('q='));
+        assert(await page.locator('.catalog-list > .material:visible').count() > 0, name + ': search');
+        await page.reload();
+        assert(await page.getByRole('searchbox').inputValue() === manifest.materials[0].title, name + ': persisted search');
+      }
       if (width === 360) {
         await page.locator('.course-menu summary').focus();
         await page.keyboard.press('Enter');
@@ -66,5 +70,5 @@ async (page) => {
   }
   for (const href of resources) assert((await page.request.get(href)).ok(), 'Unavailable: ' + href);
   assert(errors.length === 0, errors.join('; '));
-  return { result: 'Pages main/dev checks passed', resources: resources.size };
+  return { result: 'Pages environment checks passed', resources: resources.size };
 }

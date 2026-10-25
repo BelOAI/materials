@@ -40,6 +40,7 @@ __pycache__
 node_modules/
 output/playwright/
 output/pdf/
+output/release/
 .playwright-cli/
 
 # Кэш сборки

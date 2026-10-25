@@ -8,3 +8,6 @@
 !handbooks/ml/00-intro/
 !handbooks/ml/00-intro/01-environment/
 !handbooks/ml/00-intro/01-environment/requirements.txt
+!utils/
+!utils/pdf/
+!utils/pdf/requirements.txt

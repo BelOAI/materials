@@ -351,7 +351,7 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
         'Если материал изменён, опишите изменения. Не создавайте впечатление, '
         'что авторы одобряют вашу версию.</p>'
         '<p>Пример атрибуции: «Материалы BelOAI. © Авторы BelOAI. '
-        'Источник: <a href="https://beloai.github.io/materials/">сайт BelOAI</a>. '
+        'Источник: <a href="https://materials.beloai.by/">сайт BelOAI</a>. '
         'Лицензия: CC BY 4.0».</p>'
         '<h2>Программный код</h2>'
         '<p>Собственный код сайта, скрипты сборки и общие стили LaTeX '

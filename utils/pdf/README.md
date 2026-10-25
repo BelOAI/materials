@@ -16,7 +16,7 @@ brew install pandoc poppler fontconfig
 brew install --cask font-liberation font-dejavu
 ```
 
-PDF-инструменты устанавливаются отдельно от окружения сайта. Обычные команды `site`, `handbooks` и CI публикации PDF учебников не собирают.
+CI-образ включает PDF-инструменты. Команды `site` и `handbooks` PDF учебников не собирают; для них предназначен отдельный workflow `Handbook PDF`.
 
 ## Команды
 
@@ -28,6 +28,7 @@ make -f build/Makefile handbook-pdf DIR=handbooks/ml JOBS=2       # книга �
 make -f build/Makefile handbook-pdf DIR=handbooks/ml/01-classic-ml
 python3 utils/scripts/build-handbook-pdf.py handbooks/ml/01-classic-ml/01-first-experiment
 python3 utils/scripts/build-handbook-pdf.py --all --output-dir output/pdf --jobs 2
+python3 utils/scripts/build-handbook-pdf.py handbooks/ml --book-only --output output/pdf/ml-handbook.pdf
 ```
 
 Путь к главе собирает главу и её параграфы; путь к книге — все три уровня. Результаты:
@@ -38,7 +39,9 @@ python3 utils/scripts/build-handbook-pdf.py --all --output-dir output/pdf --jobs
 
 Имена берутся из `slug`, порядок — из `chapters` в `handbooks/handbooks.json` и `paragraphs` в YAML глав. Для будущего учебника применяется та же структура каталогов и метаданных; ограничение сайта на ML не распространяется на PDF.
 
-`--output <файл.pdf>` задаёт путь при выборе ровно одного документа. `--output-dir` задаёт корень результатов поддерева; эти параметры несовместимы. Для ссылок на dev-версию задайте `--site-url https://beloai.github.io/materials/dev/`.
+`--book-only` собирает только целые книги: с путём книги или `--all`. Существующие PDF глав и параграфов этот режим не удаляет. По умолчанию ссылки ведут на `https://materials.beloai.by/`.
+
+`--output <файл.pdf>` задаёт путь при выборе ровно одного документа. `--output-dir` задаёт корень результатов поддерева; эти параметры несовместимы. Для ссылок на dev-версию задайте `--site-url https://materials.beloai.by/dev/`.
 
 В состав главы входят её собственный `content.md`, если он есть, и доступные параграфы. В книгу дополнительно входит её вводный `content.md`. README, программа, данные и ноутбуки не вставляются в текст. Папки с `_`, `build: false` и `planned` пропускаются; `draft` с `build: true` включается. Пустые документы не создаются. Удалённые и исключённые материалы очищаются только внутри выбранного поддерева результатов.
 
@@ -55,3 +58,20 @@ python3 utils/scripts/build-handbook-pdf.py --all --output-dir output/pdf --jobs
 Перед передачей отрендерите PDF через `pdftoppm -png <файл.pdf> <префикс>` и просмотрите каждую страницу: формулы, глифы, рисунки, код и разрывы. Ориентир объёма отдельного занятия — в `handbooks/guidelines/content.md`; лимит не применяется к целой главе или книге. Результаты и кэш не коммитятся.
 
 Профиль основан на `bsu-special-data-structures-en/materials/build-lecture.ps1`, `materials/build-quiz.ps1` и `materials/pdf-header.tex`; общее оформление хранится в этой папке.
+
+## Автоматические выпуски
+
+`Handbook PDF` запускается на каждый push в `main`, теги `v*` и вручную. Проверяет источник, запускает синтетические Python-тесты и собирает только ML-книгу. Артефакт на 90 дней содержит `beloai-ml-handbook.pdf` и `SHA256SUMS`; `pdfinfo` проверяет наличие страниц. Кэш использует хеш окружения, включая PDF-зависимости. Задача сборки имеет `contents: read`, задача публикации — `contents: write`; publisher берёт скрипт из `main` и артефакт своего run, без дополнительных секретов.
+
+Последняя успешная сборка актуальной вершины `main` обновляет prerelease и тег `main-preview`. SHA и ссылка на сборку находятся в описании. Устаревший запуск пропускается; prerelease не становится Latest. После ошибки загрузки можно повторить workflow: незавершённый draft будет дополнен.
+
+Для стабильного выпуска создайте тег на commit из истории `main`: первый выпуск дня — `v2026.10.25`, следующие — `v2026.10.25.1`, `.2` и далее. Дата должна существовать, ревизия — положительная без ведущих нулей. Пример:
+
+```bash
+git tag v2026.10.25 <commit-из-main>
+git push origin v2026.10.25
+```
+
+Сборка использует именно commit тега. Release публикуется после загрузки обоих файлов в draft; повторный запуск завершает draft, но не заменяет assets опубликованного стабильного выпуска. Исправления выпускаются новым тегом. Latest получает максимальная дата и ревизия, поэтому исторический тег не вытесняет новый выпуск. Общая очередь `handbook-releases` с [`queue: max`](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency) последовательно обрабатывает до 100 ожидающих запусков без замены предыдущего ожидающего тега.
+
+После внесения workflows в `main` проверьте prerelease. Первый стабильный release создавайте только настоящим release-тегом, без тестовых выпусков в публичной истории.

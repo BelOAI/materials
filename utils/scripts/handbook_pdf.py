@@ -22,7 +22,7 @@ from handbook_catalog import load_catalog
 from repo_paths import REPO_ROOT
 
 FONTS = ('Liberation Serif', 'DejaVu Sans Mono')
-DEFAULT_SITE = 'https://beloai.github.io/materials/'
+DEFAULT_SITE = 'https://materials.beloai.by/'
 
 
 def digest(*values):
@@ -310,7 +310,7 @@ class Builder:
         return hit
 
 
-def build(root=REPO_ROOT, *, selected=None, output=None, output_dir=None, jobs=2, site_url=DEFAULT_SITE):
+def build(root=REPO_ROOT, *, selected=None, output=None, output_dir=None, jobs=2, site_url=DEFAULT_SITE, book_only=False):
     start = time.monotonic()
     root = root.resolve()
     catalog = load_catalog(root)
@@ -326,6 +326,11 @@ def build(root=REPO_ROOT, *, selected=None, output=None, output_dir=None, jobs=2
             raise ValueError(f'Путь не входит в каталог учебников: {selected}')
         scope = matches[0]['id']
         tasks = [task for task in tasks if task['item']['id'] == scope or task['item']['id'].startswith(scope + '/')]
+    if book_only:
+        books = {book['id'] for book in catalog['handbooks']}
+        if selected and scope not in books:
+            raise ValueError('--book-only требует путь учебника или --all')
+        tasks = [task for task in tasks if task['item']['id'] in books]
     if output and len(tasks) != 1:
         raise ValueError('--output требует ровно один документ; используйте --output-dir для поддерева')
     output_dir = (output_dir or root / 'output/pdf').resolve()
@@ -333,7 +338,8 @@ def build(root=REPO_ROOT, *, selected=None, output=None, output_dir=None, jobs=2
     cleanup = output_dir / scope
     if not output and cleanup.exists():
         for path in cleanup.rglob('*.pdf'):
-            if path.name in {'handbook.pdf', 'chapter.pdf', 'paragraph.pdf'} and path.relative_to(output_dir).as_posix() not in expected:
+            if (path.name in ({'handbook.pdf'} if book_only else {'handbook.pdf', 'chapter.pdf', 'paragraph.pdf'})
+                    and path.relative_to(output_dir).as_posix() not in expected):
                 path.unlink()
     if not tasks:
         print('Нет материалов для PDF-сборки.')
@@ -380,6 +386,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('article', nargs='?', type=Path, help='Папка учебника, главы или параграфа')
     parser.add_argument('--all', action='store_true', help='Все учебники из каталога')
+    parser.add_argument('--book-only', action='store_true', help='Только полные книги, без глав и параграфов')
     parser.add_argument('--output', type=Path, help='Путь одного PDF')
     parser.add_argument('--output-dir', type=Path, help='Корень результатов (по умолчанию output/pdf)')
     parser.add_argument('--jobs', type=int, default=2, help='Число параллельных задач (по умолчанию 2)')
@@ -393,6 +400,6 @@ def main():
         parser.error('--site-url должен быть HTTP(S)-адресом с завершающим /')
     try:
         build(selected=args.article, output=args.output, output_dir=args.output_dir,
-              jobs=args.jobs, site_url=args.site_url)
+              jobs=args.jobs, site_url=args.site_url, book_only=args.book_only)
     except (ValueError, OSError, importlib.metadata.PackageNotFoundError) as error:
         parser.exit(1, f'Ошибка PDF-сборки: {error}\n')

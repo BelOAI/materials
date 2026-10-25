@@ -168,6 +168,20 @@ resources:
         self.assertFalse(export.called)
         validate_links(self.output)
 
+    def test_notebook_preview_rewrites_source_routes(self):
+        self.paragraph()
+        def export(path, **kwargs):
+            path.with_suffix('.html').write_text('<html><head></head><body>'
+                '<a href="../../00-intro/README.md?mode=read#fixture">Intro</a>'
+                '<a href="content.md">Text</a><img src="media/image.svg"></body></html>')
+            return True
+        with patch('handbook_site.export_notebook', side_effect=export):
+            publish_handbook(self.root, self.output, [])
+        preview = (self.output / 'handbooks/ml/classic-ml/example/notebook.html').read_text()
+        self.assertIn('href="../../intro/?mode=read#fixture"', preview)
+        self.assertIn('href="./"', preview)
+        self.assertIn('src="media/image.svg"', preview)
+
     def test_paragraph_resources_export_sync_and_deletion(self):
         folder = self.paragraph()
         publish_handbook(self.root, self.output, [])

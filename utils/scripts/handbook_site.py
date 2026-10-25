@@ -180,6 +180,13 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
                                 Path(__file__).with_name('handbook_catalog.py')]
                 dependencies += [p for d in ('media', 'data') for p in (folder / d).rglob('*') if p.is_file() and not any(part.startswith(('_', '.')) for part in p.relative_to(folder).parts)]
                 if export_notebook(target, dependencies=dependencies):
+                    preview = target.with_suffix('.html')
+                    notebook_item = item | {
+                        '_folder': src.parent,
+                        'id': posixpath.normpath(posixpath.join(item['id'], str(Path(resource['path']).parent))),
+                    }
+                    preview.write_text(source_links(preview.read_text(encoding='utf-8'), notebook_item, items, source),
+                                       encoding='utf-8')
                     content += ' · ' + link(str(Path(resource['path']).with_suffix('.html')), 'Открыть в браузере')
             content += '</li>'
         content = '<h2>Файлы</h2><ul>' + content + '</ul>' if content else ''

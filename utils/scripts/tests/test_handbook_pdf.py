@@ -119,6 +119,21 @@ class HandbookPdfTests(unittest.TestCase):
         self.asts[old + '-changed'] = ast
         (folder / 'content.md').write_text(old + '-changed')
 
+    def test_book_only_single_output_and_preserves_other_levels(self):
+        self.build()
+        paragraph = self.output / 'alpha/section/first/paragraph.pdf'
+        before = paragraph.read_bytes()
+        target = self.root / 'release/book.pdf'
+        self.build(selected=self.root / 'handbooks/alpha', book_only=True, output=target)
+        self.assertTrue(target.is_file())
+        self.assertEqual(paragraph.read_bytes(), before)
+        with self.assertRaisesRegex(ValueError, 'путь учебника'):
+            self.build(selected=self.sources['alpha', 'first'], book_only=True)
+        shutil.rmtree(self.output)
+        self.build(book_only=True)
+        self.assertEqual(sorted(p.relative_to(self.output).as_posix() for p in self.output.rglob('*.pdf')),
+                         ['alpha/handbook.pdf', 'beta/handbook.pdf'])
+
     def test_all_levels_order_namespaces_and_shared_images(self):
         self.build(jobs=2)
         self.assertEqual(len(list(self.output.rglob('*.pdf'))), 8)
