@@ -15,6 +15,10 @@ RUN python -m pip install --no-cache-dir torch==2.14.1 --index-url https://downl
 COPY .github/ci/requirements.txt /opt/ci/requirements.txt
 RUN python -m pip install --no-cache-dir -r /opt/ci/requirements.txt
 COPY utils/pdf/requirements.txt /opt/ci/pdf-requirements.txt
-RUN python -m pip install --no-cache-dir -r /opt/ci/pdf-requirements.txt
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright
+RUN python -m pip install --no-cache-dir -r /opt/ci/pdf-requirements.txt \
+ && python -m playwright install --with-deps --no-shell chromium \
+ && chmod -R a+rX /opt/playwright \
+ && rm -rf /var/lib/apt/lists/*
 ENV OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 WORKDIR /work

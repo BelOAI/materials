@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export PDF_RENDER_TESTS=1
 python3 -m unittest discover -s utils/scripts/tests
 mkdir -p output/release
 python3 utils/scripts/build-handbook-pdf.py handbooks/ml --book-only \

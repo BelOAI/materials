@@ -19,6 +19,7 @@ from urllib.parse import quote, unquote, urljoin, urlsplit
 from authorship import authors_text
 from build_cache import Cache
 from handbook_catalog import load_catalog
+from handbook_svg import renderer_identity, render_svg
 from repo_paths import REPO_ROOT
 
 FONTS = ('Liberation Serif', 'DejaVu Sans Mono')
@@ -147,8 +148,10 @@ class Builder:
     def __init__(self, root, scratch, site_url, tools, env):
         self.root, self.scratch, self.site_url = root, scratch, site_url
         self.code = digest(file_hash(__file__), file_hash(Path(__file__).with_name('handbook_catalog.py')),
-                           file_hash(Path(__file__).with_name('authorship.py')))
+                           file_hash(Path(__file__).with_name('authorship.py')),
+                           file_hash(Path(__file__).with_name('handbook_svg.py')))
         self.tools, self.env = tools, env
+        self.svg_identity = None
         self.prepared, self.images = {}, {}
         self.compilations = 0
         self.image_conversions = 0
@@ -180,7 +183,7 @@ class Builder:
     def image(self, path):
         svg = path.suffix.lower() == '.svg'
         key = digest(file_hash(path), 'svg' if svg else path.suffix.lower(),
-                     [importlib.metadata.version('PyMuPDF'), self.env] if svg else '', self.code)
+                     [self.svg_identity, self.env] if svg else '', self.code)
         filename = key + ('.pdf' if svg else path.suffix.lower())
         target = self.scratch / 'images' / filename
         target.parent.mkdir(exist_ok=True)
@@ -191,9 +194,7 @@ class Builder:
                 rendered = folder / 'image.pdf'
                 hit = cache.restore(folder) and rendered.is_file()
                 if not hit:
-                    import pymupdf
-                    with pymupdf.open(path) as image:
-                        rendered.write_bytes(image.convert_to_pdf())
+                    render_svg(path, rendered)
                     cache.save(folder, [rendered])
                 shutil.copyfile(rendered, target)
             return path, 'images/' + filename, hit, not hit
@@ -359,6 +360,8 @@ def build(root=REPO_ROOT, *, selected=None, output=None, output_dir=None, jobs=2
             images = {builder.image_path(sources[identifier], node['c'][2][0])
                       for identifier, ast in builder.prepared.items() for node in walk(ast)
                       if node.get('t') == 'Image'}
+            if any(path.suffix.lower() == '.svg' for path in images):
+                builder.svg_identity = renderer_identity()
             # Одинаковое содержимое конвертируется один раз, даже по разным путям.
             groups = {}
             for path in sorted(images):

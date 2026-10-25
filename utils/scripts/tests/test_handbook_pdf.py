@@ -8,7 +8,6 @@ from pathlib import Path
 import shutil
 import sys
 import tempfile
-from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -67,20 +66,12 @@ class HandbookPdfTests(unittest.TestCase):
         patch.dict(os.environ, BUILD_CACHE_DIR=str(self.root / 'cache'), BUILD_CACHE_DISABLE='0').start()
         self.env = patch('handbook_pdf.environment', return_value=({'pandoc': 'pandoc-version'}, 'environment-version')).start()
         patch('handbook_pdf.run', side_effect=self.fake_run).start()
-        patch('handbook_pdf.importlib.metadata.version', return_value='svg-version').start()
-        test = self
+        patch('handbook_pdf.renderer_identity', return_value=('playwright-version', 'browser-version')).start()
 
-        class Svg:
-            def __enter__(self):
-                return self
-
-            def __exit__(self, *args):
-                pass
-
-            def convert_to_pdf(self):
-                test.svg_count += 1
-                return b'%PDF-svg'
-        patch.dict(sys.modules, pymupdf=SimpleNamespace(open=lambda path: Svg())).start()
+        def render(source, destination):
+            self.svg_count += 1
+            destination.write_bytes(b'%PDF-svg')
+        patch('handbook_pdf.render_svg', side_effect=render).start()
 
     def metadata(self, folder, **values):
         item = dict(title='Тема', description='Описание', authors=['Автор'], status='draft', build=True)
@@ -304,6 +295,14 @@ class HandbookPdfTests(unittest.TestCase):
         self.assertIn('https://example.org/dev/handbooks/alpha/curriculum/', value)
         self.assertNotIn('07-section', value)
         self.assertNotIn('01-first', value)
+
+    def test_svg_renderer_update_invalidates_images_and_pdfs(self):
+        self.build()
+        with patch('handbook_pdf.renderer_identity', return_value=('new-playwright', 'new-browser')):
+            self.build()
+        self.assertEqual(self.parse_count, 6)
+        self.assertEqual(self.svg_count, 2)
+        self.assertEqual(len(self.compiled), 16)
 
     def test_details_ast_preserves_code_and_arbitrary_summary(self):
         ast = [{'t': 'RawBlock', 'c': ['html', '<details>']},

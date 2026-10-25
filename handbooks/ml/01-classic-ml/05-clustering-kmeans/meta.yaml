@@ -1,6 +1,6 @@
 title: "Кластеризация и K-means"
 slug: clustering-kmeans
-description: "Два шага K-means вручную, сравнение начальных центров и компактности групп."
+description: "Два шага K-means на восьми точках и кластеризация классического набора Iris."
 status: draft
 build: true
 date: "2026-10-25"
@@ -20,6 +20,8 @@ learning_outcomes:
 resources:
   - path: media/two-starts.svg
     label: Схема двух запусков (.svg)
+  - path: media/iris-scatter.svg
+    label: Ирисы — виды и группы K-means (.svg)
 references:
   - label: ODS.ai — курс по классическим моделям ML
     url: https://ods.ai/tracks/classic-models-autumn26
