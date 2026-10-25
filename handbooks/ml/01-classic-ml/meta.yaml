@@ -4,6 +4,7 @@ description: Классические методы машинного обуче
 status: draft
 paragraphs:
   - 01-first-experiment
+  - 02-nearest-neighbors
   - 04-decision-trees
   - 05-clustering-kmeans
 build: true

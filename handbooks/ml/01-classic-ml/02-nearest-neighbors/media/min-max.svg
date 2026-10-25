@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="224" viewBox="0 0 420 224" role="img" aria-labelledby="title desc">
+  <title id="title">Min–max нормализация: от здоровья к шкале от 0 до 1</title>
+  <desc id="desc">Верхняя шкала: здоровье от 300 до 800, новый герой 650. Вычитаем минимум 300 и делим на диапазон 500. На нижней шкале минимум становится нулём, максимум — единицей, а новый герой получает 0,7.</desc>
+  <rect x="1" y="1" width="418" height="222" rx="18" fill="var(--figure-surface)" stroke="var(--figure-border)"/>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --figure-surface: #f8fafc; --figure-panel: #fff; --figure-border: #e2e8f0;
+      --figure-ink: #17212b; --figure-muted: #64748b; --figure-axis: #94a3b8;
+      --figure-grid: #dce5ef; --figure-blue: #2563eb; --figure-purple: #7c3aed;
+      --figure-orange: #ea580c; --figure-query: #d97706; --figure-query-label: #b45309;
+      --figure-blue-tint: #eff6ff; --figure-orange-tint: #fff7ed; --figure-purple-tint: #f5f3ff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --figure-surface: #212529; --figure-panel: #2b3035; --figure-border: #495057;
+        --figure-ink: #dee2e6; --figure-muted: #adb5bd; --figure-axis: #8b98a5;
+        --figure-grid: #3b454f; --figure-blue: #8ac1ff; --figure-purple: #c4a7ff;
+        --figure-orange: #ffb86c; --figure-query: #ffbf69; --figure-query-label: #ffbf69;
+        --figure-blue-tint: #22384c; --figure-orange-tint: #443225; --figure-purple-tint: #352d49;
+      }
+    }
+    @media print {
+      :root {
+        --figure-surface: #f8fafc; --figure-panel: #fff; --figure-border: #e2e8f0;
+        --figure-ink: #17212b; --figure-muted: #64748b; --figure-axis: #94a3b8;
+        --figure-grid: #dce5ef; --figure-blue: #2563eb; --figure-purple: #7c3aed;
+        --figure-orange: #ea580c; --figure-query: #d97706; --figure-query-label: #b45309;
+        --figure-blue-tint: #eff6ff; --figure-orange-tint: #fff7ed; --figure-purple-tint: #f5f3ff;
+      }
+    }
+    svg { fill: var(--figure-ink); }
+    text{font-family:Arial,sans-serif;font-size:15px}.bold{font-weight:700}.axis{stroke:var(--figure-axis);stroke-width:2}.bounds{stroke:var(--figure-axis);stroke-dasharray:4 5}.point{stroke:var(--figure-panel);stroke-width:2}</style>
+  <text x="20" y="27" class="bold">Здоровье</text>
+  <text x="60" y="48" text-anchor="middle" fill="var(--figure-muted)">мин.</text>
+  <text x="360" y="48" text-anchor="middle" fill="var(--figure-muted)">макс.</text>
+  <text x="270" y="48" text-anchor="middle" fill="var(--figure-query-label)" class="bold">650</text>
+  <path d="M40 66H380" class="axis"/>
+  <path d="M60 73V170 M360 73V170" class="bounds"/>
+  <circle cx="60" cy="66" r="6" fill="var(--figure-purple)" class="point"/>
+  <circle cx="120" cy="66" r="6" fill="var(--figure-purple)" class="point"/>
+  <circle cx="300" cy="66" r="6" fill="var(--figure-blue)" class="point"/>
+  <circle cx="360" cy="66" r="6" fill="var(--figure-blue)" class="point"/>
+  <path d="M270 59L277 66L270 73L263 66Z" fill="var(--figure-query)" stroke="var(--figure-panel)" stroke-width="2"/>
+  <text x="60" y="90" text-anchor="middle">300</text>
+  <text x="120" y="90" text-anchor="middle">400</text>
+  <text x="300" y="90" text-anchor="middle">700</text>
+  <text x="360" y="90" text-anchor="middle">800</text>
+  <rect x="35" y="104" width="350" height="32" rx="16" fill="var(--figure-blue-tint)"/>
+  <text x="210" y="125" text-anchor="middle">Вычитаем 300, делим на 500</text>
+  <text x="20" y="159" class="bold">Новая шкала</text>
+  <text x="270" y="159" text-anchor="middle" fill="var(--figure-query-label)" class="bold">0,7</text>
+  <path d="M40 177H380" class="axis"/>
+  <circle cx="60" cy="177" r="6" fill="var(--figure-purple)" class="point"/>
+  <circle cx="120" cy="177" r="6" fill="var(--figure-purple)" class="point"/>
+  <circle cx="300" cy="177" r="6" fill="var(--figure-blue)" class="point"/>
+  <circle cx="360" cy="177" r="6" fill="var(--figure-blue)" class="point"/>
+  <path d="M270 170L277 177L270 184L263 177Z" fill="var(--figure-query)" stroke="var(--figure-panel)" stroke-width="2"/>
+  <text x="60" y="204" text-anchor="middle" class="bold">0</text>
+  <text x="120" y="204" text-anchor="middle">0,2</text>
+  <text x="300" y="204" text-anchor="middle">0,8</text>
+  <text x="360" y="204" text-anchor="middle" class="bold">1</text>
+</svg>

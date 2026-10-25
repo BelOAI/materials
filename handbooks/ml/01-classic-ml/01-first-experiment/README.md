@@ -6,6 +6,6 @@
 
 [Текст](content.md) · [Ноутбук](notebook.ipynb) · [Схема](media/experiment.svg)
 
-PDF для просмотра: `py -3 utils/scripts/build-handbook-pdf.py handbooks/ml/01-classic-ml/01-first-experiment` из корня репозитория. Общий стиль описан в [правилах PDF](../../../pdf/README.md).
+PDF для просмотра: `py -3 utils/scripts/build-handbook-pdf.py handbooks/ml/01-classic-ml/01-first-experiment` из корня репозитория. Общий стиль описан в [правилах PDF](../../../../utils/pdf/README.md).
 
 Нужны основы Python: функции, списки и словари; среднее и доли. Дополнительные данные и библиотеки для первого эксперимента не требуются.
