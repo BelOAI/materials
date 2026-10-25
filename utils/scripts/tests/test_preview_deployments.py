@@ -130,6 +130,48 @@ class DeploymentTests(unittest.TestCase):
             inactive = [c.args[0] for c in api.call_args_list if c.kwargs['data'].get('state') == 'inactive']
             self.assertEqual(inactive, ['repos/org/repo/deployments/1/statuses'])
 
+    def test_dev_creates_persistent_nonproduction_deployment(self):
+        item = {'sha': 'dev-head', 'run_id': 42, 'root': 'dev/'}
+        with patch.object(deploy, 'pages', side_effect=[iter([]), iter([])]), \
+                patch.object(deploy, 'api', return_value={'id': 4}) as api:
+            deploy.prepare('org/repo', {'main': {'sha': 'main-head'}, 'dev': item})
+            created = api.call_args_list[0].kwargs['data']
+            self.assertEqual(created['ref'], 'dev-head')
+            self.assertEqual(created['environment'], 'dev')
+            self.assertFalse(created['transient_environment'])
+            self.assertFalse(created['production_environment'])
+            self.assertEqual(created['payload'], {'owner': deploy.OWNER, 'branch': 'dev', 'run_id': 42})
+            self.assertEqual(api.call_args_list[1].kwargs['data']['state'], 'in_progress')
+            deploy.finish('org/repo', 'success')
+            self.assertEqual(api.call_args.kwargs['data']['state'], 'success')
+            self.assertEqual(api.call_args.kwargs['data']['environment_url'], 'https://materials.beloai.by/dev/')
+
+    def test_dev_reuses_success_and_keeps_current_pr_active(self):
+        item = {'sha': 'dev-head', 'run_id': 42, 'root': 'dev/'}
+        dev = {'id': 4, 'environment': 'dev', 'sha': 'dev-head',
+               'payload': {'owner': deploy.OWNER, 'branch': 'dev', 'run_id': 42}}
+        old_dev = dict(dev, id=3, sha='previous-head')
+        pr = self.existing(2, run=9)
+        with patch.object(deploy, 'pages', side_effect=[iter([dev, old_dev, pr]),
+                                                       iter([{'state': 'success'}]), iter([{'state': 'success'}])]), \
+                patch.object(deploy, 'api') as api:
+            deploy.prepare('org/repo', {'dev': item, 'pr-7': self.item})
+            api.assert_not_called()
+            deploy.finish('org/repo', 'success')
+            inactive = [call.args[0] for call in api.call_args_list if call.kwargs['data']['state'] == 'inactive']
+            self.assertEqual(inactive, ['repos/org/repo/deployments/3/statuses'])
+
+    def test_failed_dev_publication_keeps_previous_deployment(self):
+        old = {'id': 3, 'environment': 'dev', 'sha': 'previous-head',
+               'payload': {'owner': deploy.OWNER, 'branch': 'dev', 'run_id': 41}}
+        with patch.object(deploy, 'pages', side_effect=[iter([old]), iter([])]), \
+                patch.object(deploy, 'api', return_value={'id': 4}) as api:
+            deploy.prepare('org/repo', {'dev': {'sha': 'dev-head', 'run_id': 42, 'root': 'dev/'}})
+            deploy.finish('org/repo', 'failure')
+            states = [call.kwargs['data'].get('state') for call in api.call_args_list]
+            self.assertEqual(states, [None, 'in_progress', 'failure'])
+            self.assertFalse(api.call_args.kwargs['data']['environment_url'])
+
 
 if __name__ == '__main__':
     unittest.main()

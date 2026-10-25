@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Синхронизация нативных PR deployments с опубликованным Pages-сайтом."""
+"""Синхронизация нативных dev/PR deployments с опубликованным Pages-сайтом."""
 import importlib.util
 import json
 import os
@@ -33,18 +33,20 @@ def prepare(repo, metadata):
     STATE.parent.mkdir(parents=True, exist_ok=True)
     STATE.write_text(json.dumps(state))
     for key, item in metadata.items():
-        if not key.startswith('pr-'):
+        if key != 'dev' and not key.startswith('pr-'):
             continue
-        environment = f'preview-{key}'
-        payload = {'owner': OWNER, 'pr': item['pr'], 'merge_sha': item['merge_sha'], 'run_id': item['run_id']}
+        is_dev = key == 'dev'
+        environment = 'dev' if is_dev else f'preview-{key}'
+        payload = ({'owner': OWNER, 'branch': 'dev', 'run_id': item['run_id']} if is_dev else
+                   {'owner': OWNER, 'pr': item['pr'], 'merge_sha': item['merge_sha'], 'run_id': item['run_id']})
         deployment = next((d for d in existing if owned(d) and d['environment'] == environment
                            and d['sha'] == item['sha'] and d['payload'] == payload), None)
         if deployment is None:
             deployment = api(f'repos/{repo}/deployments', method='POST', data={
                 'ref': item['sha'], 'environment': environment, 'auto_merge': False,
-                'required_contexts': [], 'transient_environment': True,
+                'required_contexts': [], 'transient_environment': not is_dev,
                 'production_environment': False, 'payload': payload,
-                'description': f'Тестовый сайт PR #{item["pr"]}',
+                'description': 'Тестовый сайт ветки dev' if is_dev else f'Тестовый сайт PR #{item["pr"]}',
             })
         statuses = list(pages(f'repos/{repo}/deployments/{deployment["id"]}/statuses', None))
         already_successful = bool(statuses and statuses[0]['state'] == 'success')

@@ -41,7 +41,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 utils/scripts/assemble-pages.py
-      - name: Mark previews in progress
+      - name: Mark dev and PR deployments in progress
         id: previews
         env:
           GH_TOKEN: ${{ github.token }}
@@ -52,7 +52,7 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Update PR deployments
+      - name: Update dev and PR deployments
         if: always() && steps.previews.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ github.token }}
