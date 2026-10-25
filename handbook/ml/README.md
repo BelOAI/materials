@@ -10,3 +10,5 @@
 3. [DIY with NN](diy-nn/README.md)
 4. [How they learn!](how-they-learn/README.md)
 5. [Advanced math of AI](advanced-math/README.md)
+
+[Проект программы на 30 тем](../ML-PROGRAM.md) · [Правила подготовки занятий](../guidelines/content.md)
