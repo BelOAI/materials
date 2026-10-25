@@ -7,4 +7,5 @@ authors:
 paragraphs:
   - 01-first-experiment
   - 04-decision-trees
+  - 05-clustering-kmeans
 build: true
