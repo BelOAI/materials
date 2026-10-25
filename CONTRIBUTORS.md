@@ -1,5 +1,6 @@
 # Участники проекта
 
+- [atolstikov](https://github.com/atolstikov)
 - [BlackAlexYT](https://github.com/BlackAlexYT)
 - [pkasila](https://github.com/pkasila)
 
