@@ -118,6 +118,11 @@ def load_handbook(source: Path, *, allow_missing_synced=False) -> dict:
     if (not isinstance(handbook, dict) or handbook.get('slug') != 'ml'
             or not all(nonempty(handbook.get(k)) for k in ('title', 'description'))):
         raise ValueError('Некорректный ML-хендбук')
+    handbook.update(id='ml', _folder=base / 'ml', _content=local_file(base / 'ml', 'content.md'))
+    book['_pages'] = []
+    if (base / 'ml/CURRICULUM.md').is_file():
+        book['_pages'].append(dict(id='ml/curriculum', title='Программа учебника',
+                                  _folder=base / 'ml', _content=local_file(base / 'ml', 'CURRICULUM.md')))
     sections, paragraphs, identifiers = [], {}, set()
     for folder in ordered_folders(base / 'ml', handbook.get('chapters')):
         chapter = read_metadata(folder)
@@ -217,7 +222,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     book = load_handbook(source)
     handbook = book['handbooks'][0]
     sections = handbook['sections']
-    items = [*sections, *book['_lessons'].values()]
+    items = [handbook, *book['_pages'], *sections, *book['_lessons'].values()]
     texts = [item for item in items if '_content' in item]
     result = subprocess.run(['node', str(source / 'utils/site/render-handbook.mjs')], input=json.dumps([
         {'name': item['id'], 'source': item['_content'].read_text(encoding='utf-8')} for item in texts
@@ -244,6 +249,9 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
         root = '../' * len(Path(path).parts)
         top = '<div class="handbook-links"><ul><li>' + link(root, '← На основной сайт') + '</li><li>' + navlink('', 'Учебники', identifier) + '</li></ul></div>'
         nav = '<div class="handbook-tree"><ul><li>' + navlink('ml', handbook['title'], identifier) + '</li></ul>'
+        if book['_pages']:
+            nav += '<ul>' + ''.join('<li>' + navlink(item['id'], item['title'], identifier) + '</li>'
+                                    for item in book['_pages']) + '</ul>'
         if identifier.startswith('ml'):
             nav += '<section class="handbook-track" aria-label="Оглавление ML">'
             for section in sections:
@@ -255,7 +263,9 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
                 nav += '</ul></details>'
             nav += '</section>'
         nav += '</div>'
-        body = '<h1>' + escape(heading) + '</h1><p class="draft-note"><span class="draft-badge">Черновик</span><span>Материалы дорабатываются и будут дополняться.</span></p>' + content
+        body = content if re.search(r'<h1\b', content) else '<h1>' + escape(heading) + '</h1>' + content
+        note = '<p class="draft-note"><span class="draft-badge">Черновик</span><span>Материалы дорабатываются и будут дополняться.</span></p>'
+        body = re.sub(r'(</h1>)', lambda match: match[0] + note, body, count=1)
         write_page(source, output, weeks, path, heading, description,
                    '<div class="handbook-content">' + body + '</div>', 'handbook', root,
                    navigation_override=nav, navigation_top=top, brand_href=root + 'handbooks/ml/',
@@ -304,7 +314,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
         publish_files_html = publish_files(item)
         item['_html'] = source_links(rendered[item['id']]['html'], item, items, source) + publish_files_html
     page('', book['title'], book['description'], '<p>' + escape(book['description']) + '</p><ul><li>' + link('ml/', handbook['title']) + '</li></ul>')
-    overview = '<p>' + escape(handbook['description']) + '</p>'
+    overview = handbook['_html']
     route = ['ml/intro'] + [p['id'] for p in book['_lessons'].values() if p['status'] != 'planned']
     by_id = {item['id']: item for item in texts}
     for section in sections:
@@ -326,6 +336,8 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             content += pagination(section['id'], route, by_id)
         page(section['id'], title(section), section['description'], content)
     page('ml', handbook['title'], handbook['description'], overview)
+    for item in book['_pages']:
+        page(item['id'], item['title'], item['title'], item['_html'])
     for item in book['_lessons'].values():
         if item['status'] == 'planned':
             continue

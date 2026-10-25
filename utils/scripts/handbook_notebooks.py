@@ -1,6 +1,7 @@
 """Синхронизация учебных ноутбуков с Markdown уроков: --write или --check."""
 from __future__ import annotations
 import argparse
+import base64
 import json
 import re
 from pathlib import Path
@@ -26,7 +27,7 @@ def render_notebook(title: str, text: str, assets: Path | None = None) -> dict:
                 if not path.is_relative_to(assets.resolve()) or not path.is_file() or path.suffix != '.svg':
                     return match[0]
                 name = path.name
-                attachments[name] = {'image/svg+xml': path.read_text(encoding='utf-8')}
+                attachments[name] = {'image/svg+xml': base64.b64encode(path.read_bytes()).decode('ascii')}
                 return f'![{match[1]}](attachment:{name})'
             value = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', embed, value)
             cell = {'cell_type': 'markdown', 'metadata': {}, 'source': value.strip().splitlines(keepends=True)}

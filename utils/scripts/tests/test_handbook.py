@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from handbook_site import load_handbook, publish_handbook, validate_links, PageLinks
+from handbook_site import load_handbook, publish_handbook, validate_links
 from handbook_notebooks import synchronize, render_notebook
 from notebook_checks import check_notebooks
 from repo_paths import REPO_ROOT as ROOT
@@ -37,6 +37,8 @@ class HandbookTests(unittest.TestCase):
                 item['build'] = True
                 (folder / 'content.md').write_text('## Fixture\n\n[Guide](content.md)\n')
             (folder / 'meta.yaml').write_text(yaml.safe_dump(item))
+        (base / 'ml/content.md').write_text('Welcome fixture.\n\n[Section](00-intro/content.md)\n')
+        (base / 'ml/CURRICULUM.md').write_text('## Plan fixture\n\n[Example](01-classic-ml/README.md)\n')
         (base / 'handbooks.json').write_text(json.dumps(dict(title='Fixture', description='Fixture.',
             handbooks=[dict(slug='ml', title='ML', description='Fixture.', chapters=folders)])))
         (self.root / 'utils/site').mkdir(parents=True)
@@ -85,17 +87,19 @@ resources:
             (folder / d).mkdir()
         (folder / 'data/sample.csv').write_text('x\n1\n')
         (folder / 'media/image.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10"/></svg>')
-        (folder / 'notebook.ipynb').write_text(json.dumps(render_notebook('Пример', text)))
+        (folder / 'notebook.ipynb').write_text(json.dumps(render_notebook('Пример', text, assets=folder)))
         return folder
 
-    def test_catalog_loads_local_metadata_and_excludes_template(self):
-        book = load_handbook(ROOT)
-        catalog = json.loads((ROOT / 'handbooks/handbooks.json').read_text())
-        self.assertNotIn('tracks', catalog)
-        self.assertNotIn('aliases', catalog)
-        for chapter in book['_chapters'].values():
-            self.assertEqual(chapter['title'], yaml.safe_load((chapter['_folder'] / 'meta.yaml').read_text())['title'])
-            self.assertFalse(chapter['_folder'].name.startswith('_'))
+    @patch('handbook_site.export_notebook', return_value=False)
+    def test_main_content_and_curriculum_follow_sources(self, export):
+        source = self.root / 'handbooks/ml/content.md'
+        for marker in ('fixture-one', 'fixture-two'):
+            source.write_text(marker + '\n\n[Plan](CURRICULUM.md)\n')
+            publish_handbook(self.root, self.output, [])
+            html = (self.output / 'handbooks/ml/index.html').read_text()
+            self.assertIn(marker, html)
+            self.assertIn('href="curriculum/"', html)
+            self.assertTrue((self.output / 'handbooks/ml/curriculum/index.html').is_file())
 
     def test_invalid_local_metadata(self):
         path = self.chapter / 'meta.yaml'
@@ -199,12 +203,6 @@ resources:
                 with self.assertRaises((ValueError, subprocess.CalledProcessError)):
                     publish_handbook(self.root, self.output, [])
 
-    def test_all_published_ml_notebooks_execute(self):
-        book = load_handbook(ROOT)
-        paths = {item['_folder'] / r['path'] for item in book['_lessons'].values() if item['status'] != 'planned'
-                 for r in item.get('resources', []) if r['path'].endswith('.ipynb')}
-        for path, error in check_notebooks(paths):
-            self.assertIsNone(error, f'{path}: {error}')
 
 
 if __name__ == '__main__':

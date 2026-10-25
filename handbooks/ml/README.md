@@ -1,6 +1,6 @@
 # Учебник машинного обучения
 
-[Читать на сайте](https://materials.beloai.by/handbooks/ml/) · [Программа](../PROGRAM.md)
+[Читать на сайте](https://materials.beloai.by/handbooks/ml/) · [Программа](CURRICULUM.md)
 
 [Настроить среду: Colab, Python 3.14 и Jupyter](00-intro/01-environment/content.md).
 

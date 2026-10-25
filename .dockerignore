@@ -4,5 +4,7 @@
 !.github/ci/Dockerfile
 !.github/ci/requirements.txt
 !handbooks/
-!handbooks/start/
+!handbooks/ml/
+!handbooks/ml/00-intro/
+!handbooks/ml/00-intro/01-environment/
 !handbooks/ml/00-intro/01-environment/requirements.txt
