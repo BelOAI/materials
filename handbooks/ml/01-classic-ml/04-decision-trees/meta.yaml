@@ -1,0 +1,29 @@
+title: Решающие деревья
+slug: decision-trees
+description: Прогноз времени печати по цепочке вопросов, глубина дерева и проверка на новых заказах.
+status: draft
+build: true
+date: "2026-10-25"
+authors:
+  - Авторы BelOAI
+topics:
+  - Узлы, ветви и листья решающего дерева
+  - Глубина дерева и решающий пень
+  - Запоминание обучающих данных и ошибка на новых заказах
+learning_outcomes:
+  - Читать и рисовать небольшое дерево решений для таблицы.
+  - Сравнивать качество деревьев разной глубины на обучающих и новых примерах.
+  - Объяснять, почему точность на обучении не гарантирует качество новых предсказаний.
+resources:
+  - path: notebook.ipynb
+    label: Практика и решения (.ipynb)
+  - path: media/print-time-tree.svg
+    label: Схема дерева (.svg)
+references:
+  - label: CodeRun №345 — Решающий пень
+    url: https://coderun.yandex.ru/problem/stump
+  - label: scikit-learn — Decision Trees
+    url: https://scikit-learn.org/stable/modules/tree.html
+  - label: ODS.ai — курс классического ML
+    url: https://ods.ai/tracks/classic-models-autumn26
+sync_notebook: true

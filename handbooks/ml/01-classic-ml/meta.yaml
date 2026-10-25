@@ -6,4 +6,5 @@ authors:
   - Авторы BelOAI
 paragraphs:
   - 01-first-experiment
+  - 04-decision-trees
 build: true
