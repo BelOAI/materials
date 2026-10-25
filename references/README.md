@@ -2,7 +2,7 @@
 
 Источники для подготовки новых занятий по ML. Объяснения адаптируем к школьной аудитории: сначала задача, понятный пример и применение, затем необходимые формулы.
 
-- [ODS.ai: классические модели ML](https://ods.ai/tracks/classic-models-autumn26).
+- [ODS.ai: классические модели ML](ODS.ai%20course/README.md).
 - [Girafe AI](girafe_ai/README.md).
 - [Хендбук Яндекса](yandex_handbook/README.md).
 - [Кружок Яндекса](yandex_kruzhok/README.md).
