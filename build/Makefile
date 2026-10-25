@@ -1,8 +1,9 @@
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
 SCRIPTS := $(REPO_ROOT)/utils/scripts
+JOBS ?= 2
 DIR ?=
 
-.PHONY: all session lecture materials site frontend handbooks test tex clean
+.PHONY: all session lecture materials site frontend handbooks handbook-pdf test tex clean
 
 all: site
 
@@ -31,6 +32,9 @@ frontend:
 
 handbooks: frontend
 	python3 "$(SCRIPTS)/build-handbooks.py"
+
+handbook-pdf:
+	cd "$(REPO_ROOT)" && python3 "$(SCRIPTS)/build-handbook-pdf.py" $(if $(DIR),"$(DIR)",--all) --jobs "$(JOBS)"
 
 test:
 	cd "$(REPO_ROOT)" && python3 -m unittest discover -s utils/scripts/tests
