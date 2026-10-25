@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="300" viewBox="0 0 560 300" role="img" aria-labelledby="title desc">
+<title id="title">Сигмоида переводит оценку в вероятность</title>
+<desc id="desc">Кривая σ(z) растёт от 0 к 1. При z = −2,3 вероятность около 0,091, при z = 0 ровно 0,5, при z = 1,6 около 0,832. Отрицательные оценки дают вероятность меньше 0,5, положительные — больше.</desc>
+<style>
+:root { color-scheme: light dark; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --panel:#f3f6fa; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#17803d; --red:#c0283b; --glow:#ffffff; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --panel:#26303b; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#7fd99a; --red:#ff8a96; --glow:#000000; } }
+@media print { :root { --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --panel:#f3f6fa; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#17803d; --red:#c0283b; --glow:#ffffff; } }
+text { font-family:'DejaVu Sans',Arial,sans-serif; font-size:14px; fill:var(--ink); } .s { font-size:12.5px; } .b { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; font-family:'DejaVu Serif',Georgia,serif; }
+.blue { fill:var(--blue); } .purple { fill:var(--purple); } .orange { fill:var(--orange); } .green { fill:var(--green); } .red { fill:var(--red); }
+.panel { fill:var(--panel); fill-opacity:.85; stroke:var(--edge); }
+</style>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="var(--axis)"/></marker></defs>
+<rect x="60" y="40" width="235.0" height="190" fill="var(--blue-bg)" fill-opacity=".7"/><rect x="295.0" y="40" width="235.0" height="190" fill="var(--orange-bg)" fill-opacity=".7"/>
+<text x="68" y="58" class="s blue">z &lt; 0: p &lt; 0,5</text><text x="522" y="220" text-anchor="end" class="s orange">z &gt; 0: p &gt; 0,5</text>
+<path d="M60 182.5H530" stroke="var(--grid)" stroke-dasharray="3 4"/>
+<path d="M60 135.0H530" stroke="var(--grid)" stroke-dasharray="3 4"/>
+<path d="M60 87.5H530" stroke="var(--grid)" stroke-dasharray="3 4"/>
+<path d="M60 40.0H530" stroke="var(--grid)" stroke-dasharray="3 4"/>
+<path d="M60 32V230H542" fill="none" stroke="var(--axis)" stroke-width="1.5" marker-end="url(#ar)"/>
+<polyline points="60.0,229.5 62.0,229.5 63.9,229.5 65.9,229.5 67.8,229.4 69.8,229.4 71.8,229.4 73.7,229.3 75.7,229.3 77.6,229.3 79.6,229.2 81.5,229.2 83.5,229.1 85.5,229.1 87.4,229.1 89.4,229.0 91.3,229.0 93.3,228.9 95.3,228.8 97.2,228.8 99.2,228.7 101.1,228.7 103.1,228.6 105.0,228.5 107.0,228.4 109.0,228.4 110.9,228.3 112.9,228.2 114.8,228.1 116.8,228.0 118.8,227.9 120.7,227.8 122.7,227.7 124.6,227.6 126.6,227.5 128.5,227.3 130.5,227.2 132.5,227.1 134.4,226.9 136.4,226.7 138.3,226.6 140.3,226.4 142.2,226.2 144.2,226.0 146.2,225.8 148.1,225.6 150.1,225.4 152.0,225.2 154.0,224.9 156.0,224.7 157.9,224.4 159.9,224.2 161.8,223.9 163.8,223.6 165.8,223.2 167.7,222.9 169.7,222.6 171.6,222.2 173.6,221.8 175.5,221.4 177.5,221.0 179.5,220.6 181.4,220.1 183.4,219.6 185.3,219.1 187.3,218.6 189.2,218.0 191.2,217.5 193.2,216.9 195.1,216.2 197.1,215.6 199.0,214.9 201.0,214.2 203.0,213.5 204.9,212.7 206.9,211.9 208.8,211.0 210.8,210.2 212.8,209.3 214.7,208.3 216.7,207.4 218.6,206.3 220.6,205.3 222.5,204.2 224.5,203.0 226.5,201.9 228.4,200.7 230.4,199.4 232.3,198.1 234.3,196.7 236.2,195.3 238.2,193.9 240.2,192.4 242.1,190.9 244.1,189.3 246.0,187.7 248.0,186.0 250.0,184.3 251.9,182.5 253.9,180.7 255.8,178.9 257.8,177.0 259.8,175.1 261.7,173.1 263.7,171.1 265.6,169.0 267.6,167.0 269.5,164.8 271.5,162.7 273.5,160.5 275.4,158.3 277.4,156.0 279.3,153.8 281.3,151.5 283.2,149.1 285.2,146.8 287.2,144.5 289.1,142.1 291.1,139.7 293.0,137.4 295.0,135.0 297.0,132.6 298.9,130.3 300.9,127.9 302.8,125.5 304.8,123.2 306.8,120.9 308.7,118.5 310.7,116.2 312.6,114.0 314.6,111.7 316.5,109.5 318.5,107.3 320.5,105.2 322.4,103.0 324.4,101.0 326.3,98.9 328.3,96.9 330.3,94.9 332.2,93.0 334.2,91.1 336.1,89.3 338.1,87.5 340.0,85.7 342.0,84.0 344.0,82.3 345.9,80.7 347.9,79.1 349.8,77.6 351.8,76.1 353.8,74.7 355.7,73.3 357.7,71.9 359.6,70.6 361.6,69.3 363.5,68.1 365.5,67.0 367.5,65.8 369.4,64.7 371.4,63.7 373.3,62.6 375.3,61.7 377.2,60.7 379.2,59.8 381.2,59.0 383.1,58.1 385.1,57.3 387.0,56.5 389.0,55.8 391.0,55.1 392.9,54.4 394.9,53.8 396.8,53.1 398.8,52.5 400.8,52.0 402.7,51.4 404.7,50.9 406.6,50.4 408.6,49.9 410.5,49.4 412.5,49.0 414.5,48.6 416.4,48.2 418.4,47.8 420.3,47.4 422.3,47.1 424.2,46.8 426.2,46.4 428.2,46.1 430.1,45.8 432.1,45.6 434.0,45.3 436.0,45.1 438.0,44.8 439.9,44.6 441.9,44.4 443.8,44.2 445.8,44.0 447.8,43.8 449.7,43.6 451.7,43.4 453.6,43.3 455.6,43.1 457.5,42.9 459.5,42.8 461.5,42.7 463.4,42.5 465.4,42.4 467.3,42.3 469.3,42.2 471.2,42.1 473.2,42.0 475.2,41.9 477.1,41.8 479.1,41.7 481.0,41.6 483.0,41.6 485.0,41.5 486.9,41.4 488.9,41.3 490.8,41.3 492.8,41.2 494.7,41.2 496.7,41.1 498.7,41.0 500.6,41.0 502.6,40.9 504.5,40.9 506.5,40.9 508.5,40.8 510.4,40.8 512.4,40.7 514.3,40.7 516.3,40.7 518.2,40.6 520.2,40.6 522.2,40.6 524.1,40.5 526.1,40.5 528.0,40.5 530.0,40.5" fill="none" stroke="var(--purple)" stroke-width="3.5" stroke-linejoin="round"/>
+<text x="52" y="235.0" text-anchor="end" class="s m">0</text>
+<text x="52" y="140.0" text-anchor="end" class="s m">0,5</text>
+<text x="52" y="45.0" text-anchor="end" class="s m">1</text>
+<text x="60.0" y="250" text-anchor="middle" class="s m">−6</text>
+<text x="138.3" y="250" text-anchor="middle" class="s m">−4</text>
+<text x="216.7" y="250" text-anchor="middle" class="s m">−2</text>
+<text x="295.0" y="250" text-anchor="middle" class="s m">0</text>
+<text x="373.3" y="250" text-anchor="middle" class="s m">2</text>
+<text x="451.7" y="250" text-anchor="middle" class="s m">4</text>
+<text x="530.0" y="250" text-anchor="middle" class="s m">6</text>
+<text x="544" y="235" class="i b">z</text><text x="56" y="26" class="i b">p</text>
+<path d="M60 212.7H204.9V230" fill="none" stroke="var(--blue)" stroke-width="1.4" stroke-dasharray="5 4"/>
+<circle cx="204.9" cy="212.7" r="6" fill="var(--blue)" stroke="var(--glow)" stroke-opacity=".6" stroke-width="3"/>
+<text x="198.9" y="198.7" text-anchor="end" class="s b blue">z = −2,3: p ≈ 0,091</text>
+<path d="M60 135.0H295.0V230" fill="none" stroke="var(--purple)" stroke-width="1.4" stroke-dasharray="5 4"/>
+<circle cx="295.0" cy="135.0" r="6" fill="var(--purple)" stroke="var(--glow)" stroke-opacity=".6" stroke-width="3"/>
+<text x="307.0" y="155.0" text-anchor="start" class="s b purple">z = 0: p = 0,5</text>
+<path d="M60 71.9H357.7V230" fill="none" stroke="var(--orange)" stroke-width="1.4" stroke-dasharray="5 4"/>
+<circle cx="357.7" cy="71.9" r="6" fill="var(--orange)" stroke="var(--glow)" stroke-opacity=".6" stroke-width="3"/>
+<text x="369.7" y="93.9" text-anchor="start" class="s b orange">z = 1,6: p ≈ 0,832</text>
+<text x="280.0" y="20" text-anchor="middle" class="b">σ(z) = 1 / (1 + e<tspan dy="-6" font-size="11">−z</tspan><tspan dy="6">)</tspan></text>
+<text x="280.0" y="288" text-anchor="middle" class="s m">Оценка z может быть любой, вероятность p остаётся между 0 и 1</text>
+</svg>
