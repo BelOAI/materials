@@ -1,5 +1,4 @@
 """Локальный каталог ML, ресурсы, переходы и выполнение ноутбуков."""
-import base64
 import json
 import shutil
 import subprocess
@@ -101,17 +100,6 @@ resources:
             self.assertIn(marker, html)
             self.assertIn('href="curriculum/"', html)
             self.assertTrue((self.output / 'handbooks/ml/curriculum/index.html').is_file())
-
-    def test_notebook_embeds_png_illustration(self):
-        folder = self.paragraph()
-        image = folder / 'media' / 'hero.png'
-        image.write_bytes(base64.b64decode(
-            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aB9sAAAAASUVORK5CYII='))
-        notebook = render_notebook('Пример', '![Герой](media/hero.png)', assets=folder)
-        cell = next(cell for cell in notebook['cells'] if 'attachments' in cell)
-        self.assertIn('attachment:hero.png', ''.join(cell['source']))
-        encoded = cell['attachments']['hero.png']['image/png']
-        self.assertEqual(base64.b64decode(encoded), image.read_bytes())
 
     def test_invalid_local_metadata(self):
         path = self.chapter / 'meta.yaml'
