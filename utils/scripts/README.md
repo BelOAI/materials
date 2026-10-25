@@ -186,7 +186,7 @@ Workflow `.github/workflows/presentations.yml` проверяет изменен
 
 ### Окружение и кэш CI
 
-Окружение — Python 3.14 и Node.js 24 LTS, TeX Live, Pandoc, XeLaTeX, PDF-шрифты, Poppler и CPU PyTorch. Dockerfile и фиксированные версии инструментов находятся в `.github/ci/`; библиотеки примеров — в `handbooks/ml/00-intro/01-environment/requirements.txt`. После изменения зависимостей хеш окружения меняется автоматически. Образ `ghcr.io/beloai/materials/ci:<хеш>` публикуется из `main`/`dev` через `GITHUB_TOKEN` с `packages: write`; организация должна разрешать создание пакетов. PR используют готовый образ либо собирают локальный, без публикации. Buildx восстанавливает слои из кэша GitHub Actions.
+Окружение — Python 3.14 и Node.js 24 LTS, TeX Live, Pandoc, pdfLaTeX, XeLaTeX для логотипа учебников, CM Super, Poppler и CPU PyTorch. Dockerfile и фиксированные версии инструментов находятся в `.github/ci/`; библиотеки примеров — в `handbooks/ml/00-intro/01-environment/requirements.txt`. После изменения зависимостей хеш окружения меняется автоматически. Образ `ghcr.io/beloai/materials/ci:<хеш>` публикуется из `main`/`dev` через `GITHUB_TOKEN` с `packages: write`; организация должна разрешать создание пакетов. PR используют готовый образ либо собирают локальный, без публикации. Buildx восстанавливает слои из кэша GitHub Actions.
 
 CI запускает `npm ci`, `make -f build/Makefile test` и `make -f build/Makefile site` внутри образа. Все ноутбуки проверяются каждый раз: `NOTEBOOK_TEST_WORKERS=2` выполняет два одновременно в отдельных процессах и чистых ядрах; локально по умолчанию используется один процесс. Число внутренних потоков NumPy/PyTorch ограничено в образе.
 
@@ -220,7 +220,7 @@ CI запускает `npm ci`, `make -f build/Makefile test` и `make -f build/
 
 Отдельная инкрементальная сборка: `make -f build/Makefile handbook-pdf [DIR=handbooks/ml] [JOBS=2]`. Создаёт PDF параграфов, глав и книг в `output/pdf/`, используя общий кэш. Обычная сборка сайта её не запускает. Workflow `Handbook PDF` отдельно собирает полную книгу на push в `main` и release-теги; сайт от результата PDF не зависит. Правила выпусков, зависимости и восстановление: [руководство PDF](../pdf/README.md).
 
-## Учебник машинного обучения
+## Учебник по машинному обучению
 
 ML-хендбук доступен по прямому адресу `/handbooks/ml/`. Текст главной страницы берётся из `handbooks/ml/content.md`, программа — из `handbooks/ml/CURRICULUM.md` и публикуется как `/handbooks/ml/curriculum/`. Отдельных учебников Python и математики больше нет. Не добавляйте черновик в общее меню курса до отдельного решения о выпуске. Страницы и HTML-превью получают `noindex, nofollow`.
 

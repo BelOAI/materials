@@ -23,8 +23,17 @@ function Header(block)
   if not FORMAT:match('latex') then
     return nil
   end
-  return {
+  local result = {
     pandoc.RawBlock('latex', '\\Needspace{6\\baselineskip}'),
     block,
   }
+  -- Explicit marks also cover unnumbered headings. Pandoc handles TeX escaping.
+  local chapter = block.classes:includes('handbook-context-chapter')
+  local section = block.classes:includes('handbook-context-section')
+  if chapter or section then
+    local title = pandoc.write(pandoc.Pandoc({pandoc.Plain(block.content)}), 'latex'):gsub('%s+$', '')
+    local command = chapter and 'handbookchapter' or 'handbooksection'
+    table.insert(result, pandoc.RawBlock('latex', '\\' .. command .. '{' .. title .. '}'))
+  end
+  return result
 end

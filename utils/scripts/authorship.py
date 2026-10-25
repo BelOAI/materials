@@ -1,5 +1,17 @@
 """Общие подписи авторов в метаданных, HTML и ноутбуках."""
 from html import escape
+import re
+
+CONTRIBUTORS_MARKER = '<!-- handbook-contributors -->'
+
+
+def expand_contributors(source, root):
+    """Общий список авторов внутри Markdown учебника для HTML и PDF."""
+    if CONTRIBUTORS_MARKER not in source:
+        return source
+    contributors = (root / 'CONTRIBUTORS.md').read_text(encoding='utf-8')
+    contributors = re.sub(r'\A\s*# [^\n]*\n+', '', contributors).strip()
+    return source.replace(CONTRIBUTORS_MARKER, contributors)
 
 
 def normalize_authors(value):

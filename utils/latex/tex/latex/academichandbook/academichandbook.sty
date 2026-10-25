@@ -1,0 +1,95 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{academichandbook}[2026/10/25 BelOAI handbook reader]
+\RequirePackage[russian]{olymp}
+\RequirePackage{graphicx}
+\RequirePackage{adjustbox}
+\RequirePackage{float}
+\RequirePackage{needspace}
+\RequirePackage{etoolbox}
+\RequirePackage{titlesec}
+\RequirePackage{lastpage}
+
+\newif\ifhandbookwholebook
+\newcommand{\handbooklogo}{handbook-logo.pdf}
+\newcommand{\handbookchapter}[1]{\markboth{#1}{}}
+\newcommand{\handbooksection}[1]{\markright{#1}}
+\makeatletter
+\newcommand{\handbookheader}{%
+  \protected@edef\handbookleft{\leftmark}%
+  \protected@edef\handbookright{\rightmark}%
+  \vbox{\hbox to \textwidth{%
+    \includegraphics[width=34mm]{\handbooklogo}\hfill
+    \parbox[b]{\dimexpr\textwidth-42mm\relax}{%
+      \raggedleft\sffamily\small
+      \ifhandbookwholebook
+        \ifdefempty{\handbookleft}{\@title}{\handbookleft}%
+      \else
+        \@title
+      \fi
+      \ifdefempty{\handbookright}{}{\par{\footnotesize\handbookright}}\strut\par}}%
+    \vskip 5pt\hrule}}
+\renewcommand{\olympheader}{\handbookheader}
+\def\ps@handbook{%
+  \let\@oddhead\olympheader\let\@evenhead\olympheader
+  \def\@oddfoot{\parbox{\textwidth}{\hrule\vspace{6pt}%
+    \centering\sffamily\small Страница \thepage\ из \pageref*{LastPage}}}%
+  \let\@evenfoot\@oddfoot}
+\let\ps@plain\ps@handbook
+\def\ps@handbooktitle{\ps@handbook\let\@oddfoot\@empty\let\@evenfoot\@empty}
+\renewcommand{\maketitle}{%
+  \ifhandbookwholebook
+    \thispagestyle{handbooktitle}%
+    \vspace*{.18\textheight}%
+    \begin{center}
+      {\large\sffamily Открытые учебные материалы BelOAI\par}%
+      \vspace{1.5em}%
+      {\Huge\bfseries\sffamily\@title\par}%
+      \vspace{2em}%
+      {\normalsize\@date\par}%
+    \end{center}%
+  \else
+  \begin{center}{\LARGE\bfseries\sffamily\@title\par}\end{center}%
+  \vspace{.5em}%
+  \fi}
+\makeatother
+
+% Keep olymp's text area and reserve room for multi-line running titles.
+\setlength{\headheight}{20mm}
+\setlength{\headsep}{6mm}
+\setlength{\footskip}{12mm}
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{0pt plus 1pt}
+\pagestyle{handbook}
+\raggedbottom
+\floatplacement{figure}{H}
+% Pandoc bounds the image by textheight without allowing room for its caption.
+\let\handbookincludegraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{%
+  \adjustbox{max height=.78\textheight,max width=\linewidth}{%
+    \handbookincludegraphics[#1]{#2}}}
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+
+\titleformat{\section}{\Large\sffamily\bfseries}{\thesection}{.7em}{}
+\titleformat{\subsection}{\large\sffamily\bfseries}{\thesubsection}{.7em}{}
+\titleformat{\subsubsection}{\normalsize\sffamily\bfseries}{\thesubsubsection}{.7em}{}
+\titleformat{\paragraph}[block]{\normalsize\sffamily\bfseries}{\theparagraph}{.7em}{}
+\titleformat{\subparagraph}[block]{\normalsize\sffamily\bfseries}{\thesubparagraph}{.7em}{}
+\titlespacing*{\paragraph}{0pt}{2ex plus 1ex minus .2ex}{.6ex}
+\titlespacing*{\subparagraph}{0pt}{2ex plus 1ex minus .2ex}{.6ex}
+\pretocmd{\tableofcontents}{\ifhandbookwholebook\clearpage\handbookchapter{Содержание}\fi}{}{}
+\apptocmd{\tableofcontents}{\ifhandbookwholebook\clearpage\markboth{}{}\fi}{}{}
+
+% Common prose/code symbols supported only in the print layer.
+\DeclareUnicodeCharacter{00A0}{~}
+\DeclareUnicodeCharacter{2011}{\mbox{-}}
+\DeclareUnicodeCharacter{202F}{\,}
+\DeclareUnicodeCharacter{2190}{\ensuremath{\leftarrow}}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
+\DeclareUnicodeCharacter{21D2}{\ensuremath{\Rightarrow}}
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+\DeclareUnicodeCharacter{2260}{\ensuremath{\ne}}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\le}}
+\DeclareUnicodeCharacter{2265}{\ensuremath{\ge}}

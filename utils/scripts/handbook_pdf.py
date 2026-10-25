@@ -16,14 +16,15 @@ import tempfile
 import time
 from urllib.parse import quote, unquote, urljoin, urlsplit
 
-from authorship import authors_text
+from authorship import authors_text, expand_contributors, CONTRIBUTORS_MARKER
 from build_cache import Cache
 from handbook_catalog import load_catalog
 from handbook_svg import renderer_identity, render_svg
 from repo_paths import REPO_ROOT
 
-FONTS = ('Liberation Serif', 'DejaVu Sans Mono')
 DEFAULT_SITE = 'https://materials.beloai.by/'
+TEX_FONTS = ('cmr10', 'cmbx10', 'cmti10', 'cmss10', 'cmtt10', 'cmmi10', 'cmsy10', 'cmex10',
+             'sfrm1000', 'sfbx1000', 'sfti1000', 'sfss1000', 'sfsx1000', 'sftt1000')
 
 
 def digest(*values):
@@ -50,28 +51,86 @@ def tool_identity(name):
 
 
 def environment():
-    tools = {name: tool_identity(name) for name in ('pandoc', 'xelatex', 'pdfinfo')}
-    fonts = []
-    for family in FONTS:
-        for style in ('Regular', 'Bold', 'Italic', 'Bold Italic'):
-            match = run(['fc-match', '-f', '%{family}|%{file}', f'{family}:style={style}'])
-            actual, filename = match.split('|', 1)
-            if family not in actual.split(','):
-                raise ValueError(f'Не установлен шрифт {family}; найден {actual}')
-            fonts.append(file_hash(filename))
-    # Формат XeLaTeX и реестр пакетов меняются независимо от бинарника движка.
+    tools = {name: tool_identity(name) for name in ('pandoc', 'pdflatex', 'xelatex', 'pdfinfo')}
+    # Форматы TeX и реестр пакетов меняются независимо от бинарника движка.
     tex = []
-    for name in ('xelatex.fmt', 'texlive.tlpdb'):
+    for name in ('pdflatex.fmt', 'xelatex.fmt', 'texlive.tlpdb', *(font + '.pfb' for font in TEX_FONTS)):
         path = ''
-        if name == 'xelatex.fmt':
-            result = subprocess.run(['kpsewhich', '-engine=xetex', name], text=True, capture_output=True)
+        if name.endswith('.fmt'):
+            engine = 'xetex' if name == 'xelatex.fmt' else 'pdftex'
+            result = subprocess.run(['kpsewhich', '-engine=' + engine, name], text=True, capture_output=True)
             path = result.stdout.strip()
+        elif name.endswith('.pfb'):
+            path = run(['kpsewhich', name]).strip()
         if not path and name == 'texlive.tlpdb':
             root = run(['kpsewhich', '-var-value=TEXMFROOT']).strip()
             path = str(Path(root) / 'tlpkg/texlive.tlpdb')
         if path and Path(path).is_file():
             tex.append(file_hash(path))
-    return tools, digest(tools, fonts, tex, os.environ.get('BUILD_ENV_ID', ''))
+    return tools, digest(tools, tex, os.environ.get('BUILD_ENV_ID', ''))
+
+
+def profile_files(root):
+    """Все локальные зависимости оформления, независимо от каталога TeX."""
+    paths = list((root / 'utils/pdf').glob('*.tex')) + list((root / 'utils/pdf').glob('*.lua'))
+    for package in ('olymp', 'academichandbook'):
+        paths.extend((root / 'utils/latex/tex/latex' / package).glob('*.sty'))
+    return [(p.relative_to(root).as_posix(), file_hash(p)) for p in sorted(paths)]
+
+
+def source_revision(root):
+    """Стабильная редакция исходников: тег/commit, дата commit и локальные правки."""
+    def git(*args):
+        try:
+            result = subprocess.run(['git', '-C', str(root), *args], text=True, capture_output=True)
+        except FileNotFoundError:
+            return ''
+        return result.stdout.strip() if result.returncode == 0 else ''
+
+    sha = git('rev-parse', '--short=12', 'HEAD')
+    if not sha:
+        return 'Локальная редакция (без Git)', ''
+    tags = [tag for tag in git('tag', '--points-at', 'HEAD').splitlines()
+            if re.fullmatch(r'v\d{4}\.\d{2}\.\d{2}(?:\.[1-9]\d*)?', tag)]
+    revision = (max(tags, key=lambda tag: tuple(map(int, tag[1:].split('.')))) + ' / ' if tags else '') + sha
+    if git('status', '--porcelain', '--untracked-files=normal'):
+        revision += ' (с локальными изменениями)'
+    return revision, git('log', '-1', '--format=%cs')
+
+
+def prepare_logo(root, scratch, env):
+    """Одна векторная эмблема для всех документов; шрифты берутся с сайта."""
+    try:
+        from fontTools.ttLib import TTFont
+        from fontTools.varLib.instancer import instantiateVariableFont
+    except ImportError as error:
+        raise ValueError('Для логотипа установите зависимости utils/pdf/requirements.txt') from error
+
+    fonts = root / 'utils/site/fonts'
+    sources = [('unbounded-latin-cyrillic.woff2', 'Unbounded.ttf', 700),
+               ('ibm-plex-sans-latin-cyrillic.woff2', 'IBMPlexSans.ttf', 400)]
+    template = root / 'utils/pdf/logo.tex'
+    key = digest(env, file_hash(template), file_hash(__file__), importlib.metadata.version('fonttools'),
+                 [(name, file_hash(fonts / name), weight) for name, _, weight in sources])
+    cache = Cache('handbook-logo', key)
+    target = scratch / 'handbook-logo.pdf'
+    with tempfile.TemporaryDirectory(prefix='logo-', dir=scratch) as temp:
+        folder = Path(temp)
+        pdf = folder / 'logo.pdf'
+        if not (cache.restore(folder) and pdf.is_file()):
+            for name, filename, weight in sources:
+                with TTFont(fonts / name) as font:
+                    axes = {axis.axisTag: axis.defaultValue for axis in font['fvar'].axes}
+                    axes['wght'] = weight
+                    static = instantiateVariableFont(font, axes, inplace=False, updateFontNames=True)
+                    static.flavor = None
+                    static.save(folder / filename)
+            shutil.copyfile(template, folder / 'logo.tex')
+            run(['xelatex', '-halt-on-error', '-interaction=nonstopmode', 'logo.tex'], cwd=folder)
+            run(['pdfinfo', str(pdf)])
+            cache.save(folder, [pdf])
+        shutil.copyfile(pdf, target)
+    return file_hash(target)
 
 
 def walk(value):
@@ -117,7 +176,8 @@ def namespace(identifier):
 
 
 def header(level, item):
-    return {'t': 'Header', 'c': [level, [namespace(item['id']), [], []], [{'t': 'Str', 'c': item['title']}]]}
+    context = 'handbook-context-chapter' if level == 1 else 'handbook-context-section'
+    return {'t': 'Header', 'c': [level, [namespace(item['id']), [context], []], [{'t': 'Str', 'c': item['title']}]]}
 
 
 def documents(catalog):
@@ -156,9 +216,36 @@ class Builder:
         self.compilations = 0
         self.image_conversions = 0
         self.hits = 0
+        self.profile = profile_files(root)
+        self.logo = prepare_logo(root, scratch, env)
+        self.contributors = None
+        self.revision = None
+
+    def book_frontmatter(self, item):
+        if '_content' in item and CONTRIBUTORS_MARKER in item['_content'].read_text(encoding='utf-8'):
+            if self.revision is None:
+                self.revision = source_revision(self.root)
+            return []
+        if self.contributors is None:
+            path = self.root / 'CONTRIBUTORS.md'
+            if not path.is_file():
+                raise ValueError('Для полного учебника необходим CONTRIBUTORS.md')
+            _, ast, hit = self.prepare({'id': 'contributors', '_content': path})
+            self.hits += hit
+            self.contributors = ast['blocks']
+            if self.contributors and self.contributors[0]['t'] == 'Header':
+                self.contributors = self.contributors[1:]
+            self.revision = source_revision(self.root)
+        return [
+            {'t': 'RawBlock', 'c': ['latex', '\\clearpage']},
+            {'t': 'Header', 'c': [1, ['handbook-contributors', ['unnumbered', 'handbook-context-chapter'], []],
+                                 [{'t': 'Str', 'c': 'Авторы и участники проекта BelOAI'}]]},
+            *deepcopy(self.contributors),
+            {'t': 'RawBlock', 'c': ['latex', '\\clearpage']},
+        ]
 
     def prepare(self, item):
-        source = item['_content'].read_text(encoding='utf-8')
+        source = expand_contributors(item['_content'].read_text(encoding='utf-8'), self.root)
         key = digest(source, self.tools['pandoc'], self.code)
         cache = Cache('handbook-source', key)
         folder = self.scratch / 'sources' / namespace(item['id'])
@@ -215,6 +302,10 @@ class Builder:
         paragraph = len(task['item']['id'].split('/')) == 3
         for item, level in task['parts']:
             level = 1 if paragraph else level
+            if level == 0:
+                blocks.append({'t': 'RawBlock', 'c': ['latex', '\\handbookchapter{Об учебнике}']})
+            if level == 1 and len(task['item']['id'].split('/')) == 1:
+                blocks.append({'t': 'RawBlock', 'c': ['latex', '\\clearpage']})
             if level:
                 blocks.append(header(level, item))
             credit = authors_text(item.get('authors', []))
@@ -231,6 +322,10 @@ class Builder:
                     node['c'][0][0] = namespace(item['id']) + '--' + node['c'][0][0]
                 if node.get('t') == 'Header':
                     node['c'][0] = min(6, node['c'][0] - minimum + level + 1)
+                    if node['c'][0] == 2:
+                        node['c'][1][1].append('handbook-context-section')
+                    elif level == 0 and node is headings[0] and node['c'][0] == 1:
+                        node['c'][1][1].append('handbook-context-chapter')
                     node['c'][1][0] = namespace(item['id']) + '--' + node['c'][1][0]
                 elif node.get('t') == 'Image':
                     path = self.image_path(item, node['c'][2][0])
@@ -278,12 +373,27 @@ class Builder:
         ast['blocks'] = blocks
         ast['meta'] = {'title': {'t': 'MetaString', 'c': task['item']['title']},
                        'lang': {'t': 'MetaString', 'c': 'ru-RU'}}
+        ast['meta']['handbook-level'] = {'t': 'MetaString', 'c':
+            ('book', 'chapter', 'paragraph')[len(task['item']['id'].split('/')) - 1]}
+        if ast['meta']['handbook-level']['c'] == 'book':
+            ast['meta']['include-before'] = {'t': 'MetaBlocks', 'c': self.book_frontmatter(task['item'])}
+            revision, date = self.revision
+            details = [{'t': 'Str', 'c': 'Редакция: ' + revision}]
+            if date:
+                details.extend([{'t': 'LineBreak'}, {'t': 'Str', 'c': 'Дата исходников: ' + date}])
+            details.extend([
+                {'t': 'LineBreak'},
+                {'t': 'Link', 'c': [['', [], []], [{'t': 'Str', 'c': 'materials.beloai.by'}], [self.site_url, '']]},
+                {'t': 'LineBreak'},
+                {'t': 'Link', 'c': [['', [], []], [{'t': 'Str', 'c': 'CC BY 4.0'}],
+                                   ['https://creativecommons.org/licenses/by/4.0/', '']]},
+            ])
+            ast['meta']['date'] = {'t': 'MetaInlines', 'c': details}
         return ast
 
     def compile(self, task, ast, output):
         style = self.root / 'utils/pdf'
-        key = digest(ast, self.env, self.code,
-                     [(p.name, file_hash(p)) for p in sorted(style.iterdir()) if p.suffix in {'.tex', '.lua'}])
+        key = digest(ast, self.env, self.code, self.profile, self.logo)
         cache = Cache('handbook-pdf', key)
         destination = output / task['filename']
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -294,13 +404,19 @@ class Builder:
             if not hit:
                 source = folder / 'document.json'
                 source.write_text(json.dumps(ast, ensure_ascii=False), encoding='utf-8')
-                run(['pandoc', str(source), '--from=json', '--pdf-engine=xelatex',
+                header_path = folder / 'document-header.tex'
+                header_path.write_text((style / 'pdf-header.tex').read_text(encoding='utf-8') +
+                                       ('\n\\handbookwholebooktrue\n' if ast['meta']['handbook-level']['c'] == 'book' else ''),
+                                       encoding='utf-8')
+                tex_env = os.environ.copy()
+                tex_env['TEXINPUTS'] = str(self.root / 'utils/latex/tex/latex') + '//' + os.pathsep + tex_env.get('TEXINPUTS', '')
+                run(['pandoc', str(source), '--from=json', '--pdf-engine=pdflatex',
                      '--lua-filter', str(style / 'keep-short-code.lua'),
-                     '--include-in-header', str(style / 'pdf-header.tex'),
+                     '--include-in-header', str(header_path),
                      '--table-of-contents', '--toc-depth=2',
-                     '-V', 'papersize:a4', '-V', 'geometry:margin=18mm', '-V', 'fontsize:10pt',
-                     '-V', 'mainfont:' + FONTS[0], '-V', 'monofont:' + FONTS[1],
-                     '--output', str(pdf)], cwd=self.scratch)
+                     '-V', 'papersize:a4', '-V', 'fontsize:10pt',
+                     '-V', 'fontenc:T2A', '-V', 'fontfamily:handbookfonts',
+                     '--output', str(pdf)], cwd=self.scratch, env=tex_env)
             info = run(['pdfinfo', str(pdf)])
             if not re.search(r'Pages:\s*[1-9]\d*', info) or re.search(r'Encrypted:\s*yes', info):
                 raise ValueError(f'Неверный PDF: {pdf}')

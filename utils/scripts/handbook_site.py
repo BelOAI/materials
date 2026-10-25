@@ -11,7 +11,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit, urlunsplit
 
 from course_site import link, write_page
-from authorship import authors_html
+from authorship import authors_html, expand_contributors
 from handbook_redirects import publish_legacy_handbook, write_redirect
 from notebook_export import export_notebook
 from handbook_catalog import load_catalog, local_file
@@ -102,7 +102,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     items = [handbook, *book['_pages'], *sections, *book['_lessons'].values()]
     texts = [item for item in items if '_content' in item]
     result = subprocess.run(['node', str(source / 'utils/site/render-handbook.mjs')], input=json.dumps([
-        {'name': item['id'], 'source': item['_content'].read_text(encoding='utf-8')} for item in texts
+        {'name': item['id'], 'source': expand_contributors(item['_content'].read_text(encoding='utf-8'), source)} for item in texts
     ]), text=True, capture_output=True, check=True)
     rendered = dict(zip((item['id'] for item in texts), json.loads(result.stdout)))
     shutil.rmtree(output / 'handbooks', ignore_errors=True)

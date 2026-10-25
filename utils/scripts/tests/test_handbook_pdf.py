@@ -15,7 +15,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from handbook_catalog import load_catalog
-from handbook_pdf import build, documents, printable
+from handbook_pdf import build, documents, printable, source_revision
 from repo_paths import REPO_ROOT
 
 
@@ -33,10 +33,15 @@ class HandbookPdfTests(unittest.TestCase):
         self.addCleanup(temp.cleanup)
         self.root = Path(temp.name)
         self.output = self.root / 'output/pdf'
-        self.sources, self.asts, self.compiled = {}, {}, []
+        self.sources, self.asts, self.compiled, self.commands = {}, {}, [], []
         self.parse_count = self.svg_count = 0
         style = self.root / 'utils/pdf'
         shutil.copytree(REPO_ROOT / 'utils/pdf', style)
+        shutil.copytree(REPO_ROOT / 'utils/latex/tex/latex', self.root / 'utils/latex/tex/latex')
+        patch('handbook_pdf.prepare_logo', return_value='logo-hash').start()
+        (self.root / 'CONTRIBUTORS.md').write_text('contributors')
+        self.asts['contributors'] = {'pandoc-api-version': [1, 23, 1], 'meta': {}, 'blocks': [
+            {'t': 'Para', 'c': [text('Синтетический Автор (@writer)')]}]}
         books = []
         for book in ('alpha', 'beta'):
             base = self.root / 'handbooks' / book
@@ -85,6 +90,7 @@ class HandbookPdfTests(unittest.TestCase):
                              'blocks': [{'t': 'Para', 'c': [text(marker)]}] + blocks}
 
     def fake_run(self, command, **kwargs):
+        self.commands.append((command, kwargs))
         if command[0] == 'pandoc' and '--to=json' in command:
             self.parse_count += 1
             return json.dumps(self.asts[kwargs['input']])
@@ -109,6 +115,81 @@ class HandbookPdfTests(unittest.TestCase):
         ast['blocks'][0]['c'] = [text(old + '-changed')]
         self.asts[old + '-changed'] = ast
         (folder / 'content.md').write_text(old + '-changed')
+
+    def test_shared_style_and_book_page_breaks(self):
+        self.build()
+        commands = [(cmd, kwargs) for cmd, kwargs in self.commands if '--pdf-engine=pdflatex' in cmd]
+        self.assertEqual(len(commands), 8)
+        for command, options in commands:
+            self.assertIn('fontfamily:handbookfonts', command)
+            self.assertIn('fontenc:T2A', command)
+            self.assertFalse(any('geometry:' in value or 'mainfont:' in value for value in command))
+            self.assertIn(str(self.root / 'utils/latex/tex/latex') + '//', options['env']['TEXINPUTS'])
+        books = [ast for ast in self.compiled if ast['meta']['handbook-level']['c'] == 'book']
+        self.assertEqual(len(books), 2)
+        for ast in books:
+            self.assertIn({'t': 'RawBlock', 'c': ['latex', '\\clearpage']}, ast['blocks'])
+        before = len(self.compiled)
+        style = self.root / 'utils/latex/tex/latex/academichandbook/academichandbook.sty'
+        style.write_text(style.read_text() + '\n% Changed typography\n')
+        parse_count, svg_count = self.parse_count, self.svg_count
+        self.build()
+        self.assertEqual(len(self.compiled), before + 8)
+        self.assertEqual((self.parse_count, self.svg_count), (parse_count, svg_count))
+
+    def test_logo_change_rebuilds_pdf_without_reparsing(self):
+        self.build()
+        before = len(self.compiled)
+        with patch('handbook_pdf.prepare_logo', return_value='updated-logo'):
+            self.build()
+        self.assertEqual(len(self.compiled), before + 8)
+        self.assertEqual(self.parse_count, 7)
+
+    def test_book_frontmatter_and_scoped_contributors_cache(self):
+        self.build()
+        books = [ast for ast in self.compiled if ast['meta']['handbook-level']['c'] == 'book']
+        self.assertEqual(len(books), 2)
+        for ast in books:
+            self.assertIn('@writer', json.dumps(ast['meta']['include-before'], ensure_ascii=False))
+            self.assertIn('Редакция:', json.dumps(ast['meta']['date'], ensure_ascii=False))
+        for ast in self.compiled:
+            if ast['meta']['handbook-level']['c'] != 'book':
+                self.assertNotIn('include-before', ast['meta'])
+                self.assertNotIn('date', ast['meta'])
+        (self.root / 'CONTRIBUTORS.md').write_text('contributors-updated')
+        self.asts['contributors-updated'] = deepcopy(self.asts['contributors'])
+        self.asts['contributors-updated']['blocks'].append({'t': 'Para', 'c': [text('Другой Автор')]})
+        self.build()
+        self.assertEqual(len(self.compiled), 10, 'Участники меняют только полные книги')
+        with patch('handbook_pdf.source_revision', return_value=('new-commit', '2026-10-25')):
+            self.build()
+        self.assertEqual(len(self.compiled), 12, 'Редакция меняет только полные книги')
+
+    def test_revision_tag_date_and_dirty_state(self):
+        import subprocess
+        values = {('rev-parse', '--short=12', 'HEAD'): 'abcdef123456',
+                  ('tag', '--points-at', 'HEAD'): 'main-preview\nv2026.10.25.2\nv2026.10.25.10',
+                  ('status', '--porcelain', '--untracked-files=normal'): ' M CONTRIBUTORS.md',
+                  ('log', '-1', '--format=%cs'): '2026-10-25'}
+        def git(command, **kwargs):
+            return subprocess.CompletedProcess(command, 0, values[tuple(command[3:])], '')
+        with patch('handbook_pdf.subprocess.run', side_effect=git):
+            revision, date = source_revision(self.root)
+        self.assertEqual(revision, 'v2026.10.25.10 / abcdef123456 (с локальными изменениями)')
+        self.assertEqual(date, '2026-10-25')
+        with patch('handbook_pdf.subprocess.run', side_effect=FileNotFoundError):
+            self.assertEqual(source_revision(self.root), ('Локальная редакция (без Git)', ''))
+
+    def test_inline_contributors_replace_the_separate_frontmatter(self):
+        book = self.root / 'handbooks/alpha'
+        (book / 'content.md').write_text('welcome <!-- handbook-contributors -->')
+        self.asts['welcome contributors'] = deepcopy(self.asts['alpha-welcome'])
+        self.asts['welcome contributors']['blocks'].append({'t': 'Para', 'c': [text('Автор (@writer)')]})
+        self.build(selected=book)
+        full = next(ast for ast in self.compiled if ast['meta']['handbook-level']['c'] == 'book')
+        self.assertEqual(full['meta']['include-before']['c'], [])
+        self.assertIn('@writer', json.dumps(full['blocks'], ensure_ascii=False))
+        self.assertNotIn('handbook-contributors', json.dumps(full['blocks']))
 
     def test_book_only_single_output_and_preserves_other_levels(self):
         self.build()
@@ -166,7 +247,7 @@ class HandbookPdfTests(unittest.TestCase):
             pdf.write_bytes(b'corrupt')
         self.build()
         self.assertEqual(len(self.compiled), 32)
-        self.assertEqual(self.parse_count, 6)
+        self.assertEqual(self.parse_count, 7)
 
     def test_selected_subtree_cleanup_and_custom_output(self):
         self.build()
@@ -210,7 +291,7 @@ class HandbookPdfTests(unittest.TestCase):
 
     def test_failed_compilation_is_not_cached_or_published(self):
         def fail(command, **kwargs):
-            if command[0] == 'pandoc' and '--pdf-engine=xelatex' in command:
+            if command[0] == 'pandoc' and '--pdf-engine=pdflatex' in command:
                 raise ValueError('compile failed')
             return self.fake_run(command, **kwargs)
         with patch('handbook_pdf.run', side_effect=fail):
@@ -240,7 +321,7 @@ class HandbookPdfTests(unittest.TestCase):
         self.metadata(chapter, slug='section', paragraphs=['01-first', '09-second'])
         self.build()
         self.assertEqual(len(self.compiled), 10)
-        self.assertEqual(self.parse_count, 6)
+        self.assertEqual(self.parse_count, 7)
         self.assertEqual(self.svg_count, 1)
 
     def test_metadata_resources_and_stale_outputs_are_scoped(self):
@@ -300,7 +381,7 @@ class HandbookPdfTests(unittest.TestCase):
         self.build()
         with patch('handbook_pdf.renderer_identity', return_value=('new-playwright', 'new-browser')):
             self.build()
-        self.assertEqual(self.parse_count, 6)
+        self.assertEqual(self.parse_count, 7)
         self.assertEqual(self.svg_count, 2)
         self.assertEqual(len(self.compiled), 16)
 

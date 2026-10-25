@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from authorship import normalize_authors, authors_html, authors_markdown
+from authorship import normalize_authors, authors_html, authors_markdown, expand_contributors
 from course_site import publish_pages
 from handbook_notebooks import render_notebook
 from meta_parser import parse_meta
@@ -15,6 +15,17 @@ from repo_paths import REPO_ROOT
 
 
 class AuthorshipTests(unittest.TestCase):
+    def test_contributors_are_included_without_a_duplicate_heading(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            text = '## Preface\n\n<!-- handbook-contributors -->\n\nNext paragraph.'
+            (root / 'CONTRIBUTORS.md').write_text('# Project authors\n\n- [Writer (@writer)](https://github.com/writer)\n')
+            rendered = expand_contributors(text, root)
+            self.assertIn('[Writer (@writer)](https://github.com/writer)', rendered)
+            self.assertNotIn('# Project authors', rendered)
+            self.assertNotIn('<!-- handbook-contributors -->', rendered)
+            self.assertEqual(expand_contributors('Unchanged text', root), 'Unchanged text')
+
     def test_strings_objects_roles_and_escaping(self):
         self.assertEqual(normalize_authors([' Writer ']), [{'name': 'Writer'}])
         people = ['Writer <one>', {'name': 'Editor & two', 'role': 'revision <script>'}]

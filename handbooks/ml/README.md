@@ -1,4 +1,4 @@
-# Учебник машинного обучения
+# Учебник по машинному обучению
 
 [Читать на сайте](https://materials.beloai.by/handbooks/ml/) · [Программа](CURRICULUM.md)
 
@@ -13,6 +13,6 @@
 4. [Как учатся нейросети](04-how-nns-learn/README.md)
 5. [Математика ИИ](05-math-of-ai/README.md)
 
-Для авторов: [шаблон параграфа](_paragraph-template/README.md) и [руководство по сборке](../../utils/scripts/README.md#учебник-машинного-обучения).
+Для авторов: [шаблон параграфа](_paragraph-template/README.md) и [руководство по сборке](../../utils/scripts/README.md#учебник-по-машинному-обучению).
 
 Первое занятие: [От задачи к первому эксперименту](01-classic-ml/01-first-experiment/content.md).
