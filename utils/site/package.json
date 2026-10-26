@@ -3,14 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "esbuild src/materials-app.js --bundle --minify --format=esm --target=es2022 --outfile=../../_site/assets/materials.js && esbuild src/site.css --minify --outfile=../../_site/assets/site.css && cp node_modules/lit/LICENSE ../../_site/assets/LICENSE-Lit.txt",
+    "build": "esbuild src/materials-app.js --bundle --minify --format=esm --target=es2022 --outfile=../../_site/assets/materials.js && esbuild src/site.css --minify --outfile=../../_site/assets/site.css && cp node_modules/lit/LICENSE ../../_site/assets/LICENSE-Lit.txt && mkdir -p ../../_site/assets/pdfjs && cp node_modules/pdfjs-dist/build/pdf.mjs node_modules/pdfjs-dist/build/pdf.worker.mjs node_modules/pdfjs-dist/LICENSE ../../_site/assets/pdfjs/ && cp -R node_modules/pdfjs-dist/cmaps node_modules/pdfjs-dist/standard_fonts node_modules/pdfjs-dist/wasm ../../_site/assets/pdfjs/",
     "test": "node --test src/*.test.js"
   },
   "dependencies": {
     "katex": "^0.19.0",
     "lit": "^3.3.1",
     "markdown-it": "^15.0.2",
-    "markdown-it-texmath": "^1.0.0"
+    "markdown-it-texmath": "^1.0.0",
+    "pdfjs-dist": "^6.4.299"
   },
   "devDependencies": {
     "esbuild": "^0.25.9"

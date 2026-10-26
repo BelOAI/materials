@@ -5,14 +5,11 @@ on:
     branches: [main, dev]
     paths:
       - 'handbooks/**'
-      - 'course/lectures/**'
-      - 'course/practices/**'
-      - 'course/assignments/**'
+      - 'course/**'
       - 'utils/latex/**'
       - 'utils/pdf/**'
       - 'utils/scripts/**'
       - 'utils/site/**'
-      - 'course/course.json'
       - '.github/workflows/**'
       - 'build/**'
       - '.github/ci/**'

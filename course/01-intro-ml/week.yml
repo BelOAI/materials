@@ -1,0 +1,10 @@
+slug: intro-ml
+number: 1
+title: Введение в машинное обучение
+description: Задачи машинного обучения, данные и метрики. Работа с NumPy и pandas,
+  повторение векторов и матриц.
+materials:
+- lecture
+- practice-01-numpy-pandas
+- assignment-03-vectors-matrices
+- assignment-05-numpy-pandas

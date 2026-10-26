@@ -61,10 +61,10 @@ class AuthorshipTests(unittest.TestCase):
             source = root / 'utils/site'
             source.mkdir(parents=True)
             shutil.copy(REPO_ROOT / 'utils/site/index.html', source / 'index.html')
-            meta = root / 'course/lectures/01-fixture/meta.yaml'
+            meta = root / 'course/01-fixture/lecture/material.yml'
             meta.parent.mkdir(parents=True)
             meta.write_text('authors:\n  - name: Writer <one>\n    role: original\n  - name: Editor\n    role: revision\n')
-            item = dict(id='lectures/01-fixture', kind='lecture', title='Fixture', number='1',
+            item = dict(id='01-fixture/lecture', kind='lecture', title='Fixture', number='1',
                         date='', time='', description='', subtitle='', materials=[], references=[], pdf='fixture.pdf')
             week = dict(slug='fixture', number=1, title='Fixture', description='', materials=[item['id']])
             manifest = dict(version=2, course=dict(title='Fixture', description='', weeks=[week]), materials=[item])

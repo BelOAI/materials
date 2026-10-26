@@ -1,24 +1,14 @@
 #!/usr/bin/env bash
-# Resolve session kind and namespaced slug from a lecture/practice directory path.
-# Usage: source session-slug.sh && session_slug "$SESSION_DIR"
-# Sets: SESSION_KIND (lectures|practices|assignments), SESSION_SLUG (e.g. lectures/01-intro)
-
+# Путь материала относительно course/.
 session_slug() {
-  local dir="$1"
-  local parent base
-
-  dir="$(cd "$dir" && pwd)"
-  parent="$(basename "$(dirname "$dir")")"
-  base="$(basename "$dir")"
-
-  case "$parent" in
-    lectures|practices|assignments)
-      SESSION_KIND="$parent"
-      SESSION_SLUG="${parent}/${base}"
-      ;;
-    *)
-      echo "Error: session directory must be under lectures/, practices/, or assignments/: ${dir}" >&2
-      return 1
-      ;;
-  esac
+  local dir
+  dir="$(cd "$1" && pwd)"
+  SESSION_SLUG="$(python3 - "$dir" "$REPO_ROOT" <<'PYTHON'
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(sys.argv[2]) / 'utils/scripts'))
+from course_catalog import session_slug
+print(session_slug(Path(sys.argv[1])))
+PYTHON
+)" || return 1
 }

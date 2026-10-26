@@ -9,3 +9,6 @@ customElements.define("materials-catalog", MaterialsCatalog);
 customElements.define("course-navigation", CourseNavigation);
 customElements.define("course-shell", CourseShell);
 customElements.define("material-preview", MaterialPreview);
+
+import { LectureViewer } from "./lecture-viewer.js";
+customElements.define("lecture-viewer", LectureViewer);

@@ -1,0 +1,8 @@
+slug: lin-reg
+number: 3
+title: Линейная регрессия
+description: Линейная модель, средняя квадратичная ошибка и обучение градиентным спуском.
+  Практика на NumPy.
+materials:
+- lecture
+- practice-03-lin-reg

@@ -8,7 +8,7 @@ import subprocess
 from html import escape, unescape
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urlsplit, urlunsplit
+from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 from course_site import link, write_page
 from authorship import authors_html, expand_contributors
@@ -81,6 +81,20 @@ def source_links(html, item, items, source):
     routes = {entry['_content'].resolve(): entry['id'] for entry in items if '_content' in entry}
     routes.update({(entry['_folder'] / 'README.md').resolve(): entry['id'] for entry in items})
     routes[(source / 'handbooks/ml/README.md').resolve()] = 'ml'
+    resources = {}
+    for entry in items:
+        if '_content' not in entry:
+            continue
+        folder = entry['_folder']
+        paths = {Path(resource['path']) for resource in entry.get('resources', [])}
+        # Индекс файлов совпадает с правилами публикации publish_files.
+        paths.update(path.relative_to(folder)
+                     for directory in ('media', 'data')
+                     for path in (folder / directory).rglob('*')
+                     if path.is_file() and not any(part.startswith(('_', '.'))
+                                                  for part in path.relative_to(folder).parts))
+        for path in paths:
+            resources[local_file(folder, path.as_posix())] = posixpath.join(entry['id'], path.as_posix())
     def replace(match):
         url = urlsplit(unescape(match[3]))
         if not url.path or url.scheme or url.netloc or url.path.startswith('/'):
@@ -88,9 +102,12 @@ def source_links(html, item, items, source):
         candidate = (item['_folder'] / unquote(url.path)).resolve()
         if candidate.is_dir():
             candidate /= 'index.md' if (candidate / 'index.md').is_file() else 'README.md'
-        if candidate not in routes:
+        if candidate in routes:
+            target = posixpath.relpath(routes[candidate], item['id']) + '/'
+        elif candidate in resources:
+            target = quote(posixpath.relpath(resources[candidate], item['id']), safe='/')
+        else:
             return match[0]
-        target = posixpath.relpath(routes[candidate], item['id']) + '/'
         return match[1] + '=' + match[2] + escape(urlunsplit(('', '', target, url.query, url.fragment)), quote=True) + match[2]
     return re.sub(r"\b(href|src)=([\"'])(.*?)\2", replace, html)
 

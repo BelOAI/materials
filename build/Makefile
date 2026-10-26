@@ -9,13 +9,13 @@ all: site
 
 session:
 ifndef DIR
-	$(error Usage: make -f build/Makefile session DIR=course/lectures/01-intro-ml)
+	$(error Usage: make -f build/Makefile session DIR=course/01-intro-ml/lecture)
 endif
 	cd "$(REPO_ROOT)" && python3 "$(SCRIPTS)/build-session.py" "$(DIR)"
 
 tex:
 ifndef DIR
-	$(error Usage: make -f build/Makefile tex DIR=course/lectures/01-intro-ml)
+	$(error Usage: make -f build/Makefile tex DIR=course/01-intro-ml/lecture)
 endif
 	cd "$(REPO_ROOT)" && "$(SCRIPTS)/build-presentation.sh" "$(DIR)" --local
 
@@ -23,7 +23,7 @@ lecture: session
 
 materials:
 ifndef DIR
-	$(error Usage: make -f build/Makefile materials DIR=course/lectures/01-intro-ml)
+	$(error Usage: make -f build/Makefile materials DIR=course/01-intro-ml/lecture)
 endif
 	cd "$(REPO_ROOT)" && "$(SCRIPTS)/build-materials.sh" "$(DIR)"
 
@@ -45,7 +45,7 @@ site: frontend
 	python3 "$(SCRIPTS)/generate-site.py"
 
 clean:
-	find "$(REPO_ROOT)/course/lectures" "$(REPO_ROOT)/course/practices" "$(REPO_ROOT)/course/assignments" -type f \( \
+	find "$(REPO_ROOT)/course" -type f \( \
 		-name '*.aux' -o -name '*.log' -o -name '*.out' -o -name '*.toc' \
 		-o -name '*.nav' -o -name '*.snm' -o -name '*.vrb' -o -name '*.fls' \
 		-o -name '*.fdb_latexmk' -o -name '*.synctex.gz' -o -name 'main.pdf' \
