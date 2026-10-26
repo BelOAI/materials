@@ -6,7 +6,8 @@
 
 1. [От задачи к первому эксперименту](01-first-experiment/README.md)
 2. [Ближайшие соседи](02-nearest-neighbors/README.md)
+3. [Линейная регрессия, Ridge и Lasso](03-linear-regression/README.md)
 4. [Решающие деревья](04-decision-trees/README.md)
 5. [Кластеризация и K-means](05-clustering-kmeans/README.md)
 
-Тема 1.3 и остальные параграфы будут добавляться по мере подготовки. Порядок задаётся в `meta.yaml`.
+Остальные параграфы будут добавляться по мере подготовки. Порядок задаётся в `meta.yaml`.

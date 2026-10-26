@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="400" viewBox="0 0 740 400" role="img" aria-labelledby="title desc">
+  <title id="title">МНК, Ridge и Lasso: шпаргалка</title>
+  <desc id="desc">Три карточки. МНК минимизирует сумму квадратов остатков, веса ничем не ограничены, в нашем примере w = 1,4; подходит, когда признаков мало и они разные. Ridge добавляет λ, умноженную на сумму квадратов весов, веса сжимаются, но не до нуля, при λ = 5 вес 0,7; подходит, когда признаки похожи. Lasso добавляет λ, умноженную на сумму модулей весов, лишние веса становятся нулём, при λ = 14 вес 0; подходит, когда нужно отобрать признаки. Столбики весов схематичны.</desc>
+  <g font-family="DejaVu Sans, sans-serif" fill="#1e293b">
+    <text x="20" y="32" font-size="21" font-weight="bold">Три способа подобрать веса</text>
+    <path d="M20 46 H720" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <!-- карточки -->
+    <rect x="20" y="62" width="220" height="326" rx="10" fill="#ffffff" stroke="#b91c1c" stroke-width="2"/>
+    <rect x="260" y="62" width="220" height="326" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+    <rect x="500" y="62" width="220" height="326" rx="10" fill="#ffffff" stroke="#b45309" stroke-width="2"/>
+    <path d="M20 72 a10 10 0 0 1 10 -10 H230 a10 10 0 0 1 10 10 V102 H20 z" fill="#b91c1c"/>
+    <path d="M260 72 a10 10 0 0 1 10 -10 H470 a10 10 0 0 1 10 10 V102 H260 z" fill="#2563eb"/>
+    <path d="M500 72 a10 10 0 0 1 10 -10 H710 a10 10 0 0 1 10 10 V102 H500 z" fill="#b45309"/>
+
+    <g text-anchor="middle" font-weight="bold" font-size="18" fill="#ffffff">
+      <text x="130" y="89">МНК</text>
+      <text x="370" y="89">Ridge (L₂)</text>
+      <text x="610" y="89">Lasso (L₁)</text>
+    </g>
+
+    <!-- что минимизируем -->
+    <g text-anchor="middle">
+      <text x="130" y="124" font-size="11" letter-spacing="1" fill="#64748b">МИНИМИЗИРУЕМ</text>
+      <text x="370" y="124" font-size="11" letter-spacing="1" fill="#64748b">МИНИМИЗИРУЕМ</text>
+      <text x="610" y="124" font-size="11" letter-spacing="1" fill="#64748b">МИНИМИЗИРУЕМ</text>
+      <text x="130" y="148" font-size="16" font-weight="bold">Σ e²</text>
+      <text x="370" y="148" font-size="16" font-weight="bold">Σ e² + λ·Σ w²</text>
+      <text x="610" y="148" font-size="16" font-weight="bold">Σ e² + λ·Σ |w|</text>
+    </g>
+
+    <!-- схематичные столбики весов -->
+    <g stroke="#94a3b8" stroke-width="1">
+      <path d="M45 215 H215"/>
+      <path d="M285 215 H455"/>
+      <path d="M525 215 H695"/>
+    </g>
+    <g fill="#b91c1c">
+      <rect x="55" y="171" width="20" height="44"/>
+      <rect x="85" y="215" width="20" height="22"/>
+      <rect x="115" y="189" width="20" height="26"/>
+      <rect x="145" y="201" width="20" height="14"/>
+      <rect x="175" y="215" width="20" height="12"/>
+    </g>
+    <g fill="#2563eb">
+      <rect x="295" y="187" width="20" height="28"/>
+      <rect x="325" y="215" width="20" height="14"/>
+      <rect x="355" y="198" width="20" height="17"/>
+      <rect x="385" y="206" width="20" height="9"/>
+      <rect x="415" y="215" width="20" height="7"/>
+    </g>
+    <g fill="#b45309">
+      <rect x="535" y="181" width="20" height="34"/>
+      <rect x="565" y="215" width="20" height="16"/>
+      <rect x="595" y="200" width="20" height="15"/>
+    </g>
+    <g font-size="12" fill="#b45309" text-anchor="middle">
+      <text x="635" y="211">0</text>
+      <text x="665" y="211">0</text>
+    </g>
+    <g font-size="11" fill="#64748b" text-anchor="middle">
+      <text x="130" y="256">веса (схема)</text>
+      <text x="370" y="256">веса (схема)</text>
+      <text x="610" y="256">веса (схема)</text>
+    </g>
+
+    <!-- что происходит с весами -->
+    <g text-anchor="middle" font-size="14">
+      <text x="130" y="284" font-weight="bold">веса ничем</text>
+      <text x="130" y="302" font-weight="bold">не ограничены</text>
+      <text x="370" y="284" font-weight="bold">сжимаются,</text>
+      <text x="370" y="302" font-weight="bold">но не до нуля</text>
+      <text x="610" y="284" font-weight="bold">лишние веса</text>
+      <text x="610" y="302" font-weight="bold">становятся 0</text>
+    </g>
+
+    <!-- наш пример -->
+    <g text-anchor="middle" font-size="13">
+      <text x="130" y="330">наш пример: w = 1,4</text>
+      <text x="370" y="330">λ = 5:  w = 0,7</text>
+      <text x="610" y="330">λ = 14:  w = 0</text>
+    </g>
+
+    <!-- когда брать -->
+    <g text-anchor="middle" font-size="12.5" fill="#475569">
+      <text x="130" y="356">признаков мало,</text>
+      <text x="130" y="374">и они разные</text>
+      <text x="370" y="356">признаки похожи,</text>
+      <text x="370" y="374">нужна устойчивость</text>
+      <text x="610" y="356">нужно отобрать</text>
+      <text x="610" y="374">полезные признаки</text>
+    </g>
+  </g>
+</svg>

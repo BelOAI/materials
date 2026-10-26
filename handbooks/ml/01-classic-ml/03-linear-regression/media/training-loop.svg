@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="300" viewBox="0 0 740 300" role="img" aria-labelledby="title desc">
+  <title id="title">Как обучается линейная модель</title>
+  <desc id="desc">Четыре шага на примере точки x = 3, y = 4. Прогноз: ŷ = 1,4 · 3 + 1,5 = 5,7. Остаток: e = 4 − 5,7 = −1,7. Потери: квадрат остатка 2,89, MSE по четырём точкам 1,05. Поправка весов: МНК находит w и b сразу формулой, градиентный спуск — маленькими шагами. Стрелка от последнего шага возвращает к прогнозу.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <g font-family="DejaVu Sans, sans-serif" fill="#1e293b">
+    <text x="20" y="32" font-size="21" font-weight="bold">Как обучается линейная модель</text>
+    <text x="720" y="32" font-size="13" fill="#64748b" text-anchor="end">пример: точка x = 3, y = 4</text>
+    <path d="M20 46 H720" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g text-anchor="middle">
+      <rect x="20" y="64" width="160" height="150" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="100" y="88" font-size="12" font-weight="bold" letter-spacing="1" fill="#2563eb">1 · ПРОГНОЗ</text>
+      <text x="100" y="122" font-size="18" font-weight="bold">ŷ = w·x + b</text>
+      <text x="100" y="160" font-size="13">w = 1,4;  b = 1,5</text>
+      <text x="100" y="182" font-size="13">ŷ = 1,4 · 3 + 1,5</text>
+      <text x="100" y="202" font-size="13" font-weight="bold">= 5,7</text>
+
+      <rect x="200" y="64" width="160" height="150" rx="10" fill="#fff7ed" stroke="#b45309" stroke-width="2"/>
+      <text x="280" y="88" font-size="12" font-weight="bold" letter-spacing="1" fill="#b45309">2 · ОСТАТОК</text>
+      <text x="280" y="122" font-size="18" font-weight="bold">e = y − ŷ</text>
+      <text x="280" y="160" font-size="13">настоящий балл 4</text>
+      <text x="280" y="182" font-size="13">e = 4 − 5,7</text>
+      <text x="280" y="202" font-size="13" font-weight="bold">= −1,7</text>
+
+      <rect x="380" y="64" width="160" height="150" rx="10" fill="#fef2f2" stroke="#b91c1c" stroke-width="2"/>
+      <text x="460" y="88" font-size="12" font-weight="bold" letter-spacing="1" fill="#b91c1c">3 · ПОТЕРИ</text>
+      <text x="460" y="122" font-size="18" font-weight="bold">MSE</text>
+      <text x="460" y="160" font-size="13">квадрат: e² = 2,89</text>
+      <text x="460" y="182" font-size="13">среднее e² по</text>
+      <text x="460" y="202" font-size="13" font-weight="bold">4 точкам = 1,05</text>
+
+      <rect x="560" y="64" width="160" height="150" rx="10" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
+      <text x="640" y="88" font-size="12" font-weight="bold" letter-spacing="1" fill="#15803d">4 · ПОПРАВКА</text>
+      <text x="640" y="122" font-size="17" font-weight="bold">меняем w и b</text>
+      <text x="640" y="160" font-size="13">чтобы MSE стала</text>
+      <text x="640" y="182" font-size="13">меньше:</text>
+      <text x="640" y="202" font-size="13" font-weight="bold">МНК или спуск</text>
+    </g>
+
+    <g stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)">
+      <path d="M181 139 H198"/>
+      <path d="M361 139 H378"/>
+      <path d="M541 139 H558"/>
+      <path d="M640 215 V252 H100 V217"/>
+    </g>
+    <rect x="200" y="241" width="340" height="22" fill="#ffffff"/>
+    <text x="370" y="257" font-size="13" text-anchor="middle" fill="#475569">градиентный спуск повторяет круг, пока MSE падает</text>
+    <text x="370" y="286" font-size="13" text-anchor="middle" fill="#475569">МНК находит лучшие w и b сразу, одной формулой</text>
+  </g>
+</svg>
