@@ -1,0 +1,37 @@
+title: Честная оценка качества
+slug: honest-evaluation
+description: Выбираем метрику и настройку на нескольких проверках, затем оцениваем модель на независимых заказах и находим утечку связанных фотографий.
+status: draft
+build: true
+date: '2026-10-25'
+authors:
+  - Авторы BelOAI
+topics:
+  - MAE и RMSE, выбор метрики по цене ошибки
+  - Приближённые метрики для ранжирования
+  - Трёхфолдовая проверка и выбор настройки
+  - Отложенная итоговая оценка
+  - Утечка через связанные фотографии
+learning_outcomes:
+  - Выбирать меру ошибки по последствиям ошибки в задаче и объяснять, что метрика лишь приближает цель.
+  - Сравнивать настройки на нескольких проверочных частях и один раз оценивать выбранную модель на отложенных данных.
+  - Находить утечку, если связанные объекты попали в разные части данных.
+sync_notebook: true
+resources:
+  - path: notebook.ipynb
+    label: Практика и решения (.ipynb)
+  - path: data/final.csv
+    label: Итоговые заказы без ответов (.csv)
+  - path: data/final_answers.csv
+    label: Ответы для самопроверки (.csv)
+  - path: data/generate.py
+    label: Генератор итоговых заказов (.py)
+  - path: media/evaluation-flow.svg
+    label: Схема честной проверки (.svg)
+  - path: evaluate.py
+    label: Код эксперимента (.py)
+references:
+  - label: BelOAI — признаки, переобучение и регуляризация
+    url: https://github.com/BelOAI/materials/tree/dev/handbooks/ml/01-classic-ml/07-features-regularization
+  - label: scikit-learn — Cross-validation
+    url: https://scikit-learn.org/stable/modules/cross_validation.html

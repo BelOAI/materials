@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 330" role="img" aria-labelledby="title desc">
+  <title id="title">Три проверки и отдельная итоговая оценка</title>
+  <desc id="desc">Три карточки показывают, какая часть учебных данных служит проверочной. Затем по средней ошибке выбирают настройку. В нижнем ряду: обучение на всех 300 заказах, прогноз для 100 новых и однократное открытие ответов.</desc>
+  <rect width="940" height="330" rx="16" fill="#f7f9fc"/>
+  <style>
+    text { font-family: 'DejaVu Sans', Arial, sans-serif; fill: #17243a; }
+    .small { font-size: 17px; }
+    .label { font-size: 19px; font-weight: 700; }
+    .box { fill: #e4edf8; stroke: #43638c; stroke-width: 2; }
+    .hold { fill: #fff0d8; stroke: #a46718; stroke-width: 2; }
+  </style>
+  <text x="470" y="31" text-anchor="middle" class="label">300 учебных заказов: выбираем настройку</text>
+  <rect x="28" y="56" width="270" height="64" rx="10" class="box"/>
+  <text x="163" y="83" text-anchor="middle" class="small">Фолд 1: обучаем на 2 и 3</text>
+  <text x="163" y="107" text-anchor="middle" class="small">проверяем на 1</text>
+  <rect x="335" y="56" width="270" height="64" rx="10" class="box"/>
+  <text x="470" y="83" text-anchor="middle" class="small">Фолд 2: обучаем на 1 и 3</text>
+  <text x="470" y="107" text-anchor="middle" class="small">проверяем на 2</text>
+  <rect x="642" y="56" width="270" height="64" rx="10" class="box"/>
+  <text x="777" y="83" text-anchor="middle" class="small">Фолд 3: обучаем на 1 и 2</text>
+  <text x="777" y="107" text-anchor="middle" class="small">проверяем на 3</text>
+  <rect x="330" y="164" width="280" height="51" rx="10" class="box"/>
+  <text x="470" y="196" text-anchor="middle" class="label">Выбор по средней MAE</text>
+  <rect x="28" y="241" width="214" height="54" rx="10" class="box"/>
+  <text x="135" y="263" text-anchor="middle" class="small">1. Обучаем на всех</text>
+  <text x="135" y="285" text-anchor="middle" class="small">300 заказах</text>
+  <rect x="286" y="241" width="368" height="54" rx="10" class="hold"/>
+  <text x="470" y="263" text-anchor="middle" class="small">2. Предсказываем для 100 новых заказов</text>
+  <text x="470" y="285" text-anchor="middle" class="small">ответы пока закрыты</text>
+  <rect x="691" y="241" width="221" height="54" rx="10" class="hold"/>
+  <text x="801" y="263" text-anchor="middle" class="small">3. Открываем ответы</text>
+  <text x="801" y="285" text-anchor="middle" class="small">итоговая MAE</text>
+</svg>
