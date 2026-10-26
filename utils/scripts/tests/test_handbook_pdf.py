@@ -48,7 +48,7 @@ class HandbookPdfTests(unittest.TestCase):
         for book in ('alpha', 'beta'):
             base = self.root / 'handbooks' / book
             base.mkdir(parents=True)
-            (base / 'meta.yaml').write_text(yaml.safe_dump(dict(contributors=self.contributors), allow_unicode=True))
+            self.book_metadata(base, chapters=['07-section', '02-future'], contributors=self.contributors)
             self.source(base, book + '-welcome', [])
             chapter = base / '07-section'
             chapter.mkdir()
@@ -68,8 +68,8 @@ class HandbookPdfTests(unittest.TestCase):
             planned = base / '02-future'
             planned.mkdir()
             self.metadata(planned, slug='future', status='planned', paragraphs=[])
-            books.append(dict(slug=book, title=book, description='Описание', chapters=['07-section', '02-future']))
-        (self.root / 'handbooks/handbooks.json').write_text(json.dumps(dict(title='Каталог', description='Описание', handbooks=books)))
+            books.append(dict(slug=book, title=book, description='Описание'))
+        (self.root / 'handbooks/handbooks.yml').write_text(yaml.safe_dump(dict(title='Каталог', description='Описание', handbooks=books)))
         self.addCleanup(patch.stopall)
         patch.dict(os.environ, BUILD_CACHE_DIR=str(self.root / 'cache'), BUILD_CACHE_DISABLE='0').start()
         self.env = patch('handbook_pdf.environment', return_value=({'pandoc': 'pandoc-version'}, 'environment-version')).start()
@@ -80,6 +80,12 @@ class HandbookPdfTests(unittest.TestCase):
             self.svg_count += 1
             destination.write_bytes(b'%PDF-svg')
         patch('handbook_pdf.render_svg', side_effect=render).start()
+
+    def book_metadata(self, folder, **values):
+        path = folder / 'meta.yml'
+        item = yaml.safe_load(path.read_text()) if path.is_file() else {}
+        item.update(values)
+        path.write_text(yaml.safe_dump(item, allow_unicode=True))
 
     def metadata(self, folder, **values):
         item = dict(title='Тема', description='Описание', authors=['Автор'], status='draft', build=True)
@@ -145,7 +151,7 @@ class HandbookPdfTests(unittest.TestCase):
         source = 'alpha-welcome\n\n<!-- handbook-authors -->'
         (folder / 'content.md').write_text(source)
         for name in ['First Writer', 'Second Writer']:
-            (folder / 'meta.yaml').write_text(yaml.safe_dump(dict(preface=dict(authors=[name]))))
+            self.book_metadata(folder, preface=dict(authors=[name]))
             expanded = 'alpha-welcome\n\nАвтор: ' + name
             self.asts[expanded] = {'pandoc-api-version': [1, 23, 1], 'meta': {},
                                   'blocks': [{'t': 'Para', 'c': [text('Автор: ' + name)]}]}
@@ -177,7 +183,7 @@ class HandbookPdfTests(unittest.TestCase):
                 self.assertNotIn('date', ast['meta'])
         updated = self.contributors + [{'name': 'Другой Автор'}]
         for slug in ('alpha', 'beta'):
-            (self.root / f'handbooks/{slug}/meta.yaml').write_text(yaml.safe_dump(dict(contributors=updated), allow_unicode=True))
+            self.book_metadata(self.root / 'handbooks' / slug, contributors=updated)
         self.asts['contributors-updated'] = deepcopy(self.asts['contributors'])
         self.asts['contributors-updated']['blocks'].append({'t': 'Para', 'c': [text('Другой Автор')]})
         self.asts[contributors_markdown(updated)] = self.asts['contributors-updated']
@@ -217,7 +223,7 @@ class HandbookPdfTests(unittest.TestCase):
     def test_each_book_uses_its_own_contributor_metadata(self):
         for slug, name in [('alpha', 'Alpha person'), ('beta', 'Beta person')]:
             people = [dict(name=name)]
-            (self.root / f'handbooks/{slug}/meta.yaml').write_text(yaml.safe_dump(dict(contributors=people)))
+            self.book_metadata(self.root / 'handbooks' / slug, contributors=people)
             self.asts[contributors_markdown(people)] = {'pandoc-api-version': [1, 23, 1], 'meta': {},
                 'blocks': [{'t': 'Para', 'c': [text(name)]}]}
         self.build(book_only=True)
@@ -385,10 +391,10 @@ class HandbookPdfTests(unittest.TestCase):
         self.assertTrue(unrelated.exists())
 
     def test_disabled_book_and_book_without_preface(self):
-        path = self.root / 'handbooks/handbooks.json'
-        data = json.loads(path.read_text())
+        path = self.root / 'handbooks/handbooks.yml'
+        data = yaml.safe_load(path.read_text())
         data['handbooks'][1]['build'] = False
-        path.write_text(json.dumps(data))
+        path.write_text(yaml.safe_dump(data))
         (self.root / 'handbooks/alpha/content.md').unlink()
         self.build()
         self.assertEqual(len(self.compiled), 4)

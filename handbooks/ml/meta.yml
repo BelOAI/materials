@@ -1,3 +1,10 @@
+chapters:
+  - 00-intro
+  - 01-classic-ml
+  - 02-dl-basics
+  - 03-nn-in-practice
+  - 04-how-nns-learn
+  - 05-math-of-ai
 preface:
   authors:
     - name: Ростислав Свечников

@@ -267,7 +267,7 @@ def main() -> None:
     )
     publish_pages(REPO_ROOT, SITE_DIR, manifest)
     shutil.copyfile(REPO_ROOT / "utils/site/favicon.svg", SITE_DIR / "favicon.svg")
-    if (REPO_ROOT / "handbooks/handbooks.json").is_file():
+    if (REPO_ROOT / "handbooks/handbooks.yml").is_file():
         publish_handbook(REPO_ROOT, SITE_DIR, course["weeks"])
     print(f"Опубликован манифест: {len(entries)} материалов")
 

@@ -253,7 +253,9 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
                 target.write_text(json.dumps(notebook, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
                 # Превью зависит также от текста, YAML, ресурсов и общего экспортера.
                 dependencies = [item['_content'], folder / 'meta.yaml', folder.parent / 'meta.yaml',
-                                source / 'handbooks/handbooks.json', source / 'utils/site/render-handbook.mjs',
+                                source / 'handbooks/handbooks.yml',
+                                source / 'handbooks' / item['id'].split('/')[0] / 'meta.yml',
+                                source / 'utils/site/render-handbook.mjs',
                                 source / 'utils/site/src/site.css', Path(__file__),
                                 Path(__file__).with_name('handbook_catalog.py')]
                 dependencies += [Path(__file__).with_name('handbook_notebooks.py'),

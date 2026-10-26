@@ -136,9 +136,10 @@ class HandbookPdfRenderingTests(unittest.TestCase):
                 chapter = book / '01-section'
                 paragraph = chapter / '01-paragraph'
                 paragraph.mkdir(parents=True)
-                (book / 'meta.yaml').write_text(yaml.safe_dump(dict(contributors=[dict(name='Синтетический Автор', github='writer')]), allow_unicode=True))
+                (book / 'meta.yml').write_text(yaml.safe_dump(dict(chapters=['01-section'],
+                    contributors=[dict(name='Синтетический Автор', github='writer')]), allow_unicode=True))
                 books.append(dict(slug=slug, title='Синтетический учебник с длинным названием для проверки колонтитула',
-                                  description='Описание', chapters=['01-section']))
+                                  description='Описание'))
                 for folder, metadata in [(chapter, dict(slug='section', paragraphs=['01-paragraph'])),
                                          (paragraph, dict(slug='paragraph'))]:
                     metadata.update(title=('Глава' if folder == chapter else 'Материал') + ' синтетической книги', description='Описание',
@@ -183,8 +184,8 @@ print("short")
                 content += '\n'.join(f'| {i} | Строка длинной таблицы |' for i in range(90))
                 content += '\n\n```python\n' + '\n'.join(f'print({i})' for i in range(55)) + '\n```\n'
                 (paragraph / 'content.md').write_text(content)
-            (root / 'handbooks/handbooks.json').write_text(json.dumps(
-                dict(title='Каталог', description='Описание', handbooks=books), ensure_ascii=False))
+            (root / 'handbooks/handbooks.yml').write_text(yaml.safe_dump(
+                dict(title='Каталог', description='Описание', handbooks=books), allow_unicode=True))
             with patch.dict(os.environ, BUILD_CACHE_DIR=str(root / 'cache'), BUILD_CACHE_DISABLE='0'):
                 with redirect_stdout(io.StringIO()):
                     build(root, jobs=1)

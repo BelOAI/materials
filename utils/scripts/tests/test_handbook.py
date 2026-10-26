@@ -42,8 +42,9 @@ class HandbookTests(unittest.TestCase):
             (folder / 'meta.yaml').write_text(yaml.safe_dump(item))
         (base / 'ml/content.md').write_text('Welcome fixture.\n\n[Section](00-intro/content.md)\n')
         (base / 'ml/CURRICULUM.md').write_text('## Plan fixture\n\n[Example](01-classic-ml/README.md)\n')
-        (base / 'handbooks.json').write_text(json.dumps(dict(title='Fixture', description='Fixture.',
-            handbooks=[dict(slug='ml', title='ML', description='Fixture.', chapters=folders)])))
+        (base / 'ml/meta.yml').write_text(yaml.safe_dump(dict(chapters=folders)))
+        (base / 'handbooks.yml').write_text(yaml.safe_dump(dict(title='Fixture', description='Fixture.',
+            handbooks=[dict(slug='ml', title='ML', description='Fixture.')])))
         (self.root / 'utils/site').mkdir(parents=True)
         for name in ('index.html', 'render-handbook.mjs'):
             shutil.copyfile(ROOT / 'utils/site' / name, self.root / 'utils/site' / name)
@@ -111,13 +112,13 @@ resources:
         self.paragraph()
         base = self.root / 'handbooks'
         shutil.copytree(base / 'ml', base / 'guide')
-        path = base / 'handbooks.json'
-        catalog = json.loads(path.read_text())
+        path = base / 'handbooks.yml'
+        catalog = yaml.safe_load(path.read_text())
         catalog['handbooks'].append(catalog['handbooks'][0] | dict(slug='guide', title='Second fixture'))
         catalog['handbooks'].append(dict(slug='disabled', title='Disabled fixture', description='Fixture.', build=False))
         (base / 'disabled').mkdir()
         (base / 'disabled/README.md').write_text('Автор: Excluded draft writer\n')
-        path.write_text(json.dumps(catalog))
+        path.write_text(yaml.safe_dump(catalog))
         publish_handbook(self.root, self.output, [])
         landing = (self.output / 'handbooks/index.html').read_text()
         navigation = landing.split('<course-navigation>', 1)[1].split('</course-navigation>', 1)[0]
@@ -140,7 +141,7 @@ resources:
         validate_links(self.output)
         # Каталог работает и без учебника с историческим slug ml.
         catalog['handbooks'] = [catalog['handbooks'][1]]
-        path.write_text(json.dumps(catalog))
+        path.write_text(yaml.safe_dump(catalog))
         (base / 'README.md').write_text('# Catalogue\n\n[Guide](guide/README.md)\n')
         publish_handbook(self.root, self.output, [])
         self.assertFalse((self.output / 'handbooks/ml').exists())
@@ -200,8 +201,9 @@ resources:
         programme = '# Plan fixture\n\n<!-- handbook-authors -->\n\nOriginal programme.'
         (folder / 'content.md').write_text(preface)
         (folder / 'CURRICULUM.md').write_text(programme)
+        metadata = yaml.safe_load((folder / 'meta.yml').read_text())
         for name in ['Writer <one>', 'Writer & two']:
-            (folder / 'meta.yaml').write_text(yaml.safe_dump(dict(
+            (folder / 'meta.yml').write_text(yaml.safe_dump(metadata | dict(
                 preface=dict(authors=[name]), curriculum=dict(authors=['Planner', 'Reviewer']))))
             publish_handbook(self.root, self.output, [])
             html = (self.output / 'handbooks/ml/index.html').read_text()
@@ -218,7 +220,7 @@ resources:
             validate_links(self.output)
         for invalid in ['preface: [Writer]', 'preface: {authors: []}', 'curriculum: {authors: nope}',
                         'preface: {authors: [Writer]}\npreface: {authors: [Other]}', 'prefaec: {}']:
-            (folder / 'meta.yaml').write_text(invalid)
+            (folder / 'meta.yml').write_text(yaml.safe_dump(metadata) + invalid)
             with self.subTest(invalid=invalid), self.assertRaises(ValueError):
                 load_handbook(self.root)
 
@@ -232,6 +234,35 @@ resources:
             self.assertIn(marker, html)
             self.assertIn('href="curriculum/"', html)
             self.assertTrue((self.output / 'handbooks/ml/curriculum/index.html').is_file())
+
+    def test_yaml_catalog_and_local_book_metadata_validation(self):
+        catalog_path = self.root / 'handbooks/handbooks.yml'
+        original_catalog = catalog_path.read_text()
+        metadata_path = self.root / 'handbooks/ml/meta.yml'
+        original_metadata = metadata_path.read_text()
+        catalog = yaml.safe_load(original_catalog)
+        metadata = yaml.safe_load(original_metadata)
+        reordered = metadata['chapters'][:1] + list(reversed(metadata['chapters'][1:]))
+        metadata_path.write_text(yaml.safe_dump(metadata | dict(chapters=reordered)))
+        loaded = load_handbook(self.root)
+        self.assertEqual([s['_folder'].name for s in loaded['handbooks'][0]['sections']], reordered)
+        for invalid in ['title: [', original_catalog + '\ntitle: Duplicate', 'handbooks: []',
+                        yaml.safe_dump(catalog | dict(handbooks='ml')),
+                        yaml.safe_dump(catalog | dict(handbooks=[catalog['handbooks'][0] | dict(chapters=[])]))]:
+            catalog_path.write_text(invalid)
+            with self.subTest(catalog=invalid), self.assertRaises(ValueError):
+                load_handbook(self.root)
+        catalog_path.write_text(original_catalog)
+        for invalid in ['chapters: [', 'chapters: []\nchapters: []', 'preface: {authors: [Writer]}',
+                        'chapters: nope', 'chapters: [../outside]',
+                        yaml.safe_dump(dict(chapters=[metadata['chapters'][0]] * 2))]:
+            metadata_path.write_text(invalid)
+            with self.subTest(metadata=invalid), self.assertRaises(ValueError):
+                load_handbook(self.root)
+        metadata_path.unlink()
+        with self.assertRaises(ValueError):
+            load_handbook(self.root)
+        metadata_path.write_text(original_metadata)
 
     def test_invalid_local_metadata(self):
         path = self.chapter / 'meta.yaml'

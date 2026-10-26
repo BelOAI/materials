@@ -1,6 +1,5 @@
 """Общие метаданные учебников; без зависимости от HTML и инструментов сборки."""
 from __future__ import annotations
-import json
 import re
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -94,25 +93,33 @@ def validate_resources(folder, item, allow_missing_synced=False):
                 or not nonempty(resource.get('path')) or resource['path'] in seen):
             raise ValueError(f'{folder}: неверный или повторный ресурс')
         path = resource['path']
-        if path in {'index.html', 'content.md', 'meta.yaml', 'README.md'} or any(p.startswith(('_', '.')) for p in Path(path).parts):
+        if path in {'index.html', 'content.md', 'meta.yaml', 'meta.yml', 'README.md'} or any(p.startswith(('_', '.')) for p in Path(path).parts):
             raise ValueError(f'{folder}: служебный ресурс {path}')
         if not (allow_missing_synced and item.get('sync_notebook') and path == 'notebook.ipynb' and not (folder / path).exists()):
             local_file(folder, path)
         seen.add(path)
 
 
-def text_authors(folder: Path) -> dict:
-    """Авторство отдельных вводных текстов книги в локальном meta.yaml."""
-    path = folder / 'meta.yaml'
-    if not path.exists():
-        return {}
-    path = local_file(folder, 'meta.yaml')
+def read_yaml(path: Path):
+    """Прочитать YAML с диагностикой повторных ключей и ошибок синтаксиса."""
     try:
-        metadata = yaml.load(path.read_text(encoding='utf-8'), Loader=MetadataLoader)
-        if not isinstance(metadata, dict) or any(key not in {'preface', 'curriculum', 'contributors'} for key in metadata):
-            raise ValueError('Ожидаются разделы preface, curriculum и список contributors')
+        return yaml.load(path.read_text(encoding='utf-8'), Loader=MetadataLoader)
+    except (yaml.YAMLError, ValueError) as error:
+        raise ValueError(f'{path}: {error}') from error
+
+
+def read_book_metadata(folder: Path) -> dict:
+    """Порядок глав и авторство книги из локального meta.yml."""
+    path = local_file(folder, 'meta.yml')
+    metadata = read_yaml(path)
+    try:
+        if (not isinstance(metadata, dict) or not isinstance(metadata.get('chapters'), list)
+                or any(key not in {'chapters', 'preface', 'curriculum', 'contributors'} for key in metadata)):
+            raise ValueError('Необходим список chapters; допустимы также preface, curriculum и contributors')
         result = {}
         for key, entry in metadata.items():
+            if key == 'chapters':
+                continue
             if key == 'contributors':
                 result[key] = normalize_contributors(entry)
                 continue
@@ -121,8 +128,8 @@ def text_authors(folder: Path) -> dict:
             result[key] = normalize_authors(entry.get('authors'))
             if not result[key]:
                 raise ValueError(f'{key}: необходимо указать authors')
-        return result
-    except (yaml.YAMLError, ValueError) as error:
+        return dict(chapters=metadata['chapters'], text_authors=result)
+    except ValueError as error:
         raise ValueError(f'{path}: {error}') from error
 
 
@@ -156,7 +163,7 @@ def validate_author_sources(catalog):
 
 def load_catalog(source: Path, *, allow_missing_synced=False) -> dict:
     base = source / 'handbooks'
-    book = json.loads(local_file(base, 'handbooks.json').read_text(encoding='utf-8'))
+    book = read_yaml(local_file(base, 'handbooks.yml'))
     if not isinstance(book, dict) or not all(nonempty(book.get(k)) for k in ('title', 'description')):
         raise ValueError('Необходимы название и описание каталога')
     if not isinstance(book.get('handbooks'), list):
@@ -171,6 +178,8 @@ def load_catalog(source: Path, *, allow_missing_synced=False) -> dict:
                 or not SLUG.fullmatch(handbook['slug']) or handbook['slug'] in seen
                 or not all(nonempty(handbook.get(k)) for k in ('title', 'description'))):
             raise ValueError('Некорректный или повторный учебник')
+        if 'chapters' in handbook:
+            raise ValueError('Список chapters должен находиться в handbooks/<книга>/meta.yml')
         seen.add(handbook['slug'])
         slug = handbook['slug']
         folder = base / slug
@@ -183,7 +192,9 @@ def load_catalog(source: Path, *, allow_missing_synced=False) -> dict:
         if (folder / 'content.md').is_file():
             handbook['_content'] = local_file(base, slug + '/content.md')
         handbook['authors'] = normalize_authors(handbook.get('authors'))
-        handbook['_text_authors'] = text_authors(folder)
+        metadata = read_book_metadata(folder)
+        handbook['chapters'] = metadata['chapters']
+        handbook['_text_authors'] = metadata['text_authors']
         handbook['_content_authors'] = handbook['_text_authors'].get('preface', [])
         handbook['_contributors'] = handbook['_text_authors'].get('contributors', [])
         _load_sections(handbook, book, allow_missing_synced)
