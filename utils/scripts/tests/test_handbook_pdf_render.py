@@ -153,7 +153,7 @@ class HandbookPdfRenderingTests(unittest.TestCase):
                     '<text x="4" y="25" font-family="Liberation Serif, serif">Vector</text></svg>')
                 content = '''## Проверка текста {#target}
 
-Русский текст и Latin text. Символы: → ← ⇒ ≈ ≤ ≥ ≠ −.
+Русский текст и Latin text. Символы: → ← ⇒ ≈ ≤ ≥ ≠ − ▶ ⋯.
 Формула: $\\frac{1}{2} + x_i^2 \\leq \\sqrt{3}$.
 [Внутренняя ссылка](#target), [соседний раздел](../01-paragraph/content.md#target).
 
