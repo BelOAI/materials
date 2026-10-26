@@ -15,6 +15,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from handbook_catalog import load_catalog
+from authorship import contributors_markdown
 from handbook_pdf import build, documents, printable, source_revision
 from repo_paths import REPO_ROOT
 
@@ -39,13 +40,15 @@ class HandbookPdfTests(unittest.TestCase):
         shutil.copytree(REPO_ROOT / 'utils/pdf', style)
         shutil.copytree(REPO_ROOT / 'utils/latex/tex/latex', self.root / 'utils/latex/tex/latex')
         patch('handbook_pdf.prepare_logo', return_value='logo-hash').start()
-        (self.root / 'CONTRIBUTORS.md').write_text('contributors')
+        self.contributors = [{'name': 'Синтетический Автор', 'github': 'writer'}]
         self.asts['contributors'] = {'pandoc-api-version': [1, 23, 1], 'meta': {}, 'blocks': [
             {'t': 'Para', 'c': [text('Синтетический Автор (@writer)')]}]}
+        self.asts[contributors_markdown(self.contributors)] = self.asts['contributors']
         books = []
         for book in ('alpha', 'beta'):
             base = self.root / 'handbooks' / book
             base.mkdir(parents=True)
+            (base / 'meta.yaml').write_text(yaml.safe_dump(dict(contributors=self.contributors), allow_unicode=True))
             self.source(base, book + '-welcome', [])
             chapter = base / '07-section'
             chapter.mkdir()
@@ -137,6 +140,22 @@ class HandbookPdfTests(unittest.TestCase):
         self.assertEqual(len(self.compiled), before + 8)
         self.assertEqual((self.parse_count, self.svg_count), (parse_count, svg_count))
 
+    def test_preface_author_metadata_updates_pdf_source_and_cache(self):
+        folder = self.root / 'handbooks/alpha'
+        source = 'alpha-welcome\n\n<!-- handbook-authors -->'
+        (folder / 'content.md').write_text(source)
+        for name in ['First Writer', 'Second Writer']:
+            (folder / 'meta.yaml').write_text(yaml.safe_dump(dict(preface=dict(authors=[name]))))
+            expanded = 'alpha-welcome\n\nАвтор: ' + name
+            self.asts[expanded] = {'pandoc-api-version': [1, 23, 1], 'meta': {},
+                                  'blocks': [{'t': 'Para', 'c': [text('Автор: ' + name)]}]}
+            before = len(self.compiled)
+            self.build(selected=folder, book_only=True)
+            self.assertEqual(len(self.compiled), before + 1)
+            self.assertIn('Автор: ' + name, json.dumps(self.compiled[-1], ensure_ascii=False))
+            self.assertTrue(any(options.get('input') == expanded for _, options in self.commands))
+            self.assertEqual((folder / 'content.md').read_text(), source)
+
     def test_logo_change_rebuilds_pdf_without_reparsing(self):
         self.build()
         before = len(self.compiled)
@@ -156,9 +175,12 @@ class HandbookPdfTests(unittest.TestCase):
             if ast['meta']['handbook-level']['c'] != 'book':
                 self.assertNotIn('include-before', ast['meta'])
                 self.assertNotIn('date', ast['meta'])
-        (self.root / 'CONTRIBUTORS.md').write_text('contributors-updated')
+        updated = self.contributors + [{'name': 'Другой Автор'}]
+        for slug in ('alpha', 'beta'):
+            (self.root / f'handbooks/{slug}/meta.yaml').write_text(yaml.safe_dump(dict(contributors=updated), allow_unicode=True))
         self.asts['contributors-updated'] = deepcopy(self.asts['contributors'])
         self.asts['contributors-updated']['blocks'].append({'t': 'Para', 'c': [text('Другой Автор')]})
+        self.asts[contributors_markdown(updated)] = self.asts['contributors-updated']
         self.build()
         self.assertEqual(len(self.compiled), 10, 'Участники меняют только полные книги')
         with patch('handbook_pdf.source_revision', return_value=('new-commit', '2026-10-25')):
@@ -183,13 +205,26 @@ class HandbookPdfTests(unittest.TestCase):
     def test_inline_contributors_replace_the_separate_frontmatter(self):
         book = self.root / 'handbooks/alpha'
         (book / 'content.md').write_text('welcome <!-- handbook-contributors -->')
-        self.asts['welcome contributors'] = deepcopy(self.asts['alpha-welcome'])
-        self.asts['welcome contributors']['blocks'].append({'t': 'Para', 'c': [text('Автор (@writer)')]})
+        source = 'welcome ' + contributors_markdown(self.contributors)
+        self.asts[source] = deepcopy(self.asts['alpha-welcome'])
+        self.asts[source]['blocks'].append({'t': 'Para', 'c': [text('Автор (@writer)')]})
         self.build(selected=book)
         full = next(ast for ast in self.compiled if ast['meta']['handbook-level']['c'] == 'book')
         self.assertEqual(full['meta']['include-before']['c'], [])
         self.assertIn('@writer', json.dumps(full['blocks'], ensure_ascii=False))
         self.assertNotIn('handbook-contributors', json.dumps(full['blocks']))
+
+    def test_each_book_uses_its_own_contributor_metadata(self):
+        for slug, name in [('alpha', 'Alpha person'), ('beta', 'Beta person')]:
+            people = [dict(name=name)]
+            (self.root / f'handbooks/{slug}/meta.yaml').write_text(yaml.safe_dump(dict(contributors=people)))
+            self.asts[contributors_markdown(people)] = {'pandoc-api-version': [1, 23, 1], 'meta': {},
+                'blocks': [{'t': 'Para', 'c': [text(name)]}]}
+        self.build(book_only=True)
+        books = [json.dumps(ast, ensure_ascii=False) for ast in self.compiled]
+        self.assertEqual(sum('Alpha person' in book for book in books), 1)
+        self.assertEqual(sum('Beta person' in book for book in books), 1)
+        self.assertFalse(any('Alpha person' in book and 'Beta person' in book for book in books))
 
     def test_book_only_single_output_and_preserves_other_levels(self):
         self.build()

@@ -44,7 +44,7 @@ def date_label(value: str) -> str:
         return value
 
 
-def render_material(material: dict, root: str, show_description: bool = False) -> str:
+def render_material(material: dict, root: str, show_subtitle: bool = False) -> str:
     m = material
     resources = []
     if m.get("pdf"):
@@ -100,11 +100,10 @@ def render_material(material: dict, root: str, show_description: bool = False) -
     )
     if m["time"]:
         date_html += (", " if date_html else "") + escape(m["time"])
-    description = m["description"] or m["subtitle"]
     meta = escape(label) + (" · " + date_html if date_html else "")
     return f"""<li class="material" data-id="{escape(m['id'], quote=True)}" data-kind="{m['kind']}">
       {name} <span class="material-meta">({meta})</span>
-      {f'<p class="material-description">{escape(description)}</p>' if show_description and description else ''}
+      {f'<p class="material-subtitle">{escape(m["subtitle"])}</p>' if show_subtitle and m["subtitle"] else ''}
       {authors_html(m.get('_authors'))}
       {files}{references}
     </li>"""
@@ -136,6 +135,7 @@ def write_page(
             ' aria-current="page"' if active == "catalog" else "",
         )
         + '</li>'
+        + '<li>' + link(root + "handbooks/", "Учебники") + '</li>'
         + '<li><a href="https://github.com/BelOAI/materials">Исходники на GitHub</a></li></ul>'
     )
     nav = navigation_override if navigation_override is not None else nav + extra_navigation
@@ -182,13 +182,13 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
         "",
         course["title"],
         course["description"],
-        f'<h1>О подготовке</h1><p>{escape(course["description"])}</p>'
+        '<h1>О подготовке</h1>'
         f'<h2>Темы занятий</h2>{overview if weeks else "<p>Материалы для подготовки пока не опубликованы.</p>"}',
         "home",
         "./",
     )
     for index, week in enumerate(weeks):
-        content = f'<h1>Неделя {week["number"]} <span class="heading-topic">{escape(week["title"])}</span></h1><p>{escape(week["description"])}</p><ul class="week-resources">'
+        content = f'<h1>Неделя {week["number"]} <span class="heading-topic">{escape(week["title"])}</span></h1><ul class="week-resources">'
         for kind, label in KINDS.items():
             selected = [
                 materials[identifier]
@@ -244,7 +244,7 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
     catalog = '<h1>Все материалы</h1><materials-catalog root="../"><catalog-controls></catalog-controls><ul class="catalog-list">'
     catalog += (
         "".join(
-            render_material(m, "../", show_description=True)
+            render_material(m, "../", show_subtitle=True)
             for m in materials.values()
         )
         + "</ul></materials-catalog>"

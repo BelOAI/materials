@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import yaml
-from authorship import normalize_authors
+from authorship import normalize_authors, normalize_contributors
 
 SLUG = re.compile(r'[a-z0-9]+(?:-[a-z0-9]+)*')
 FOLDER = re.compile(r'[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*')
@@ -101,6 +101,59 @@ def validate_resources(folder, item, allow_missing_synced=False):
         seen.add(path)
 
 
+def text_authors(folder: Path) -> dict:
+    """Авторство отдельных вводных текстов книги в локальном meta.yaml."""
+    path = folder / 'meta.yaml'
+    if not path.exists():
+        return {}
+    path = local_file(folder, 'meta.yaml')
+    try:
+        metadata = yaml.load(path.read_text(encoding='utf-8'), Loader=MetadataLoader)
+        if not isinstance(metadata, dict) or any(key not in {'preface', 'curriculum', 'contributors'} for key in metadata):
+            raise ValueError('Ожидаются разделы preface, curriculum и список contributors')
+        result = {}
+        for key, entry in metadata.items():
+            if key == 'contributors':
+                result[key] = normalize_contributors(entry)
+                continue
+            if not isinstance(entry, dict):
+                raise ValueError(f'{key}: ожидается объект с полем authors')
+            result[key] = normalize_authors(entry.get('authors'))
+            if not result[key]:
+                raise ValueError(f'{key}: необходимо указать authors')
+        return result
+    except (yaml.YAMLError, ValueError) as error:
+        raise ValueError(f'{path}: {error}') from error
+
+
+def validate_author_sources(catalog):
+    """Подписи в исходных Markdown задаются маркерами, а имена — метаданными."""
+    paths = set()
+    for item in [*catalog['handbooks'], *catalog['_chapters'].values(), *catalog['_lessons'].values()]:
+        if item.get('build') is False or item.get('status') == 'planned':
+            continue
+        if '_content' in item:
+            paths.add(item['_content'])
+        for name in ('README.md', 'CURRICULUM.md'):
+            if (item['_folder'] / name).is_file():
+                paths.add(local_file(item['_folder'], name))
+    for path in sorted(paths):
+        fence = None
+        for number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+            marker = re.match(r'^\s*(`{3,}|~{3,})', line)
+            if marker:
+                if fence is None:
+                    fence = marker[1]
+                elif marker[1][0] == fence[0] and len(marker[1]) >= len(fence):
+                    fence = None
+                continue
+            if fence:
+                continue
+            credit = re.match(r'^\s*(?:\*\*)?Автор(?:ы|ство)?(?:[ \t]+[^:—\n]+)?[ \t]*[:—](.*)$', line)
+            if credit and credit[1].strip(' *\t'):
+                raise ValueError(f'{path}:{number}: перенесите авторство в метаданные; для подписи используйте handbook-authors')
+
+
 def load_catalog(source: Path, *, allow_missing_synced=False) -> dict:
     base = source / 'handbooks'
     book = json.loads(local_file(base, 'handbooks.json').read_text(encoding='utf-8'))
@@ -130,7 +183,11 @@ def load_catalog(source: Path, *, allow_missing_synced=False) -> dict:
         if (folder / 'content.md').is_file():
             handbook['_content'] = local_file(base, slug + '/content.md')
         handbook['authors'] = normalize_authors(handbook.get('authors'))
+        handbook['_text_authors'] = text_authors(folder)
+        handbook['_content_authors'] = handbook['_text_authors'].get('preface', [])
+        handbook['_contributors'] = handbook['_text_authors'].get('contributors', [])
         _load_sections(handbook, book, allow_missing_synced)
+    validate_author_sources(book)
     return book
 
 

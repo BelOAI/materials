@@ -130,13 +130,13 @@ class HandbookPdfRenderingTests(unittest.TestCase):
             root = Path(temp)
             for directory in ('utils/pdf', 'utils/latex/tex/latex', 'utils/site/fonts'):
                 shutil.copytree(REPO_ROOT / directory, root / directory)
-            (root / 'CONTRIBUTORS.md').write_text('- [Синтетический Автор (@writer)](https://github.com/writer)')
             books = []
             for slug in ('alpha', 'beta'):
                 book = root / 'handbooks' / slug
                 chapter = book / '01-section'
                 paragraph = chapter / '01-paragraph'
                 paragraph.mkdir(parents=True)
+                (book / 'meta.yaml').write_text(yaml.safe_dump(dict(contributors=[dict(name='Синтетический Автор', github='writer')]), allow_unicode=True))
                 books.append(dict(slug=slug, title='Синтетический учебник с длинным названием для проверки колонтитула',
                                   description='Описание', chapters=['01-section']))
                 for folder, metadata in [(chapter, dict(slug='section', paragraphs=['01-paragraph'])),

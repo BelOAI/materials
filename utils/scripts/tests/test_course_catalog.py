@@ -116,8 +116,11 @@ class CourseCatalogTests(unittest.TestCase):
         self.week('start', 0, ['practice'])
         self.week('topic', 1, ['lecture', 'assignment'])
         course = self.load()
+        course['description'] = 'Course description marker.'
+        for week in course['weeks']:
+            week['description'] = 'Week description marker.'
         for entry in self.entries:
-            entry.update(id=entry['slug'], title='Материал <&>', number='1', date='', time='', description='', subtitle='', materials=[], references=[], thumb='preview.png')
+            entry.update(id=entry['slug'], title='Материал <&>', number='1', date='', time='', description='Material description marker.', subtitle='Subtitle fixture.', materials=[], references=[], thumb='preview.png')
         template = self.root / 'utils/site'
         template.mkdir(parents=True)
         shutil.copy(Path(__file__).parents[3] / 'utils/site/index.html', template / 'index.html')
@@ -142,6 +145,19 @@ class CourseCatalogTests(unittest.TestCase):
         self.assertNotIn('data-preview=', render_material(lecture, '../../'))
         self.assertIn('data-preview=', render_material(self.entries[0], '../../'))
         catalog = (output / 'materials/index.html').read_text()
+        home = (output / 'index.html').read_text()
+        self.assertIn('name="description" content="Course description marker."', home)
+        self.assertIn('name="description" content="Week description marker."', topic)
+        for html in [home, start, topic, catalog]:
+            body = html.split('<body', 1)[1]
+            for marker in ['Course description marker.', 'Week description marker.', 'Material description marker.']:
+                self.assertNotIn(marker, body)
+        self.assertIn('Subtitle fixture.', catalog)
+        for path, root in [('index.html', './'), ('materials/index.html', '../'),
+                           ('weeks/topic/index.html', '../../'), ('license/index.html', '../')]:
+            html = (output / path).read_text()
+            navigation = html.split('<course-navigation', 1)[1].split('</course-navigation>', 1)[0]
+            self.assertIn(f'href="{root}handbooks/"', navigation)
         self.assertNotIn('data-preview=', catalog.split('data-kind="lecture"', 1)[1].split('</li>', 1)[0])
         self.assertLess(topic.index('<lecture-viewer'), topic.index('id="assignment"'))
         self.assertIn('Материал &lt;&amp;&gt;', topic)

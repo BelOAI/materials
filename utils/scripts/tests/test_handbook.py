@@ -5,13 +5,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from html import escape
 from pathlib import Path
 from unittest.mock import patch
 
 import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from handbook_site import load_handbook, publish_handbook, validate_links
-from handbook_notebooks import synchronize, render_notebook
+from handbook_notebooks import synchronize, synchronize_authors, render_notebook
 from notebook_checks import check_notebooks
 from repo_paths import REPO_ROOT as ROOT
 
@@ -24,6 +25,8 @@ class HandbookTests(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         base = self.root / 'handbooks'
+        base.mkdir()
+        (base / 'README.md').write_text('# Fixture catalogue\n\n[Book](ml/README.md)\n')
         folders = []
         # Техническая фикстура независима от содержания реального учебника.
         for index, slug in enumerate(['intro', 'classic-ml', 'dl-basics', 'nn-in-practice', 'how-nns-learn', 'math-of-ai']):
@@ -89,6 +92,135 @@ resources:
         (folder / 'media/image.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10"/></svg>')
         (folder / 'notebook.ipynb').write_text(json.dumps(render_notebook('Пример', text, assets=folder, authors=['Fixture Writer'])))
         return folder
+
+    @patch('handbook_site.export_notebook', return_value=False)
+    def test_landing_content_and_links_follow_source(self, export):
+        source = self.root / 'handbooks/README.md'
+        for marker in ('catalogue-one', 'catalogue-two'):
+            source.write_text(f'# {marker}\n\n[Book](ml/README.md)\n\n[Plan](ml/CURRICULUM.md)\n')
+            publish_handbook(self.root, self.output, [])
+            html = (self.output / 'handbooks/index.html').read_text()
+            self.assertIn(marker, html)
+            self.assertIn('href="ml/"', html)
+            self.assertIn('href="ml/curriculum/"', html)
+            self.assertNotIn('href="ml/README.md"', html)
+            validate_links(self.output)
+
+    @patch('handbook_site.export_notebook', return_value=False)
+    def test_navigation_scopes_books_chapters_and_lessons(self, export):
+        self.paragraph()
+        base = self.root / 'handbooks'
+        shutil.copytree(base / 'ml', base / 'guide')
+        path = base / 'handbooks.json'
+        catalog = json.loads(path.read_text())
+        catalog['handbooks'].append(catalog['handbooks'][0] | dict(slug='guide', title='Second fixture'))
+        catalog['handbooks'].append(dict(slug='disabled', title='Disabled fixture', description='Fixture.', build=False))
+        (base / 'disabled').mkdir()
+        (base / 'disabled/README.md').write_text('Автор: Excluded draft writer\n')
+        path.write_text(json.dumps(catalog))
+        publish_handbook(self.root, self.output, [])
+        landing = (self.output / 'handbooks/index.html').read_text()
+        navigation = landing.split('<course-navigation>', 1)[1].split('</course-navigation>', 1)[0]
+        self.assertIn('href="../handbooks/ml/"', navigation)
+        self.assertIn('href="../handbooks/guide/"', navigation)
+        self.assertNotIn('curriculum/', navigation)
+        self.assertNotIn('Disabled fixture', navigation)
+        self.assertNotIn('handbook-chapters', navigation)
+        self.assertIn('data-page="handbooks"', landing)
+        for slug, other in [('ml', 'Second fixture'), ('guide', '>ML<')]:
+            lesson = (self.output / f'handbooks/{slug}/classic-ml/example/index.html').read_text()
+            navigation = lesson.split('<course-navigation>', 1)[1].split('</course-navigation>', 1)[0]
+            self.assertIn('← Все учебники', navigation)
+            self.assertIn(f'handbooks/{slug}/curriculum/', navigation)
+            self.assertIn(f'handbooks/{slug}/classic-ml/"', navigation)
+            self.assertIn(f'handbooks/{slug}/classic-ml/example/" aria-current="page"', navigation)
+            self.assertNotIn(other, navigation)
+            self.assertEqual(navigation.count('aria-current="page"'), 1)
+            self.assertIn('class="breadcrumbs"', lesson)
+        validate_links(self.output)
+        # Каталог работает и без учебника с историческим slug ml.
+        catalog['handbooks'] = [catalog['handbooks'][1]]
+        path.write_text(json.dumps(catalog))
+        (base / 'README.md').write_text('# Catalogue\n\n[Guide](guide/README.md)\n')
+        publish_handbook(self.root, self.output, [])
+        self.assertFalse((self.output / 'handbooks/ml').exists())
+        self.assertFalse((self.output / 'handbooks/start').exists())
+        validate_links(self.output)
+
+    @patch('handbook_site.export_notebook', return_value=False)
+    def test_chapter_text_and_contents_have_separate_roles(self, export):
+        self.paragraph()
+        self.metadata(self.root / 'handbooks/ml/00-intro', description='Unique summary marker.')
+        self.metadata(self.chapter, description='Chapter summary marker.')
+        publish_handbook(self.root, self.output, [])
+        intro = (self.output / 'handbooks/ml/intro/index.html').read_text()
+        self.assertIn('name="description" content="Unique summary marker."', intro)
+        self.assertNotIn('Unique summary marker.', intro.split('<main', 1)[1])
+        chapter = (self.output / 'handbooks/ml/classic-ml/index.html').read_text()
+        self.assertIn('<h2>Содержание</h2><ol><li><a href="example/"', chapter)
+        self.assertIn('name="description" content="Chapter summary marker."', chapter)
+        self.assertNotIn('Chapter summary marker.', chapter.split('<body', 1)[1])
+        overview = (self.output / 'handbooks/ml/index.html').read_text()
+        self.assertIn('name="description" content="Fixture."', overview)
+        self.assertNotIn('Fixture.', overview.split('<body', 1)[1])
+        lesson = (self.output / 'handbooks/ml/classic-ml/example/index.html').read_text()
+        self.assertIn('name="description" content="Проверка ресурсов."', lesson)
+        self.assertNotIn('Проверка ресурсов.', lesson.split('<body', 1)[1])
+
+    @patch('handbook_site.export_notebook', return_value=False)
+    def test_book_contents_follow_catalog_without_changing_preface(self, export):
+        self.paragraph()
+        future = self.chapter / '02-future'
+        future.mkdir()
+        (future / 'README.md').write_text('# Future fixture\n')
+        (future / 'meta.yaml').write_text('slug: future\ntitle: Future fixture\ndescription: Fixture.\nstatus: planned\n')
+        self.metadata(self.chapter, paragraphs=['02-future', '01-example'])
+        source = self.root / 'handbooks/ml/content.md'
+        preface = '## Preface fixture\n\nOriginal wording & punctuation.\n'
+        source.write_text(preface)
+        publish_handbook(self.root, self.output, [])
+        html = (self.output / 'handbooks/ml/index.html').read_text()
+        toc = html.split('<nav class="handbook-toc"', 1)[1].split('</nav>', 1)[0]
+        self.assertIn('<h2>Содержание</h2>', toc)
+        self.assertIn('href="classic-ml/"', toc)
+        self.assertIn('href="classic-ml/example/"', toc)
+        self.assertNotIn('href="classic-ml/future/"', toc)
+        self.assertLess(toc.index('Future fixture'), toc.index('href="classic-ml/example/"'))
+        self.assertIn('(готовится)', toc)
+        self.assertIn('class="section-planned"', toc)
+        self.assertLess(html.index('class="handbook-toc"'), html.index('id="preface-fixture"'))
+        self.assertIn('Original wording &amp; punctuation.', html)
+        self.assertEqual(source.read_text(), preface)
+        validate_links(self.output)
+
+    @patch('handbook_site.export_notebook', return_value=False)
+    def test_preface_and_curriculum_authors_come_from_local_metadata(self, export):
+        folder = self.root / 'handbooks/ml'
+        preface = '## Greeting fixture\n\n<!-- handbook-authors -->\n\nOriginal greeting.'
+        programme = '# Plan fixture\n\n<!-- handbook-authors -->\n\nOriginal programme.'
+        (folder / 'content.md').write_text(preface)
+        (folder / 'CURRICULUM.md').write_text(programme)
+        for name in ['Writer <one>', 'Writer & two']:
+            (folder / 'meta.yaml').write_text(yaml.safe_dump(dict(
+                preface=dict(authors=[name]), curriculum=dict(authors=['Planner', 'Reviewer']))))
+            publish_handbook(self.root, self.output, [])
+            html = (self.output / 'handbooks/ml/index.html').read_text()
+            self.assertIn('<h2 id="greeting-fixture">Greeting fixture</h2>\n' +
+                          '<p class="authors">Автор: ' + escape(name) + '</p>', html)
+            self.assertEqual(html.count('Автор: ' + escape(name)), 1)
+            plan = (self.output / 'handbooks/ml/curriculum/index.html').read_text()
+            self.assertIn('<p class="authors">Авторы: Planner, Reviewer</p>', plan)
+            self.assertNotIn('handbook-authors', html + plan)
+            self.assertIn('Original greeting.', html)
+            self.assertIn('Original programme.', plan)
+            self.assertEqual((folder / 'content.md').read_text(), preface)
+            self.assertEqual((folder / 'CURRICULUM.md').read_text(), programme)
+            validate_links(self.output)
+        for invalid in ['preface: [Writer]', 'preface: {authors: []}', 'curriculum: {authors: nope}',
+                        'preface: {authors: [Writer]}\npreface: {authors: [Other]}', 'prefaec: {}']:
+            (folder / 'meta.yaml').write_text(invalid)
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                load_handbook(self.root)
 
     @patch('handbook_site.export_notebook', return_value=False)
     def test_main_content_and_curriculum_follow_sources(self, export):
@@ -255,6 +387,31 @@ resources:
         publish_handbook(self.root, self.output, [])
         self.assertFalse(dest.exists())
         self.assertFalse((self.output / 'handbook/ml/classic-ml/example').exists())
+
+    def test_author_only_sync_updates_notebooks_without_changing_tasks(self):
+        folder = self.paragraph()
+        original = json.loads((folder / 'notebook.ipynb').read_text())
+        self.metadata(folder, authors=['New Writer'])
+        expected_path = (folder / 'notebook.ipynb').relative_to(self.root).as_posix()
+        self.assertEqual(synchronize_authors(self.root), [expected_path])
+        synchronize_authors(self.root, write=True)
+        updated = json.loads((folder / 'notebook.ipynb').read_text())
+        self.assertEqual(updated['cells'], original['cells'])
+        self.assertEqual(updated['metadata']['authors'], [{'name': 'New Writer'}])
+        self.assertEqual(synchronize_authors(self.root), [])
+        with patch('handbook_site.export_notebook', return_value=False):
+            publish_handbook(self.root, self.output, [])
+        published = json.loads((self.output / 'handbooks/ml/classic-ml/example/notebook.ipynb').read_text())
+        self.assertIn('Автор: New Writer', ''.join(published['cells'][0]['source']))
+
+    def test_manual_authorship_in_markdown_is_rejected(self):
+        path = self.root / 'handbooks/ml/content.md'
+        for text in ['## Preface\n\nАвтор: Writer', '**Авторы:** Writer, Editor', 'Автор программы: Writer']:
+            path.write_text(text)
+            with self.subTest(text=text), self.assertRaisesRegex(ValueError, 'перенесите авторство в метаданные'):
+                load_handbook(self.root)
+        path.write_text('## Preface\n\nАвторы:\n\n```text\nАвтор: Example\n```\n')
+        load_handbook(self.root)
 
     def test_missing_links_and_formula_errors_fail(self):
         folder = self.paragraph()

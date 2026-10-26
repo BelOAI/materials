@@ -16,7 +16,7 @@ import tempfile
 import time
 from urllib.parse import quote, unquote, urljoin, urlsplit
 
-from authorship import authors_text, expand_contributors, CONTRIBUTORS_MARKER
+from authorship import authors_text, expand_authors, expand_contributors, contributors_markdown, CONTRIBUTORS_MARKER
 from build_cache import Cache
 from handbook_catalog import load_catalog
 from handbook_svg import renderer_identity, render_svg
@@ -218,38 +218,37 @@ class Builder:
         self.hits = 0
         self.profile = profile_files(root)
         self.logo = prepare_logo(root, scratch, env)
-        self.contributors = None
+        self.contributors = {}
         self.revision = None
 
     def book_frontmatter(self, item):
-        if '_content' in item and CONTRIBUTORS_MARKER in item['_content'].read_text(encoding='utf-8'):
-            if self.revision is None:
-                self.revision = source_revision(self.root)
-            return []
-        if self.contributors is None:
-            path = self.root / 'CONTRIBUTORS.md'
-            if not path.is_file():
-                raise ValueError('Для полного учебника необходим CONTRIBUTORS.md')
-            _, ast, hit = self.prepare({'id': 'contributors', '_content': path})
-            self.hits += hit
-            self.contributors = ast['blocks']
-            if self.contributors and self.contributors[0]['t'] == 'Header':
-                self.contributors = self.contributors[1:]
+        if self.revision is None:
             self.revision = source_revision(self.root)
+        if '_content' in item and CONTRIBUTORS_MARKER in item['_content'].read_text(encoding='utf-8'):
+            return []
+        source = contributors_markdown(item.get('_contributors', []))
+        if not source:
+            return []
+        if source not in self.contributors:
+            _, ast, hit = self.prepare({'id': 'contributors', '_source': source})
+            self.hits += hit
+            self.contributors[source] = ast['blocks']
         return [
             {'t': 'RawBlock', 'c': ['latex', '\\clearpage']},
             {'t': 'Header', 'c': [1, ['handbook-contributors', ['unnumbered', 'handbook-context-chapter'], []],
                                  [{'t': 'Str', 'c': 'Авторы и участники проекта BelOAI'}]]},
-            *deepcopy(self.contributors),
+            *deepcopy(self.contributors[source]),
             {'t': 'RawBlock', 'c': ['latex', '\\clearpage']},
         ]
 
     def prepare(self, item):
-        source = expand_contributors(item['_content'].read_text(encoding='utf-8'), self.root)
+        source = item['_source'] if '_source' in item else item['_content'].read_text(encoding='utf-8')
+        source = expand_contributors(expand_authors(source, item.get('_content_authors', item.get('authors'))),
+                                     item.get('_contributors', []))
         key = digest(source, self.tools['pandoc'], self.code)
         cache = Cache('handbook-source', key)
         folder = self.scratch / 'sources' / namespace(item['id'])
-        folder.mkdir(parents=True)
+        folder.mkdir(parents=True, exist_ok=True)
         path = folder / 'source.json'
         hit = cache.restore(folder) and path.is_file()
         if not hit:

@@ -4,10 +4,41 @@ import argparse
 import base64
 import json
 import re
+from copy import deepcopy
 from pathlib import Path
 
 from repo_paths import REPO_ROOT as ROOT
 from authorship import normalize_authors, authors_markdown
+
+
+def notebook_authors(notebook, authors, *, include_credit=False):
+    """Метаданные исходника; видимая подпись добавляется только при публикации."""
+    result = deepcopy(notebook)
+    authors = normalize_authors(authors)
+    result.setdefault('metadata', {})['authors'] = authors
+    first = next((cell for cell in result.get('cells', []) if cell['cell_type'] == 'markdown'), None)
+    if first is None:
+        if include_credit and authors:
+            result.setdefault('cells', []).insert(0, dict(cell_type='markdown', id='handbook-authors',
+                metadata={}, source=[authors_markdown(authors)]))
+        return result
+    source = first['source']
+    text = ''.join(source) if isinstance(source, list) else source
+    # Удаляем прежнюю подпись, сохраняя текст лицензии, если он был в той же строке.
+    def remove(match):
+        license_at = match[0].find('CC BY')
+        return match[0][license_at:] if license_at >= 0 else ''
+    text = re.sub(r'^(?:Автор(?:ы|ство)?[ \t]*[:—][^\n]*|Авторы BelOAI,[^\n]*)(?:\n(?:[ \t]*\n)?)?',
+                  remove, text, flags=re.M)
+    if include_credit and authors:
+        credit = authors_markdown(authors)
+        heading = re.match(r'\A(#[^\n]*)(?:\n|$)', text)
+        if heading:
+            text = heading[1] + '\n\n' + credit + '\n\n' + text[heading.end():].lstrip('\n')
+        else:
+            text = credit + '\n\n' + text
+    first['source'] = text.splitlines(keepends=True) if isinstance(source, list) else text
+    return result
 
 
 def render_notebook(title: str, text: str, assets: Path | None = None, authors=None) -> dict:
@@ -37,8 +68,7 @@ def render_notebook(title: str, text: str, assets: Path | None = None, authors=N
                 cell['attachments'] = attachments
             cells.append(cell)
     authors = normalize_authors(authors)
-    credit = authors_markdown(authors)
-    markdown(f'# {title}\n\n{credit + chr(10) + chr(10) if credit else ""}CC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
+    markdown(f'# {title}\n\nCC BY 4.0.\n\nВыполняйте ячейки сверху вниз. Сначала решите задачи, затем обратитесь к решениям.')
     cursor = 0
     for match in re.finditer(r'^```python\n(.*?)^```\s*$', text, re.M | re.S):
         markdown(text[cursor:match.start()])
@@ -48,6 +78,27 @@ def render_notebook(title: str, text: str, assets: Path | None = None, authors=N
     for index, cell in enumerate(cells):
         cell['id'] = f'cell-{index:03}'
     return {'cells': cells, 'metadata': {'authors': authors, 'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'}, 'language_info': {'name': 'python', 'version': '3.14'}}, 'nbformat': 4, 'nbformat_minor': 5}
+
+
+def synchronize_authors(root: Path, write: bool = False) -> list[str]:
+    """Обновить только авторство всех ноутбуков, сохранив код, задания и результаты."""
+    from handbook_site import load_handbook
+    catalog = load_handbook(root)
+    stale = []
+    for item in [*catalog['handbooks'], *catalog['_chapters'].values(), *catalog['_lessons'].values()]:
+        for resource in item.get('resources', []):
+            path = item['_folder'] / resource['path']
+            if path.suffix != '.ipynb':
+                continue
+            if not item.get('authors'):
+                raise ValueError(f'{path}: необходимо указать authors в YAML')
+            original = json.loads(path.read_text(encoding='utf-8'))
+            expected = notebook_authors(original, item['authors'])
+            if original != expected:
+                stale.append(path.relative_to(root).as_posix())
+                if write:
+                    path.write_text(json.dumps(expected, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    return stale
 
 
 def synchronize(root: Path, write: bool = False) -> list[str]:
@@ -74,7 +125,8 @@ if __name__ == '__main__':
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--write', action='store_true')
     mode.add_argument('--check', action='store_true')
+    parser.add_argument('--authors-only', action='store_true', help='Только авторство всех ноутбуков без изменения учебного содержания')
     args = parser.parse_args()
-    stale = synchronize(ROOT, write=args.write)
+    stale = (synchronize_authors if args.authors_only else synchronize)(ROOT, write=args.write)
     if args.check and stale:
         parser.exit(1, 'Не синхронизированы ноутбуки: ' + ', '.join(stale) + '\n')
