@@ -1,6 +1,7 @@
 """Интеграция выбора PDF со сборкой; внешние утилиты заменены дублёрами."""
 import os
 import json
+import yaml
 from urllib.parse import unquote
 import shutil
 import subprocess
@@ -35,9 +36,9 @@ class PdfPipelineTest(unittest.TestCase):
         self.env = dict(os.environ, PATH=str(self.bin) + os.pathsep + os.environ['PATH'])
 
     def session(self, kind='lectures', extra=''):
-        p = self.root / "course" / kind / '01-тема с пробелами'
+        p = self.root / "course/00-topic" / (kind + '-01-тема с пробелами')
         p.mkdir(parents=True)
-        (p / 'meta.yaml').write_text('title: Тема\nbuild: true\n' + extra)
+        (p / 'material.yml').write_text(f'kind: {dict(lectures="lecture", practices="practice", assignments="assignment")[kind]}\ntitle: Тема\nbuild: true\n' + extra)
         return p
 
     def run_build(self, session, ok=True):
@@ -59,7 +60,7 @@ class PdfPipelineTest(unittest.TestCase):
                 self.run_build(s)
                 self.assertEqual(self.target(s).read_bytes(), source.read_bytes())
                 self.assertTrue(self.target(s, 'thumbs', '.png').exists())
-                self.assertTrue((self.root / '_site/materials' / kind / s.name / 'data.csv').exists())
+                self.assertTrue((self.root / '_site/materials' / '00-topic' / s.name / 'data.csv').exists())
                 self.assertFalse((s / 'tex-runs').exists())
 
     def test_assignment_notebook_preview_without_pdf(self):
@@ -73,7 +74,7 @@ class PdfPipelineTest(unittest.TestCase):
             encoding='utf-8',
         )
         self.run_build(session)
-        preview = self.root / '_site/thumbs/assignments' / session.name / 'task.ipynb.svg'
+        preview = self.root / '_site/thumbs/00-topic' / session.name / 'task.ipynb.svg'
         svg = preview.read_text(encoding='utf-8')
         self.assertIn('answer =', svg)
         self.assertIn('>42</tspan>', svg)
@@ -86,9 +87,10 @@ class PdfPipelineTest(unittest.TestCase):
             self.run_build(session)
         course = {"title": "Подготовка", "description": "Описание", "weeks": [{
             "slug": "topic", "number": 0, "title": "Тема", "description": "Описание",
-            "materials": [f"{kind}/01-тема с пробелами" for kind in ("lectures", "practices", "assignments")],
+            "materials": [f"{kind}-01-тема с пробелами" for kind in ("lectures", "practices", "assignments")],
         }]}
-        (self.root / 'course/course.json').write_text(json.dumps(course), encoding='utf-8')
+        (self.root / 'course/00-topic/week.yml').write_text(yaml.safe_dump(course['weeks'][0]))
+        (self.root / 'course/course.yml').write_text(yaml.safe_dump(dict(course, weeks=['00-topic'])))
         code = "import json,runpy; from pathlib import Path; m=runpy.run_path('utils/scripts/generate-site.py'); entries=m['discover_sessions'](); print(json.dumps(m['build_manifest'](entries, m['load_course'](Path('.'), entries))))"
         result = subprocess.run([sys.executable, '-c', code], cwd=self.root, capture_output=True, text=True, check=True)
         manifest = json.loads(result.stdout)
@@ -108,7 +110,7 @@ class PdfPipelineTest(unittest.TestCase):
         subprocess.run(['make', '-f', 'build/Makefile', 'tex', f'DIR={s}'], cwd=self.root, env=self.env, check=True, capture_output=True)
         self.assertEqual(self.target(s).read_bytes(), b'%PDF-imported')
         self.assertEqual((s / 'main.pdf').read_bytes(), b'%PDF-tex')
-        (s / 'meta.yaml').write_text('title: Тема\n')
+        (s / 'material.yml').write_text('title: Тема\n')
         self.run_build(s)
         self.assertEqual(self.target(s).read_bytes(), b'%PDF-tex')
         (s / 'main.tex').unlink()
@@ -159,9 +161,9 @@ class PdfPipelineTest(unittest.TestCase):
         s = self.session(extra='pdf: slides.pdf\nhidden: true\n')
         (s / 'slides.pdf').write_bytes(b'%PDF-hidden')
         for name, extra in (('_template', ''), ('02-disabled', 'build: false\n')):
-            p = self.root / 'course/lectures' / name
+            p = self.root / 'course/00-topic' / name
             p.mkdir()
-            (p / 'meta.yaml').write_text(extra + 'pdf: missing.pdf\n')
+            (p / 'material.yml').write_text(extra + 'pdf: missing.pdf\n')
         stale = self.root / '_site/pdfs/lectures/deleted.pdf'
         stale.parent.mkdir(parents=True)
         stale.write_bytes(b'old')
@@ -215,9 +217,30 @@ class PdfPipelineTest(unittest.TestCase):
         session = self.session(extra='pdf: own.pdf\n')
         (session / 'own.pdf').write_bytes(b'%PDF-good')
         self.run_build(session)
-        (session / 'meta.yaml').write_text('build: false\n')
+        (session / 'material.yml').write_text('build: false\n')
         subprocess.run(['bash', str(self.root / 'utils/scripts/build-all.sh')], env=self.env, check=True, capture_output=True)
         self.assertFalse(self.target(session).exists())
         shutil.rmtree(session)
         subprocess.run(['bash', str(self.root / 'utils/scripts/build-all.sh')], env=self.env, check=True, capture_output=True)
         self.assertFalse(self.target(session).exists())
+
+
+    def test_legacy_resource_links_follow_rebuilds(self):
+        session = self.session(extra='legacy_id: lectures/01-previous\npdf: own.pdf\nmaterials:\n  - path: data.csv\n')
+        (session / 'own.pdf').write_bytes(b'%PDF-legacy')
+        (session / 'data.csv').write_text('x\n1\n')
+        self.run_build(session)
+        output = self.root / '_site'
+        self.assertEqual((output / 'pdfs/lectures/01-previous.pdf').read_bytes(), b'%PDF-legacy')
+        self.assertTrue((output / 'thumbs/lectures/01-previous.png').is_file())
+        self.assertEqual((output / 'materials/lectures/01-previous/data.csv').read_text(), 'x\n1\n')
+        self.assertIn('CACHE HIT', self.run_build(session).stdout)
+        (session / 'own.pdf').write_bytes(b'broken')
+        self.run_build(session, ok=False)
+        self.assertFalse((output / 'pdfs/lectures/01-previous.pdf').exists())
+        (session / 'own.pdf').unlink()
+        (session / 'material.yml').write_text('legacy_id: lectures/01-previous\nkind: lecture\n')
+        self.run_build(session)
+        self.assertFalse((output / 'pdfs/lectures/01-previous.pdf').exists())
+        (session / 'material.yml').write_text('legacy_id: ../outside\n')
+        self.run_build(session, ok=False)

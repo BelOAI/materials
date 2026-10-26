@@ -23,11 +23,8 @@ from course_site import load_course, publish_pages
 from handbook_site import publish_handbook
 
 from repo_paths import REPO_ROOT
-SESSION_ROOTS = (
-    REPO_ROOT / "course/lectures",
-    REPO_ROOT / "course/practices",
-    REPO_ROOT / "course/assignments",
-)
+from course_catalog import session_directories
+SESSION_ROOTS = (REPO_ROOT / "course",)
 SITE_DIR = REPO_ROOT / "_site"
 FONTS_SRC = REPO_ROOT / "utils/site" / "fonts"
 FONTS_DEST = SITE_DIR / "fonts"
@@ -43,16 +40,6 @@ KIND_ORDER = {
     "lecture": 1,
     "practice": 2,
 }
-
-
-def folder_kind(root_name: str) -> str:
-    if root_name == "lectures":
-        return "lecture"
-    if root_name == "practices":
-        return "practice"
-    if root_name == "assignments":
-        return "assignment"
-    raise ValueError(f"unknown session root: {root_name}")
 
 
 def session_number(folder_name: str) -> str:
@@ -147,15 +134,14 @@ def discover_sessions() -> list[dict]:
     for root in SESSION_ROOTS:
         if not root.is_dir():
             continue
-        kind = folder_kind(root.name)
 
-        for session_dir in sorted(root.iterdir()):
+        for session_dir in session_directories(root):
             if not session_dir.is_dir():
                 continue
             folder_name = session_dir.name
             if folder_name.startswith("_"):
                 continue
-            meta_path = session_dir / "meta.yaml"
+            meta_path = session_dir / "material.yml"
             if not meta_path.exists():
                 continue
 
@@ -164,6 +150,10 @@ def discover_sessions() -> list[dict]:
                 continue
             if get_flat(meta, "hidden", "false").lower() == "true":
                 continue
+
+            kind = get_flat(meta, "kind")
+            if kind not in KIND_ORDER:
+                raise ValueError(f"Некорректный kind: {meta_path}")
 
             assignment_type = ""
             if kind == "assignment":
@@ -176,7 +166,7 @@ def discover_sessions() -> list[dict]:
                     )
                     continue
 
-            slug = f"{root.name}/{folder_name}"
+            slug = f"{session_dir.parent.name}/{folder_name}"
             pdf_rel = f"pdfs/{slug}.pdf"
             pdf_exists = (SITE_DIR / pdf_rel).exists()
             references = get_references(meta)
@@ -213,7 +203,7 @@ def discover_sessions() -> list[dict]:
                     "slug": slug,
                     "kind": kind,
                     "assignment_type": assignment_type,
-                    "number": session_number(folder_name),
+                    "number": get_flat(meta, "number", session_number(folder_name)),
                     "title": get_flat(meta, "title", folder_name),
                     "subtitle": get_flat(meta, "subtitle", ""),
                     "date": get_flat(meta, "date", ""),
@@ -277,7 +267,7 @@ def main() -> None:
     )
     publish_pages(REPO_ROOT, SITE_DIR, manifest)
     shutil.copyfile(REPO_ROOT / "utils/site/favicon.svg", SITE_DIR / "favicon.svg")
-    if (REPO_ROOT / "handbooks/handbooks.json").is_file():
+    if (REPO_ROOT / "handbooks/handbooks.yml").is_file():
         publish_handbook(REPO_ROOT, SITE_DIR, course["weeks"])
     print(f"Опубликован манифест: {len(entries)} материалов")
 

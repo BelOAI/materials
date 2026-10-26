@@ -1,0 +1,36 @@
+title: Признаки, переобучение и регуляризация
+slug: features-regularization
+description: Добавляем доступный до печати признак и ограничиваем сложность дерева, сравнивая ошибки на обучающих и новых заказах.
+status: draft
+build: true
+date: '2026-10-25'
+authors:
+  - name: Алексей Толстиков
+topics:
+  - Полезные признаки и сведения из будущего
+  - Переобучение дерева решений
+  - Регуляризация через число объектов в листе
+  - Раздельная оценка на обучении и новых заказах
+learning_outcomes:
+  - Объяснять, почему признак должен быть доступен в момент прогноза и помогать на новых данных.
+  - Сравнивать MAE деревьев на обучении и новых заказах.
+  - Проверять, улучшает ли ограничение числа объектов в листе прогноз на новых заказах.
+sync_notebook: true
+resources:
+  - path: notebook.ipynb
+    label: Практика и решения (.ipynb)
+  - path: data/train.csv
+    label: Обучающие заказы (.csv)
+  - path: data/new.csv
+    label: Новые заказы без ответов (.csv)
+  - path: data/new_answers.csv
+    label: Ответы для проверки (.csv)
+  - path: media/model-errors.svg
+    label: Сравнение ошибок (.svg)
+  - path: plot_errors.py
+    label: Код построения диаграммы (.py)
+references:
+  - label: BelOAI — решающие деревья
+    url: https://github.com/BelOAI/materials/tree/dev/handbooks/ml/01-classic-ml/04-decision-trees
+  - label: scikit-learn — Decision Trees
+    url: https://scikit-learn.org/stable/modules/tree.html

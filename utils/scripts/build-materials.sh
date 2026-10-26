@@ -9,7 +9,7 @@ fi
 SESSION_DIR="$(cd "$1" && pwd)"
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SITE_DIR="${REPO_ROOT}/_site"
-META="${SESSION_DIR}/meta.yaml"
+META="${SESSION_DIR}/material.yml"
 
 # shellcheck source=session-slug.sh
 source "${REPO_ROOT}/utils/scripts/session-slug.sh"
@@ -18,7 +18,7 @@ session_slug "$SESSION_DIR"
 OUT_DIR="${SITE_DIR}/materials/${SESSION_SLUG}"
 
 if [[ ! -f "$META" ]]; then
-  echo "No meta.yaml in ${SESSION_DIR}; skipping materials"
+  echo "No material.yml in ${SESSION_DIR}; skipping materials"
   exit 0
 fi
 

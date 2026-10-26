@@ -94,7 +94,7 @@ li > ul { margin-bottom: 0; }
 .week-list { margin-bottom: 16px; }
 .week-resources { margin-top: 16px; }
 .material-meta { font-size: .875em; color: var(--muted); }
-.material-description { margin: 4px 0 8px; }
+.material-subtitle { margin: 4px 0 8px; }
 .catalog-list > .material { margin-bottom: 16px; }
 .week-pagination { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px 32px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); }
 .week-pagination a { max-width: 46%; }
@@ -141,6 +141,14 @@ material-preview { position: fixed; left: var(--preview-left); top: var(--previe
 
 /* Чтение учебника: ограниченная строка, локальная прокрутка формул и кода. */
 .handbook-content { max-width: 840px; }
+.handbook-toc { margin: 24px 0 40px; }
+.handbook-toc .handbook-chapter-list { list-style: none; padding: 0; margin: 0; }
+.handbook-chapter-list > li + li { margin-top: 24px; }
+.handbook-chapter-list h3 { font-size: 1.125rem; margin-bottom: 8px; padding: 0; }
+.handbook-chapter-list .section-planned { display: inline-block; color: var(--muted); font-size: .875rem; font-weight: 400; }
+.handbook-paragraph-list { margin: 8px 0 0; padding-left: 24px; }
+.handbook-paragraph-list li + li { margin-top: 4px; }
+.handbook-list li, .handbook-list a { white-space: normal; overflow-wrap: anywhere; }
 .handbook-content img { display: block; max-width: 100%; height: auto; }
 .chapter-unavailable { font-size: .875em; color: var(--muted); }
 .handbook-content pre { overflow-x: auto; padding: 16px; background: var(--line); color: var(--ink); font-size: .875rem; }
@@ -188,34 +196,16 @@ body[data-page="handbook"] .course-menu > .handbook-navigation {
   overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
 }
 .handbook-navigation li, .handbook-navigation a { white-space: normal; overflow: visible; text-overflow: clip; }
-.handbook-navigation .handbook-track { margin: 0 0 var(--nav-space-4); }
-.handbook-navigation .handbook-track:last-child { margin-bottom: 0; }
-.handbook-navigation .track-title { font-size: 16px; font-weight: 700; margin-bottom: var(--nav-space-2); }
-.handbook-navigation .handbook-chapter { margin: var(--nav-space-1) 0 0; }
-.handbook-navigation .handbook-chapter > summary {
-  display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 8px;
-  align-items: start; min-height: 36px; padding: 6px 0;
-  border: 0; border-radius: 0; margin: 0; background: transparent;
-  font-size: 16px; line-height: 1.4; list-style: none;
+.handbook-navigation .handbook-lessons {
+  border-left: 1px solid var(--sidebar-divider); padding-left: 12px;
+  margin: 4px 0 12px 12px; font-size: 15px;
 }
-.handbook-navigation .handbook-chapter > summary::-webkit-details-marker { display: none; }
-.handbook-navigation .handbook-chapter > summary::before { content: ""; width: 0; height: 0; justify-self: center; margin-top: 7px; border-left: 6px solid currentColor; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
-.handbook-navigation .handbook-chapter[open] > summary::before { transform: rotate(90deg); }
-.handbook-navigation .chapter-title { min-width: 0; overflow-wrap: anywhere; }
-.handbook-navigation .handbook-chapter > ul {
-  border-left: 1px solid var(--sidebar-divider); padding: 0 0 0 15px;
-  margin: 4px 0 8px 8px;
-}
-.handbook-navigation .handbook-chapter li { margin: 0; font-size: 15px; line-height: 1.4; }
-/* Невидимый полужирный дубль резервирует переносы до выделения текущей ссылки. */
+.handbook-lessons .chapter-unavailable { display: block; padding: 6px 8px; }
 .handbook-tree a {
-  display: grid; min-height: 32px; padding: 6px 8px; line-height: 1.4;
-  border-left: 3px solid transparent; overflow-wrap: anywhere;
+  display: block; min-height: 32px; padding: 6px 8px; line-height: 1.4;
+  overflow-wrap: anywhere;
 }
-.handbook-tree a > .nav-label, .handbook-tree a::after { grid-area: 1 / 1; min-width: 0; }
-.handbook-tree a::after { content: attr(data-nav-label); font-weight: 700; visibility: hidden; }
-.handbook-navigation .track-title a { min-height: 36px; }
-.handbook-tree a[aria-current="page"] { font-weight: 700; background: var(--nav-active); border-left-color: var(--accent); text-decoration: none; }
+.handbook-tree a[aria-current="page"] { font-weight: 700; }
 .handbook-links [aria-current="page"] { text-decoration: underline; text-underline-offset: 3px; }
 .handbook-navigation .community-links { font-size: 18px; line-height: 1.5; }
 .handbook-navigation .legal-link { font-size: 15.75px; line-height: 1.5; }
@@ -245,11 +235,9 @@ body[data-page="handbook"] .breadcrumbs a { min-width: 0; }
   body[data-page="handbook"] .course-menu > summary { min-height: 44px; padding: 10px 12px; margin: 0; }
   body[data-page="handbook"] .course-menu > .handbook-navigation { max-height: 70dvh; }
   .handbook-navigation .handbook-links a,
-  .handbook-navigation .handbook-chapter > summary,
   .handbook-navigation .handbook-tree a { min-height: 44px; }
   .handbook-navigation .handbook-links a { padding: 10px 8px; }
   .handbook-navigation .handbook-tree a { padding-top: 10px; padding-bottom: 10px; }
-  .handbook-navigation .handbook-chapter > summary { padding-top: 10px; padding-bottom: 10px; }
   body[data-page="handbook"] .course-menu[data-overlay][open] {
     position: fixed; inset: 0; z-index: 20; height: 100dvh; min-height: 0;
     display: flex; flex-direction: column; margin: 0;
@@ -293,3 +281,47 @@ body[data-page="handbook"] .breadcrumbs a { min-width: 0; }
 }
 
 .material .authors { margin: 4px 0 8px; color: var(--muted); font-size: .9em; }
+
+/* Лекция задаёт порядок чтения страницы недели. */
+.week-resources { list-style: none; padding-left: 0; }
+.week-resources > li { margin-block: 2rem; }
+.week-resources h2 { font-size: 1.35rem; margin-bottom: .75rem; }
+lecture-viewer { display: block; width: 100%; max-width: min(960px, max(160px, calc((100svh - 8rem) * 1.7777778))); margin-block: 1.25rem 2rem; }
+lecture-viewer:focus-visible { outline: 2px solid var(--link-color, #a51c30); outline-offset: 5px; }
+.slide-stage { width: 100%; }
+.slide-surface, .slide-fallback { display: block; width: 100%; aspect-ratio: 16 / 9; background: #eceef0; box-shadow: 0 1px 5px #0002; }
+.slide-surface:empty { display: none; }
+.slide-surface canvas, .slide-fallback img { display: block; width: 100%; height: 100%; object-fit: contain; }
+@media (prefers-color-scheme: dark) {
+  .slide-surface, .slide-fallback { background: #151719; }
+}
+.slide-controls { display: flex; gap: .65rem; align-items: center; margin-top: .75rem; flex-wrap: wrap; }
+.slide-controls[hidden], .slide-fallback[hidden] { display: none; }
+.slide-controls button { min-width: 44px; min-height: 44px; cursor: pointer; }
+.slide-controls input { width: 4.5rem; min-height: 44px; font: inherit; text-align: center; }
+.slide-controls button:disabled { cursor: default; opacity: .45; }
+.slide-status { font-size: .9rem; color: #666; margin-block: .4rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.slide-fullscreen { margin-left: auto; padding-inline: .75rem; font: inherit; }
+body.slides-fullscreen-open { overflow: hidden; }
+lecture-viewer:is(:fullscreen, .is-fullscreen) {
+  position: fixed; inset: 0; z-index: 1000; box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; height: 100dvh; max-width: none; margin: 0; padding: 16px;
+  overflow: auto; background: #151719; color: #f1f3f5;
+}
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-stage {
+  flex: 1; min-height: 0; container-type: size;
+  display: grid; place-items: center;
+}
+lecture-viewer:is(:fullscreen, .is-fullscreen) :is(.slide-surface, .slide-fallback) {
+  width: min(100cqw, calc(100cqh * 1.7777778));
+  box-shadow: none; background: #151719;
+}
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls {
+  flex: none; width: min(100%, 960px);
+}
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-status { flex: none; color: #c4c8cd; }
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls button,
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls input { color-scheme: dark; }

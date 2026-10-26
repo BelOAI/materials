@@ -1,0 +1,17 @@
+legacy_id: lectures/02-knn
+kind: lecture
+number: "2"
+title: "Меры близости и KNN"
+subtitle: "Расстояния, качество модели и масштабирование признаков"
+date: "2026-10-10"
+description: "Разбираемся, как KNN использует расстояния, как оценивать качество классификации и зачем масштабировать признаки."
+lang: ru
+build: true
+pdf: materials/lecture.pdf
+
+materials:
+  - path: materials/lecture.pptx
+    label: Презентация PowerPoint
+
+authors:
+  - name: "Виктория Кулевцова"

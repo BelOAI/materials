@@ -1,0 +1,7 @@
+slug: gradient-descent
+number: 4
+title: Как учится модель
+description: Сбор данных, честная проверка качества, производные и градиентный спуск.
+materials:
+- lecture
+- practice-04-coefficients-restoration

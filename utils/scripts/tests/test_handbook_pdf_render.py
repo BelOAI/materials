@@ -19,6 +19,77 @@ from repo_paths import REPO_ROOT
 
 @unittest.skipUnless(os.environ.get('PDF_RENDER_TESTS') == '1', 'Нужно PDF_RENDER_TESTS=1 и окружение utils/pdf')
 class HandbookPdfRenderingTests(unittest.TestCase):
+    def test_graphics_dimensions_with_legacy_and_current_pandoc_defaults(self):
+        import pymupdf
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as temp:
+            folder = Path(temp)
+            colors = {'logo': (0.1, 0.2, 0.7), 'wide': (0.1, 0.8, 0.2), 'tall': (0.8, 0.2, 0.1)}
+            for name, width, height in [('logo', 141.25, 18.79), ('wide', 400, 200), ('tall', 100, 400)]:
+                document = pymupdf.open()
+                page = document.new_page(width=width, height=height)
+                page.draw_rect(page.rect, color=None, fill=colors[name])
+                document.save(folder / f'{name}.pdf')
+                if name == 'wide':
+                    page.get_pixmap().save(folder / 'raster.png')
+                document.close()
+            legacy = r'''
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+'''
+            template = r'''
+\documentclass[a4paper,10pt]{article}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath,amssymb,graphicx,hyperref}
+%GRAPHICS_DEFAULTS%
+\usepackage{academichandbook}
+\renewcommand{\handbooklogo}{logo.pdf}
+\title{Синтетический документ}
+\begin{document}
+\includegraphics[width=.85\linewidth]{wide.pdf}
+\clearpage
+\includegraphics[width=.85\linewidth]{tall.pdf}
+\clearpage
+\includegraphics[width=.85\linewidth]{raster.png}
+\end{document}
+'''
+            env = dict(os.environ, TEXINPUTS=str(REPO_ROOT / 'utils/latex/tex/latex') + '//' + os.pathsep + os.environ.get('TEXINPUTS', ''))
+            for mode, defaults in [('current', ''), ('legacy', legacy)]:
+                with self.subTest(mode=mode):
+                    (folder / 'sizing.tex').write_text(template.replace('%GRAPHICS_DEFAULTS%', defaults))
+                    for _ in range(2):
+                        result = subprocess.run(['pdflatex', '-halt-on-error', '-interaction=nonstopmode', 'sizing.tex'],
+                                                cwd=folder, env=env, text=True, capture_output=True)
+                        self.assertEqual(result.returncode, 0, result.stdout[-3000:])
+                    with pymupdf.open(folder / 'sizing.pdf') as document:
+                        self.assertEqual(len(document), 3)
+                        # olymp's 175 mm text width, 250 mm text height; PDF uses bp.
+                        pt_per_mm = 72 / 25.4
+                        width = .85 * 175 * pt_per_mm
+                        height = .78 * 250 * pt_per_mm
+                        for page in document:
+                            logos = [path['rect'] for path in page.get_drawings()
+                                     if path['fill'] and all(abs(a - b) < .01 for a, b in zip(path['fill'], colors['logo']))]
+                            self.assertEqual(len(logos), 1)
+                            self.assertAlmostEqual(logos[0].width, 34 * pt_per_mm, delta=.5)
+                            self.assertAlmostEqual(logos[0].width / logos[0].height, 141.25 / 18.79, delta=.02)
+                        for page, name, expected_width, expected_height in [
+                                (document[0], 'wide', width, width / 2),
+                                (document[1], 'tall', height / 4, height)]:
+                            boxes = [path['rect'] for path in page.get_drawings()
+                                     if path['fill'] and all(abs(a - b) < .01 for a, b in zip(path['fill'], colors[name]))]
+                            self.assertEqual(len(boxes), 1)
+                            self.assertAlmostEqual(boxes[0].width, expected_width, delta=.5)
+                            self.assertAlmostEqual(boxes[0].height, expected_height, delta=.5)
+                        raster = pymupdf.Rect(document[2].get_image_info()[0]['bbox'])
+                        self.assertAlmostEqual(raster.width, width, delta=.5)
+                        self.assertAlmostEqual(raster.height, width / 2, delta=.5)
+
     def test_logo_cache_and_font_dependencies(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -59,15 +130,16 @@ class HandbookPdfRenderingTests(unittest.TestCase):
             root = Path(temp)
             for directory in ('utils/pdf', 'utils/latex/tex/latex', 'utils/site/fonts'):
                 shutil.copytree(REPO_ROOT / directory, root / directory)
-            (root / 'CONTRIBUTORS.md').write_text('- [Синтетический Автор (@writer)](https://github.com/writer)')
             books = []
             for slug in ('alpha', 'beta'):
                 book = root / 'handbooks' / slug
                 chapter = book / '01-section'
                 paragraph = chapter / '01-paragraph'
                 paragraph.mkdir(parents=True)
+                (book / 'meta.yml').write_text(yaml.safe_dump(dict(chapters=['01-section'],
+                    contributors=[dict(name='Синтетический Автор', github='writer')]), allow_unicode=True))
                 books.append(dict(slug=slug, title='Синтетический учебник с длинным названием для проверки колонтитула',
-                                  description='Описание', chapters=['01-section']))
+                                  description='Описание'))
                 for folder, metadata in [(chapter, dict(slug='section', paragraphs=['01-paragraph'])),
                                          (paragraph, dict(slug='paragraph'))]:
                     metadata.update(title=('Глава' if folder == chapter else 'Материал') + ' синтетической книги', description='Описание',
@@ -78,10 +150,11 @@ class HandbookPdfRenderingTests(unittest.TestCase):
                     ('\n\n<!-- handbook-contributors -->\n' if slug == 'alpha' else ''))
                 (paragraph / 'figure.svg').write_text(
                     '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="200">'
-                    '<rect width="80" height="200" fill="white"/><text x="4" y="25">Vector</text></svg>')
+                    '<rect width="80" height="200" fill="white"/>'
+                    '<text x="4" y="25" font-family="Liberation Serif, serif">Vector</text></svg>')
                 content = '''## Проверка текста {#target}
 
-Русский текст и Latin text. Символы: → ← ⇒ ≈ ≤ ≥ ≠ −.
+Русский текст и Latin text. Символы: → ← ⇒ ≈ ≤ ≥ ≠ − ▶ ⋯.
 Формула: $\\frac{1}{2} + x_i^2 \\leq \\sqrt{3}$.
 [Внутренняя ссылка](#target), [соседний раздел](../01-paragraph/content.md#target).
 
@@ -111,8 +184,8 @@ print("short")
                 content += '\n'.join(f'| {i} | Строка длинной таблицы |' for i in range(90))
                 content += '\n\n```python\n' + '\n'.join(f'print({i})' for i in range(55)) + '\n```\n'
                 (paragraph / 'content.md').write_text(content)
-            (root / 'handbooks/handbooks.json').write_text(json.dumps(
-                dict(title='Каталог', description='Описание', handbooks=books), ensure_ascii=False))
+            (root / 'handbooks/handbooks.yml').write_text(yaml.safe_dump(
+                dict(title='Каталог', description='Описание', handbooks=books), allow_unicode=True))
             with patch.dict(os.environ, BUILD_CACHE_DIR=str(root / 'cache'), BUILD_CACHE_DISABLE='0'):
                 with redirect_stdout(io.StringIO()):
                     build(root, jobs=1)
@@ -156,10 +229,21 @@ print("short")
                                 self.assertLess(block[3], footer.y0 - 12, 'Подпись не должна касаться колонтитула')
                     fonts = subprocess.check_output(['pdffonts', str(pdf)], text=True)
                     self.assertNotIn('Type 3', fonts)
+                    # Chromium keeps SVG typography in imported Form XObjects.
+                    # Only direct page resources belong to the LaTeX reader;
+                    # imported figures may legitimately use Liberation/DejaVu.
+                    main_fonts = '\n'.join(font[3] for page in document
+                                           for font in page.get_fonts(full=True) if font[6] == 0)
                     for forbidden in ('Liberation', 'DejaVu', 'LMRoman', 'LMSans'):
-                        self.assertNotIn(forbidden, fonts)
+                        self.assertNotIn(forbidden, main_fonts)
+                    figure_fonts = {span['font'] for page in document
+                                    for block in page.get_text('dict')['blocks'] if block['type'] == 0
+                                    for line in block['lines'] for span in line['spans'] if span['text'] == 'Vector'}
+                    self.assertTrue(figure_fonts, 'Текст SVG должен сохраняться в PDF')
+                    self.assertTrue(figure_fonts.isdisjoint(font.split('+')[-1] for font in main_fonts.splitlines()),
+                                    'SVG использует собственный импортированный шрифт')
                     self.assertIn('Unbounded', fonts)
                     self.assertIn('IBMPlexSans', fonts)
-                    self.assertRegex(fonts, r'(SFRM|SFBX|CMR)')
-                    self.assertRegex(fonts, r'(SFTT|CMTT)')
+                    self.assertRegex(main_fonts, r'(SFRM|SFBX|CMR)')
+                    self.assertRegex(main_fonts, r'(SFTT|CMTT)')
                     document.close()

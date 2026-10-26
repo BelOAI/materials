@@ -8,6 +8,9 @@ paragraphs:
   - 03-linear-regression
   - 04-decision-trees
   - 05-clustering-kmeans
+  - 06-logistic-regression
+  - 07-features-regularization
+  - 08-honest-evaluation
 build: true
 authors:
   - name: Алексей Чернуха

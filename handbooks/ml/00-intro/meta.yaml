@@ -1,9 +1,9 @@
 slug: intro
 title: Введение
-description: Начало работы с учебником и подготовка среды.
+description: Как устроен учебник, какие знания понадобятся и с чего начать.
 status: draft
 paragraphs:
   - 01-environment
 build: true
 authors:
-  - name: BelOAI
+  - name: Павел Косило

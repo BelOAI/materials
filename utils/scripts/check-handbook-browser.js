@@ -18,11 +18,11 @@ async (page) => {
     assert(response.ok(), 'Page response: ' + url);
     assert(await page.locator('main h1').first().isVisible(), 'Rendered heading: ' + url);
     assert((await page.locator('main').innerText()).trim().length > 0, 'Rendered main: ' + url);
-    assert(await page.locator('.handbook-navigation [aria-current="page"]').count() === 1, 'Active navigation: ' + url);
+    assert(await page.locator('course-navigation [aria-current="page"]').count() === 1, 'Active navigation: ' + url);
     for (const img of await page.locator('main img').all()) {
       assert(await img.evaluate(async el => { await el.decode(); return el.complete && el.naturalWidth > 0; }), 'Rendered image: ' + url);
     }
-    const links = await page.locator('.handbook-navigation a, main a').evaluateAll(nodes => nodes.map(a => ({ href: a.href, download: a.hasAttribute('download') })));
+    const links = await page.locator('course-navigation a, main a').evaluateAll(nodes => nodes.map(a => ({ href: a.href, download: a.hasAttribute('download') })));
     for (const { href, download } of links) {
       const target = new URL(href);
       if (!target.href.startsWith(prefix)) continue;

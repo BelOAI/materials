@@ -18,7 +18,7 @@ class PreviewTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        self.session = self.root / "course/practices/01-topic"
+        self.session = self.root / "course/00-topic/practice"
         self.session.mkdir(parents=True)
         self.output = self.root / "_site"
 
@@ -28,7 +28,7 @@ class PreviewTests(unittest.TestCase):
         return path
 
     def meta(self, names):
-        (self.session / "meta.yaml").write_text(
+        (self.session / "material.yml").write_text(
             "materials:\n" + "".join(f"  - path: {name}\n" for name in names)
         )
 
@@ -66,10 +66,10 @@ class PreviewTests(unittest.TestCase):
         self.notebook("b.ipynb", [{"cell_type": "code", "source": "second"}])
         self.meta(["missing.ipynb", "a.ipynb", "b.ipynb"])
         build_preview(self.session, self.output)
-        preview = self.output / "thumbs/practices/01-topic/a.ipynb.svg"
+        preview = self.output / "thumbs/00-topic/practice/a.ipynb.svg"
         self.assertIn("first", preview.read_text())
         self.assertFalse((preview.parent / "b.ipynb.svg").exists())
-        pdf = self.output / "pdfs/practices/01-topic.pdf"
+        pdf = self.output / "pdfs/00-topic/practice.pdf"
         pdf.parent.mkdir(parents=True)
         pdf.touch()
         build_preview(self.session, self.output)
@@ -79,7 +79,7 @@ class PreviewTests(unittest.TestCase):
         self.meta(["a.ipynb"])
         path = self.notebook("a.ipynb", [{"cell_type": "code", "source": "hello"}])
         build_preview(self.session, self.output)
-        preview = self.output / "thumbs/practices/01-topic/a.ipynb.svg"
+        preview = self.output / "thumbs/00-topic/practice/a.ipynb.svg"
         path.write_text('{"cells": []}')
         self.assertIsNone(notebook_content(path))
         build_preview(self.session, self.output)
@@ -99,9 +99,9 @@ class PreviewTests(unittest.TestCase):
         self.assertIsNone(notebook_content(path))
 
     def test_assignment_notebook_preview_uses_same_code_fragment(self):
-        assignment = self.root / "assignments/04-knn"
+        assignment = self.root / "course/00-topic/assignment"
         assignment.mkdir(parents=True)
-        (assignment / "meta.yaml").write_text(
+        (assignment / "material.yml").write_text(
             "assignment_type: coding\nmaterials:\n  - path: materials/task.ipynb\n",
             encoding="utf-8",
         )
@@ -125,7 +125,7 @@ class PreviewTests(unittest.TestCase):
             encoding="utf-8",
         )
         build_preview(assignment, self.output)
-        preview = self.output / "thumbs/assignments/04-knn/task.ipynb.svg"
+        preview = self.output / "thumbs/00-topic/assignment/task.ipynb.svg"
         svg = preview.read_text(encoding="utf-8")
         self.assertIn("answer =", svg)
         self.assertIn(">42</tspan>", svg)
@@ -137,11 +137,11 @@ class PreviewTests(unittest.TestCase):
 
         self.meta(["a.ipynb"])
         self.notebook("a.ipynb", [{"cell_type": "code", "source": "print(1)"}])
-        pdf = self.output / "pdfs/practices/01-topic.pdf"
+        pdf = self.output / "pdfs/00-topic/practice.pdf"
         pdf.parent.mkdir(parents=True)
         pdf.touch()
-        (self.output / "thumbs/practices/01-topic").mkdir(parents=True)
-        (self.output / "thumbs/practices/01-topic/stale.svg").touch()
+        (self.output / "thumbs/00-topic/practice").mkdir(parents=True)
+        (self.output / "thumbs/00-topic/practice/stale.svg").touch()
 
         def render_pdf(command, **kwargs):
             Path(command[-1] + ".png").write_bytes(b"png")
@@ -151,9 +151,9 @@ class PreviewTests(unittest.TestCase):
             "material_preview.subprocess.run", side_effect=render_pdf
         ):
             build_preview(self.session, self.output)
-        self.assertTrue((self.output / "thumbs/practices/01-topic.png").is_file())
-        self.assertFalse((self.output / "thumbs/practices/01-topic/stale.svg").exists())
-        self.assertFalse((self.output / "thumbs/practices/01-topic/a.ipynb.svg").exists())
+        self.assertTrue((self.output / "thumbs/00-topic/practice.png").is_file())
+        self.assertFalse((self.output / "thumbs/00-topic/practice/stale.svg").exists())
+        self.assertFalse((self.output / "thumbs/00-topic/practice/a.ipynb.svg").exists())
 
     def test_square_icon_and_code_layout(self):
         content = [

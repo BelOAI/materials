@@ -12,15 +12,16 @@ from meta_parser import get_flat, parse_meta
 from build_cache import Cache, fingerprint, source_files
 
 from repo_paths import REPO_ROOT
+from course_catalog import session_slug, legacy_id, publish_legacy_resources
 
 
 def build_session(session: Path) -> None:
     session = session.resolve()
     if not session.is_dir():
         raise ValueError('Папка занятия не найдена.')
-    if session.parent not in [REPO_ROOT / 'course' / kind for kind in ('lectures', 'practices', 'assignments')]:
-        raise ValueError('Папка занятия должна находиться в lectures/, practices/ или assignments/.')
-    slug = f'{session.parent.name}/{session.name}'
+    if session.parent.parent != REPO_ROOT / "course":
+        raise ValueError("Материал должен находиться в course/<неделя>/<материал>/.")
+    slug = session_slug(session)
     site = REPO_ROOT / '_site'
     target = site / 'pdfs' / f'{slug}.pdf'
     thumb = site / 'thumbs' / f'{slug}.png'
@@ -30,14 +31,16 @@ def build_session(session: Path) -> None:
     for folder in (site / 'materials' / slug, site / 'thumbs' / slug):
         if folder.is_dir():
             shutil.rmtree(folder)
-    meta_path = session / 'meta.yaml'
+    meta_path = session / 'material.yml'
     meta = parse_meta(meta_path) if meta_path.is_file() else {}
+    legacy_id(meta)
+    publish_legacy_resources(session, site)
     cache = Cache('sessions', fingerprint(
         source_files(session) + source_files(REPO_ROOT / 'utils/latex')
         + [REPO_ROOT / 'utils/scripts' / name for name in (
             'build-session.py', 'build-presentation.sh', 'build-materials.sh',
             'session-slug.sh', 'material_preview.py', 'notebook_export.py',
-            'meta_parser.py', 'parse-meta.py', 'repo_paths.py')], slug))
+            'meta_parser.py', 'parse-meta.py', 'repo_paths.py', 'course_catalog.py')], slug))
     source = None
     if 'pdf' in meta:
         value = get_flat(meta, 'pdf').strip()
@@ -59,6 +62,7 @@ def build_session(session: Path) -> None:
         if info.get('Encrypted', '').strip().startswith('yes'):
             raise ValueError(f'PDF защищён шифрованием; сохраните незашифрованную копию: {value}')
     if cache.restore(site):
+        publish_legacy_resources(session, site)
         if 'pdf' not in meta and (session / 'main.tex').is_file():
             shutil.copyfile(target, session / 'main.pdf')
         return
@@ -70,6 +74,7 @@ def build_session(session: Path) -> None:
         shutil.copyfile(source, target)
         print(f'Опубликован PDF: {target}', flush=True)
     subprocess.run([str(REPO_ROOT / 'utils/scripts/build-materials.sh'), str(session)], check=True)
+    publish_legacy_resources(session, site)
     materials = list((site / 'materials' / slug).rglob('*'))
     if any(p.suffix == '.ipynb' and not p.with_suffix('.html').is_file() for p in materials):
         return

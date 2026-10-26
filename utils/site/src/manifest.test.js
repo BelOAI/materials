@@ -137,3 +137,18 @@ test("поиск по словам, регистр, подзаголовок и 
   assert.equal(filterMaterials(materials, "practice", "качества").length, 0);
   assert.equal(filterMaterials(materials, "all", "").length, 2);
 });
+
+test("лекция с PDF обязательна после нулевой недели", () => {
+  const data = manifest(item());
+  data.course.weeks[0].number = 1;
+  assert.equal(validateManifest(data).length, 1);
+  const practice = { ...item(), id: "01-topic/practice", kind: "practice" };
+  data.materials = [practice];
+  data.course.weeks[0].materials = [practice.id];
+  assert.throws(() => validateManifest(data), /лекцию/);
+  data.course.weeks[0].number = 0;
+  assert.equal(validateManifest(data).length, 1);
+  data.materials = [item(), { ...item(), id: "01-topic/another" }];
+  data.course.weeks[0].materials = data.materials.map(item => item.id);
+  assert.throws(() => validateManifest(data), /лекцию/);
+});
