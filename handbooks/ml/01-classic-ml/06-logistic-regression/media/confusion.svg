@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="300" viewBox="0 0 560 300" role="img" aria-labelledby="title desc">
+<title id="title">Четыре исхода ответа модели</title>
+<desc id="desc">Таблица два на два. Настоящий спам, ответ модели «спам» — TP, верно. Настоящий спам, ответ «обычное» — FN, пропуск. Настоящее обычное письмо, ответ «спам» — FP, ложное срабатывание. Настоящее обычное письмо, ответ «обычное» — TN, верно.</desc>
+<style>
+:root { color-scheme: light dark; --ink:#1b2430; --muted:#55657a; --ok:#17803d; --ok-bg:#e6f5ec; --bad:#c0283b; --bad-bg:#fdeaec; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --ok:#7fd99a; --ok-bg:#1c3326; --bad:#ff8a96; --bad-bg:#3a2227; } }
+@media print { :root { --ink:#1b2430; --muted:#55657a; --ok:#17803d; --ok-bg:#e6f5ec; --bad:#c0283b; --bad-bg:#fdeaec; } }
+text { font-family:'DejaVu Sans',Arial,sans-serif; font-size:14px; fill:var(--ink); } .s { font-size:12.5px; } .b { font-weight:700; } .m { fill:var(--muted); } .ok { fill:var(--ok); } .bad { fill:var(--bad); } .big { font-size:28px; font-weight:700; }
+</style>
+<text x="232.5" y="28" text-anchor="middle" class="b">Модель: спам</text>
+<text x="447.5" y="28" text-anchor="middle" class="b">Модель: обычное</text>
+<text x="8" y="88" class="s m">На самом деле</text><text x="8" y="108" class="b">спам</text>
+<text x="8" y="203" class="s m">На самом деле</text><text x="8" y="223" class="b">обычное</text>
+<rect x="130" y="40" width="205" height="105" rx="12" fill="var(--ok-bg)" fill-opacity=".9" stroke="var(--ok)" stroke-width="1.5"/>
+<text x="232.5" y="77" text-anchor="middle" class="big ok">TP</text>
+<text x="232.5" y="95" text-anchor="middle" class="s m">true positive</text>
+<text x="232.5" y="116" text-anchor="middle" class="s">спам — в спам</text>
+<text x="232.5" y="133" text-anchor="middle" class="s b ok">верно</text>
+<rect x="345" y="40" width="205" height="105" rx="12" fill="var(--bad-bg)" fill-opacity=".9" stroke="var(--bad)" stroke-width="1.5"/>
+<text x="447.5" y="77" text-anchor="middle" class="big bad">FN</text>
+<text x="447.5" y="95" text-anchor="middle" class="s m">false negative</text>
+<text x="447.5" y="116" text-anchor="middle" class="s">спам — во входящих</text>
+<text x="447.5" y="133" text-anchor="middle" class="s b bad">пропуск</text>
+<rect x="130" y="155" width="205" height="105" rx="12" fill="var(--bad-bg)" fill-opacity=".9" stroke="var(--bad)" stroke-width="1.5"/>
+<text x="232.5" y="192" text-anchor="middle" class="big bad">FP</text>
+<text x="232.5" y="210" text-anchor="middle" class="s m">false positive</text>
+<text x="232.5" y="231" text-anchor="middle" class="s">обычное — в спам</text>
+<text x="232.5" y="248" text-anchor="middle" class="s b bad">ложное срабатывание</text>
+<rect x="345" y="155" width="205" height="105" rx="12" fill="var(--ok-bg)" fill-opacity=".9" stroke="var(--ok)" stroke-width="1.5"/>
+<text x="447.5" y="192" text-anchor="middle" class="big ok">TN</text>
+<text x="447.5" y="210" text-anchor="middle" class="s m">true negative</text>
+<text x="447.5" y="231" text-anchor="middle" class="s">обычное — во входящих</text>
+<text x="447.5" y="248" text-anchor="middle" class="s b ok">верно</text>
+<text x="280" y="285" text-anchor="middle" class="s m">T/F — права ли модель · P/N — что она ответила</text>
+</svg>

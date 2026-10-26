@@ -20,6 +20,8 @@ sync_notebook: true
 resources:
   - path: notebook.ipynb
     label: Практика и решения (.ipynb)
+  - path: media/confusion.svg
+    label: Четыре исхода ответа (.svg)
   - path: media/sigmoid.svg
     label: Как оценка становится вероятностью (.svg)
   - path: media/thresholds.svg

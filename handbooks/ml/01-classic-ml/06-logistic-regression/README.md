@@ -2,7 +2,7 @@
 
 Как из признаков получить вероятность класса и превратить её в решение.
 
-[Текст](content.md) · [Ноутбук](notebook.ipynb) · [Сигмоида](media/sigmoid.svg) · [Пороги](media/thresholds.svg)
+[Текст](content.md) · [Ноутбук](notebook.ipynb) · [Четыре исхода](media/confusion.svg) · [Сигмоида](media/sigmoid.svg) · [Пороги](media/thresholds.svg)
 
 Опирается на занятия 1.1–1.4: признаки и ответы, accuracy и постоянный прогноз, масштаб признаков, линейная сумма и подбор коэффициентов, решающее дерево. Сигмоида и логарифмическая ошибка вводятся в тексте. Для практики нужны NumPy и scikit-learn из [среды учебника](../../00-intro/01-environment/requirements.txt). Набор breast_cancer входит в scikit-learn; скачивать его отдельно не нужно.
 
