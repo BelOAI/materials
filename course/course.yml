@@ -1,0 +1,9 @@
+title: Подготовка к BelOAI
+description: Материалы для подготовки к олимпиаде по искусственному интеллекту. Лекции,
+  практики и задания собраны по неделям.
+weeks:
+- 00-math-foundations
+- 01-intro-ml
+- 02-knn
+- 03-lin-reg
+- 04-gradient-descent

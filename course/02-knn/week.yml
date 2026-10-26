@@ -1,0 +1,9 @@
+slug: knn
+number: 2
+title: Меры близости и KNN
+description: Расстояния между объектами, масштабирование признаков и метод ближайших
+  соседей.
+materials:
+- lecture
+- practice-02-knn
+- assignment-04-knn

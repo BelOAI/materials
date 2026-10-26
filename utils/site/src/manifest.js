@@ -97,6 +97,10 @@ export function validateManifest(data) {
       if (!ids.has(id) || assigned.has(id)) throw new Error("Некорректное назначение материала");
       assigned.add(id);
     }
+    const lectures = week.materials.map(id => data.materials.find(item => item.id === id)).filter(item => item.kind === "lecture");
+    if (lectures.length > 1 || (week.number !== 0 && (lectures.length !== 1 || !lectures[0].pdf))) {
+      throw new Error("Неделя должна содержать одну лекцию с PDF");
+    }
   }
   if (assigned.size !== ids.size) throw new Error("Материал без недели");
   return data.materials;

@@ -1,47 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-SITE_DIR="${REPO_ROOT}/_site"
-META_PARSER="${REPO_ROOT}/utils/scripts/parse-meta.py"
-
-# Удаляем только генерируемые ресурсы, включая результаты удалённых занятий.
-rm -rf "${SITE_DIR}/pdfs" "${SITE_DIR}/thumbs" "${SITE_DIR}/materials"
-mkdir -p "${SITE_DIR}/pdfs" "${SITE_DIR}/thumbs" "${SITE_DIR}/materials"
-
-should_build() {
-  local dir="$1"
-  local base
-  base="$(basename "$dir")"
-
-  if [[ "$base" == _* ]]; then
-    return 1
-  fi
-
-  if [[ -f "${dir}/meta.yaml" ]]; then
-    if python3 "$META_PARSER" "$dir/meta.yaml" build 2>/dev/null | grep -qx 'false'; then
-      return 1
-    fi
-  fi
-
-  return 0
-}
-
-for kind in lectures practices assignments; do
-  kind_dir="${REPO_ROOT}/course/${kind}"
-  [[ -d "$kind_dir" ]] || continue
-
-  for session_dir in "${kind_dir}"/*/; do
-    [[ -d "$session_dir" ]] || continue
-
-    if ! should_build "$session_dir"; then
-      echo "Skipping $(basename "$session_dir")"
-      continue
-    fi
-
-    python3 "${REPO_ROOT}/utils/scripts/build-session.py" "$session_dir"
-
-  done
-done
-
-echo "All sessions built."
+python3 - "$REPO_ROOT" <<'PYTHON'
+import sys, shutil, subprocess
+from pathlib import Path
+root = Path(sys.argv[1])
+sys.path.insert(0, str(root / 'utils/scripts'))
+from course_catalog import session_directories
+from meta_parser import parse_meta, get_flat
+for name in ('pdfs', 'thumbs', 'materials'):
+    shutil.rmtree(root / '_site' / name, ignore_errors=True)
+    (root / '_site' / name).mkdir(parents=True, exist_ok=True)
+for session in session_directories(root / 'course'):
+    if get_flat(parse_meta(session / 'material.yml'), 'build', 'true').lower() != 'false':
+        subprocess.run([sys.executable, str(root / 'utils/scripts/build-session.py'), str(session)], check=True)
+print('All sessions built.')
+PYTHON

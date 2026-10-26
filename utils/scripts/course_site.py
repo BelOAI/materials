@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-import re
 import shutil
 from datetime import date
 from html import escape
@@ -17,87 +15,7 @@ KINDS = {"lecture": "Лекции", "practice": "Практики", "assignment"
 LABELS = {"lecture": "Лекция", "practice": "Практика", "assignment": "Задание"}
 
 
-def load_course(root: Path, entries: list[dict]) -> dict:
-    course = json.loads((root / "course/course.json").read_text(encoding="utf-8"))
-    if (
-        not isinstance(course, dict)
-        or not all(
-            isinstance(course.get(key), str) and course[key].strip()
-            for key in ("title", "description")
-        )
-        or not isinstance(course.get("weeks"), list)
-    ):
-        raise ValueError("Некорректная структура course.json")
-    known, public = set(), set()
-    for kind in ("lectures", "practices", "assignments"):
-        for meta_path in (root / "course" / kind).glob("*/meta.yaml"):
-            if meta_path.parent.name.startswith("_"):
-                continue
-            identifier = f"{kind}/{meta_path.parent.name}"
-            known.add(identifier)
-            meta = parse_meta(meta_path)
-            if all(
-                get_flat(meta, key, default).lower() != value
-                for key, default, value in (
-                    ("build", "true", "false"),
-                    ("hidden", "false", "true"),
-                )
-            ):
-                public.add(identifier)
-    assigned, slugs, numbers = set(), set(), set()
-    available = {entry["slug"] for entry in entries}
-    weeks = []
-    for week in course["weeks"]:
-        if (
-            not isinstance(week, dict)
-            or not all(
-                isinstance(week.get(key), str) and week[key].strip()
-                for key in ("slug", "title", "description")
-            )
-            or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", week["slug"])
-        ):
-            raise ValueError("Некорректная неделя в course.json")
-        number = week.get("number")
-        if (
-            type(number) is not int
-            or number < 0
-            or number in numbers
-            or week["slug"] in slugs
-        ):
-            raise ValueError("Номера и slug недель должны быть уникальными")
-        ids = week.get("materials")
-        if not isinstance(ids, list) or not all(
-            isinstance(identifier, str) for identifier in ids
-        ):
-            raise ValueError(
-                "Неделя должна содержать список идентификаторов материалов"
-            )
-        for identifier in ids:
-            if identifier not in known:
-                raise ValueError(f"Неизвестный материал: {identifier}")
-            if identifier in assigned:
-                raise ValueError(f"Материал назначен повторно: {identifier}")
-            assigned.add(identifier)
-        slugs.add(week["slug"])
-        numbers.add(number)
-        visible = [
-            identifier
-            for identifier in ids
-            if identifier in available and identifier in public
-        ]
-        if visible:
-            weeks.append(
-                {key: week[key] for key in ("slug", "number", "title", "description")}
-                | {"materials": visible}
-            )
-    missing = public - assigned
-    if missing:
-        raise ValueError("Материалы без недели: " + ", ".join(sorted(missing)))
-    return {
-        "title": course["title"],
-        "description": course["description"],
-        "weeks": weeks,
-    }
+from course_catalog import load_course
 
 
 def link(href: str, label: str, attributes: str = "") -> str:
@@ -166,7 +84,7 @@ def render_material(material: dict, root: str, show_description: bool = False) -
     target = root + target if target else m["references"][0]["url"]
     preview = (
         f' data-preview="{escape(root + m["thumb"], quote=True)}"'
-        if m.get("thumb")
+        if m.get("thumb") and m["kind"] != "lecture"
         else ""
     )
     name = link(target, m["title"], ' class="material-title"' + preview)
@@ -245,7 +163,7 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
     weeks = course["weeks"]
     materials = {}
     for item in manifest['materials']:
-        meta = source / 'course' / item['id'] / 'meta.yaml'
+        meta = source / 'course' / item['id'] / 'material.yml'
         authors = normalize_authors(parse_meta(meta).get('authors')) if meta.is_file() else []
         materials[item['id']] = dict(item, _authors=authors)
     # Не оставляем страницы удалённых или скрытых недель.
@@ -278,11 +196,18 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
                 if materials[identifier]["kind"] == kind
             ]
             if selected:
-                content += f'<li><span id="{kind}">{label}</span><ul>'
-                content += (
-                    "".join(render_material(m, "../../") for m in selected)
-                    + "</ul></li>"
-                )
+                content += f'<li><h2 id="{kind}">{label}</h2>'
+                if kind == "lecture":
+                    lecture = selected[0]
+                    if lecture.get("pdf"):
+                        src = escape("../../" + lecture["pdf"], quote=True)
+                        fallback = (
+                            f'<a class="slide-fallback" href="{src}"><img src="{escape("../../" + lecture["thumb"], quote=True)}" '
+                            f'alt="Первый слайд: {escape(lecture["title"], quote=True)}" width="1280" decoding="async"></a>'
+                            if lecture.get("thumb") else ""
+                        )
+                        content += f'<lecture-viewer src="{src}">{fallback}</lecture-viewer>'
+                content += "<ul>" + "".join(render_material(m, "../../") for m in selected) + "</ul></li>"
         content += "</ul>"
         neighbors = []
         if index:
@@ -363,6 +288,7 @@ def publish_pages(source: Path, output: Path, manifest: dict) -> None:
         '<a href="../fonts/OFL-PTSans.txt">PT Sans</a>, '
         '<a href="../fonts/OFL-IBMPlexSans.txt">IBM Plex Sans</a>, '
         '<a href="../fonts/OFL-Unbounded.txt">Unbounded</a>.</li>'
+        '<li>PDF.js — <a href="../assets/pdfjs/LICENSE">Apache 2.0</a>.</li>'
         '<li>Lit — <a href="../assets/LICENSE-Lit.txt">BSD-3-Clause</a>.</li>'
         '<li>Иконки Font Awesome Free 6.7.2 — CC BY 4.0. '
         '<a href="../assets/fontawesome/LICENSE.txt">Официальные условия лицензирования</a>; '

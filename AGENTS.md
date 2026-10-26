@@ -5,7 +5,7 @@
 ## Где что находится
 
 - `handbooks/` — учебники; `handbooks/ml/references/` — описания и ссылки на источники.
-- `course/lectures/`, `course/practices/`, `course/assignments/` — лекции, практики и домашние задания; у каждого материала своя папка с `meta.yaml`.
+- `course/NN-topic/` — недели с `week.yml`; внутри — лекция, практики и задания с `material.yml`. Порядок недель задаёт `course/course.yml`.
 - `main.tex` подключает содержимое из `slides/` или `sections/`; порядок задают команды `\input`.
 - `materials/` и `assets/` внутри папки занятия — дополнительные файлы и изображения.
 - `utils/latex/tex/latex/` — общие стили LaTeX. Содержимое занятий сюда не помещайте.
@@ -15,7 +15,7 @@
 ## Обязательные правила
 
 1. Главный README предназначен ученикам. Технические инструкции размещайте в [руководстве по сборке](utils/scripts/README.md) и README разделов.
-2. Вид материала определяется родительской папкой. Нумерация лекций, практик и заданий независима; номер папки не задаёт порядок на сайте.
+2. Вид и номер материала задают `kind` и `number` в `material.yml`. Нумерация лекций, практик и заданий независима; порядок задают YAML-списки. Каждая неделя, кроме 00, содержит одну лекцию с опубликованным PDF.
 3. Папки с префиксом `_` и материалы с `build: false` пропускаются при общей сборке. `hidden: true` скрывает запись, но не отключает сборку файлов.
 4. Лекции используют `academicbeamer`, практики — его опцию `practice`; задания — класс `article` и пакет `academicworksheet` или `academicstatement`. Подключайте пакеты через `\usepackage`, а не относительный `\input`.
 5. Для заданий обязателен `assignment_type: math` или `coding`. Для новых публичных материалов укажите `build: true`, настоящую дату и рабочие ссылки для учеников.
@@ -29,10 +29,10 @@
 
 ## Проверка изменений
 
-- Изменение занятия: `make -f build/Makefile session DIR=course/lectures/02-topic` (подставьте нужный путь), затем `make -f build/Makefile site`.
+- Изменение занятия: `make -f build/Makefile session DIR=course/02-topic/lecture` (подставьте нужный путь), затем `make -f build/Makefile site`.
 - Изменение интерфейса или генератора: `make -f build/Makefile test`, `make -f build/Makefile site`, проверка в браузере.
 - Изменение общего стиля LaTeX: пересоберите все материалы через `make -f build/Makefile site`.
 - Проверьте порядок записей, фильтры и hash-ссылки, доступность файлов, мобильную вёрстку и клавиатурное управление.
 - Перед завершением проверьте `git diff --check` и `git status`. Если проверка не выполнена, укажите причину.
 
-Зависимости, поля метаданных и публикация описаны в [utils/scripts/README.md](utils/scripts/README.md). Особенности: [лекции](course/lectures/README.md), [практики](course/practices/README.md), [задания](course/assignments/README.md), [LaTeX](utils/latex/README.md).
+Зависимости, поля метаданных и публикация описаны в [utils/scripts/README.md](utils/scripts/README.md). Особенности: [недельный курс](course/README.md), [LaTeX](utils/latex/README.md).

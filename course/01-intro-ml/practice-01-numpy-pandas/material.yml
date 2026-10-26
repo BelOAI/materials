@@ -1,0 +1,17 @@
+legacy_id: practices/01-numpy-pandas
+kind: practice
+number: "1"
+title: "Практика: numpy, pandas и форматы данных"
+subtitle: "Массивы, таблицы, CSV, JSON и Parquet"
+date: "2026-10-03"
+time: "12:15–13:00"
+description: "Знакомимся с numpy и pandas: массивы и таблицы, фильтрация, группировка, пропуски. Учимся читать и сохранять данные в форматах CSV, JSON и Parquet."
+lang: ru
+build: true
+
+materials:
+  - path: materials/notebook.ipynb
+    label: Jupyter Notebook
+
+authors:
+  - name: "Алексей Чернуха"

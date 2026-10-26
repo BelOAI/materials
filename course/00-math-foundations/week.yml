@@ -1,0 +1,8 @@
+slug: math-foundations
+number: 0
+title: Математическая подготовка
+description: Повторение пределов и интегрального исчисления перед занятиями по машинному
+  обучению.
+materials:
+- assignment-01-limits
+- assignment-02-integrals

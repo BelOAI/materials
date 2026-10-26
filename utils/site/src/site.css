@@ -293,3 +293,47 @@ body[data-page="handbook"] .breadcrumbs a { min-width: 0; }
 }
 
 .material .authors { margin: 4px 0 8px; color: var(--muted); font-size: .9em; }
+
+/* Лекция задаёт порядок чтения страницы недели. */
+.week-resources { list-style: none; padding-left: 0; }
+.week-resources > li { margin-block: 2rem; }
+.week-resources h2 { font-size: 1.35rem; margin-bottom: .75rem; }
+lecture-viewer { display: block; width: 100%; max-width: min(960px, max(160px, calc((100svh - 8rem) * 1.7777778))); margin-block: 1.25rem 2rem; }
+lecture-viewer:focus-visible { outline: 2px solid var(--link-color, #a51c30); outline-offset: 5px; }
+.slide-stage { width: 100%; }
+.slide-surface, .slide-fallback { display: block; width: 100%; aspect-ratio: 16 / 9; background: #eceef0; box-shadow: 0 1px 5px #0002; }
+.slide-surface:empty { display: none; }
+.slide-surface canvas, .slide-fallback img { display: block; width: 100%; height: 100%; object-fit: contain; }
+@media (prefers-color-scheme: dark) {
+  .slide-surface, .slide-fallback { background: #151719; }
+}
+.slide-controls { display: flex; gap: .65rem; align-items: center; margin-top: .75rem; flex-wrap: wrap; }
+.slide-controls[hidden], .slide-fallback[hidden] { display: none; }
+.slide-controls button { min-width: 44px; min-height: 44px; cursor: pointer; }
+.slide-controls input { width: 4.5rem; min-height: 44px; font: inherit; text-align: center; }
+.slide-controls button:disabled { cursor: default; opacity: .45; }
+.slide-status { font-size: .9rem; color: #666; margin-block: .4rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.slide-fullscreen { margin-left: auto; padding-inline: .75rem; font: inherit; }
+body.slides-fullscreen-open { overflow: hidden; }
+lecture-viewer:is(:fullscreen, .is-fullscreen) {
+  position: fixed; inset: 0; z-index: 1000; box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; height: 100dvh; max-width: none; margin: 0; padding: 16px;
+  overflow: auto; background: #151719; color: #f1f3f5;
+}
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-stage {
+  flex: 1; min-height: 0; container-type: size;
+  display: grid; place-items: center;
+}
+lecture-viewer:is(:fullscreen, .is-fullscreen) :is(.slide-surface, .slide-fallback) {
+  width: min(100cqw, calc(100cqh * 1.7777778));
+  box-shadow: none; background: #151719;
+}
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls {
+  flex: none; width: min(100%, 960px);
+}
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-status { flex: none; color: #c4c8cd; }
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls button,
+lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls input { color-scheme: dark; }

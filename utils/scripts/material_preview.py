@@ -119,8 +119,6 @@ def render_preview(content):
 
 
 def build_preview(session_dir, site_dir):
-    if session_dir.parent.name not in ("lectures", "practices", "assignments"):
-        return
     slug = f"{session_dir.parent.name}/{session_dir.name}"
     output = site_dir / "thumbs" / slug
     pdf_preview = site_dir / "thumbs" / f"{slug}.png"
@@ -166,10 +164,10 @@ def build_preview(session_dir, site_dir):
             print(f"Превью PDF: {pdf_preview}")
         return
 
-    meta_path = session_dir / "meta.yaml"
+    meta_path = session_dir / "material.yml"
     if not meta_path.is_file():
         return
-    for material in get_materials(parse_meta(session_dir / "meta.yaml")):
+    for material in get_materials(parse_meta(session_dir / "material.yml")):
         source = session_dir / material["path"]
         if source.suffix.lower() != ".ipynb" or not source.is_file():
             continue

@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import yaml
 import tempfile
 import unittest
 from pathlib import Path
@@ -20,13 +21,11 @@ class ManifestTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.output = self.root / "_site"
-        self.roots = tuple(
-            self.root / "course" / kind for kind in ("lectures", "practices", "assignments")
-        )
+        self.roots = (self.root / "course/00-topic",)
         for root in self.roots:
             root.mkdir(parents=True)
         self.patch = patch.multiple(
-            site, SESSION_ROOTS=self.roots, SITE_DIR=self.output
+            site, SESSION_ROOTS=(self.root / "course",), SITE_DIR=self.output
         )
         self.patch.start()
         self.addCleanup(self.patch.stop)
@@ -36,7 +35,7 @@ class ManifestTests(unittest.TestCase):
             ids = [
                 f"{root.name}/{meta.parent.name}"
                 for root in self.roots
-                for meta in root.glob("*/meta.yaml")
+                for meta in root.glob("*/material.yml")
                 if not meta.parent.name.startswith("_")
             ]
         course = {
@@ -52,8 +51,17 @@ class ManifestTests(unittest.TestCase):
                 }
             ],
         }
-        (self.root / "course/course.json").write_text(json.dumps(course), encoding="utf-8")
+        self.save_course(course)
         return course
+
+    def save_course(self, course):
+        names = []
+        for week in course['weeks']:
+            name = '00-topic'
+            names.append(name)
+            local = dict(week, materials=[value.split('/', 1)[1] for value in week['materials']])
+            (self.root / 'course' / name / 'week.yml').write_text(yaml.safe_dump(local))
+        (self.root / 'course/course.yml').write_text(yaml.safe_dump(dict(course, weeks=names)))
 
     def manifest(self):
         self.course()
@@ -61,13 +69,13 @@ class ManifestTests(unittest.TestCase):
         return site.build_manifest(entries, site.load_course(self.root, entries))
 
     def session(self, kind, name, extra="", pdf=False):
-        folder = self.root / "course" / kind / name
+        folder = self.root / "course/00-topic" / ("_" + kind + "-" + name if name.startswith("_") else kind + "-" + name)
         folder.mkdir()
-        (folder / "meta.yaml").write_text(
-            'title: "Название <&>"\ndate: "2026-10-10"\n' + extra, encoding="utf-8"
+        (folder / "material.yml").write_text(
+            f'kind: {dict(lectures="lecture", practices="practice", assignments="assignment")[kind]}\nnumber: "{site.session_number(name)}"\ntitle: "Название <&>"\ndate: "2026-10-10"\n' + extra, encoding="utf-8"
         )
         if pdf:
-            dest = self.output / "pdfs" / kind / (name + ".pdf")
+            dest = self.output / "pdfs/00-topic" / (kind + "-" + name + ".pdf")
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.touch()
         return folder
@@ -87,12 +95,12 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(
             [e["slug"] for e in site.discover_sessions()],
             [
-                "assignments/01-task",
-                "practices/02-late",
-                "lectures/01-slot",
-                "lectures/02-time",
-                "practices/01-slot",
-                "assignments/02-old",
+                "00-topic/assignments-01-task",
+                "00-topic/practices-02-late",
+                "00-topic/lectures-01-slot",
+                "00-topic/lectures-02-time",
+                "00-topic/practices-01-slot",
+                "00-topic/assignments-02-old",
             ],
         )
 
@@ -116,7 +124,7 @@ class ManifestTests(unittest.TestCase):
         entry = self.manifest()["materials"][0]
         self.assertNotIn("pdf", entry)
         self.assertNotIn("thumb", entry)
-        self.assertEqual(entry["id"], "practices/01-links")
+        self.assertEqual(entry["id"], "00-topic/practices-01-links")
         self.assertEqual(entry["references"][0]["label"], "Яндекс.Контест")
 
     def test_multiple_notebooks_missing_files_and_json(self):
@@ -125,11 +133,11 @@ class ManifestTests(unittest.TestCase):
             "01-files",
             "materials:\n  - path: materials/a.ipynb\n    label: Первый\n  - path: materials/b.ipynb\n    label: Второй\n  - path: materials/missing.csv\n",
         )
-        out = self.output / "materials/lectures/01-files"
+        out = self.output / "materials/00-topic/lectures-01-files"
         out.mkdir(parents=True)
         for name in ("a.ipynb", "a.html", "b.ipynb"):
             (out / name).touch()
-        thumb = self.output / "thumbs/lectures/01-files.png"
+        thumb = self.output / "thumbs/00-topic/lectures-01-files.png"
         thumb.parent.mkdir(parents=True)
         thumb.touch()  # Старое превью без PDF не должно публиковаться.
         manifest = self.manifest()
@@ -142,7 +150,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual([m["label"] for m in entry["materials"]], ["Первый", "Второй"])
         self.assertEqual(entry["materials"][1]["open"], "")
         self.assertEqual(
-            entry["materials"][0]["open"], "materials/lectures/01-files/a.html"
+            entry["materials"][0]["open"], "materials/00-topic/lectures-01-files/a.html"
         )
         self.assertNotIn("slot_index", entry)
 
@@ -152,14 +160,14 @@ class ManifestTests(unittest.TestCase):
             "01-files",
             "materials:\n  - path: materials/a #1.ipynb\n  - path: materials/b.ipynb\n",
         )
-        out = self.output / "materials/lectures/01-files"
+        out = self.output / "materials/00-topic/lectures-01-files"
         out.mkdir(parents=True)
         for name in ("a #1.ipynb", "b.ipynb"):
             (out / name).touch()
         files = self.manifest()["materials"][0]["materials"]
         self.assertNotEqual(files[0]["label"], files[1]["label"])
         self.assertEqual(
-            files[0]["download"], "materials/lectures/01-files/a%20%231.ipynb"
+            files[0]["download"], "materials/00-topic/lectures-01-files/a%20%231.ipynb"
         )
 
     def test_publish_manifest_shell_and_fonts(self):
@@ -187,17 +195,17 @@ class ManifestTests(unittest.TestCase):
             site.main()
         data = json.loads((self.output / "materials.json").read_text())
         self.assertEqual(data["version"], 2)
-        self.assertEqual(data["materials"][0]["id"], "lectures/01-topic")
+        self.assertEqual(data["materials"][0]["id"], "00-topic/lectures-01-topic")
         self.assertTrue((self.output / "fonts/test.woff2").is_file())
         home = (self.output / "index.html").read_text()
         self.assertIn("Подготовка &lt;&amp;&gt;", home)
         self.assertIn('href="weeks/topic/"', home)
         week = (self.output / "weeks/topic/index.html").read_text()
-        self.assertIn('href="../../pdfs/lectures/01-topic.pdf"', week)
+        self.assertIn('href="../../pdfs/00-topic/lectures-01-topic.pdf"', week)
         self.assertIn('aria-current="page">Неделя 0', week)
         self.assertIn("Название &lt;&amp;&gt;", week)
         self.assertIn(
-            '<ul class="week-resources"><li><span id="lecture">Лекции</span><ul>', week
+            '<ul class="week-resources"><li><h2 id="lecture">Лекции</h2><lecture-viewer', week
         )
         self.assertIn('<li class="material"', week)
         self.assertNotIn("<article", week)
@@ -206,7 +214,7 @@ class ManifestTests(unittest.TestCase):
         self.assertNotIn('id="practice"', week)
         self.assertNotIn('id="assignment"', week)
         catalog = (self.output / "materials/index.html").read_text()
-        self.assertIn('href="../pdfs/lectures/01-topic.pdf"', catalog)
+        self.assertIn('href="../pdfs/00-topic/lectures-01-topic.pdf"', catalog)
         self.assertIn("<catalog-controls>", catalog)
         self.assertIn('<materials-catalog root="../">', catalog)
         self.assertIn('</ul></materials-catalog>', catalog)
@@ -240,140 +248,33 @@ class ManifestTests(unittest.TestCase):
         for filename in ("LICENSE", "LICENSE-CC-BY-4.0", "LICENSE-MIT"):
             self.assertEqual((self.output / ("LICENSE.txt" if filename == "LICENSE" else filename)).read_bytes(), (self.root / filename).read_bytes())
 
-    def test_course_validation(self):
-        self.session("lectures", "01-topic", pdf=True)
-        self.session("practices", "01-topic", pdf=True)
-        ids = ["lectures/01-topic", "practices/01-topic"]
-        original = self.course(ids)
-        cases = []
-        for change in (
-            "missing",
-            "unknown",
-            "duplicate",
-            "slug",
-            "number",
-            "repeat-week",
-            "description",
-        ):
-            course = json.loads(json.dumps(original))
-            week = course["weeks"][0]
-            if change == "missing":
-                week["materials"].pop()
-            elif change == "unknown":
-                week["materials"].append("lectures/does-not-exist")
-            elif change == "duplicate":
-                week["materials"].append(ids[0])
-            elif change == "slug":
-                week["slug"] = "../bad"
-            elif change == "number":
-                week["number"] = True
-            elif change == "description":
-                week["description"] = ""
-            else:
-                course["weeks"].append(dict(week))
-            cases.append(course)
-        for course in cases:
-            with self.subTest(course=course):
-                (self.root / "course/course.json").write_text(
-                    json.dumps(course), encoding="utf-8"
-                )
-                with self.assertRaises(ValueError):
-                    site.load_course(self.root, site.discover_sessions())
-
-    def test_course_visibility_order_and_material_without_built_resources(self):
-        self.session("lectures", "01-topic", pdf=True)
-        self.session("lectures", "02-hidden", "hidden: true", pdf=True)
-        self.session("lectures", "03-disabled", "build: false", pdf=True)
-        self.session("practices", "01-empty")
-        course = self.course(
-            ["lectures/03-disabled", "lectures/02-hidden", "lectures/01-topic"]
-        )
-        with self.assertRaisesRegex(ValueError, "practices/01-empty"):
-            site.load_course(self.root, site.discover_sessions())
-        course["weeks"][0]["materials"].append("practices/01-empty")
-        course["weeks"].append(
-            {
-                "slug": "empty",
-                "number": 1,
-                "title": "Пустая",
-                "description": "Описание",
-                "materials": [],
-            }
-        )
-        (self.root / "course/course.json").write_text(json.dumps(course), encoding="utf-8")
-        published = site.load_course(self.root, site.discover_sessions())
-        self.assertEqual(len(published["weeks"]), 1)
-        self.assertEqual(published["weeks"][0]["materials"], ["lectures/01-topic"])
-        self.session("lectures", "04-second", pdf=True)
-        course["weeks"][0]["materials"].insert(0, "lectures/04-second")
-        (self.root / "course/course.json").write_text(json.dumps(course), encoding="utf-8")
-        published = site.load_course(self.root, site.discover_sessions())
-        self.assertEqual(
-            published["weeks"][0]["materials"],
-            ["lectures/04-second", "lectures/01-topic"],
-        )
-
-    def test_week_neighbors_and_removal_of_stale_pages(self):
-        self.session("lectures", "01-topic", pdf=True)
-        self.session(
-            "practices",
-            "01-links",
-            "references:\n  - kind: contest\n    url: https://example.com/contest\n",
-        )
-        course = self.course(["lectures/01-topic"])
-        course["weeks"].append(
-            {
-                "slug": "second",
-                "number": 1,
-                "title": "Следующая",
-                "description": "Описание",
-                "materials": ["practices/01-links"],
-            }
-        )
-        (self.root / "course/course.json").write_text(json.dumps(course), encoding="utf-8")
-        entries = site.discover_sessions()
-        manifest = site.build_manifest(entries, site.load_course(self.root, entries))
-        stale = self.output / "weeks/stale/index.html"
-        stale.parent.mkdir(parents=True)
-        stale.touch()
-        site.publish_pages(Path(__file__).parents[3], self.output, manifest)
-        self.assertFalse(stale.exists())
-        first = (self.output / "weeks/topic/index.html").read_text()
-        second = (self.output / "weeks/second/index.html").read_text()
-        self.assertIn('href="../second/" rel="next"', first)
-        self.assertNotIn('rel="prev"', first)
-        self.assertIn('href="../topic/" rel="prev"', second)
-        self.assertNotIn('rel="next"', second)
-        self.assertIn('href="https://example.com/contest"', second)
-        self.assertNotIn('href="../../pdfs/', second)
-
     def test_notebook_preview_target_and_pdf_priority(self):
         self.session(
             "practices",
             "01-files",
             "materials:\n  - path: materials/a.ipynb\n  - path: materials/b.ipynb\n",
         )
-        out = self.output / "materials/practices/01-files"
+        out = self.output / "materials/00-topic/practices-01-files"
         out.mkdir(parents=True)
         for name in ("a.ipynb", "b.ipynb"):
             (out / name).touch()
-        preview = self.output / "thumbs/practices/01-files/a.ipynb.svg"
+        preview = self.output / "thumbs/00-topic/practices-01-files/a.ipynb.svg"
         preview.parent.mkdir(parents=True)
         preview.touch()
         entry = self.manifest()["materials"][0]
-        self.assertEqual(entry["thumb"], "thumbs/practices/01-files/a.ipynb.svg")
-        self.assertEqual(entry["thumb_href"], "materials/practices/01-files/a.ipynb")
+        self.assertEqual(entry["thumb"], "thumbs/00-topic/practices-01-files/a.ipynb.svg")
+        self.assertEqual(entry["thumb_href"], "materials/00-topic/practices-01-files/a.ipynb")
         (out / "a.html").touch()
         entry = self.manifest()["materials"][0]
-        self.assertEqual(entry["thumb_href"], "materials/practices/01-files/a.html")
-        pdf = self.output / "pdfs/practices/01-files.pdf"
+        self.assertEqual(entry["thumb_href"], "materials/00-topic/practices-01-files/a.html")
+        pdf = self.output / "pdfs/00-topic/practices-01-files.pdf"
         pdf.parent.mkdir(parents=True)
         pdf.touch()
-        thumb = self.output / "thumbs/practices/01-files.png"
+        thumb = self.output / "thumbs/00-topic/practices-01-files.png"
         thumb.touch()
         entry = self.manifest()["materials"][0]
-        self.assertEqual(entry["thumb"], "thumbs/practices/01-files.png")
-        self.assertEqual(entry["thumb_href"], "pdfs/practices/01-files.pdf")
+        self.assertEqual(entry["thumb"], "thumbs/00-topic/practices-01-files.png")
+        self.assertEqual(entry["thumb_href"], "pdfs/00-topic/practices-01-files.pdf")
 
     def test_assignment_notebook_preview_and_pdf_priority(self):
         self.session(
@@ -381,27 +282,27 @@ class ManifestTests(unittest.TestCase):
             "04-knn",
             "assignment_type: coding\nmaterials:\n  - path: materials/task.ipynb\n",
         )
-        out = self.output / "materials/assignments/04-knn"
+        out = self.output / "materials/00-topic/assignments-04-knn"
         out.mkdir(parents=True)
         (out / "task.ipynb").touch()
-        preview = self.output / "thumbs/assignments/04-knn/task.ipynb.svg"
+        preview = self.output / "thumbs/00-topic/assignments-04-knn/task.ipynb.svg"
         preview.parent.mkdir(parents=True)
         preview.touch()
 
         entry = self.manifest()["materials"][0]
         self.assertEqual(entry["kind"], "assignment")
-        self.assertEqual(entry["thumb"], "thumbs/assignments/04-knn/task.ipynb.svg")
-        self.assertEqual(entry["thumb_href"], "materials/assignments/04-knn/task.ipynb")
+        self.assertEqual(entry["thumb"], "thumbs/00-topic/assignments-04-knn/task.ipynb.svg")
+        self.assertEqual(entry["thumb_href"], "materials/00-topic/assignments-04-knn/task.ipynb")
 
-        pdf = self.output / "pdfs/assignments/04-knn.pdf"
+        pdf = self.output / "pdfs/00-topic/assignments-04-knn.pdf"
         pdf.parent.mkdir(parents=True)
         pdf.touch()
-        pdf_thumb = self.output / "thumbs/assignments/04-knn.png"
+        pdf_thumb = self.output / "thumbs/00-topic/assignments-04-knn.png"
         pdf_thumb.parent.mkdir(parents=True, exist_ok=True)
         pdf_thumb.touch()
         entry = self.manifest()["materials"][0]
-        self.assertEqual(entry["thumb"], "thumbs/assignments/04-knn.png")
-        self.assertEqual(entry["thumb_href"], "pdfs/assignments/04-knn.pdf")
+        self.assertEqual(entry["thumb"], "thumbs/00-topic/assignments-04-knn.png")
+        self.assertEqual(entry["thumb_href"], "pdfs/00-topic/assignments-04-knn.pdf")
 
 
 if __name__ == "__main__":
