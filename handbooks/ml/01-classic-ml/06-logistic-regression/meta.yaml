@@ -1,0 +1,28 @@
+slug: logistic-regression
+title: Логистическая регрессия и вероятностный ответ
+description: Превращаем сумму признаков в вероятность, выбираем порог и сравниваем ошибки двух моделей.
+status: draft
+build: true
+date: '2026-10-25'
+authors:
+  - name: Чернуха Алексей
+topics:
+  - Линейная оценка и сигмоида
+  - Вероятность класса
+  - Порог решения
+  - Ложные срабатывания и пропуски
+  - Precision, recall и accuracy
+learning_outcomes:
+  - Вычислять вероятность по линейной оценке и объяснять роль сигмоиды.
+  - Получать класс по вероятности и объяснять, как порог меняет два вида ошибок, precision и recall.
+  - Сравнивать логистическую регрессию и дерево на одном разбиении данных.
+sync_notebook: true
+resources:
+  - path: notebook.ipynb
+    label: Практика и решения (.ipynb)
+  - path: media/confusion.svg
+    label: Четыре исхода ответа (.svg)
+  - path: media/sigmoid.svg
+    label: Как оценка становится вероятностью (.svg)
+  - path: media/thresholds.svg
+    label: Порог и ошибки (.svg)
