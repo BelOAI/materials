@@ -24,8 +24,3 @@ resources:
     label: Как оценка становится вероятностью (.svg)
   - path: media/thresholds.svg
     label: Порог и ошибки (.svg)
-references:
-  - label: scikit-learn — логистическая регрессия
-    url: https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  - label: scikit-learn — набор breast_cancer
-    url: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html
