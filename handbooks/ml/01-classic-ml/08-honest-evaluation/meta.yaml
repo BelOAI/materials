@@ -5,7 +5,7 @@ status: draft
 build: true
 date: '2026-10-25'
 authors:
-  - Авторы BelOAI
+  - name: Алексей Толстиков
 topics:
   - MAE и RMSE, выбор метрики по цене ошибки
   - Приближённые метрики для ранжирования
