@@ -182,6 +182,55 @@ resources:
         self.assertIn('href="./"', preview)
         self.assertIn('src="media/image.svg"', preview)
 
+    def test_cross_lesson_resources_rewrite_in_pages_and_notebook_previews(self):
+        folder = self.paragraph()
+        sibling = self.chapter / '02-other'
+        sibling.mkdir()
+        (sibling / 'README.md').write_text('# Fixture\n')
+        (sibling / 'content.md').write_text('## Fixture\n')
+        (sibling / 'meta.yaml').write_text(yaml.safe_dump(dict(
+            slug='other', title='Other', description='Fixture.', status='draft',
+            build=True, authors=['Fixture Writer'], resources=[
+                dict(path='attachments/example.zip', label='Archive'),
+            ],
+        )))
+        self.metadata(self.chapter, paragraphs=[folder.name, sibling.name])
+        for name, data in (
+            ('data/shared #1.csv', b'x\n1\n'),
+            ('media/figure.svg', b'<svg xmlns="http://www.w3.org/2000/svg"/>'),
+            ('attachments/example.zip', b'fixture archive'),
+        ):
+            path = sibling / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        intro = self.root / 'handbooks/ml/00-intro/data'
+        intro.mkdir()
+        (intro / 'example.csv').write_text('x\n2\n')
+        links = (
+            '<a href="../02-other/data/shared%20%231.csv?download=1&amp;mode=full#sample">Data</a>'
+            '<img src="../02-other/media/figure.svg">'
+            '<a href="../02-other/attachments/example.zip">Archive</a>'
+            '<a href="../../00-intro/data/example.csv">Intro data</a>'
+        )
+        path = folder / 'content.md'
+        path.write_text(path.read_text() + '\n' + links + '\n')
+
+        def export(path, **kwargs):
+            path.with_suffix('.html').write_text('<html><head></head><body>' + links + '</body></html>')
+            return True
+
+        with patch('handbook_site.export_notebook', side_effect=export):
+            publish_handbook(self.root, self.output, [])
+        destination = self.output / 'handbooks/ml/classic-ml/example'
+        for name in ('index.html', 'notebook.html'):
+            html = (destination / name).read_text()
+            self.assertIn('href="../other/data/shared%20%231.csv?download=1&amp;mode=full#sample"', html)
+            self.assertIn('src="../other/media/figure.svg"', html)
+            self.assertIn('href="../other/attachments/example.zip"', html)
+            self.assertIn('href="../../intro/data/example.csv"', html)
+        self.assertEqual((destination.parent / 'other/data/shared #1.csv').read_bytes(), b'x\n1\n')
+        validate_links(self.output)
+
     def test_paragraph_resources_export_sync_and_deletion(self):
         folder = self.paragraph()
         publish_handbook(self.root, self.output, [])
