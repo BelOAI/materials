@@ -1,0 +1,32 @@
+title: Ансамбли и случайный лес
+slug: random-forest
+description: Объединяем прогнозы деревьев, разбираем бэггинг и случайный выбор признаков, сравниваем дерево и лес на учебных заказах.
+status: draft
+build: true
+date: '2026-10-27'
+authors:
+  - name: Максим Банцевич
+topics:
+  - Усреднение и голосование
+  - Бутстрап и бэггинг
+  - Случайный лес
+  - Сравнение моделей на одинаковых разбиениях
+learning_outcomes:
+  - Объединять числовые прогнозы усреднением, а ответы-классы — голосованием.
+  - Объяснять, откуда берутся различия между деревьями случайного леса и зачем они нужны.
+  - Сравнивать дерево и лес на одних и тех же проверочных данных.
+sync_notebook: true
+resources:
+  - path: notebook.ipynb
+    label: Практика и решения (.ipynb)
+  - path: media/forest.svg
+    label: Как устроен случайный лес (.svg)
+references:
+  - label: Яндекс — Ансамбли в машинном обучении
+    url: https://education.yandex.ru/handbook/ml/article/ansambli-v-mashinnom-obuchenii
+  - label: scikit-learn — Ensembles
+    url: https://scikit-learn.org/stable/modules/ensemble.html#forest
+  - label: scikit-learn — RandomForestRegressor
+    url: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html
+  - label: scikit-learn — RandomForestClassifier
+    url: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
