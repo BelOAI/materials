@@ -5,6 +5,7 @@ status: draft
 paragraphs:
   - 01-first-experiment
   - 02-nearest-neighbors
+  - 03-linear-regression
   - 04-decision-trees
   - 05-clustering-kmeans
   - 06-logistic-regression
