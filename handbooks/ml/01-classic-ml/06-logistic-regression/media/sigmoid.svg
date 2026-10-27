@@ -1,43 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="560" height="300" viewBox="0 0 560 300" role="img" aria-labelledby="title desc">
-<title id="title">Сигмоида переводит оценку в вероятность</title>
-<desc id="desc">Кривая σ(z) растёт от 0 к 1. При z = −2,3 вероятность около 0,091, при z = 0 ровно 0,5, при z = 1,6 около 0,832. Отрицательные оценки дают вероятность меньше 0,5, положительные — больше.</desc>
-<style>
-:root { color-scheme: light dark; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --panel:#f3f6fa; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#17803d; --red:#c0283b; --glow:#ffffff; }
-@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --panel:#26303b; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#7fd99a; --red:#ff8a96; --glow:#000000; } }
-@media print { :root { --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --panel:#f3f6fa; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#17803d; --red:#c0283b; --glow:#ffffff; } }
-text { font-family:'DejaVu Sans',Arial,sans-serif; font-size:14px; fill:var(--ink); } .s { font-size:12.5px; } .b { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; font-family:'DejaVu Serif',Georgia,serif; }
-.blue { fill:var(--blue); } .purple { fill:var(--purple); } .orange { fill:var(--orange); } .green { fill:var(--green); } .red { fill:var(--red); }
-.panel { fill:var(--panel); fill-opacity:.85; stroke:var(--edge); }
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="352" viewBox="0 0 560 352" role="img" aria-labelledby="title desc">
+  <title id="title">Сигмоида переводит оценку в вероятность</title>
+  <desc id="desc">Кривая σ(z) растёт от 0 к 1. При z = −2,3 вероятность около 0,091, при z = 0 ровно 0,5, при z = 1,6 около 0,832. Отрицательные оценки дают вероятность меньше 0,5, положительные — больше.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
 </style>
-<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="var(--axis)"/></marker></defs>
-<rect x="60" y="40" width="235.0" height="190" fill="var(--blue-bg)" fill-opacity=".7"/><rect x="295.0" y="40" width="235.0" height="190" fill="var(--orange-bg)" fill-opacity=".7"/>
-<text x="68" y="58" class="s blue">z &lt; 0: p &lt; 0,5</text><text x="522" y="220" text-anchor="end" class="s orange">z &gt; 0: p &gt; 0,5</text>
-<path d="M60 182.5H530" stroke="var(--grid)" stroke-dasharray="3 4"/>
-<path d="M60 135.0H530" stroke="var(--grid)" stroke-dasharray="3 4"/>
-<path d="M60 87.5H530" stroke="var(--grid)" stroke-dasharray="3 4"/>
-<path d="M60 40.0H530" stroke="var(--grid)" stroke-dasharray="3 4"/>
-<path d="M60 32V230H542" fill="none" stroke="var(--axis)" stroke-width="1.5" marker-end="url(#ar)"/>
-<polyline points="60.0,229.5 62.0,229.5 63.9,229.5 65.9,229.5 67.8,229.4 69.8,229.4 71.8,229.4 73.7,229.3 75.7,229.3 77.6,229.3 79.6,229.2 81.5,229.2 83.5,229.1 85.5,229.1 87.4,229.1 89.4,229.0 91.3,229.0 93.3,228.9 95.3,228.8 97.2,228.8 99.2,228.7 101.1,228.7 103.1,228.6 105.0,228.5 107.0,228.4 109.0,228.4 110.9,228.3 112.9,228.2 114.8,228.1 116.8,228.0 118.8,227.9 120.7,227.8 122.7,227.7 124.6,227.6 126.6,227.5 128.5,227.3 130.5,227.2 132.5,227.1 134.4,226.9 136.4,226.7 138.3,226.6 140.3,226.4 142.2,226.2 144.2,226.0 146.2,225.8 148.1,225.6 150.1,225.4 152.0,225.2 154.0,224.9 156.0,224.7 157.9,224.4 159.9,224.2 161.8,223.9 163.8,223.6 165.8,223.2 167.7,222.9 169.7,222.6 171.6,222.2 173.6,221.8 175.5,221.4 177.5,221.0 179.5,220.6 181.4,220.1 183.4,219.6 185.3,219.1 187.3,218.6 189.2,218.0 191.2,217.5 193.2,216.9 195.1,216.2 197.1,215.6 199.0,214.9 201.0,214.2 203.0,213.5 204.9,212.7 206.9,211.9 208.8,211.0 210.8,210.2 212.8,209.3 214.7,208.3 216.7,207.4 218.6,206.3 220.6,205.3 222.5,204.2 224.5,203.0 226.5,201.9 228.4,200.7 230.4,199.4 232.3,198.1 234.3,196.7 236.2,195.3 238.2,193.9 240.2,192.4 242.1,190.9 244.1,189.3 246.0,187.7 248.0,186.0 250.0,184.3 251.9,182.5 253.9,180.7 255.8,178.9 257.8,177.0 259.8,175.1 261.7,173.1 263.7,171.1 265.6,169.0 267.6,167.0 269.5,164.8 271.5,162.7 273.5,160.5 275.4,158.3 277.4,156.0 279.3,153.8 281.3,151.5 283.2,149.1 285.2,146.8 287.2,144.5 289.1,142.1 291.1,139.7 293.0,137.4 295.0,135.0 297.0,132.6 298.9,130.3 300.9,127.9 302.8,125.5 304.8,123.2 306.8,120.9 308.7,118.5 310.7,116.2 312.6,114.0 314.6,111.7 316.5,109.5 318.5,107.3 320.5,105.2 322.4,103.0 324.4,101.0 326.3,98.9 328.3,96.9 330.3,94.9 332.2,93.0 334.2,91.1 336.1,89.3 338.1,87.5 340.0,85.7 342.0,84.0 344.0,82.3 345.9,80.7 347.9,79.1 349.8,77.6 351.8,76.1 353.8,74.7 355.7,73.3 357.7,71.9 359.6,70.6 361.6,69.3 363.5,68.1 365.5,67.0 367.5,65.8 369.4,64.7 371.4,63.7 373.3,62.6 375.3,61.7 377.2,60.7 379.2,59.8 381.2,59.0 383.1,58.1 385.1,57.3 387.0,56.5 389.0,55.8 391.0,55.1 392.9,54.4 394.9,53.8 396.8,53.1 398.8,52.5 400.8,52.0 402.7,51.4 404.7,50.9 406.6,50.4 408.6,49.9 410.5,49.4 412.5,49.0 414.5,48.6 416.4,48.2 418.4,47.8 420.3,47.4 422.3,47.1 424.2,46.8 426.2,46.4 428.2,46.1 430.1,45.8 432.1,45.6 434.0,45.3 436.0,45.1 438.0,44.8 439.9,44.6 441.9,44.4 443.8,44.2 445.8,44.0 447.8,43.8 449.7,43.6 451.7,43.4 453.6,43.3 455.6,43.1 457.5,42.9 459.5,42.8 461.5,42.7 463.4,42.5 465.4,42.4 467.3,42.3 469.3,42.2 471.2,42.1 473.2,42.0 475.2,41.9 477.1,41.8 479.1,41.7 481.0,41.6 483.0,41.6 485.0,41.5 486.9,41.4 488.9,41.3 490.8,41.3 492.8,41.2 494.7,41.2 496.7,41.1 498.7,41.0 500.6,41.0 502.6,40.9 504.5,40.9 506.5,40.9 508.5,40.8 510.4,40.8 512.4,40.7 514.3,40.7 516.3,40.7 518.2,40.6 520.2,40.6 522.2,40.6 524.1,40.5 526.1,40.5 528.0,40.5 530.0,40.5" fill="none" stroke="var(--purple)" stroke-width="3.5" stroke-linejoin="round"/>
-<text x="52" y="235.0" text-anchor="end" class="s m">0</text>
-<text x="52" y="140.0" text-anchor="end" class="s m">0,5</text>
-<text x="52" y="45.0" text-anchor="end" class="s m">1</text>
-<text x="60.0" y="250" text-anchor="middle" class="s m">−6</text>
-<text x="138.3" y="250" text-anchor="middle" class="s m">−4</text>
-<text x="216.7" y="250" text-anchor="middle" class="s m">−2</text>
-<text x="295.0" y="250" text-anchor="middle" class="s m">0</text>
-<text x="373.3" y="250" text-anchor="middle" class="s m">2</text>
-<text x="451.7" y="250" text-anchor="middle" class="s m">4</text>
-<text x="530.0" y="250" text-anchor="middle" class="s m">6</text>
-<text x="544" y="235" class="i b">z</text><text x="56" y="26" class="i b">p</text>
-<path d="M60 212.7H204.9V230" fill="none" stroke="var(--blue)" stroke-width="1.4" stroke-dasharray="5 4"/>
-<circle cx="204.9" cy="212.7" r="6" fill="var(--blue)" stroke="var(--glow)" stroke-opacity=".6" stroke-width="3"/>
-<text x="198.9" y="198.7" text-anchor="end" class="s b blue">z = −2,3: p ≈ 0,091</text>
-<path d="M60 135.0H295.0V230" fill="none" stroke="var(--purple)" stroke-width="1.4" stroke-dasharray="5 4"/>
-<circle cx="295.0" cy="135.0" r="6" fill="var(--purple)" stroke="var(--glow)" stroke-opacity=".6" stroke-width="3"/>
-<text x="307.0" y="155.0" text-anchor="start" class="s b purple">z = 0: p = 0,5</text>
-<path d="M60 71.9H357.7V230" fill="none" stroke="var(--orange)" stroke-width="1.4" stroke-dasharray="5 4"/>
-<circle cx="357.7" cy="71.9" r="6" fill="var(--orange)" stroke="var(--glow)" stroke-opacity=".6" stroke-width="3"/>
-<text x="369.7" y="93.9" text-anchor="start" class="s b orange">z = 1,6: p ≈ 0,832</text>
-<text x="280.0" y="20" text-anchor="middle" class="b">σ(z) = 1 / (1 + e<tspan dy="-6" font-size="11">−z</tspan><tspan dy="6">)</tspan></text>
-<text x="280.0" y="288" text-anchor="middle" class="s m">Оценка z может быть любой, вероятность p остаётся между 0 и 1</text>
-</svg>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <text x="260" y="40" class="heading" text-anchor="end">σ(z) =</text><text x="332" y="20" class="heading" text-anchor="middle">1</text><path d="M276 28H388" fill="none" stroke="var(--ink)" stroke-width="1.25" />
+  <text x="332" y="54" class="heading" text-anchor="middle">1 + e<tspan dy="-8" font-size="14">−z</tspan></text><path d="M64 304H512" class="grid" stroke-dasharray="3 4" />
+  <text x="52" y="309" class="s m" text-anchor="end">0</text><path d="M64 188.0H512" class="grid" stroke-dasharray="3 4" />
+  <text x="52" y="193.0" class="s m" text-anchor="end">0,5</text><path d="M64 72H512" class="grid" stroke-dasharray="3 4" />
+  <text x="52" y="77" class="s m" text-anchor="end">1</text><path d="M64 56V304H532" class="axis" />
+  <text x="536" y="310" class="i b">z</text><text x="48" y="56" class="i b">p</text><text x="64.0" y="330" class="s m" text-anchor="middle">−6</text><text x="138.66666666666669" y="330" class="s m" text-anchor="middle">−4</text><text x="213.33333333333334" y="330" class="s m" text-anchor="middle">−2</text><text x="288.0" y="330" class="s m" text-anchor="middle">0</text><text x="362.6666666666667" y="330" class="s m" text-anchor="middle">2</text><text x="437.3333333333333" y="330" class="s m" text-anchor="middle">4</text><text x="512.0" y="330" class="s m" text-anchor="middle">6</text><polyline points="64.000,303.389 65.906,303.389 67.717,303.389 69.624,303.389 71.435,303.267 73.341,303.267 75.248,303.267 77.059,303.145 78.965,303.145 80.776,303.145 82.683,303.023 84.494,303.023 86.400,302.901 88.306,302.901 90.117,302.901 92.024,302.779 93.835,302.779 95.741,302.657 97.648,302.535 99.459,302.535 101.365,302.413 103.176,302.413 105.083,302.291 106.894,302.168 108.800,302.046 110.706,302.046 112.517,301.924 114.424,301.802 116.235,301.680 118.141,301.558 120.048,301.436 121.859,301.314 123.765,301.192 125.576,301.069 127.483,300.947 129.294,300.703 131.200,300.581 133.106,300.459 134.917,300.215 136.824,299.971 138.635,299.848 140.541,299.604 142.352,299.360 144.259,299.116 146.165,298.872 147.976,298.627 149.883,298.383 151.694,298.139 153.600,297.773 155.506,297.528 157.317,297.162 159.224,296.918 161.035,296.552 162.941,296.185 164.848,295.697 166.659,295.331 168.565,294.964 170.376,294.476 172.283,293.987 174.094,293.499 176.000,293.011 177.906,292.522 179.717,291.912 181.624,291.301 183.435,290.691 185.341,290.080 187.152,289.347 189.059,288.737 190.965,288.004 192.776,287.149 194.683,286.417 196.494,285.562 198.400,284.707 200.306,283.853 202.117,282.876 204.024,281.899 205.835,280.800 207.741,279.823 209.648,278.724 211.459,277.503 213.365,276.404 215.176,275.061 217.083,273.840 218.894,272.497 220.800,271.032 222.706,269.688 224.517,268.223 226.424,266.636 228.235,265.048 230.141,263.339 231.952,261.629 233.859,259.920 235.765,258.088 237.576,256.257 239.483,254.303 241.294,252.349 243.200,250.274 245.106,248.198 246.917,246.000 248.824,243.802 250.635,241.604 252.541,239.284 254.448,236.964 256.259,234.522 258.165,232.080 259.976,229.516 261.883,227.074 263.694,224.387 265.600,221.823 267.506,219.137 269.317,216.451 271.224,213.642 273.035,210.956 274.941,208.147 276.752,205.217 278.659,202.408 280.565,199.600 282.376,196.669 284.283,193.739 286.094,190.931 288.000,188.000 289.906,185.069 291.717,182.261 293.624,179.331 295.435,176.400 297.341,173.592 299.248,170.783 301.059,167.853 302.965,165.044 304.776,162.358 306.683,159.549 308.494,156.863 310.400,154.177 312.306,151.613 314.117,148.926 316.024,146.484 317.835,143.920 319.741,141.478 321.648,139.036 323.459,136.716 325.365,134.396 327.176,132.198 329.083,130.000 330.894,127.802 332.800,125.726 334.706,123.651 336.517,121.697 338.424,119.743 340.235,117.912 342.141,116.080 344.048,114.371 345.859,112.661 347.765,110.952 349.576,109.364 351.483,107.777 353.294,106.312 355.200,104.968 357.106,103.503 358.917,102.160 360.824,100.939 362.635,99.596 364.541,98.497 366.352,97.276 368.259,96.177 370.165,95.200 371.976,94.101 373.883,93.124 375.694,92.147 377.600,91.293 379.506,90.438 381.317,89.583 383.224,88.851 385.035,87.996 386.941,87.263 388.848,86.653 390.659,85.920 392.565,85.309 394.376,84.699 396.283,84.088 398.094,83.478 400.000,82.989 401.906,82.501 403.717,82.013 405.624,81.524 407.435,81.036 409.341,80.669 411.152,80.303 413.059,79.815 414.965,79.448 416.776,79.082 418.683,78.838 420.494,78.472 422.400,78.227 424.306,77.861 426.117,77.617 428.024,77.373 429.835,77.128 431.741,76.884 433.648,76.640 435.459,76.396 437.365,76.152 439.176,76.029 441.083,75.785 442.894,75.541 444.800,75.419 446.706,75.297 448.517,75.053 450.424,74.931 452.235,74.808 454.141,74.686 455.952,74.564 457.859,74.442 459.765,74.320 461.576,74.198 463.483,74.076 465.294,73.954 467.200,73.954 469.106,73.832 470.917,73.709 472.824,73.587 474.635,73.587 476.541,73.465 478.352,73.465 480.259,73.343 482.165,73.221 483.976,73.221 485.883,73.099 487.694,73.099 489.600,73.099 491.506,72.977 493.317,72.977 495.224,72.855 497.035,72.855 498.941,72.855 500.752,72.733 502.659,72.733 504.565,72.733 506.376,72.611 508.283,72.611 510.094,72.611 512.000,72.611" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linejoin="round" />
+  <path d="M64 282.8594730445534H202.13333333333335V304" fill="none" stroke="var(--blue)" stroke-width="1.25" stroke-dasharray="4 4" />
+  <circle cx="202.13333333333335" cy="282.8594730445534" r="6" fill="var(--blue)" stroke="var(--paper)" stroke-width="2" />
+  <text x="80" y="264" class="s b blue">z = −2,3: p ≈ 0,091</text><path d="M64 188.0H288.0V304" fill="none" stroke="var(--purple)" stroke-width="1.25" stroke-dasharray="4 4" />
+  <circle cx="288.0" cy="188.0" r="6" fill="var(--purple)" stroke="var(--paper)" stroke-width="2" />
+  <text x="300" y="216" class="s b purple">z = 0: p = 0,5</text><path d="M64 110.97173464892953H347.7333333333333V304" fill="none" stroke="var(--orange)" stroke-width="1.25" stroke-dasharray="4 4" />
+  <circle cx="347.7333333333333" cy="110.97173464892953" r="6" fill="var(--orange)" stroke="var(--paper)" stroke-width="2" />
+  <text x="360" y="144" class="s b orange">z = 1,6: p ≈ 0,832</text></svg>

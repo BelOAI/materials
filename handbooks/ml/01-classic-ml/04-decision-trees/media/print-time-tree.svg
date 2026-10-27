@@ -1,22 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="680" height="300" viewBox="0 0 680 300" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="360" viewBox="0 0 560 360" role="img" aria-labelledby="title desc">
   <title id="title">Дерево прогноза времени печати</title>
   <desc id="desc">Если высота больше 9,5 сантиметра, прогноз 58 минут. Иначе, если высота не больше 5,5 сантиметра, прогноз 21 минута; в остальных случаях 29 минут.</desc>
-  <g font-family="DejaVu Sans, sans-serif" fill="#212529" text-anchor="middle">
-    <rect x="225" y="12" width="230" height="48" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-    <text x="340" y="42" font-size="17" font-weight="bold">Высота ≤ 9,5 см?</text>
-    <path d="M275 60 L175 112 M405 60 L555 112" fill="none" stroke="#64748b" stroke-width="2"/>
-    <text x="212" y="83" font-size="14">да</text>
-    <text x="485" y="83" font-size="14">нет</text>
-    <rect x="55" y="112" width="240" height="48" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-    <text x="175" y="142" font-size="17" font-weight="bold">Высота ≤ 5,5 см?</text>
-    <rect x="465" y="112" width="180" height="48" rx="8" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
-    <text x="555" y="142" font-size="17" font-weight="bold">58 минут</text>
-    <path d="M115 160 L85 222 M235 160 L265 222" fill="none" stroke="#64748b" stroke-width="2"/>
-    <text x="85" y="191" font-size="14">да</text>
-    <text x="266" y="191" font-size="14">нет</text>
-    <rect x="10" y="222" width="150" height="48" rx="8" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
-    <text x="85" y="252" font-size="17" font-weight="bold">21 минута</text>
-    <rect x="190" y="222" width="150" height="48" rx="8" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
-    <text x="265" y="252" font-size="17" font-weight="bold">29 минут</text>
-  </g>
-</svg>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <path d="M240 88L144 152" class="flow" />
+  <path d="M320 88L440 152" class="flow" />
+  <path d="M96 216L120 280" class="flow" />
+  <path d="M192 216L352 280" class="flow" />
+  <text x="178" y="120" class="s m">да</text><text x="386" y="120" class="s m">нет</text><text x="84" y="252" class="s m">да</text><text x="284" y="252" class="s m">нет</text><rect class="block" x="160" y="24" width="240" height="64" rx="6" fill="var(--blue-bg)" stroke="var(--blue)" stroke-width="2" />
+  <text x="280.0" y="63.0" class="b" text-anchor="middle">Высота ≤ 9,5 см?</text><rect class="block" x="24" y="152" width="240" height="64" rx="6" fill="var(--blue-bg)" stroke="var(--blue)" stroke-width="2" />
+  <text x="144.0" y="191.0" class="b" text-anchor="middle">Высота ≤ 5,5 см?</text><rect class="block" x="344" y="152" width="192" height="64" rx="6" fill="var(--green-bg)" stroke="var(--green)" stroke-width="2" />
+  <text x="440.0" y="191.0" class="b" text-anchor="middle">58 минут</text><rect class="block" x="24" y="280" width="192" height="56" rx="6" fill="var(--green-bg)" stroke="var(--green)" stroke-width="2" />
+  <text x="120.0" y="315.0" class="b" text-anchor="middle">21 минута</text><rect class="block" x="256" y="280" width="192" height="56" rx="6" fill="var(--green-bg)" stroke="var(--green)" stroke-width="2" />
+  <text x="352.0" y="315.0" class="b" text-anchor="middle">29 минут</text></svg>

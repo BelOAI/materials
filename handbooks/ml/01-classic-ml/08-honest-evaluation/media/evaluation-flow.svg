@@ -1,33 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 330" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="792" viewBox="0 0 560 792" role="img" aria-labelledby="title desc">
   <title id="title">Три проверки и отдельная итоговая оценка</title>
   <desc id="desc">Три карточки показывают, какая часть учебных данных служит проверочной. Затем по средней ошибке выбирают настройку. В нижнем ряду: обучение на всех 300 заказах, прогноз для 100 новых и однократное открытие ответов.</desc>
-  <rect width="940" height="330" rx="16" fill="#f7f9fc"/>
-  <style>
-    text { font-family: 'DejaVu Sans', Arial, sans-serif; fill: #17243a; }
-    .small { font-size: 17px; }
-    .label { font-size: 19px; font-weight: 700; }
-    .box { fill: #e4edf8; stroke: #43638c; stroke-width: 2; }
-    .hold { fill: #fff0d8; stroke: #a46718; stroke-width: 2; }
-  </style>
-  <text x="470" y="31" text-anchor="middle" class="label">300 учебных заказов: выбираем настройку</text>
-  <rect x="28" y="56" width="270" height="64" rx="10" class="box"/>
-  <text x="163" y="83" text-anchor="middle" class="small">Фолд 1: обучаем на 2 и 3</text>
-  <text x="163" y="107" text-anchor="middle" class="small">проверяем на 1</text>
-  <rect x="335" y="56" width="270" height="64" rx="10" class="box"/>
-  <text x="470" y="83" text-anchor="middle" class="small">Фолд 2: обучаем на 1 и 3</text>
-  <text x="470" y="107" text-anchor="middle" class="small">проверяем на 2</text>
-  <rect x="642" y="56" width="270" height="64" rx="10" class="box"/>
-  <text x="777" y="83" text-anchor="middle" class="small">Фолд 3: обучаем на 1 и 2</text>
-  <text x="777" y="107" text-anchor="middle" class="small">проверяем на 3</text>
-  <rect x="330" y="164" width="280" height="51" rx="10" class="box"/>
-  <text x="470" y="196" text-anchor="middle" class="label">Выбор по средней MAE</text>
-  <rect x="28" y="241" width="214" height="54" rx="10" class="box"/>
-  <text x="135" y="263" text-anchor="middle" class="small">1. Обучаем на всех</text>
-  <text x="135" y="285" text-anchor="middle" class="small">300 заказах</text>
-  <rect x="286" y="241" width="368" height="54" rx="10" class="hold"/>
-  <text x="470" y="263" text-anchor="middle" class="small">2. Предсказываем для 100 новых заказов</text>
-  <text x="470" y="285" text-anchor="middle" class="small">ответы пока закрыты</text>
-  <rect x="691" y="241" width="221" height="54" rx="10" class="hold"/>
-  <text x="801" y="263" text-anchor="middle" class="small">3. Открываем ответы</text>
-  <text x="801" y="285" text-anchor="middle" class="small">итоговая MAE</text>
-</svg>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <text x="280" y="28" class="heading" text-anchor="middle">300 учебных заказов</text><text x="24" y="126" class="s b">Фолд 1</text><rect x="128" y="88" width="120" height="64" class="block" rx="6" fill="var(--orange-bg)" />
+  <text x="188" y="114" class="b orange" text-anchor="middle">1</text><text x="188" y="138" class="s" text-anchor="middle">проверка</text><rect x="272" y="88" width="120" height="64" class="block" rx="6" fill="var(--blue-bg)" />
+  <text x="332" y="114" class="b blue" text-anchor="middle">2</text><text x="332" y="138" class="s" text-anchor="middle">обучение</text><rect x="416" y="88" width="120" height="64" class="block" rx="6" fill="var(--blue-bg)" />
+  <text x="476" y="114" class="b blue" text-anchor="middle">3</text><text x="476" y="138" class="s" text-anchor="middle">обучение</text><text x="24" y="214" class="s b">Фолд 2</text><rect x="128" y="176" width="120" height="64" class="block" rx="6" fill="var(--blue-bg)" />
+  <text x="188" y="202" class="b blue" text-anchor="middle">1</text><text x="188" y="226" class="s" text-anchor="middle">обучение</text><rect x="272" y="176" width="120" height="64" class="block" rx="6" fill="var(--orange-bg)" />
+  <text x="332" y="202" class="b orange" text-anchor="middle">2</text><text x="332" y="226" class="s" text-anchor="middle">проверка</text><rect x="416" y="176" width="120" height="64" class="block" rx="6" fill="var(--blue-bg)" />
+  <text x="476" y="202" class="b blue" text-anchor="middle">3</text><text x="476" y="226" class="s" text-anchor="middle">обучение</text><text x="24" y="302" class="s b">Фолд 3</text><rect x="128" y="264" width="120" height="64" class="block" rx="6" fill="var(--blue-bg)" />
+  <text x="188" y="290" class="b blue" text-anchor="middle">1</text><text x="188" y="314" class="s" text-anchor="middle">обучение</text><rect x="272" y="264" width="120" height="64" class="block" rx="6" fill="var(--blue-bg)" />
+  <text x="332" y="290" class="b blue" text-anchor="middle">2</text><text x="332" y="314" class="s" text-anchor="middle">обучение</text><rect x="416" y="264" width="120" height="64" class="block" rx="6" fill="var(--orange-bg)" />
+  <text x="476" y="290" class="b orange" text-anchor="middle">3</text><text x="476" y="314" class="s" text-anchor="middle">проверка</text><path d="M280 336V368" class="flow" />
+  <text x="280" y="420" class="b" text-anchor="middle">Выбор по средней MAE</text><path d="M280 448V464" class="flow" />
+  <rect x="24" y="472" width="512" height="64" class="block" rx="6" fill="var(--blue-bg)" />
+  <text x="280" y="506" text-anchor="middle">Обучаем на всех 300 заказах</text><path d="M280 544V560" class="flow" />
+  <rect x="24" y="568" width="512" height="88" class="block" rx="6" fill="var(--orange-bg)" />
+  <text x="280" y="602" text-anchor="middle">Предсказываем для 100 новых заказов</text><text x="280" y="630" class="s" text-anchor="middle">ответы пока закрыты</text><path d="M280 664V680" class="flow" />
+  <rect x="24" y="688" width="512" height="72" class="block" rx="6" fill="var(--orange-bg)" />
+  <text x="280" y="722" text-anchor="middle">Открываем ответы</text><text x="280" y="750" class="s" text-anchor="middle">итоговая MAE</text></svg>

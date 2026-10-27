@@ -13,12 +13,74 @@ from unittest.mock import patch
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from handbook_pdf import build, prepare_logo
+from handbook_pdf import build, prepare_logo, format_objects
 from repo_paths import REPO_ROOT
 
 
 @unittest.skipUnless(os.environ.get('PDF_RENDER_TESTS') == '1', 'Нужно PDF_RENDER_TESTS=1 и окружение utils/pdf')
 class HandbookPdfRenderingTests(unittest.TestCase):
+    def test_centered_objects_and_explicit_caption_positions(self):
+        import pymupdf
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as temp:
+            folder = Path(temp)
+            with pymupdf.open() as graphic:
+                page = graphic.new_page(width=80, height=40)
+                page.draw_rect(page.rect, color=None, fill=(.1, .8, .2))
+                graphic.save(folder / 'small.pdf')
+            source = '''![Альтернативное описание](small.pdf)
+
+*Рис. 7. Короткая подпись.*
+
+*Таблица 3 — Короткая подпись*
+
+| Объект | Число |
+| :--- | ---: |
+| А | 2 |
+'''
+            ast = json.loads(subprocess.check_output(
+                ['pandoc', '-f', 'markdown-implicit_figures', '-t', 'json'], input=source, text=True))
+            (folder / 'source.json').write_text(json.dumps(format_objects(ast)))
+            (folder / 'header.tex').write_text(
+                '\\usepackage{academichandbook}\n\\renewcommand{\\handbooklogo}{small.pdf}\n'
+                '\\title{Проверка оформления}\n')
+            env = dict(os.environ, TEXINPUTS=str(REPO_ROOT / 'utils/latex/tex/latex') + '//' + os.pathsep + os.environ.get('TEXINPUTS', ''))
+            result = subprocess.run(
+                ['pandoc', 'source.json', '-f', 'json', '--pdf-engine=pdflatex',
+                 '--lua-filter', str(REPO_ROOT / 'utils/pdf/keep-short-code.lua'),
+                 '--include-in-header', 'header.tex', '-V', 'fontenc:T2A',
+                 '-V', 'fontfamily:handbookfonts', '-o', 'objects.pdf'],
+                cwd=folder, env=env, text=True, capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stderr[-3000:])
+            with pymupdf.open(folder / 'objects.pdf') as document:
+                self.assertEqual(len(document), 1)
+                page = document[0]
+                text = page.get_text()
+                self.assertEqual(text.count('Рисунок 7'), 1)
+                self.assertEqual(text.count('Таблица 3'), 1)
+                self.assertNotIn('Альтернативное описание', text)
+                # The first green rectangle is the header logo; the second is
+                # the actual small figure, which must not be stretched.
+                shapes = sorted((path['rect'] for path in page.get_drawings()
+                                 if path['fill'] and abs(path['fill'][1] - .8) < .01), key=lambda rect: rect.y0)
+                self.assertEqual(len(shapes), 2)
+                figure = shapes[1]
+                self.assertAlmostEqual(figure.width, 80, delta=.5)
+                self.assertAlmostEqual((figure.x0 + figure.x1) / 2, page.rect.width / 2, delta=1)
+                labels = {}
+                for prefix in ('Рисунок', 'Таблица'):
+                    words = page.get_text('words')
+                    first = next(word for word in words if word[4] == prefix)
+                    line = [word for word in words if abs(word[1] - first[1]) < 1]
+                    labels[prefix] = pymupdf.Rect(min(word[0] for word in line), min(word[1] for word in line),
+                                                max(word[2] for word in line), max(word[3] for word in line))
+                    self.assertAlmostEqual((labels[prefix].x0 + labels[prefix].x1) / 2,
+                                           page.rect.width / 2, delta=1)
+                self.assertLess(figure.y1, labels['Рисунок'].y0)
+                table_header = next(word for word in page.get_text('words') if word[4] == 'Объект')
+                self.assertLess(labels['Таблица'].y1, table_header[1])
+
     def test_graphics_dimensions_with_legacy_and_current_pandoc_defaults(self):
         import pymupdf
         import subprocess
