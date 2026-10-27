@@ -27,8 +27,7 @@ text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
       <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
     </marker>
   </defs>
-  <text x="260" y="40" class="heading" text-anchor="end">σ(z) =</text><text x="332" y="20" class="heading" text-anchor="middle">1</text><path d="M276 28H388" fill="none" stroke="var(--ink)" stroke-width="1.25" />
-  <text x="332" y="54" class="heading" text-anchor="middle">1 + e<tspan dy="-8" font-size="14">−z</tspan></text><path d="M64 304H512" class="grid" stroke-dasharray="3 4" />
+  <path d="M64 304H512" class="grid" stroke-dasharray="3 4" />
   <text x="52" y="309" class="s m" text-anchor="end">0</text><path d="M64 188.0H512" class="grid" stroke-dasharray="3 4" />
   <text x="52" y="193.0" class="s m" text-anchor="end">0,5</text><path d="M64 72H512" class="grid" stroke-dasharray="3 4" />
   <text x="52" y="77" class="s m" text-anchor="end">1</text><path d="M64 56V304H532" class="axis" />
