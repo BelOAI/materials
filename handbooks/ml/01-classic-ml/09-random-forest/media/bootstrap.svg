@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 402" role="img" aria-labelledby="title desc">
+<title id="title">Бутстрап-выборка из пяти заказов</title><desc id="desc">Из исходных заказов А, Б, В, Г, Д пять раз выбирают с возвращением. Результат: А, В, В, Д, А. Исходная таблица остаётся неизменной, заказы могут повторяться.</desc>
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#43638c"/></marker></defs>
+<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:#e4edf8;stroke:#43638c;stroke-width:2}.warm{fill:#fff0d8;stroke:#a46718;stroke-width:2}.arrow{fill:none;stroke:#43638c;stroke-width:2;marker-end:url(#arrow)}</style>
+<rect width="540" height="402" rx="16" fill="#f7f9fc"/>
+<text x="270" y="36" class="heading">Исходные заказы</text>
+<rect x="40" y="58" width="68" height="56" rx="10" fill="#dbe9f9" stroke="#43638c" stroke-width="2"/>
+<text x="74" y="95" class="heading">А</text>
+<rect x="138" y="58" width="68" height="56" rx="10" fill="#e4e7eb" stroke="#43638c" stroke-width="2"/>
+<text x="172" y="95" class="heading">Б</text>
+<rect x="236" y="58" width="68" height="56" rx="10" fill="#ffebc8" stroke="#43638c" stroke-width="2"/>
+<text x="270" y="95" class="heading">В</text>
+<rect x="334" y="58" width="68" height="56" rx="10" fill="#e4e7eb" stroke="#43638c" stroke-width="2"/>
+<text x="368" y="95" class="heading">Г</text>
+<rect x="432" y="58" width="68" height="56" rx="10" fill="#e3efdf" stroke="#43638c" stroke-width="2"/>
+<text x="466" y="95" class="heading">Д</text>
+<rect x="40" y="219" width="68" height="56" rx="10" fill="#dbe9f9" stroke="#43638c" stroke-width="2"/>
+<text x="74" y="256" class="heading">А</text>
+<rect x="138" y="219" width="68" height="56" rx="10" fill="#ffebc8" stroke="#43638c" stroke-width="2"/>
+<text x="172" y="256" class="heading">В</text>
+<rect x="236" y="219" width="68" height="56" rx="10" fill="#ffebc8" stroke="#43638c" stroke-width="2"/>
+<text x="270" y="256" class="heading">В</text>
+<rect x="334" y="219" width="68" height="56" rx="10" fill="#e3efdf" stroke="#43638c" stroke-width="2"/>
+<text x="368" y="256" class="heading">Д</text>
+<rect x="432" y="219" width="68" height="56" rx="10" fill="#dbe9f9" stroke="#43638c" stroke-width="2"/>
+<text x="466" y="256" class="heading">А</text>
+<text x="270" y="151" class="">Пять выборов с возвращением</text>
+<path d="M270 164 V202" class="arrow"/>
+<text x="270" y="313" class="heading">Новая выборка: снова пять строк</text>
+<text x="270" y="350" class="">А и В выбраны по два раза;</text>
+<text x="270" y="380" class="">Б и Г не выбраны ни разу.</text>
+</svg>
