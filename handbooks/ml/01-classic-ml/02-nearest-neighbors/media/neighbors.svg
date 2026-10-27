@@ -1,57 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="420" height="260" viewBox="0 0 420 260" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="424" viewBox="0 0 560 424" role="img" aria-labelledby="title desc">
   <title id="title">После изменения масштаба ближайший сосед меняется</title>
   <desc id="desc">В каждом столбце герои упорядочены по расстоянию до нового. Слева: Б 55, А 156, Г 250, В 351. Справа, после деления здоровья на 100: Г 2,5, В 4,5, Б 5,5, А 7,5. Синие метки — воины, фиолетовые — маги. Длина полосы показывает расстояние в единицах своего столбца.</desc>
-  <rect x="1" y="1" width="418" height="258" rx="18" fill="var(--figure-surface)" stroke="var(--figure-border)"/>
-  <style>
-    :root {
-      color-scheme: light dark;
-      --figure-surface: #f8fafc; --figure-panel: #fff; --figure-border: #e2e8f0;
-      --figure-ink: #17212b; --figure-muted: #64748b; --figure-axis: #94a3b8;
-      --figure-grid: #dce5ef; --figure-blue: #2563eb; --figure-purple: #7c3aed;
-      --figure-orange: #ea580c; --figure-query: #d97706; --figure-query-label: #b45309;
-      --figure-blue-tint: #eff6ff; --figure-orange-tint: #fff7ed; --figure-purple-tint: #f5f3ff;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --figure-surface: #212529; --figure-panel: #2b3035; --figure-border: #495057;
-        --figure-ink: #dee2e6; --figure-muted: #adb5bd; --figure-axis: #8b98a5;
-        --figure-grid: #3b454f; --figure-blue: #8ac1ff; --figure-purple: #c4a7ff;
-        --figure-orange: #ffb86c; --figure-query: #ffbf69; --figure-query-label: #ffbf69;
-        --figure-blue-tint: #22384c; --figure-orange-tint: #443225; --figure-purple-tint: #352d49;
-      }
-    }
-    @media print {
-      :root {
-        --figure-surface: #f8fafc; --figure-panel: #fff; --figure-border: #e2e8f0;
-        --figure-ink: #17212b; --figure-muted: #64748b; --figure-axis: #94a3b8;
-        --figure-grid: #dce5ef; --figure-blue: #2563eb; --figure-purple: #7c3aed;
-        --figure-orange: #ea580c; --figure-query: #d97706; --figure-query-label: #b45309;
-        --figure-blue-tint: #eff6ff; --figure-orange-tint: #fff7ed; --figure-purple-tint: #f5f3ff;
-      }
-    }
-    svg { fill: var(--figure-ink); }
-    text{font-family:Arial,sans-serif;font-size:16px}.bold{font-weight:700}.blue{fill:var(--figure-blue)}.purple{fill:var(--figure-purple)}.track{stroke:var(--figure-border);stroke-width:7;stroke-linecap:round}.bar{stroke-width:7;stroke-linecap:round}</style>
-  <text x="210" y="28" text-anchor="middle" class="bold">Кто ближе к новому герою?</text>
-  <rect x="12" y="43" width="192" height="202" rx="12" fill="var(--figure-panel)" stroke="var(--figure-border)"/>
-  <rect x="216" y="43" width="192" height="202" rx="12" fill="var(--figure-panel)" stroke="var(--figure-border)"/>
-  <text x="108" y="68" text-anchor="middle" class="bold">Исходные числа</text>
-  <text x="312" y="68" text-anchor="middle" class="bold">Здоровье в сотнях</text>
-  <rect x="21" y="80" width="174" height="29" rx="8" fill="var(--figure-blue-tint)"/>
-  <rect x="225" y="80" width="174" height="29" rx="8" fill="var(--figure-purple-tint)"/>
-  <text x="31" y="100" class="bold blue">Б</text><text x="183" y="100" text-anchor="end">55</text>
-  <text x="31" y="132" class="blue">А</text><text x="183" y="132" text-anchor="end">156</text>
-  <text x="31" y="164" class="purple">Г</text><text x="183" y="164" text-anchor="end">250</text>
-  <text x="31" y="196" class="purple">В</text><text x="183" y="196" text-anchor="end">351</text>
-  <path d="M57 95H131 M57 127H131 M57 159H131 M57 191H131" class="track"/>
-  <path d="M57 95H68.6 M57 127H89.9" class="bar" stroke="var(--figure-blue)"/>
-  <path d="M57 159H109.7 M57 191H131" class="bar" stroke="var(--figure-purple)"/>
-  <text x="235" y="100" class="bold purple">Г</text><text x="387" y="100" text-anchor="end">2,5</text>
-  <text x="235" y="132" class="purple">В</text><text x="387" y="132" text-anchor="end">4,5</text>
-  <text x="235" y="164" class="blue">Б</text><text x="387" y="164" text-anchor="end">5,5</text>
-  <text x="235" y="196" class="blue">А</text><text x="387" y="196" text-anchor="end">7,5</text>
-  <path d="M261 95H335 M261 127H335 M261 159H335 M261 191H335" class="track"/>
-  <path d="M261 95H285.7 M261 127H305.4" class="bar" stroke="var(--figure-purple)"/>
-  <path d="M261 159H315.3 M261 191H335" class="bar" stroke="var(--figure-blue)"/>
-  <text x="108" y="226" text-anchor="middle" class="blue bold">Ближайший — воин</text>
-  <text x="312" y="226" text-anchor="middle" class="purple bold">Ближайший — маг</text>
-</svg>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <text x="146" y="40" class="heading" text-anchor="middle">Исходные числа</text><circle cx="38" cy="101" r="4" fill="var(--blue)" />
+  <text x="54" y="108" class="b blue">Б</text><text x="252" y="108" class="b" text-anchor="end">55</text><path d="M80 101h17.550" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" />
+  <circle cx="38" cy="173" r="4" fill="var(--blue)" />
+  <text x="54" y="180" class="b blue">А</text><text x="252" y="180" class="b" text-anchor="end">156</text><path d="M80 173h49.778" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" />
+  <path d="M38 240l5 10h-10z" fill="var(--purple)" />
+  <text x="54" y="252" class="b purple">Г</text><text x="252" y="252" class="b" text-anchor="end">250</text><path d="M80 245h79.772" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" />
+  <path d="M38 312l5 10h-10z" fill="var(--purple)" />
+  <text x="54" y="324" class="b purple">В</text><text x="252" y="324" class="b" text-anchor="end">351</text><path d="M80 317h112.000" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" />
+  <text x="146" y="396" class="b blue" text-anchor="middle">Ближайший — воин</text><text x="414" y="40" class="heading" text-anchor="middle">Здоровье в сотнях</text><path d="M306 96l5 10h-10z" fill="var(--purple)" />
+  <text x="322" y="108" class="b purple">Г</text><text x="520" y="108" class="b" text-anchor="end">2,5</text><path d="M348 101h37.333" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" />
+  <path d="M306 168l5 10h-10z" fill="var(--purple)" />
+  <text x="322" y="180" class="b purple">В</text><text x="520" y="180" class="b" text-anchor="end">4,5</text><path d="M348 173h67.200" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" />
+  <circle cx="306" cy="245" r="4" fill="var(--blue)" />
+  <text x="322" y="252" class="b blue">Б</text><text x="520" y="252" class="b" text-anchor="end">5,5</text><path d="M348 245h82.133" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" />
+  <circle cx="306" cy="317" r="4" fill="var(--blue)" />
+  <text x="322" y="324" class="b blue">А</text><text x="520" y="324" class="b" text-anchor="end">7,5</text><path d="M348 317h112.000" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" />
+  <text x="414" y="396" class="b purple" text-anchor="middle">Ближайший — маг</text></svg>

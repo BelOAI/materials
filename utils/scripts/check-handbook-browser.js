@@ -40,6 +40,24 @@ async (page) => {
     for (const width of [360, 1440]) {
       await page.setViewportSize({ width, height: 900 });
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'No horizontal overflow: ' + url + ' at ' + width);
+      const layout = await page.evaluate(() => {
+        const centered = (element, parent) => {
+          const a = element.getBoundingClientRect(), b = parent.getBoundingClientRect();
+          return Math.abs((a.left + a.right - b.left - b.right) / 2) < 1;
+        };
+        return [...document.querySelectorAll('.handbook-figure')].every(figure => centered(figure.querySelector('img'), figure))
+          && [...document.querySelectorAll('.handbook-table')].every(figure => {
+            const table = figure.querySelector('table'), scroll = figure.querySelector('.handbook-table-scroll');
+            const caption = figure.querySelector('figcaption');
+            return (table.scrollWidth > scroll.clientWidth || centered(table, scroll))
+              && (!caption || (centered(caption, figure) && caption.getBoundingClientRect().bottom <= scroll.getBoundingClientRect().top));
+          });
+      });
+      assert(layout, 'Centered objects and visible table captions: ' + url + ' at ' + width);
+      for (const area of await page.locator('.handbook-table-scroll').all()) {
+        await area.focus();
+        assert(await area.evaluate(el => document.activeElement === el), 'Keyboard table access: ' + url);
+      }
     }
   }
   for (const href of downloads) assert((await page.request.get(href)).ok(), 'Download: ' + href);

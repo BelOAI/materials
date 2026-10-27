@@ -9,6 +9,14 @@
 \RequirePackage{etoolbox}
 \RequirePackage{titlesec}
 \RequirePackage{lastpage}
+\RequirePackage{caption}
+% Captions already contain their source number and the common Russian prefix.
+\captionsetup{labelformat=empty,font=small,textfont=it,justification=centering,singlelinecheck=false}
+\captionsetup[table]{position=top}
+\AtBeginDocument{\ifdefined\LTleft
+  \setlength{\LTleft}{\fill}\setlength{\LTright}{\fill}
+  \setlength{\LTcapwidth}{\linewidth}
+\fi}
 
 \newif\ifhandbookwholebook
 \newcommand{\handbooklogo}{handbook-logo.pdf}

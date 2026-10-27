@@ -1,62 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="560" height="330" viewBox="0 0 560 330" role="img" aria-labelledby="title desc">
-<title id="title">Порог меняет решения, вероятности остаются прежними</title>
-<desc id="desc">Письма А–Е с вероятностями 0,10; 0,35; 0,45; 0,60; 0,75; 0,90; Б, Г и Е — настоящий спам. Правее порога — решение «спам». Порог 0,3: FP = 2, FN = 0. Порог 0,5: FP = 1, FN = 1. Порог 0,8: FP = 0, FN = 2.</desc>
-<style>
-:root { color-scheme: light dark; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --panel:#f3f6fa; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#17803d; --red:#c0283b; --glow:#ffffff; }
-@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --panel:#26303b; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#7fd99a; --red:#ff8a96; --glow:#000000; } }
-@media print { :root { --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --panel:#f3f6fa; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#17803d; --red:#c0283b; --glow:#ffffff; } }
-text { font-family:'DejaVu Sans',Arial,sans-serif; font-size:14px; fill:var(--ink); } .s { font-size:12.5px; } .b { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; font-family:'DejaVu Serif',Georgia,serif; }
-.blue { fill:var(--blue); } .purple { fill:var(--purple); } .orange { fill:var(--orange); } .green { fill:var(--green); } .red { fill:var(--red); }
-.panel { fill:var(--panel); fill-opacity:.85; stroke:var(--edge); }
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="544" viewBox="0 0 560 544" role="img" aria-labelledby="title desc">
+  <title id="title">Порог меняет решения, вероятности остаются прежними</title>
+  <desc id="desc">Письма А–Е с вероятностями 0,10; 0,35; 0,45; 0,60; 0,75; 0,90; Б, Г и Е — настоящий спам. Правее порога — решение «спам». Порог 0,3: FP = 2, FN = 0. Порог 0,5: FP = 1, FN = 1. Порог 0,8: FP = 0, FN = 2.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
 </style>
-<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="var(--axis)"/></marker></defs>
-<text x="280" y="20" text-anchor="middle" class="b">Правее порога — в спам</text>
-<text x="124.0" y="46" text-anchor="middle" class="b">А</text><text x="124.0" y="62" text-anchor="middle" class="s m">0,1</text>
-<text x="234.0" y="46" text-anchor="middle" class="b">Б</text><text x="234.0" y="62" text-anchor="middle" class="s m">0,35</text>
-<text x="278.0" y="46" text-anchor="middle" class="b">В</text><text x="278.0" y="62" text-anchor="middle" class="s m">0,45</text>
-<text x="344.0" y="46" text-anchor="middle" class="b">Г</text><text x="344.0" y="62" text-anchor="middle" class="s m">0,6</text>
-<text x="410.0" y="46" text-anchor="middle" class="b">Д</text><text x="410.0" y="62" text-anchor="middle" class="s m">0,75</text>
-<text x="476.0" y="46" text-anchor="middle" class="b">Е</text><text x="476.0" y="62" text-anchor="middle" class="s m">0,9</text>
-<rect x="8" y="74" width="544" height="66" rx="10" class="panel"/>
-<rect x="212.0" y="82" width="320.0" height="44" rx="6" fill="var(--orange-bg)" stroke="var(--orange)" stroke-opacity=".5"/>
-<text x="20" y="102" class="s m">порог</text><text x="20" y="120" class="b orange">0,3</text>
-<path d="M80 104H530" stroke="var(--axis)"/><path d="M212.0 78V130" stroke="var(--orange)" stroke-width="2.5"/>
-<circle cx="124.0" cy="104" r="7" fill="var(--panel)" stroke="var(--blue)" stroke-width="2.5"/>
-<path d="M234.0 96l8 8-8 8-8-8z" fill="var(--purple)"/>
-<circle cx="278.0" cy="104" r="7" fill="var(--panel)" stroke="var(--blue)" stroke-width="2.5"/>
-<text x="278.0" y="128" text-anchor="middle" class="s b red">FP</text>
-<path d="M344.0 96l8 8-8 8-8-8z" fill="var(--purple)"/>
-<circle cx="410.0" cy="104" r="7" fill="var(--panel)" stroke="var(--blue)" stroke-width="2.5"/>
-<text x="410.0" y="128" text-anchor="middle" class="s b red">FP</text>
-<path d="M476.0 96l8 8-8 8-8-8z" fill="var(--purple)"/>
-<text x="80" y="90" class="s">FP = 2 · FN = 0</text>
-<rect x="8" y="148" width="544" height="66" rx="10" class="panel"/>
-<rect x="300.0" y="156" width="232.0" height="44" rx="6" fill="var(--orange-bg)" stroke="var(--orange)" stroke-opacity=".5"/>
-<text x="20" y="176" class="s m">порог</text><text x="20" y="194" class="b orange">0,5</text>
-<path d="M80 178H530" stroke="var(--axis)"/><path d="M300.0 152V204" stroke="var(--orange)" stroke-width="2.5"/>
-<circle cx="124.0" cy="178" r="7" fill="var(--panel)" stroke="var(--blue)" stroke-width="2.5"/>
-<path d="M234.0 170l8 8-8 8-8-8z" fill="var(--purple)"/>
-<text x="234.0" y="202" text-anchor="middle" class="s b red">FN</text>
-<circle cx="278.0" cy="178" r="7" fill="var(--panel)" stroke="var(--blue)" stroke-width="2.5"/>
-<path d="M344.0 170l8 8-8 8-8-8z" fill="var(--purple)"/>
-<circle cx="410.0" cy="178" r="7" fill="var(--panel)" stroke="var(--blue)" stroke-width="2.5"/>
-<text x="410.0" y="202" text-anchor="middle" class="s b red">FP</text>
-<path d="M476.0 170l8 8-8 8-8-8z" fill="var(--purple)"/>
-<text x="80" y="164" class="s">FP = 1 · FN = 1</text>
-<rect x="8" y="222" width="544" height="66" rx="10" class="panel"/>
-<rect x="432.0" y="230" width="100.0" height="44" rx="6" fill="var(--orange-bg)" stroke="var(--orange)" stroke-opacity=".5"/>
-<text x="20" y="250" class="s m">порог</text><text x="20" y="268" class="b orange">0,8</text>
-<path d="M80 252H530" stroke="var(--axis)"/><path d="M432.0 226V278" stroke="var(--orange)" stroke-width="2.5"/>
-<circle cx="124.0" cy="252" r="7" fill="var(--panel)" stroke="var(--blue)" stroke-width="2.5"/>
-<path d="M234.0 244l8 8-8 8-8-8z" fill="var(--purple)"/>
-<text x="234.0" y="276" text-anchor="middle" class="s b red">FN</text>
-<circle cx="278.0" cy="252" r="7" fill="var(--panel)" stroke="var(--blue)" stroke-width="2.5"/>
-<path d="M344.0 244l8 8-8 8-8-8z" fill="var(--purple)"/>
-<text x="344.0" y="276" text-anchor="middle" class="s b red">FN</text>
-<circle cx="410.0" cy="252" r="7" fill="var(--panel)" stroke="var(--blue)" stroke-width="2.5"/>
-<path d="M476.0 244l8 8-8 8-8-8z" fill="var(--purple)"/>
-<text x="80" y="238" class="s">FP = 0 · FN = 2</text>
-<circle cx="24" cy="305" r="6" fill="none" stroke="var(--blue)" stroke-width="2.5"/><text x="36" y="310" class="s">обычное письмо</text>
-<path d="M160 298l7 7-7 7-7-7z" fill="var(--purple)"/><text x="173" y="310" class="s">настоящий спам</text>
-<text x="300" y="310" class="s"><tspan class="b red">FP</tspan> — обычное в спаме, <tspan class="b red">FN</tspan> — пропуск</text>
-</svg>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <text x="280" y="32" class="heading" text-anchor="middle">Правее порога — в спам</text><text x="148.0" y="64" class="b" text-anchor="middle">А</text><text x="148.0" y="88" class="s m" text-anchor="middle">0,1</text><text x="258.0" y="64" class="b" text-anchor="middle">Б</text><text x="258.0" y="88" class="s m" text-anchor="middle">0,35</text><text x="302.0" y="64" class="b" text-anchor="middle">В</text><text x="302.0" y="88" class="s m" text-anchor="middle">0,45</text><text x="368.0" y="64" class="b" text-anchor="middle">Г</text><text x="368.0" y="88" class="s m" text-anchor="middle">0,6</text><text x="434.0" y="64" class="b" text-anchor="middle">Д</text><text x="434.0" y="88" class="s m" text-anchor="middle">0,75</text><text x="500.0" y="64" class="b" text-anchor="middle">Е</text><text x="500.0" y="88" class="s m" text-anchor="middle">0,9</text><rect class="block" x="236.0" y="148" width="300.0" height="48" rx="6" fill="var(--orange-bg)" />
+  <text x="24" y="160" class="s m">порог</text><text x="24" y="188" class="b orange">0,3</text><text x="104" y="136" class="s">FP = 2 · FN = 0</text><path d="M104 168H536" class="axis" />
+  <path d="M236.0 144V200" fill="none" stroke="var(--orange)" stroke-width="2" />
+  <circle cx="148.0" cy="168" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <path d="M258.0 160l8 8-8 8-8-8z" fill="var(--purple)" />
+  <circle cx="302.0" cy="168" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <text x="302.0" y="196" class="s b red" text-anchor="middle">FP</text><path d="M368.0 160l8 8-8 8-8-8z" fill="var(--purple)" />
+  <circle cx="434.0" cy="168" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <text x="434.0" y="196" class="s b red" text-anchor="middle">FP</text><path d="M500.0 160l8 8-8 8-8-8z" fill="var(--purple)" />
+  <rect class="block" x="324.0" y="260" width="212.0" height="48" rx="6" fill="var(--orange-bg)" />
+  <text x="24" y="272" class="s m">порог</text><text x="24" y="300" class="b orange">0,5</text><text x="104" y="248" class="s">FP = 1 · FN = 1</text><path d="M104 280H536" class="axis" />
+  <path d="M324.0 256V312" fill="none" stroke="var(--orange)" stroke-width="2" />
+  <circle cx="148.0" cy="280" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <path d="M258.0 272l8 8-8 8-8-8z" fill="var(--purple)" />
+  <text x="258.0" y="308" class="s b red" text-anchor="middle">FN</text><circle cx="302.0" cy="280" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <path d="M368.0 272l8 8-8 8-8-8z" fill="var(--purple)" />
+  <circle cx="434.0" cy="280" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <text x="434.0" y="308" class="s b red" text-anchor="middle">FP</text><path d="M500.0 272l8 8-8 8-8-8z" fill="var(--purple)" />
+  <rect class="block" x="456.0" y="372" width="80.0" height="48" rx="6" fill="var(--orange-bg)" />
+  <text x="24" y="384" class="s m">порог</text><text x="24" y="412" class="b orange">0,8</text><text x="104" y="360" class="s">FP = 0 · FN = 2</text><path d="M104 392H536" class="axis" />
+  <path d="M456.0 368V424" fill="none" stroke="var(--orange)" stroke-width="2" />
+  <circle cx="148.0" cy="392" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <path d="M258.0 384l8 8-8 8-8-8z" fill="var(--purple)" />
+  <text x="258.0" y="420" class="s b red" text-anchor="middle">FN</text><circle cx="302.0" cy="392" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <path d="M368.0 384l8 8-8 8-8-8z" fill="var(--purple)" />
+  <text x="368.0" y="420" class="s b red" text-anchor="middle">FN</text><circle cx="434.0" cy="392" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <path d="M500.0 384l8 8-8 8-8-8z" fill="var(--purple)" />
+  <circle cx="32" cy="472" r="6" fill="var(--paper)" stroke="var(--blue)" stroke-width="2" />
+  <text x="48" y="478" class="s">обычное письмо</text><path d="M280 464l8 8-8 8-8-8z" fill="var(--purple)" />
+  <text x="296" y="478" class="s">настоящий спам</text><text x="24" y="520" class="s">FP — обычное в спаме, FN — пропуск</text></svg>

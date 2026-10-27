@@ -1,3 +1,86 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="360" height="600" viewBox="0 0 360 600" role="img" aria-labelledby="title desc">
-<title id="title">Два разбиения восьми точек</title><desc id="desc">Вертикальные группы A–D и E–H дают сумму квадратов расстояний 10; горизонтальные A, C, E, G и B, D, F, H дают 34.</desc>
-<g font-family="Arial, sans-serif" fill="#1f2937"><g transform="translate(0 0)"><rect x="8" y="8" width="344" height="280" rx="10" fill="#f8fafc" stroke="#cbd5e1"/><text x="20" y="33" font-size="16" font-weight="bold">Старт слева и справа</text><text x="20" y="54" font-size="12">Центры (0,5; 1) и (4,5; 1)</text><line x1="90" y1="88" x2="90" y2="228" stroke="#64748b"/><line x1="70" y1="210" x2="306" y2="210" stroke="#64748b"/><text x="87" y="245" font-size="11">0</text><text x="282" y="245" font-size="11">5</text><text x="54" y="110" font-size="11">2</text><rect x="76" y="92" width="68" height="132" rx="16" fill="#dbeafe" stroke="#93c5fd"/><rect x="236" y="92" width="68" height="132" rx="16" fill="#ffedd5" stroke="#fdba74"/><circle cx="90" cy="210" r="6" fill="#1d4ed8"/><text x="86" y="229" font-size="12" font-weight="bold">A</text><circle cx="90" cy="110" r="6" fill="#1d4ed8"/><text x="86" y="99" font-size="12" font-weight="bold">B</text><circle cx="130" cy="210" r="6" fill="#1d4ed8"/><text x="126" y="229" font-size="12" font-weight="bold">C</text><circle cx="130" cy="110" r="6" fill="#1d4ed8"/><text x="126" y="99" font-size="12" font-weight="bold">D</text><circle cx="250" cy="210" r="6" fill="#c2410c"/><text x="246" y="229" font-size="12" font-weight="bold">E</text><circle cx="250" cy="110" r="6" fill="#c2410c"/><text x="246" y="99" font-size="12" font-weight="bold">F</text><circle cx="290" cy="210" r="6" fill="#c2410c"/><text x="286" y="229" font-size="12" font-weight="bold">G</text><circle cx="290" cy="110" r="6" fill="#c2410c"/><text x="286" y="99" font-size="12" font-weight="bold">H</text><path d="M104 154L116 166M116 154L104 166" stroke="#1e3a8a" stroke-width="3"/><path d="M264 154L276 166M276 154L264 166" stroke="#9a3412" stroke-width="3"/><text x="20" y="271" font-size="12">Крестики — центры; J = 10</text></g><g transform="translate(0 304)"><rect x="8" y="8" width="344" height="280" rx="10" fill="#f8fafc" stroke="#cbd5e1"/><text x="20" y="33" font-size="16" font-weight="bold">Старт снизу и сверху</text><text x="20" y="54" font-size="12">Центры (2,5; 0) и (2,5; 2)</text><line x1="90" y1="88" x2="90" y2="228" stroke="#64748b"/><line x1="70" y1="210" x2="306" y2="210" stroke="#64748b"/><text x="87" y="245" font-size="11">0</text><text x="282" y="245" font-size="11">5</text><text x="54" y="110" font-size="11">2</text><rect x="76" y="91" width="228" height="30" rx="14" fill="#ffedd5" stroke="#fdba74"/><rect x="76" y="191" width="228" height="30" rx="14" fill="#dbeafe" stroke="#93c5fd"/><circle cx="90" cy="210" r="6" fill="#1d4ed8"/><text x="86" y="229" font-size="12" font-weight="bold">A</text><circle cx="90" cy="110" r="6" fill="#c2410c"/><text x="86" y="99" font-size="12" font-weight="bold">B</text><circle cx="130" cy="210" r="6" fill="#1d4ed8"/><text x="126" y="229" font-size="12" font-weight="bold">C</text><circle cx="130" cy="110" r="6" fill="#c2410c"/><text x="126" y="99" font-size="12" font-weight="bold">D</text><circle cx="250" cy="210" r="6" fill="#1d4ed8"/><text x="246" y="229" font-size="12" font-weight="bold">E</text><circle cx="250" cy="110" r="6" fill="#c2410c"/><text x="246" y="99" font-size="12" font-weight="bold">F</text><circle cx="290" cy="210" r="6" fill="#1d4ed8"/><text x="286" y="229" font-size="12" font-weight="bold">G</text><circle cx="290" cy="110" r="6" fill="#c2410c"/><text x="286" y="99" font-size="12" font-weight="bold">H</text><path d="M184 204L196 216M196 204L184 216" stroke="#1e3a8a" stroke-width="3"/><path d="M184 104L196 116M196 104L184 116" stroke="#9a3412" stroke-width="3"/><text x="20" y="271" font-size="12">Крестики — центры; J = 34</text></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" aria-labelledby="title desc" width="1120" height="456" viewBox="0 0 1120 456" role="img" style="--figure-scale:1.2">
+  <title id="title">Два разбиения восьми точек</title>
+  <desc id="desc">Вертикальные группы A–D и E–H дают сумму квадратов расстояний 10; горизонтальные A, C, E, G и B, D, F, H дают 34.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <g id="centers-legend" transform="translate(322.633 0)">
+    <g id="initial-center-key">
+      <path d="M0 12l12 12-12 12-12-12Z" fill="none" stroke="var(--ink)" stroke-width="2" />
+      <text x="28" y="32" class="" text-anchor="start">Начальные центры</text></g>
+    <g id="final-center-key" transform="translate(275.969 0)">
+      <path d="M-9 15l18 18m0-18l-18 18" fill="none" stroke="var(--ink)" stroke-width="2" />
+      <text x="28" y="32" class="" text-anchor="start">Итоговые центры</text></g>
+  </g>
+  <text x="280" y="88" class="heading" text-anchor="middle">Старт слева и справа</text><g id="plot-1" transform="translate(-11.671 0)">
+    <path d="M88 144V304" class="grid" />
+    <text x="88" y="360" class="s m" text-anchor="middle">0</text><path d="M168 144V304" class="grid" />
+    <text x="168" y="360" class="s m" text-anchor="middle">1</text><path d="M248 144V304" class="grid" />
+    <text x="248" y="360" class="s m" text-anchor="middle">2</text><path d="M328 144V304" class="grid" />
+    <text x="328" y="360" class="s m" text-anchor="middle">3</text><path d="M408 144V304" class="grid" />
+    <text x="408" y="360" class="s m" text-anchor="middle">4</text><path d="M488 144V304" class="grid" />
+    <text x="488" y="360" class="s m" text-anchor="middle">5</text><path d="M88 304H488" class="grid" />
+    <text x="56" y="310" class="s m" text-anchor="end">0</text><path d="M88 224H488" class="grid" />
+    <text x="56" y="230" class="s m" text-anchor="end">1</text><path d="M88 144H488" class="grid" />
+    <text x="56" y="150" class="s m" text-anchor="end">2</text><path d="M88 136V304H512" class="axis" />
+    <text x="528" y="310" class="s i m" text-anchor="start">x</text><text x="64" y="136" class="s i m" text-anchor="middle">y</text><path d="M88 289l15 15-15 15-15-15Z" fill="none" stroke="var(--blue)" stroke-width="2" />
+    <path d="M119 215l18 18m0-18l-18 18" fill="none" stroke="var(--blue)" stroke-width="2" />
+    <path d="M408 289l15 15-15 15-15-15Z" fill="none" stroke="var(--orange)" stroke-width="2" />
+    <path d="M439 215l18 18m0-18l-18 18" fill="none" stroke="var(--orange)" stroke-width="2" />
+    <circle cx="88" cy="304" r="6" fill="var(--blue)" />
+    <text x="88" y="334" class="b" text-anchor="middle">A</text><circle cx="88" cy="144" r="6" fill="var(--blue)" />
+    <text x="88" y="122" class="b" text-anchor="middle">B</text><circle cx="168" cy="304" r="6" fill="var(--blue)" />
+    <text x="168" y="334" class="b" text-anchor="middle">C</text><circle cx="168" cy="144" r="6" fill="var(--blue)" />
+    <text x="168" y="122" class="b" text-anchor="middle">D</text><rect x="402" y="298" width="12" height="12" fill="var(--orange)" />
+    <text x="408" y="334" class="b" text-anchor="middle">E</text><rect x="402" y="138" width="12" height="12" fill="var(--orange)" />
+    <text x="408" y="122" class="b" text-anchor="middle">F</text><rect x="482" y="298" width="12" height="12" fill="var(--orange)" />
+    <text x="488" y="334" class="b" text-anchor="middle">G</text><rect x="482" y="138" width="12" height="12" fill="var(--orange)" />
+    <text x="488" y="122" class="b" text-anchor="middle">H</text></g>
+  <text x="280" y="392" class="b" text-anchor="middle">J = 10</text><text x="840" y="88" class="heading" text-anchor="middle">Старт снизу и сверху</text><g id="plot-2" transform="translate(-11.671 0)">
+    <path d="M648 144V304" class="grid" />
+    <text x="648" y="360" class="s m" text-anchor="middle">0</text><path d="M728 144V304" class="grid" />
+    <text x="728" y="360" class="s m" text-anchor="middle">1</text><path d="M808 144V304" class="grid" />
+    <text x="808" y="360" class="s m" text-anchor="middle">2</text><path d="M888 144V304" class="grid" />
+    <text x="888" y="360" class="s m" text-anchor="middle">3</text><path d="M968 144V304" class="grid" />
+    <text x="968" y="360" class="s m" text-anchor="middle">4</text><path d="M1048 144V304" class="grid" />
+    <text x="1048" y="360" class="s m" text-anchor="middle">5</text><path d="M648 304H1048" class="grid" />
+    <text x="616" y="310" class="s m" text-anchor="end">0</text><path d="M648 224H1048" class="grid" />
+    <text x="616" y="230" class="s m" text-anchor="end">1</text><path d="M648 144H1048" class="grid" />
+    <text x="616" y="150" class="s m" text-anchor="end">2</text><path d="M648 136V304H1072" class="axis" />
+    <text x="1088" y="310" class="s i m" text-anchor="start">x</text><text x="624" y="136" class="s i m" text-anchor="middle">y</text><path d="M648 289l15 15-15 15-15-15Z" fill="none" stroke="var(--blue)" stroke-width="2" />
+    <path d="M839 295l18 18m0-18l-18 18" fill="none" stroke="var(--blue)" stroke-width="2" />
+    <path d="M648 129l15 15-15 15-15-15Z" fill="none" stroke="var(--orange)" stroke-width="2" />
+    <path d="M839 135l18 18m0-18l-18 18" fill="none" stroke="var(--orange)" stroke-width="2" />
+    <circle cx="648" cy="304" r="6" fill="var(--blue)" />
+    <text x="648" y="334" class="b" text-anchor="middle">A</text><rect x="642" y="138" width="12" height="12" fill="var(--orange)" />
+    <text x="648" y="122" class="b" text-anchor="middle">B</text><circle cx="728" cy="304" r="6" fill="var(--blue)" />
+    <text x="728" y="334" class="b" text-anchor="middle">C</text><rect x="722" y="138" width="12" height="12" fill="var(--orange)" />
+    <text x="728" y="122" class="b" text-anchor="middle">D</text><circle cx="968" cy="304" r="6" fill="var(--blue)" />
+    <text x="968" y="334" class="b" text-anchor="middle">E</text><rect x="962" y="138" width="12" height="12" fill="var(--orange)" />
+    <text x="968" y="122" class="b" text-anchor="middle">F</text><circle cx="1048" cy="304" r="6" fill="var(--blue)" />
+    <text x="1048" y="334" class="b" text-anchor="middle">G</text><rect x="1042" y="138" width="12" height="12" fill="var(--orange)" />
+    <text x="1048" y="122" class="b" text-anchor="middle">H</text></g>
+  <text x="840" y="392" class="b" text-anchor="middle">J = 34</text><text x="560" y="428" class="" text-anchor="middle">J — сумма квадратов расстояний от точек до итоговых центров их групп</text></svg>
