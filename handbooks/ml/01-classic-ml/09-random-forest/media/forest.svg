@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 497" role="img" aria-labelledby="title desc">
+<title id="title">Обучение и прогноз случайного леса</title><desc id="desc">На трёх бутстрап-выборках обучены три дерева. При построении каждой вершины выбирается случайный набор признаков. Один новый заказ проходит через все деревья. Их условные ответы 24, 30 и 36 минут усредняются до 30 минут.</desc>
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#43638c"/></marker></defs>
+<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:#e4edf8;stroke:#43638c;stroke-width:2}.warm{fill:#fff0d8;stroke:#a46718;stroke-width:2}.arrow{fill:none;stroke:#43638c;stroke-width:2;marker-end:url(#arrow)}</style>
+<rect width="600" height="497" rx="16" fill="#f7f9fc"/>
+<text x="300" y="32" class="heading">Обучающая таблица: А, Б, В, Г, Д</text>
+<path d="M300 48 L100 76" class="arrow"/>
+<rect x="14" y="85" width="172" height="83" rx="10" class="box"/>
+<text x="100" y="113" class="small">А, В, В, Д, А</text>
+<text x="100" y="148" class="heading">Дерево 1</text>
+<path d="M300 48 L300 76" class="arrow"/>
+<rect x="214" y="85" width="172" height="83" rx="10" class="box"/>
+<text x="300" y="113" class="small">Б, Г, А, Г, Д</text>
+<text x="300" y="148" class="heading">Дерево 2</text>
+<path d="M300 48 L500 76" class="arrow"/>
+<rect x="414" y="85" width="172" height="83" rx="10" class="box"/>
+<text x="500" y="113" class="small">В, Б, Д, В, Б</text>
+<text x="500" y="148" class="heading">Дерево 3</text>
+<text x="300" y="203" class="">В каждой вершине — случайный</text>
+<text x="300" y="231" class="">набор доступных признаков</text>
+<path d="M25 253 H575" stroke="#c4cedd" stroke-dasharray="5 5"/>
+<rect x="160" y="272" width="280" height="44" rx="10" class="warm"/>
+<text x="300" y="302" class="heading">Один новый заказ</text>
+<path d="M300 318 L100 350" class="arrow"/>
+<text x="100" y="380" class="heading">24 мин</text>
+<path d="M100 392 L300 429" class="arrow"/>
+<path d="M300 318 L300 350" class="arrow"/>
+<text x="300" y="380" class="heading">30 мин</text>
+<path d="M300 392 L300 429" class="arrow"/>
+<path d="M300 318 L500 350" class="arrow"/>
+<text x="500" y="380" class="heading">36 мин</text>
+<path d="M500 392 L300 429" class="arrow"/>
+<rect x="120" y="436" width="360" height="45" rx="10" class="warm"/>
+<text x="300" y="467" class="heading">Средний прогноз: 30 мин</text>
+</svg>

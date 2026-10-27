@@ -10,6 +10,7 @@ paragraphs:
   - 06-logistic-regression
   - 07-features-regularization
   - 08-honest-evaluation
+  - 09-random-forest
 build: true
 authors:
   - name: Алексей Чернуха
