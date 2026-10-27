@@ -108,8 +108,9 @@ def finish_plot(path, title, description):
 
 # END HANDBOOK SVG STYLE
 
-apply_matplotlib_style(plt)
-fig, axes = plt.subplots(2, 1, figsize=(560 / 72, 720 / 72), sharex=True, sharey=True, layout="constrained")
+# Размер текста определяется одной панелью, а не суммарной шириной пары.
+apply_matplotlib_style(plt, width=672)
+fig, axes = plt.subplots(1, 2, figsize=(1120 / 72, 400 / 72), sharex=True, sharey=True, layout="constrained")
 
 for ax, depth in zip(axes, (2, 4)):
     forecasts = large_models[depth].predict(grid).reshape(4, -1)
@@ -134,7 +135,7 @@ for ax, depth in zip(axes, (2, 4)):
            yticks=(1, 2, 3, 4))
 for ax in axes:
     ax.set_ylabel("Число цветов")
-    ax.tick_params(labelbottom=True)
+    ax.tick_params(labelbottom=True, labelleft=True)
 colorbar = fig.colorbar(picture, ax=axes, label="Прогноз, мин")
 colorbar.solids.set_rasterized(False)
 output = Path(__file__).parent / "media/decision-regions.svg"
