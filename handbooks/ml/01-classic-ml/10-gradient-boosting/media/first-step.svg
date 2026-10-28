@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260" role="img" aria-labelledby="title desc">
+<title id="title">Первый шаг градиентного бустинга</title>
+<desc id="desc">Постоянный прогноз 19 минут даёт ошибки на четырёх заказах. Пень предсказывает поправку минус 7 для низких фигурок и плюс 7 для высоких. После умножения поправки на 0,5 прогноз становится 15,5 или 22,5 минуты, а обучающая MAE уменьшается с 7 до 3,5 минуты.</desc>
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#43638c"/></marker></defs>
+<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;text-anchor:middle}.head{font-size:18px;font-weight:700}.body{font-size:17px}.small{font-size:15px}.box{fill:#e4edf8;stroke:#43638c;stroke-width:2}.warm{fill:#fff0d8;stroke:#a46718;stroke-width:2}.line{stroke:#43638c;stroke-width:2;fill:none;marker-end:url(#arrow)}</style>
+<rect width="720" height="260" rx="16" fill="#f7f9fc"/>
+<rect x="15" y="27" width="206" height="163" rx="10" class="box"/>
+<text x="118" y="57" class="head">Начальный прогноз</text>
+<text x="118" y="88" class="body">Всем: 19 минут</text>
+<text x="118" y="119" class="small">Ответы: 10, 14, 25, 27</text>
+<text x="118" y="151" class="body">Остатки: −9, −5, +6, +8</text>
+<path d="M225 108 L255 108" class="line"/>
+<rect x="260" y="27" width="200" height="163" rx="10" class="box"/>
+<text x="360" y="57" class="head">Первое дерево</text>
+<text x="360" y="89" class="body">Высота ≤ 5 см?</text>
+<text x="360" y="120" class="body">Да: поправка −7</text>
+<text x="360" y="151" class="body">Нет: поправка +7</text>
+<path d="M464 108 L494 108" class="line"/>
+<rect x="499" y="27" width="206" height="163" rx="10" class="warm"/>
+<text x="602" y="57" class="head">После шага</text>
+<text x="602" y="88" class="body">Берём половину поправки</text>
+<text x="602" y="119" class="body">15,5; 15,5; 22,5; 22,5</text>
+<text x="602" y="151" class="body">MAE: 3,5 минуты</text>
+<text x="360" y="225" class="head">До шага MAE была 7 минут</text>
+</svg>

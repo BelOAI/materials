@@ -12,6 +12,7 @@ paragraphs:
   - 07-features-regularization
   - 08-honest-evaluation
   - 09-random-forest
+  - 10-gradient-boosting
 build: true
 authors:
   - name: Алексей Чернуха
