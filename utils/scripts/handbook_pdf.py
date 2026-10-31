@@ -171,6 +171,79 @@ def printable(value):
     return value
 
 
+def format_objects(value):
+    """Связать отдельные курсивные подписи с рисунками и таблицами в AST.
+
+    Номера берутся из текста, чтобы не менять существующие ссылки. Alt-текст
+    не становится подписью. Обход включает списки, цитаты и раскрытые решения.
+    """
+    def caption(node, kind):
+        if node.get('t') != 'Para' or len(node['c']) != 1 or node['c'][0]['t'] != 'Emph':
+            return None
+        inlines = deepcopy(node['c'][0]['c'])
+        leading = ''
+        for inline in inlines:
+            if inline['t'] == 'Str':
+                leading += inline['c']
+            elif inline['t'] in {'Space', 'SoftBreak'}:
+                leading += ' '
+            else:
+                break
+        match = re.match(r'^(Рисунок|Рис\.|Таблица)\s+(\d+)\s*(?:—|[.:-])\s+', leading)
+        if not match or ('table' if match[1] == 'Таблица' else 'figure') != kind:
+            return None
+        remaining = match.end()
+        while remaining:
+            inline = inlines[0]
+            size = len(inline['c']) if inline['t'] == 'Str' else 1
+            if size <= remaining:
+                inlines.pop(0)
+                remaining -= size
+            else:
+                inline['c'] = inline['c'][remaining:]
+                remaining = 0
+        if inlines and inlines[-1]['t'] == 'Str':
+            inlines[-1]['c'] = re.sub(r'\.\s*$', '', inlines[-1]['c'])
+        prefix = ('Таблица' if kind == 'table' else 'Рисунок') + f' {match[2]} — '
+        return [{'t': 'Str', 'c': prefix}] + inlines
+
+    def image(node):
+        if node.get('t') != 'Para' or len(node['c']) != 1:
+            return False
+        inline = node['c'][0]
+        return inline['t'] == 'Image' or (inline['t'] == 'Link' and len(inline['c'][1]) == 1
+                                         and inline['c'][1][0]['t'] == 'Image')
+
+    if isinstance(value, dict):
+        return {key: format_objects(child) for key, child in value.items()}
+    if not isinstance(value, list):
+        return value
+    nodes = [format_objects(child) for child in value]
+    result, index = [], 0
+    while index < len(nodes):
+        node = nodes[index]
+        if not isinstance(node, dict):
+            result.append(node)
+            index += 1
+            continue
+        following = nodes[index + 1] if index + 1 < len(nodes) and isinstance(nodes[index + 1], dict) else {}
+        if image(node):
+            label = caption(following, 'figure')
+            blocks = [node]
+            if label:
+                blocks.append({'t': 'Div', 'c': [['', ['handbook-caption'], []], [{'t': 'Para', 'c': label}]]})
+                index += 1
+            result.append({'t': 'Div', 'c': [['', ['handbook-figure'], []], blocks]})
+        elif following.get('t') == 'Table' and not following['c'][1][1] and (label := caption(node, 'table')):
+            following['c'][1] = [None, [{'t': 'Plain', 'c': label}]]
+            result.append(following)
+            index += 1
+        else:
+            result.append(node)
+        index += 1
+    return result
+
+
 def namespace(identifier):
     return identifier.replace('/', '--')
 
@@ -252,7 +325,8 @@ class Builder:
         path = folder / 'source.json'
         hit = cache.restore(folder) and path.is_file()
         if not hit:
-            ast = printable(json.loads(run(['pandoc', '--from=markdown+raw_tex+raw_html', '--to=json'], input=source)))
+            ast = format_objects(printable(json.loads(run(
+                ['pandoc', '--from=markdown+raw_tex+raw_html-implicit_figures', '--to=json'], input=source))))
             path.write_text(json.dumps(ast, ensure_ascii=False), encoding='utf-8')
             cache.save(folder, [path])
         return item['id'], json.loads(path.read_text(encoding='utf-8')), hit
@@ -329,9 +403,6 @@ class Builder:
                 elif node.get('t') == 'Image':
                     path = self.image_path(item, node['c'][2][0])
                     node['c'][2][0] = self.images[path]
-                    attrs = node['c'][0][2]
-                    if not any(name == 'width' for name, _ in attrs):
-                        attrs.append(['width', '85%'])
                 elif node.get('t') == 'Link':
                     href = node['c'][2][0]
                     parsed = urlsplit(href)
