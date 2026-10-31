@@ -9,6 +9,14 @@
 \RequirePackage{etoolbox}
 \RequirePackage{titlesec}
 \RequirePackage{lastpage}
+\RequirePackage{caption}
+% Captions already contain their source number and the common Russian prefix.
+\captionsetup{labelformat=empty,font=small,textfont=it,justification=centering,singlelinecheck=false}
+\captionsetup[table]{position=top}
+\AtBeginDocument{\ifdefined\LTleft
+  \setlength{\LTleft}{\fill}\setlength{\LTright}{\fill}
+  \setlength{\LTcapwidth}{\linewidth}
+\fi}
 
 \newif\ifhandbookwholebook
 \newcommand{\handbooklogo}{handbook-logo.pdf}
@@ -86,6 +94,7 @@
 
 % Common prose/code symbols supported only in the print layer.
 \DeclareUnicodeCharacter{00A0}{~}
+\DeclareUnicodeCharacter{03BB}{\ensuremath{\lambda}}
 \DeclareUnicodeCharacter{2011}{\mbox{-}}
 \DeclareUnicodeCharacter{202F}{\,}
 \DeclareUnicodeCharacter{2190}{\ensuremath{\leftarrow}}

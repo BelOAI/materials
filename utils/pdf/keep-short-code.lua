@@ -1,5 +1,19 @@
 -- Adapted from bsu-special-data-structures-en/materials/keep-short-code.lua.
 -- Keep short Python listings on one page without changing the Markdown source.
+function Div(block)
+  if not FORMAT:match('latex') then return nil end
+  if block.classes:includes('handbook-caption') then
+    local title = pandoc.write(pandoc.Pandoc(block.content), 'latex'):gsub('%s+$', '')
+    return pandoc.RawBlock('latex', '\\caption*{' .. title .. '}')
+  end
+  if block.classes:includes('handbook-figure') then
+    local result = {pandoc.RawBlock('latex', '\\begin{figure}[H]\\centering')}
+    for _, child in ipairs(block.content) do table.insert(result, child) end
+    table.insert(result, pandoc.RawBlock('latex', '\\end{figure}'))
+    return result
+  end
+end
+
 function CodeBlock(block)
   if not FORMAT:match('latex') then
     return nil
