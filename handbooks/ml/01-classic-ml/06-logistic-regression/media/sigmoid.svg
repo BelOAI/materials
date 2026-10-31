@@ -2,9 +2,9 @@
 <title id="title">Сигмоида переводит оценку в вероятность</title>
 <desc id="desc">Кривая σ(z) растёт от 0 к 1. При z = −2,3 вероятность около 0,091, при z = 0 ровно 0,5, при z = 1,6 около 0,832. Отрицательные оценки дают вероятность меньше 0,5, положительные — больше.</desc>
 <style>
-:root { color-scheme: light dark; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --panel:#f3f6fa; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#17803d; --red:#c0283b; --glow:#ffffff; }
-@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --panel:#26303b; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#7fd99a; --red:#ff8a96; --glow:#000000; } }
-@media print { :root { --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --panel:#f3f6fa; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#17803d; --red:#c0283b; --glow:#ffffff; } }
+:root { color-scheme: light dark; --ink:#17243a; --muted:#64748b; --axis:#94a3b8; --grid:#cbd5e1; --panel:#f8fafc; --edge:#cbd5e1; --blue:#2563eb; --blue-bg:#eff6ff; --purple:#7c3aed; --purple-bg:#f2eaff; --orange:#d97706; --orange-bg:#fff7ed; --green:#15803d; --red:#b91c1c; --glow:#ffffff; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e2e8f0; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --panel:#26303b; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#7fd99a; --red:#ff8a96; --glow:#000000; } }
+@media print { :root { --ink:#17243a; --muted:#64748b; --axis:#94a3b8; --grid:#cbd5e1; --panel:#f8fafc; --edge:#cbd5e1; --blue:#2563eb; --blue-bg:#eff6ff; --purple:#7c3aed; --purple-bg:#f2eaff; --orange:#d97706; --orange-bg:#fff7ed; --green:#15803d; --red:#b91c1c; --glow:#ffffff; } }
 text { font-family:'DejaVu Sans',Arial,sans-serif; font-size:14px; fill:var(--ink); } .s { font-size:12.5px; } .b { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; font-family:'DejaVu Serif',Georgia,serif; }
 .blue { fill:var(--blue); } .purple { fill:var(--purple); } .orange { fill:var(--orange); } .green { fill:var(--green); } .red { fill:var(--red); }
 .panel { fill:var(--panel); fill-opacity:.85; stroke:var(--edge); }

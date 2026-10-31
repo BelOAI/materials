@@ -63,8 +63,12 @@ def environment():
         elif name.endswith('.pfb'):
             path = run(['kpsewhich', name]).strip()
         if not path and name == 'texlive.tlpdb':
-            root = run(['kpsewhich', '-var-value=TEXMFROOT']).strip()
-            path = str(Path(root) / 'tlpkg/texlive.tlpdb')
+            # MiKTeX has no TeX Live package database or TEXMFROOT variable.
+            # Keep the format and font hashes above, and skip this one input.
+            result = subprocess.run(['kpsewhich', '-var-value=TEXMFROOT'],
+                                    text=True, capture_output=True)
+            if result.returncode == 0 and result.stdout.strip():
+                path = str(Path(result.stdout.strip()) / 'tlpkg/texlive.tlpdb')
         if path and Path(path).is_file():
             tex.append(file_hash(path))
     return tools, digest(tools, tex, os.environ.get('BUILD_ENV_ID', ''))
@@ -175,9 +179,43 @@ def namespace(identifier):
     return identifier.replace('/', '--')
 
 
-def header(level, item):
+def header(level, item, title=None):
     context = 'handbook-context-chapter' if level == 1 else 'handbook-context-section'
-    return {'t': 'Header', 'c': [level, [namespace(item['id']), [context], []], [{'t': 'Str', 'c': item['title']}]]}
+    return {'t': 'Header', 'c': [level, [namespace(item['id']), [context], []], [{'t': 'Str', 'c': title or item['title']}]]}
+
+
+def numbered_question(block):
+    return (block.get('t') == 'Header' and block['c'][0] == 3
+            and bool(block['c'][2]) and block['c'][2][0].get('t') == 'Str'
+            and bool(re.fullmatch(r'\d+\.', block['c'][2][0]['c'])))
+
+
+def separate_answers(blocks, identifier):
+    """Keep questions in the lesson; move hints and explanations to the chapter end."""
+    questions, answers = [], []
+    index = 0
+    while index < len(blocks):
+        block = blocks[index]
+        if numbered_question(block):
+            group = blocks[index:index + 6]
+            if len(group) != 6 or any(node['t'] != 'Para' for node in group[1:]):
+                raise ValueError(f'{identifier}: неполный проверочный вопрос')
+            questions.extend(group[:2])
+            answer_heading = deepcopy(block)
+            answer_heading['c'][1][0] = (namespace(identifier) + '--' +
+                                         answer_heading['c'][1][0] + '--answer')
+            answers.extend([answer_heading, *group[2:]])
+            index += 6
+        else:
+            questions.append(block)
+            index += 1
+    if len(answers) != 50:
+        raise ValueError(f'{identifier}: ожидается 10 вопросов с подсказками и ответами')
+    label = 'answers--' + namespace(identifier)
+    questions.append({'t': 'RawBlock', 'c': ['latex',
+        '\\par\\smallskip\\noindent\\textit{Подсказки, ответы и комментарии к вопросам '
+        'этого параграфа — на с.~\\pageref{' + label + '}.}']})
+    return questions, answers, label
 
 
 def documents(catalog):
@@ -299,21 +337,32 @@ class Builder:
         ast = None
         blocks = []
         paragraph = len(task['item']['id'].split('/')) == 3
+        chapter = len(task['item']['id'].split('/')) == 2
+        answer_sections = []
+        paragraph_number = 0
         for item, level in task['parts']:
             level = 1 if paragraph else level
             if level == 0:
                 blocks.append({'t': 'RawBlock', 'c': ['latex', '\\handbookchapter{Об учебнике}']})
             if level == 1 and len(task['item']['id'].split('/')) == 1:
                 blocks.append({'t': 'RawBlock', 'c': ['latex', '\\clearpage']})
+            if chapter and level == 2:
+                blocks.append({'t': 'RawBlock', 'c': ['latex', '\\clearpage']})
+                paragraph_number += 1
             if level:
-                blocks.append(header(level, item))
+                title = ('Глава 1. ' + item['title'] if chapter and level == 1 else
+                         f'1.{paragraph_number}. {item["title"]}' if chapter and level == 2 else None)
+                blocks.append(header(level, item, title))
             credit = authors_text(item.get('authors', []))
-            if credit:
+            if credit and not chapter:
                 blocks.append({'t': 'Para', 'c': [{'t': 'Emph', 'c': [{'t': 'Str', 'c': credit}]}]})
             if item['id'] not in self.prepared:
                 continue
             part = deepcopy(self.prepared[item['id']])
             ast = part
+            if chapter and level == 2:
+                part['blocks'], answer_blocks, answer_label = separate_answers(part['blocks'], item['id'])
+                answer_sections.append((item, paragraph_number, answer_blocks, answer_label))
             headings = [node for node in walk(part['blocks']) if node.get('t') == 'Header']
             minimum = min((node['c'][0] for node in headings), default=1)
             for node in walk(part['blocks']):
@@ -331,7 +380,7 @@ class Builder:
                     node['c'][2][0] = self.images[path]
                     attrs = node['c'][0][2]
                     if not any(name == 'width' for name, _ in attrs):
-                        attrs.append(['width', '85%'])
+                        attrs.append(['width', '78%'])
                 elif node.get('t') == 'Link':
                     href = node['c'][2][0]
                     parsed = urlsplit(href)
@@ -367,6 +416,34 @@ class Builder:
                 blocks.append({'t': 'Div', 'c': [[namespace(item['id']), [], []], part['blocks']]})
             else:
                 blocks.extend(part['blocks'])
+            if chapter and level == 1:
+                book = all_items[item['id'].split('/')[0]]
+                contributors = contributors_markdown(book.get('_contributors', []))
+                if contributors:
+                    blocks.append({'t': 'Header', 'c': [2, ['chapter-contributors', [], []],
+                                   [{'t': 'Str', 'c': 'Авторы и участники'}]]})
+                    credits = printable(json.loads(run(['pandoc', '--from=markdown', '--to=json'],
+                                                       input=contributors)))
+                    blocks.extend(credits['blocks'])
+        if chapter:
+            conclusion = task['item']['_folder'] / 'conclusion.md'
+            if conclusion.is_file():
+                blocks.append({'t': 'RawBlock', 'c': ['latex', '\\clearpage']})
+                blocks.append({'t': 'Header', 'c': [1, ['chapter-conclusion', ['handbook-context-chapter'], []],
+                               [{'t': 'Str', 'c': 'Заключение'}]]})
+                closing = printable(json.loads(run(['pandoc', '--from=markdown+raw_tex+raw_html', '--to=json'],
+                                                   input=conclusion.read_text(encoding='utf-8'))))
+                blocks.extend(closing['blocks'])
+            blocks.append({'t': 'RawBlock', 'c': ['latex', '\\clearpage']})
+            blocks.append({'t': 'Header', 'c': [1, ['chapter-answers', ['handbook-context-chapter'], []],
+                           [{'t': 'Str', 'c': 'Ответы, подсказки и комментарии'}]]})
+            for index, (item, number, answers, label) in enumerate(answer_sections):
+                if index:
+                    blocks.append({'t': 'RawBlock', 'c': ['latex', '\\clearpage']})
+                blocks.append({'t': 'Header', 'c': [2, ['answer-heading--' + namespace(item['id']), [], []],
+                               [{'t': 'Str', 'c': f'1.{number}. {item["title"]}'}]]})
+                blocks.append({'t': 'RawBlock', 'c': ['latex', '\\phantomsection\\label{' + label + '}']})
+                blocks.extend(answers)
         if ast is None:
             raise ValueError(f"{task['item']['id']}: нет текста")
         ast['blocks'] = blocks

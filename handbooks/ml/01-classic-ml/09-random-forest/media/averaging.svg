@@ -1,33 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 310" role="img" aria-labelledby="title desc">
 <title id="title">Среднее предсказание ближе к настоящему времени</title><desc id="desc">Три модели предсказывают 24, 30 и 36 минут. Их среднее равно 30 минутам, а настоящее время печати — 31 минуте. Ошибка среднего составляет одну минуту.</desc>
-<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#43638c"/></marker></defs>
-<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:#e4edf8;stroke:#43638c;stroke-width:2}.warm{fill:#fff0d8;stroke:#a46718;stroke-width:2}.arrow{fill:none;stroke:#43638c;stroke-width:2;marker-end:url(#arrow)}</style>
-<rect width="540" height="310" rx="16" fill="#f7f9fc"/>
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#2563eb"/></marker></defs>
+<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.warm{fill:#fff7ed;stroke:#d97706;stroke-width:2}.arrow{fill:none;stroke:#2563eb;stroke-width:2;marker-end:url(#arrow)}</style>
+<rect width="540" height="310" rx="16" fill="#f8fafc"/>
 <text x="270" y="30" class="heading">Усреднение предсказаний</text>
-<text x="355" y="55" class="small">31 мин — на самом деле</text>
-<path d="M355 65 V230" stroke="#a46718" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="355" y="52" class="small">Факт: 31 мин</text>
+<path d="M355 65 V230" stroke="#d97706" stroke-width="2" stroke-dasharray="6 5"/>
 <text x="24" y="92" class="" style="text-anchor:start">Модель 1</text>
-<path d="M190 85 H490" stroke="#d6deea"/>
-<circle cx="250" cy="85" r="7" fill="#43638c"/>
-<text x="250" y="72" class="">24</text>
+<path d="M190 85 H490" stroke="#cbd5e1"/>
+<circle cx="250" cy="85" r="7" fill="#2563eb"/>
+<text x="250" y="68" class="">24</text>
 <text x="24" y="132" class="" style="text-anchor:start">Модель 2</text>
-<path d="M190 125 H490" stroke="#d6deea"/>
-<circle cx="340" cy="125" r="7" fill="#43638c"/>
+<path d="M190 125 H490" stroke="#cbd5e1"/>
+<circle cx="340" cy="125" r="7" fill="#2563eb"/>
 <text x="340" y="112" class="">30</text>
 <text x="24" y="172" class="" style="text-anchor:start">Модель 3</text>
-<path d="M190 165 H490" stroke="#d6deea"/>
-<circle cx="430" cy="165" r="7" fill="#43638c"/>
+<path d="M190 165 H490" stroke="#cbd5e1"/>
+<circle cx="430" cy="165" r="7" fill="#2563eb"/>
 <text x="430" y="152" class="">36</text>
 <text x="24" y="217" class="" style="text-anchor:start">Среднее</text>
-<path d="M190 210 H490" stroke="#d6deea"/>
-<circle cx="340" cy="210" r="7" fill="#a46718"/>
+<path d="M190 210 H490" stroke="#cbd5e1"/>
+<circle cx="340" cy="210" r="7" fill="#d97706"/>
 <text x="340" y="197" class="">30</text>
-<path d="M190 242 H490" stroke="#43638c"/>
-<path d="M190 237 V247" stroke="#43638c"/>
+<path d="M190 242 H490" stroke="#2563eb"/>
+<path d="M190 237 V247" stroke="#2563eb"/>
 <text x="190" y="267" class="small">20</text>
-<path d="M340 237 V247" stroke="#43638c"/>
+<path d="M340 237 V247" stroke="#2563eb"/>
 <text x="340" y="267" class="small">30</text>
-<path d="M490 237 V247" stroke="#43638c"/>
+<path d="M490 237 V247" stroke="#2563eb"/>
 <text x="490" y="267" class="small">40</text>
 <text x="340" y="295" class="small">Время печати, мин</text>
 </svg>

@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260" role="img" aria-labelledby="title desc">
 <title id="title">Первый шаг градиентного бустинга</title>
 <desc id="desc">Постоянный прогноз 19 минут даёт ошибки на четырёх заказах. Пень предсказывает поправку минус 7 для низких фигурок и плюс 7 для высоких. После умножения поправки на 0,5 прогноз становится 15,5 или 22,5 минуты, а обучающая MAE уменьшается с 7 до 3,5 минуты.</desc>
-<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#43638c"/></marker></defs>
-<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;text-anchor:middle}.head{font-size:18px;font-weight:700}.body{font-size:17px}.small{font-size:15px}.box{fill:#e4edf8;stroke:#43638c;stroke-width:2}.warm{fill:#fff0d8;stroke:#a46718;stroke-width:2}.line{stroke:#43638c;stroke-width:2;fill:none;marker-end:url(#arrow)}</style>
-<rect width="720" height="260" rx="16" fill="#f7f9fc"/>
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#2563eb"/></marker></defs>
+<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;text-anchor:middle}.head{font-size:18px;font-weight:700}.body{font-size:17px}.small{font-size:15px}.box{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.warm{fill:#fff7ed;stroke:#d97706;stroke-width:2}.line{stroke:#2563eb;stroke-width:2;fill:none;marker-end:url(#arrow)}</style>
+<rect width="720" height="260" rx="16" fill="#f8fafc"/>
 <rect x="15" y="27" width="206" height="163" rx="10" class="box"/>
 <text x="118" y="57" class="head">Начальный прогноз</text>
 <text x="118" y="88" class="body">Всем: 19 минут</text>

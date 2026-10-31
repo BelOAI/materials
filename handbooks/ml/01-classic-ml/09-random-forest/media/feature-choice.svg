@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 496" role="img" aria-labelledby="title desc">
 <title id="title">Выбор признаков в разных вершинах дерева</title><desc id="desc">Условное дерево: в корне доступны высота и число цветов, выбран вопрос о высоте не больше 6 сантиметров. В правой вершине доступны число цветов и объём, выбран вопрос об объёме не больше 12 кубических сантиметров. Для фигурки высотой 7 сантиметров, с двумя цветами и объёмом 10 кубических сантиметров ответы нет и да ведут к прогнозу 30 минут.</desc>
-<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#43638c"/></marker></defs>
-<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:#e4edf8;stroke:#43638c;stroke-width:2}.warm{fill:#fff0d8;stroke:#a46718;stroke-width:2}.arrow{fill:none;stroke:#43638c;stroke-width:2;marker-end:url(#arrow)}</style>
-<rect width="600" height="496" rx="16" fill="#f7f9fc"/>
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#2563eb"/></marker></defs>
+<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.warm{fill:#fff7ed;stroke:#d97706;stroke-width:2}.arrow{fill:none;stroke:#2563eb;stroke-width:2;marker-end:url(#arrow)}</style>
+<rect width="600" height="496" rx="16" fill="#f8fafc"/>
 <text x="300" y="33" class="">Доступны: высота и число цветов</text>
 <rect x="115" y="50" width="370" height="55" rx="10" class="warm"/>
 <text x="300" y="85" class="heading">Высота ≤ 6 см?</text>
@@ -10,13 +10,13 @@
 <text x="88" y="136" class="">да</text>
 <rect x="22" y="160" width="126" height="52" rx="10" class="box"/>
 <text x="85" y="193" class="heading">18 мин</text>
-<path d="M485 77 H565 V189 L485 210" stroke="#a46718" stroke-width="4" fill="none"/>
+<path d="M485 77 H565 V189 L485 210" stroke="#d97706" stroke-width="4" fill="none"/>
 <text x="535" y="125" class="">нет</text>
 <text x="362" y="158" class="small">Доступны: число цветов</text>
 <text x="362" y="185" class="small">и объём пластика</text>
 <rect x="232" y="210" width="345" height="55" rx="10" class="warm"/>
 <text x="404" y="245" class="heading">Объём ≤ 12 см³?</text>
-<path d="M320 265 L280 320" stroke="#a46718" stroke-width="4" fill="none"/>
+<path d="M320 265 L280 320" stroke="#d97706" stroke-width="4" fill="none"/>
 <text x="273" y="299" class="">да</text>
 <path d="M490 265 L506 320" class="arrow"/>
 <text x="536" y="299" class="">нет</text>

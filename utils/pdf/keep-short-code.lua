@@ -23,8 +23,14 @@ function Header(block)
   if not FORMAT:match('latex') then
     return nil
   end
+  local title_text = pandoc.utils.stringify(block.content)
+  local required_lines = 6
+  -- Keep a numbered self-check question with its four choices and feedback.
+  if title_text:match('^%d+%.') then
+    required_lines = 18
+  end
   local result = {
-    pandoc.RawBlock('latex', '\\Needspace{6\\baselineskip}'),
+    pandoc.RawBlock('latex', '\\Needspace{' .. required_lines .. '\\baselineskip}'),
     block,
   }
   -- Explicit marks also cover unnumbered headings. Pandoc handles TeX escaping.

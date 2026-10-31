@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 330" role="img" aria-labelledby="title desc">
   <title id="title">Три проверки и отдельная итоговая оценка</title>
   <desc id="desc">Три карточки показывают, какая часть учебных данных служит проверочной. Затем по средней ошибке выбирают настройку. В нижнем ряду: обучение на всех 300 заказах, прогноз для 100 новых и однократное открытие ответов.</desc>
-  <rect width="940" height="330" rx="16" fill="#f7f9fc"/>
+  <rect width="940" height="330" rx="16" fill="#f8fafc"/>
   <style>
     text { font-family: 'DejaVu Sans', Arial, sans-serif; fill: #17243a; }
     .small { font-size: 17px; }
     .label { font-size: 19px; font-weight: 700; }
-    .box { fill: #e4edf8; stroke: #43638c; stroke-width: 2; }
-    .hold { fill: #fff0d8; stroke: #a46718; stroke-width: 2; }
+    .box { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; }
+    .hold { fill: #fff7ed; stroke: #d97706; stroke-width: 2; }
   </style>
   <text x="470" y="31" text-anchor="middle" class="label">300 учебных заказов: выбираем настройку</text>
   <rect x="28" y="56" width="270" height="64" rx="10" class="box"/>

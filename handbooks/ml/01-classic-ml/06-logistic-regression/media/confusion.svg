@@ -2,9 +2,9 @@
 <title id="title">Четыре исхода ответа модели</title>
 <desc id="desc">Таблица два на два. Настоящий положительный объект, ответ «положительный» — TP, верно. Настоящий положительный, ответ «отрицательный» — FN, пропуск. Настоящий отрицательный, ответ «положительный» — FP, ложное срабатывание. Настоящий отрицательный, ответ «отрицательный» — TN, верно.</desc>
 <style>
-:root { color-scheme: light dark; --ink:#1b2430; --muted:#55657a; --ok:#17803d; --ok-bg:#e6f5ec; --bad:#c0283b; --bad-bg:#fdeaec; }
-@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --ok:#7fd99a; --ok-bg:#1c3326; --bad:#ff8a96; --bad-bg:#3a2227; } }
-@media print { :root { --ink:#1b2430; --muted:#55657a; --ok:#17803d; --ok-bg:#e6f5ec; --bad:#c0283b; --bad-bg:#fdeaec; } }
+:root { color-scheme: light dark; --ink:#17243a; --muted:#64748b; --ok:#15803d; --ok-bg:#f0fdf4; --bad:#b91c1c; --bad-bg:#fef2f2; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e2e8f0; --muted:#aab6c4; --ok:#7fd99a; --ok-bg:#1c3326; --bad:#ff8a96; --bad-bg:#3a2227; } }
+@media print { :root { --ink:#17243a; --muted:#64748b; --ok:#15803d; --ok-bg:#f0fdf4; --bad:#b91c1c; --bad-bg:#fef2f2; } }
 text { font-family:'DejaVu Sans',Arial,sans-serif; font-size:14px; fill:var(--ink); } .s { font-size:12.5px; } .b { font-weight:700; } .m { fill:var(--muted); } .ok { fill:var(--ok); } .bad { fill:var(--bad); } .big { font-size:28px; font-weight:700; }
 </style>
 <text x="240" y="28" text-anchor="middle" class="b">Модель: положительный</text>
