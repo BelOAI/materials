@@ -19,6 +19,37 @@ from repo_paths import REPO_ROOT
 
 @unittest.skipUnless(os.environ.get('PDF_RENDER_TESTS') == '1', 'Нужно PDF_RENDER_TESTS=1 и окружение utils/pdf')
 class HandbookPdfRenderingTests(unittest.TestCase):
+    def test_unicode_lambda_in_prose_math_and_code(self):
+        import pymupdf
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as temp:
+            folder = Path(temp)
+            with pymupdf.open() as logo:
+                logo.new_page(width=80, height=20)
+                logo.save(folder / 'logo.pdf')
+            (folder / 'header.tex').write_text(
+                '\\usepackage{academichandbook}\n\\renewcommand{\\handbooklogo}{logo.pdf}\n'
+                '\\title{Проверка Unicode}\n')
+            source = '''Параметр λ задаёт штраф.
+
+Формула: $λ = 2$.
+
+```python
+print("λ =", 2)
+```
+'''
+            env = dict(os.environ, TEXINPUTS=str(REPO_ROOT / 'utils/latex/tex/latex') + '//' + os.pathsep + os.environ.get('TEXINPUTS', ''))
+            result = subprocess.run(
+                ['pandoc', '-f', 'markdown', '--pdf-engine=pdflatex',
+                 '--include-in-header', 'header.tex', '-V', 'fontenc:T2A',
+                 '-V', 'fontfamily:handbookfonts', '-o', 'unicode.pdf'],
+                input=source, cwd=folder, env=env, text=True, capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stderr[-3000:])
+            with pymupdf.open(folder / 'unicode.pdf') as document:
+                self.assertEqual(len(document), 1)
+                self.assertEqual(document[0].get_text().count('λ'), 3)
+
     def test_centered_objects_and_explicit_caption_positions(self):
         import pymupdf
         import subprocess
