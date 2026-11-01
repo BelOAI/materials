@@ -101,12 +101,20 @@ function renderBlocks(nodes, env) {
     if (node.kind==='text') return fragment(node.text);
     const attrs=node.attrs;
     if (node.kind==='callout') return `<aside class="handbook-callout callout-${escape(attrs.type)}"><div class="callout-title"><img src="${"../".repeat(1 + env.name.split("/").filter(Boolean).length)}assets/handbook-icons/${escape(attrs.type)}.svg" alt="" aria-hidden="true">${escape(attrs.title||labels[attrs.type])}</div>${renderBlocks(node.children,env)}</aside>`;
+    if (node.kind==='self-check') {
+      const questions = node.children.filter(child => child.kind==='question');
+      const links = questions.map(question => {
+        const key = `${env.name.replace(/[^a-zA-Z0-9-]/g,'-')}--${question.attrs.id}`;
+        return `<a href="#${key}" data-number="${question.number}" aria-label="Вопрос ${question.number}: ещё не проверен">${question.number}<span class="quiz-nav-mark" aria-hidden="true"></span></a>`;
+      }).join('');
+      return `<section class="handbook-self-check" aria-label="Самопроверка"><div class="quiz-overview" hidden><div class="quiz-progress-heading"><p class="quiz-progress-text">Проверено 0 из ${questions.length}</p><span class="quiz-session-note">Прогресс до перезагрузки страницы</span></div><progress value="0" max="${questions.length}" aria-label="Проверено вопросов">0 из ${questions.length}</progress><nav class="quiz-nav" aria-label="Вопросы самопроверки">${links}</nav></div>${renderBlocks(node.children,env)}<section class="quiz-summary" aria-label="Результат самопроверки" tabindex="-1" hidden><h3>Самопроверка завершена</h3><p class="quiz-score"></p><p class="quiz-summary-note"></p><div class="quiz-actions"><button type="button" class="quiz-review">К вопросам с ошибками</button><button type="button" class="quiz-restart">Начать заново</button></div></section></section>`;
+    }
     if (node.kind==='question') {
       const key=`${env.name.replace(/[^a-zA-Z0-9-]/g,'-')}--${attrs.id}`;
       const group=kind=>node.children.find(c=>c.kind===kind);
       const prompt=renderBlocks(node.children.filter(c=>c.kind==='text'),env);
       const choices=group('choices').items.map((value,i)=>`<div class="quiz-choice"><input type="radio" id="${key}-${i}" name="${key}" value="${'ABCD'[i]}"><label for="${key}-${i}"><span class="quiz-letter">${'ABCD'[i]}.</span><div>${fragment(value)}</div></label></div>`).join('');
-      return `<section class="handbook-question" id="${key}" data-correct="${escape(attrs.correct)}"><fieldset aria-describedby="${key}-prompt"><legend>Вопрос ${node.number}</legend><div class="quiz-prompt" id="${key}-prompt">${prompt}</div>${choices}</fieldset><details class="quiz-hint"><summary>Подсказка</summary>${renderBlocks(group('hint').children,env)}</details><button type="button" class="quiz-check" hidden disabled>Проверить</button><p class="quiz-result" role="status" aria-live="polite"></p><details class="quiz-solution"><summary>Решение</summary>${renderBlocks(group('solution').children,env)}</details></section>`;
+      return `<section class="handbook-question" id="${key}" tabindex="-1" aria-labelledby="${key}-number" aria-describedby="${key}-prompt" data-correct="${escape(attrs.correct)}"><fieldset aria-describedby="${key}-prompt"><legend id="${key}-number">Вопрос ${node.number}</legend><div class="quiz-prompt" id="${key}-prompt">${prompt}</div>${choices}</fieldset><details class="quiz-hint"><summary>Подсказка</summary>${renderBlocks(group('hint').children,env)}</details><div class="quiz-actions"><button type="button" class="quiz-check" hidden disabled>Проверить ответ</button><button type="button" class="quiz-retry" hidden>Ответить ещё раз</button><button type="button" class="quiz-next" hidden>Следующий вопрос</button></div><p class="quiz-result" role="status" aria-live="polite" aria-atomic="true"></p><details class="quiz-solution"><summary>Решение</summary>${renderBlocks(group('solution').children,env)}</details></section>`;
     }
     return renderBlocks(node.children,env);
   }).join('');
