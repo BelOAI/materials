@@ -350,7 +350,6 @@ lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls input { color-sch
 .handbook-content .quiz-overview { margin: 20px 0 28px; padding: 16px 0; border-block: 1px solid var(--control-border); }
 .handbook-content .quiz-progress-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 20px; flex-wrap: wrap; }
 .handbook-content .quiz-progress-text { margin: 0; font-weight: 700; }
-.handbook-content .quiz-session-note { font-size: .875rem; color: var(--muted); }
 .handbook-content .quiz-overview progress { display: block; width: 100%; height: 6px; margin: 12px 0 16px; accent-color: var(--accent); border: 0; border-radius: 0; background: var(--line); }
 .handbook-content .quiz-overview progress::-webkit-progress-bar { background: var(--control-border); }
 .handbook-content .quiz-overview progress::-webkit-progress-value { background: var(--accent); }
