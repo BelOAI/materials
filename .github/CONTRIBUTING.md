@@ -65,3 +65,5 @@ Workflow `Branch policy` использует `pull_request_target` и дове�
 на актуальном PR. Затем добавляем его в обязательные проверки `main` и `dev`,
 сохраняя `build`, требования review и отсутствие обхода правил. Проверка маршрута
 становится обязательной после завершения этой установки.
+
+<!-- Temporary branch-policy verification; this PR is never merged. -->
