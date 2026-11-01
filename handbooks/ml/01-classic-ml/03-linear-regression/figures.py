@@ -13,23 +13,139 @@ from sklearn.metrics import mean_squared_error
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 
+# BEGIN HANDBOOK SVG STYLE
+from xml.etree import ElementTree as ET
+import re
+STYLE_ID = 'handbook-style'
+DEFS_ID = 'handbook-defs'
+CSS = ":root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }\n@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }\n@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }\nsvg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }\ntext, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }\n.s, .small { font-size:calc(16px * var(--figure-scale)); }\n.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }\n.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }\n.big { font-size:32px; font-weight:700; }\n.blue { fill:var(--blue); }\n.purple { fill:var(--purple); }\n.orange { fill:var(--orange); }\n.green { fill:var(--green); }\n.red { fill:var(--red); }\n.yellow { fill:var(--yellow); }\n.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }\n.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }\n.block { rx:6; stroke-width:2; }\n.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }\n"
+DEFS = '<defs xmlns="http://www.w3.org/2000/svg" id="handbook-defs">\n  <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4"\n          orient="auto" markerUnits="userSpaceOnUse">\n    <path d="M0 0L8 4L0 8Z" fill="var(--axis)"/>\n  </marker>\n</defs>'
+COLOR_ROLES = {'#1b2430': 'ink', '#55657a': 'muted', '#7a8a9c': 'axis', '#d5dee8': 'grid', '#c9d4e0': 'edge', '#2459c2': 'blue', '#e8f0ff': 'blue-bg', '#7238c4': 'purple', '#f2eaff': 'purple-bg', '#b05300': 'orange', '#fff2e3': 'orange-bg', '#188038': 'green', '#e6f4ea': 'green-bg', '#c53929': 'red', '#fce8e6': 'red-bg', '#8a5a00': 'yellow', '#fef4ce': 'yellow-bg', '#000000': 'ink', '#262626': 'ink', '#2563eb': 'blue', '#ea580c': 'orange', '#cbd5e1': 'grid'}
+SIZES = {'body': 20, 'small': 16, 'heading': 22, 'grid': 8, 'padding': 16, 'gap': 24, 'radius': 6, 'line': 2, 'axis': 1.25, 'grid_line': 0.75}
+
+def normalize_svg(source):
+    """Обновить только отмеченный стиль и общие маркеры, не меняя рисунок."""
+    ET.register_namespace('', 'http://www.w3.org/2000/svg')
+    ET.register_namespace('xlink', 'http://www.w3.org/1999/xlink')
+    root = ET.fromstring(source)
+    if root.tag != '{http://www.w3.org/2000/svg}svg':
+        raise ValueError('Ожидался корневой SVG')
+    for node in list(root):
+        if node.get('id') in (STYLE_ID, DEFS_ID):
+            root.remove(node)
+    style = ET.Element('{http://www.w3.org/2000/svg}style', {'id': STYLE_ID})
+    style.text = '\n' + CSS
+    index = next((i for i, node in enumerate(root)
+                  if node.tag.rsplit('}', 1)[-1] not in ('title', 'desc')), len(root))
+    root.insert(index, style)
+    root.insert(index + 1, ET.fromstring(DEFS))
+    # Preserve mixed text exactly: indentation must not insert spaces into math.
+    mixed = [(node, node.text, node.tail) for text in root.iter()
+             if text.tag.rsplit('}', 1)[-1] == 'text' for node in text.iter()]
+    ET.indent(root, space='  ')
+    for node, text, tail in mixed:
+        node.text, node.tail = text, tail
+    return ET.tostring(root, encoding='unicode') + '\n'
+
+def apply_matplotlib_style(plt, width=560):
+    """Размеры заданы в единицах SVG, экспортируемых Matplotlib как пункты."""
+    scale = width / 560
+    plt.rcParams.update({
+        'font.family': 'DejaVu Sans', 'font.size': SIZES['body'] * scale,
+        'axes.titlesize': SIZES['heading'] * scale, 'axes.titleweight': 'bold',
+        'axes.labelsize': SIZES['body'] * scale, 'xtick.labelsize': SIZES['small'] * scale,
+        'ytick.labelsize': SIZES['small'] * scale, 'legend.fontsize': SIZES['small'] * scale,
+        'axes.linewidth': SIZES['axis'] * scale, 'grid.linewidth': SIZES['grid_line'] * scale,
+        'svg.fonttype': 'none', 'svg.hashsalt': 'beloai-classroom',
+    })
+
+def finish_plot(path, title, description):
+    root = ET.fromstring(path.read_bytes())
+    for node in list(root):
+        if node.tag.rsplit('}', 1)[-1] in ('metadata', 'title', 'desc') or node.get('id') == STYLE_ID:
+            root.remove(node)
+    for parent in root.iter():
+        for node in list(parent):
+            if node.tag.endswith('path') and node.get('style', '').strip() == 'fill: #ffffff':
+                parent.remove(node)
+    for node in root.iter():
+        for attribute in ('fill', 'stroke'):
+            value = node.get(attribute, '').lower()
+            if value in COLOR_ROLES:
+                node.set(attribute, 'var(--' + COLOR_ROLES[value] + ')')
+        if 'style' in node.attrib:
+            style = re.sub(r'#[0-9a-fA-F]{6}\b', lambda m: 'var(--' + COLOR_ROLES[m[0].lower()] + ')'
+                           if m[0].lower() in COLOR_ROLES else m[0], node.get('style'))
+            node.set('style', re.sub(r'font-family:[^;]+', "font-family:'PT Sans','DejaVu Sans',Arial,sans-serif", style))
+    _, _, width, height = root.get('viewBox').split()
+    root.set('width', width)
+    root.set('height', height)
+    root.set('style', f'--figure-scale:{float(width) / 560:g}')
+    root.set('role', 'img')
+    root.set('aria-labelledby', 'title desc')
+    for index, (name, value) in enumerate((('title', title), ('desc', description))):
+        node = ET.Element('{http://www.w3.org/2000/svg}' + name, {'id': name})
+        node.text = value
+        root.insert(index, node)
+    path.write_text(normalize_svg(ET.tostring(root, encoding='unicode')), encoding='utf-8')
+
+# END HANDBOOK SVG STYLE
+
 MEDIA = Path(__file__).resolve().parent / "media"
-BLUE, ORANGE, GREEN, RED, GRAY = "#2563eb", "#b45309", "#15803d", "#b91c1c", "#64748b"
-LIGHT = "#cbd5e1"
+# Light-theme colours come from the shared standalone stylesheet. finish_plot
+# turns these values into theme variables for the browser and print palette.
+COLORS = dict(re.findall(r"--([a-z-]+):(#[0-9a-fA-F]{6})", CSS.partition("}")[0]))
+BLUE, ORANGE, GREEN, RED, GRAY = (COLORS[key] for key in ("blue", "orange", "green", "red", "muted"))
+LIGHT = COLORS["grid"]
 
 plt.rcParams.update({
     "font.family": "DejaVu Sans", "font.size": 10.5, "axes.titlesize": 11.5,
     "axes.spines.top": False, "axes.spines.right": False,
-    "svg.fonttype": "path", "svg.hashsalt": "beloai-linear-regression",
-    "axes.grid": True, "grid.color": "#e2e8f0", "grid.linewidth": 0.8,
+    "svg.fonttype": "none", "svg.hashsalt": "beloai-linear-regression",
+    "axes.grid": True, "grid.color": COLORS["grid"], "grid.linewidth": 0.8,
     "legend.frameon": False, "mathtext.fontset": "dejavusans",
 })
 
 
+FIGURE_DESCRIPTIONS = {'fit-residuals': ('Прямая и остатки',
+                   'Слева: четыре точки, прямая y = 1,4x + 1,5, вертикальные остатки и горизонтальная линия '
+                   'среднего. Справа: три прямые с разными значениями MSE.'),
+ 'loss-surface': ('Потери и градиентный спуск',
+                  'Линии уровня MSE и шаги градиентного спуска из точки (0; 0). Справа MSE убывает к '
+                  'минимуму 1,05.'),
+ 'pitfalls': ('Выбросы и похожие признаки',
+              'Слева: прямая без выброса и прямая с выбросом. Справа: облако весов МНК вдоль диагонали и '
+              'компактное облако Ridge возле истинной точки.'),
+ 'overfit-poly': ('Переобучение полинома',
+                  'Три модели на одинаковых обучающих точках: прямая, полином девятой степени и тот же '
+                  'полином с Ridge. Указаны RMSE на обучении и проверке.'),
+ 'geometry': ('Ограничения Ridge и Lasso',
+              'Одинаковые шкалы весов. Слева круг ограничения L2 для Ridge, справа ромб ограничения L1 для '
+              'Lasso; показаны линии уровня потерь и решения.'),
+ 'shrinkage': ('Сжатие весов и мягкий порог',
+               'Слева: графики веса без штрафа, Ridge z/(1+t) и мягкого порога Lasso. Справа: целевая '
+               'функция по w для z = 0,8; минимум Ridge в 0,4, минимум Lasso ровно в нуле.'),
+ 'paths': ('Пути коэффициентов Ridge и Lasso',
+           'Слева: пути коэффициентов Ridge при росте alpha — веса плавно сжимаются. Справа: пути Lasso — '
+           'веса по одному становятся нулём.'),
+ 'compare': ('Сравнение моделей и силы штрафа',
+             'Слева: столбики весов истины, МНК, Ridge и Lasso по 12 признакам. Справа: ошибка на проверке в '
+             'зависимости от alpha для Ridge и Lasso и горизонтальная линия МНК.')}
+
+
 def save(fig, name):
     path = MEDIA / f"{name}.svg"
-    fig.savefig(path, metadata={"Date": None, "Creator": "Авторы BelOAI"})
+    fig.savefig(path, transparent=True, metadata={"Date": None, "Creator": "Авторы BelOAI"})
     plt.close(fig)
+    title, description = FIGURE_DESCRIPTIONS[name]
+    finish_plot(path, title, description)
+    # Preserve Matplotlib's original physical size on the site and in PDF.
+    # The shared normalizer uses unitless dimensions; these figures use points.
+    root = ET.fromstring(path.read_bytes())
+    _, _, width, height = root.get("viewBox").split()
+    root.set("width", width + "pt")
+    root.set("height", height + "pt")
+    path.write_text(ET.tostring(root, encoding="unicode") + "\n", encoding="utf-8")
     # matplotlib оставляет пробелы в конце строк; убираем их для git diff --check.
     lines = path.read_text(encoding="utf-8").splitlines()
     path.write_text("\n".join(line.rstrip() for line in lines) + "\n", encoding="utf-8")
@@ -93,7 +209,7 @@ def fig_surface():
     Wg, Bg = np.meshgrid(ws, bs)
     Z = ((Wg[..., None] * x4 + Bg[..., None] - y4) ** 2).mean(axis=-1)
     ax = axes[0]
-    ax.contour(Wg, Bg, Z, levels=[1.5, 3, 6, 12, 25, 50], colors="#94a3b8", linewidths=1.0)
+    ax.contour(Wg, Bg, Z, levels=[1.5, 3, 6, 12, 25, 50], colors=COLORS["axis"], linewidths=1.0)
     path, losses, w, b = [(0.0, 0.0)], [mse4(0, 0)], 0.0, 0.0
     for _ in range(300):
         e = w * x4 + b - y4

@@ -9,7 +9,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from handbook_pdf import format_objects, walk
+from handbook_pdf import format_objects, require_object_captions, walk
 from repo_paths import REPO_ROOT
 
 
@@ -74,6 +74,39 @@ SOURCE = '''![Два разных значения](small.svg)
 
 
 class HandbookObjectsTests(unittest.TestCase):
+    @unittest.skipUnless(shutil.which('pandoc'), 'Нужен Pandoc')
+    def test_print_lesson_heading_reserves_space_for_credit_and_following_heading(self):
+        ast = json.loads(subprocess.check_output(['pandoc', '-f', 'markdown', '-t', 'json'],
+                                                input='## Synthetic\n\nBody.', text=True))
+        ast['blocks'][0]['c'][1][1].append('handbook-lesson-opening')
+        latex = subprocess.check_output(['pandoc', '-f', 'json', '-t', 'latex', '--lua-filter',
+                                         str(REPO_ROOT / 'utils/pdf/keep-short-code.lua')],
+                                        input=json.dumps(ast), text=True)
+        self.assertIn(r'\Needspace{10\baselineskip}', latex)
+
+    @unittest.skipUnless(shutil.which('pandoc') and shutil.which('node'), 'Нужны Pandoc и Node.js')
+    def test_publishing_rejects_missing_captions_including_nested_objects(self):
+        labelled = ('![Описание](figure.svg)\n\n*Рисунок 1 — Пример*\n\n'
+                    '*Таблица 1 — Значения*\n\n| Имя | Число |\n| --- | ---: |\n| А | 2 |\n')
+        for source in (labelled, '> ' + labelled.replace('\n', '\n> '),
+                       '![Описание](figure.svg)', '| Имя |\n| --- |\n| А |',
+                       '> ![Описание](figure.svg)',
+                       '![Описание](figure.svg)\n\nОбычный текст.\n\n*Рисунок 1 — Далеко*'):
+            with self.subTest(source=source):
+                ast = json.loads(subprocess.check_output(
+                    ['pandoc', '-f', 'markdown-implicit_figures', '-t', 'json'], input=source, text=True))
+                result = subprocess.run(['node', str(REPO_ROOT / 'utils/site/render-handbook.mjs')],
+                                        input=json.dumps([dict(source=source, name='synthetic', requireCaptions=True)]),
+                                        capture_output=True, text=True)
+                if 'Значения' in source:
+                    require_object_captions(format_objects(ast), 'synthetic')
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                else:
+                    with self.assertRaisesRegex(ValueError, 'synthetic:.*подписи'):
+                        require_object_captions(format_objects(ast), 'synthetic')
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn('synthetic:', result.stderr)
+
     @unittest.skipUnless(shutil.which('node'), 'Нужен Node.js')
     def test_site_semantic_captions_and_untouched_prose(self):
         result = subprocess.run(['node', str(REPO_ROOT / 'utils/site/render-handbook.mjs')],

@@ -1,22 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{academichandbook}[2026/10/25 BelOAI handbook reader]
 \RequirePackage[russian]{olymp}
-\RequirePackage{amssymb}
-\RequirePackage{graphicx}
-\RequirePackage{adjustbox}
-\RequirePackage{float}
-\RequirePackage{needspace}
-\RequirePackage{etoolbox}
-\RequirePackage{titlesec}
-\RequirePackage{lastpage}
-\RequirePackage{caption}
-% Captions already contain their source number and the common Russian prefix.
-\captionsetup{labelformat=empty,font=small,textfont=it,justification=centering,singlelinecheck=false}
-\captionsetup[table]{position=top}
-\AtBeginDocument{\ifdefined\LTleft
-  \setlength{\LTleft}{\fill}\setlength{\LTright}{\fill}
-  \setlength{\LTcapwidth}{\linewidth}
-\fi}
+\RequirePackage{handbookcommon}
 
 \newif\ifhandbookwholebook
 \newcommand{\handbooklogo}{handbook-logo.pdf}
@@ -70,18 +55,6 @@
 \setlength{\parskip}{0pt plus 1pt}
 \pagestyle{handbook}
 \raggedbottom
-\floatplacement{figure}{H}
-% Pandoc bounds the image by textheight without allowing room for its caption.
-% maxsizebox avoids adjustbox's reuse of the global Gin width/height defaults
-% installed by Pandoc 2.x, which would scale the already-sized graphic twice.
-\let\handbookincludegraphics\includegraphics
-\renewcommand{\includegraphics}[2][]{%
-  \maxsizebox*{\linewidth}{.78\textheight}{%
-    \handbookincludegraphics[width=!,height=!,keepaspectratio,#1]{#2}}}
-\widowpenalty=10000
-\clubpenalty=10000
-\displaywidowpenalty=10000
-
 \titleformat{\section}{\Large\sffamily\bfseries}{\thesection}{.7em}{}
 \titleformat{\subsection}{\large\sffamily\bfseries}{\thesubsection}{.7em}{}
 \titleformat{\subsubsection}{\normalsize\sffamily\bfseries}{\thesubsubsection}{.7em}{}
@@ -91,19 +64,3 @@
 \titlespacing*{\subparagraph}{0pt}{2ex plus 1ex minus .2ex}{.6ex}
 \pretocmd{\tableofcontents}{\ifhandbookwholebook\clearpage\handbookchapter{Содержание}\fi}{}{}
 \apptocmd{\tableofcontents}{\ifhandbookwholebook\clearpage\markboth{}{}\fi}{}{}
-
-% Common prose/code symbols supported only in the print layer.
-\DeclareUnicodeCharacter{00A0}{~}
-\DeclareUnicodeCharacter{03BB}{\ensuremath{\lambda}}
-\DeclareUnicodeCharacter{2011}{\mbox{-}}
-\DeclareUnicodeCharacter{202F}{\,}
-\DeclareUnicodeCharacter{2190}{\ensuremath{\leftarrow}}
-\DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
-\DeclareUnicodeCharacter{21D2}{\ensuremath{\Rightarrow}}
-\DeclareUnicodeCharacter{2212}{\ensuremath{-}}
-\DeclareUnicodeCharacter{22EF}{\ensuremath{\cdots}}
-\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
-\DeclareUnicodeCharacter{2260}{\ensuremath{\ne}}
-\DeclareUnicodeCharacter{2264}{\ensuremath{\le}}
-\DeclareUnicodeCharacter{2265}{\ensuremath{\ge}}
-\DeclareUnicodeCharacter{25B6}{\ensuremath{\blacktriangleright}}

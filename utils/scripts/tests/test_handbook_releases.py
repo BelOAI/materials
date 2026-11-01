@@ -53,13 +53,26 @@ class PublishTests(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         self.folder = Path(temp.name)
-        pdf = self.folder / release.ASSETS[0]
-        pdf.write_bytes(b'%PDF-synthetic')
-        (self.folder / release.ASSETS[1]).write_text(f'{hashlib.sha256(pdf.read_bytes()).hexdigest()}  {pdf.name}\n')
+        checksums = []
+        for name in release.PDF_ASSETS:
+            pdf = self.folder / name
+            pdf.write_bytes(b'%PDF-synthetic-' + name.encode())
+            checksums.append(f'{hashlib.sha256(pdf.read_bytes()).hexdigest()}  {pdf.name}\n')
+        (self.folder / 'SHA256SUMS').write_text(''.join(checksums))
 
     def test_checksum_rejects_corruption(self):
         release.verify_assets(self.folder)
         (self.folder / release.ASSETS[0]).write_bytes(b'%PDF-corrupt')
+        with self.assertRaises(ValueError):
+            release.verify_assets(self.folder)
+
+    def test_both_pdfs_are_required_and_checked(self):
+        pdf = self.folder / release.PDF_ASSETS[1]
+        for content in (b'%PDF-corrupt', b'not a pdf'):
+            pdf.write_bytes(content)
+            with self.assertRaises(ValueError):
+                release.verify_assets(self.folder)
+        pdf.unlink()
         with self.assertRaises(ValueError):
             release.verify_assets(self.folder)
 
@@ -93,6 +106,8 @@ class PublishTests(unittest.TestCase):
         self.assertEqual(calls[-1][1]['data']['make_latest'], 'false')
 
     def test_stable_rerun_never_replaces_published_assets(self):
+        # Older releases may contain only the reader PDF. They remain immutable.
+        (self.folder / release.PDF_ASSETS[1]).unlink()
         calls, upload = self.publish('v2026.10.25', [{'tag_name': 'v2026.10.25', 'draft': False, 'prerelease': False}])
         self.assertEqual(calls, [])
         upload.assert_not_called()

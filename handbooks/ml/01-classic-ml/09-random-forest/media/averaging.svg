@@ -1,33 +1,63 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 310" role="img" aria-labelledby="title desc">
-<title id="title">Среднее предсказание ближе к настоящему времени</title><desc id="desc">Три модели предсказывают 24, 30 и 36 минут. Их среднее равно 30 минутам, а настоящее время печати — 31 минуте. Ошибка среднего составляет одну минуту.</desc>
-<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#2563eb"/></marker></defs>
-<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.warm{fill:#fff7ed;stroke:#d97706;stroke-width:2}.arrow{fill:none;stroke:#2563eb;stroke-width:2;marker-end:url(#arrow)}</style>
-<rect width="540" height="310" rx="16" fill="#f8fafc"/>
-<text x="270" y="30" class="heading">Усреднение предсказаний</text>
+  <title id="title">Среднее предсказание ближе к настоящему времени</title>
+  <desc id="desc">Три модели предсказывают 24, 30 и 36 минут. Их среднее равно 30 минутам, а настоящее время печати — 31 минуте. Ошибка среднего составляет одну минуту.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0 L7 3.5 L0 7 Z" fill="var(--blue)" />
+    </marker>
+  </defs>
+  <style>text{fill:var(--ink);font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:var(--blue-bg);stroke:var(--blue);stroke-width:2}.warm{fill:var(--orange-bg);stroke:var(--orange);stroke-width:2}.arrow{fill:none;stroke:var(--blue);stroke-width:2;marker-end:url(#arrow)}</style>
+  <text x="270" y="30" class="heading">Усреднение предсказаний</text>
 <text x="355" y="52" class="small">Факт: 31 мин</text>
-<path d="M355 65 V230" stroke="#d97706" stroke-width="2" stroke-dasharray="6 5"/>
-<text x="24" y="92" class="" style="text-anchor:start">Модель 1</text>
-<path d="M190 85 H490" stroke="#cbd5e1"/>
-<circle cx="250" cy="85" r="7" fill="#2563eb"/>
-<text x="250" y="68" class="">24</text>
+<path d="M355 65 V230" stroke="var(--orange)" stroke-width="2" stroke-dasharray="6 5" />
+  <text x="24" y="92" class="" style="text-anchor:start">Модель 1</text>
+<path d="M190 85 H490" stroke="var(--grid)" />
+  <circle cx="250" cy="85" r="7" fill="var(--blue)" />
+  <text x="250" y="68" class="">24</text>
 <text x="24" y="132" class="" style="text-anchor:start">Модель 2</text>
-<path d="M190 125 H490" stroke="#cbd5e1"/>
-<circle cx="340" cy="125" r="7" fill="#2563eb"/>
-<text x="340" y="112" class="">30</text>
+<path d="M190 125 H490" stroke="var(--grid)" />
+  <circle cx="340" cy="125" r="7" fill="var(--blue)" />
+  <text x="340" y="112" class="">30</text>
 <text x="24" y="172" class="" style="text-anchor:start">Модель 3</text>
-<path d="M190 165 H490" stroke="#cbd5e1"/>
-<circle cx="430" cy="165" r="7" fill="#2563eb"/>
-<text x="430" y="152" class="">36</text>
+<path d="M190 165 H490" stroke="var(--grid)" />
+  <circle cx="430" cy="165" r="7" fill="var(--blue)" />
+  <text x="430" y="152" class="">36</text>
 <text x="24" y="217" class="" style="text-anchor:start">Среднее</text>
-<path d="M190 210 H490" stroke="#cbd5e1"/>
-<circle cx="340" cy="210" r="7" fill="#d97706"/>
-<text x="340" y="197" class="">30</text>
-<path d="M190 242 H490" stroke="#2563eb"/>
-<path d="M190 237 V247" stroke="#2563eb"/>
-<text x="190" y="267" class="small">20</text>
-<path d="M340 237 V247" stroke="#2563eb"/>
-<text x="340" y="267" class="small">30</text>
-<path d="M490 237 V247" stroke="#2563eb"/>
-<text x="490" y="267" class="small">40</text>
+<path d="M190 210 H490" stroke="var(--grid)" />
+  <circle cx="340" cy="210" r="7" fill="var(--orange)" />
+  <text x="340" y="197" class="">30</text>
+<path d="M190 242 H490" stroke="var(--blue)" />
+  <path d="M190 237 V247" stroke="var(--blue)" />
+  <text x="190" y="267" class="small">20</text>
+<path d="M340 237 V247" stroke="var(--blue)" />
+  <text x="340" y="267" class="small">30</text>
+<path d="M490 237 V247" stroke="var(--blue)" />
+  <text x="490" y="267" class="small">40</text>
 <text x="340" y="295" class="small">Время печати, мин</text>
 </svg>
