@@ -10,6 +10,9 @@ references:
 - label: Яндекс — Свёрточные нейросети
   url: https://education.yandex.ru/handbook/ml/article/svyortochnye-nejroseti
   adaptation: Базовая последовательность объяснения; без обзора архитектур и продвинутой математики. Текст и схемы созданы заново.
+- label: Яндекс — Область видимости свёрток (иллюстрация)
+  url: https://contest.yandex.ru/tracks/ml/_assets/deep-learning-architectures/convolutional-neural-networks/16_receptive_field_fbd1c12519_af58719882_dc46e45295-framed.svg
+  adaptation: Рисунок 8 заменён оригинальной иллюстрацией по ссылке пользователя. Геометрия, надписи и встроенное изображение сохранены; добавлены доступное описание и общий служебный блок SVG.
 - label: Dive into Deep Learning — Convolutions for Images
   url: https://d2l.ai/chapter_convolutional-neural-networks/conv-layer.html
   adaptation: Проверка терминов свёртки и корреляции; собственный числовой пример границы.
