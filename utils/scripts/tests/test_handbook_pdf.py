@@ -247,6 +247,29 @@ class HandbookPdfTests(unittest.TestCase):
         self.assertEqual(len(self.compiled), before + 8)
         self.assertEqual((self.parse_count, self.svg_count), (parse_count, svg_count))
 
+    def test_chapters_and_paragraphs_start_after_page_breaks(self):
+        book = self.root / 'handbooks/alpha'
+        tail = book / '03-tail'
+        tail.mkdir()
+        self.metadata(tail, slug='tail', paragraphs=[])
+        self.source(tail, 'tail-body', [])
+        self.book_metadata(book, chapters=['07-section', '03-tail'])
+        self.publication(book)
+
+        for profile in ('reader', 'belarus-textbook'):
+            self.build(selected=book, book_only=True, profile=profile)
+            blocks = self.compiled[-1]['blocks']
+            openings = [index for index, node in enumerate(blocks)
+                        if node['t'] == 'Header' and node['c'][0] in (1, 2)]
+            self.assertEqual(len(openings), 4, profile)
+            for index in openings:
+                self.assertEqual(blocks[index - 1], {'t': 'RawBlock', 'c': ['latex', r'\clearpage']},
+                                 (profile, blocks[index]))
+
+        self.build(selected=self.sources['alpha', 'first'])
+        blocks = self.compiled[-1]['blocks']
+        self.assertEqual(blocks[0], {'t': 'RawBlock', 'c': ['latex', r'\clearpage']})
+
     def test_editorial_profile_isolated_outputs_cache_and_cleanup(self):
         book = self.root / 'handbooks/alpha'
         self.publication(book)

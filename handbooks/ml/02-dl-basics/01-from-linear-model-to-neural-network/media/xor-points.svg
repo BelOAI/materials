@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="380" viewBox="0 0 560 380" role="img" aria-labelledby="title desc">
+  <title id="title">Четыре точки операции XOR</title>
+  <desc id="desc">Точки класса 1 стоят в левом верхнем и правом нижнем углах, класса 0 — в левом нижнем и правом верхнем. Пунктирные отрезки между точками одного класса пересекаются в центре квадрата.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <line x1="84" y1="320" x2="372" y2="320" class="axis" />
+  <line x1="100" y1="338" x2="100" y2="54" class="axis" />
+  <line x1="100" y1="70" x2="350" y2="320" stroke="var(--blue)" stroke-width="2.5" stroke-dasharray="8 6" />
+  <line x1="100" y1="320" x2="350" y2="70" stroke="var(--orange)" stroke-width="2.5" stroke-dasharray="8 6" />
+  <line x1="350" y1="314" x2="350" y2="326" class="axis" />
+  <line x1="94" y1="70" x2="106" y2="70" class="axis" />
+  <circle cx="225" cy="195" r="5" fill="var(--paper)" stroke="var(--muted)" stroke-width="2" />
+  <circle cx="100" cy="320" r="9" fill="var(--orange)" stroke="var(--paper)" stroke-width="2" />
+  <circle cx="350" cy="320" r="9" fill="var(--blue)" stroke="var(--paper)" stroke-width="2" />
+  <circle cx="100" cy="70" r="9" fill="var(--blue)" stroke="var(--paper)" stroke-width="2" />
+  <circle cx="350" cy="70" r="9" fill="var(--orange)" stroke="var(--paper)" stroke-width="2" />
+  <text x="100" y="344" class="s m" text-anchor="middle">0</text>
+  <text x="350" y="344" class="s m" text-anchor="middle">1</text>
+  <text x="86" y="326" class="s m" text-anchor="end">0</text>
+  <text x="86" y="76" class="s m" text-anchor="end">1</text>
+  <text x="380" y="326" class="s m">x₁</text>
+  <text x="100" y="40" class="s m" text-anchor="middle">x₂</text>
+  <circle cx="410" cy="150" r="9" fill="var(--blue)" />
+  <text x="430" y="157" class="s b">класс 1</text>
+  <circle cx="410" cy="190" r="9" fill="var(--orange)" />
+  <text x="430" y="197" class="s b">класс 0</text>
+</svg>

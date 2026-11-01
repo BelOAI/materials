@@ -1,9 +1,11 @@
 slug: dl-basics
 title: Основы глубокого обучения
-description: Основы глубокого обучения.
+description: "Устройство нейросетей: прямой проход, обучение, свёртки, эмбеддинги и внимание."
 status: draft
 paragraphs:
-- 03-cnn
+  - 01-from-linear-model-to-neural-network
+  - 03-cnn
 build: true
 authors:
-- name: Максим Банцевич
+  - name: Евгений Шкумат
+  - name: Максим Банцевич
