@@ -1,0 +1,25 @@
+slug: from-linear-model-to-neural-network
+title: От линейной модели к нейросети
+description: Нейрон, скрытый слой и прямой проход сети на примере задачи XOR.
+status: draft
+build: true
+date: '2026-11-01'
+authors:
+  - name: Евгений Шкумат
+topics:
+  - Ограничение линейной модели
+  - Нейрон, веса, смещение и активация
+  - Слои и формы данных
+  - Прямой проход сети 2–2–1
+learning_outcomes:
+  - Объяснять, зачем нейрону нелинейная функция активации.
+  - Выполнять прямой проход сети 2–2–1 вручную и в Python.
+  - Проверять формы входа, весов, скрытого слоя и выхода.
+resources:
+  - path: media/xor-points.svg
+    label: Точки XOR (.svg)
+  - path: media/network.svg
+    label: Схема сети (.svg)
+references:
+  - label: PyTorch — Build the Neural Network
+    url: https://pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html

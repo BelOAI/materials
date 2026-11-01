@@ -1,5 +1,9 @@
 slug: dl-basics
 title: Основы глубокого обучения
-description: Основы глубокого обучения.
-status: planned
-paragraphs: []
+description: "Устройство нейросетей: прямой проход, обучение, свёртки, эмбеддинги и внимание."
+status: draft
+paragraphs:
+  - 01-from-linear-model-to-neural-network
+build: true
+authors:
+  - name: Евгений Шкумат
