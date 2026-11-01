@@ -1,0 +1,33 @@
+name: Branch policy
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited]
+    branches: [main, dev]
+
+permissions: {}
+
+jobs:
+  branch-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check pull request target and source
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          import os
+          from pathlib import Path
+
+          event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+          pr = event['pull_request']
+          target = pr['base']['ref']
+          source = pr['head']['ref']
+          source_repo = (pr['head'].get('repo') or {}).get('full_name')
+          repository = os.environ['GITHUB_REPOSITORY']
+
+          if target not in ('main', 'dev'):
+              raise SystemExit('PR должен быть направлен в dev или main.')
+          if target == 'main' and (source != 'dev' or source_repo != repository):
+              raise SystemExit('В main принимаются только релизные PR из dev этого репозитория.')
+          print(f'Маршрут PR разрешён: {source_repo}:{source} → {target}')
+          PYTHON
