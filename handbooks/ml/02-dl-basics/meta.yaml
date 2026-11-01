@@ -1,5 +1,9 @@
 slug: dl-basics
 title: Основы глубокого обучения
 description: Основы глубокого обучения.
-status: planned
-paragraphs: []
+status: draft
+paragraphs:
+- 03-cnn
+build: true
+authors:
+- name: Максим Банцевич

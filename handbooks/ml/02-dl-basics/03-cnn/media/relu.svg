@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="383.215636" height="143.530281" viewBox="0 0 383.215636 143.530281" version="1.1" style="--figure-scale:0.684314" role="img" aria-labelledby="title desc">
+  <title id="title">Преобразование карты с помощью ReLU</title>
+  <desc id="desc">Две таблицы одинакового размера до и после ReLU; отрицательные значения заменены нулями, остальные сохранены</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <defs>
+    <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+  </defs>
+  <g id="figure_1">
+    <g id="patch_1">
+      <path d="M 0 143.530281  L 383.215636 143.530281  L 383.215636 0  L 0 0  L 0 143.530281  z " style="fill: none" />
+    </g>
+    <g id="axes_1">
+      <g id="patch_2">
+        <path d="M 8.466 26.824281  L 62.586 26.824281  L 62.586 80.944281  L 8.466 80.944281  z " clip-path="url(#pa3ce4be89b)" style="fill: #ca8844; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_3">
+        <path d="M 62.586 26.824281  L 116.706 26.824281  L 116.706 80.944281  L 62.586 80.944281  z " clip-path="url(#pa3ce4be89b)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_4">
+        <path d="M 116.706 26.824281  L 170.826 26.824281  L 170.826 80.944281  L 116.706 80.944281  z " clip-path="url(#pa3ce4be89b)" style="fill: var(--purple); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_5">
+        <path d="M 8.466 80.944281  L 62.586 80.944281  L 62.586 135.064281  L 8.466 135.064281  z " clip-path="url(#pa3ce4be89b)" style="fill: #cfb5cb; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_6">
+        <path d="M 62.586 80.944281  L 116.706 80.944281  L 116.706 135.064281  L 62.586 135.064281  z " clip-path="url(#pa3ce4be89b)" style="fill: #e4be89; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_7">
+        <path d="M 116.706 80.944281  L 170.826 80.944281  L 170.826 135.064281  L 116.706 135.064281  z " clip-path="url(#pa3ce4be89b)" style="fill: #a076c7; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="text_1">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="35.526" y="57.195531" transform="rotate(-0 35.526 57.195531)">-2</text>
+   </g>
+      <g id="text_2">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="89.646" y="57.195531" transform="rotate(-0 89.646 57.195531)">0</text>
+   </g>
+      <g id="text_3">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="143.766" y="57.195531" transform="rotate(-0 143.766 57.195531)">3</text>
+   </g>
+      <g id="text_4">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="35.526" y="111.315531" transform="rotate(-0 35.526 111.315531)">1</text>
+   </g>
+      <g id="text_5">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="89.646" y="111.315531" transform="rotate(-0 89.646 111.315531)">-1</text>
+   </g>
+      <g id="text_6">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="143.766" y="111.315531" transform="rotate(-0 143.766 111.315531)">2</text>
+   </g>
+      <g id="text_7">
+        <text style="fill: var(--blue); font: 24px 'DejaVu Sans'; text-anchor: start" x="186.95376" y="87.566781" transform="rotate(-0 186.95376 87.566781)">→</text>
+   </g>
+      <g id="text_8">
+        <text style="fill: var(--blue); font: 700 11px 'DejaVu Sans'; text-anchor: middle" x="89.646" y="14.118281" transform="rotate(-0 89.646 14.118281)">До ReLU</text>
+   </g>
+    </g>
+    <g id="axes_2">
+      <g id="patch_8">
+        <path d="M 212.389636 26.824281  L 266.509636 26.824281  L 266.509636 80.944281  L 212.389636 80.944281  z " clip-path="url(#pd071815909)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_9">
+        <path d="M 266.509636 26.824281  L 320.629636 26.824281  L 320.629636 80.944281  L 266.509636 80.944281  z " clip-path="url(#pd071815909)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_10">
+        <path d="M 320.629636 26.824281  L 374.749636 26.824281  L 374.749636 80.944281  L 320.629636 80.944281  z " clip-path="url(#pd071815909)" style="fill: var(--purple); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_11">
+        <path d="M 212.389636 80.944281  L 266.509636 80.944281  L 266.509636 135.064281  L 212.389636 135.064281  z " clip-path="url(#pd071815909)" style="fill: #cfb5cb; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_12">
+        <path d="M 266.509636 80.944281  L 320.629636 80.944281  L 320.629636 135.064281  L 266.509636 135.064281  z " clip-path="url(#pd071815909)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="patch_13">
+        <path d="M 320.629636 80.944281  L 374.749636 80.944281  L 374.749636 135.064281  L 320.629636 135.064281  z " clip-path="url(#pd071815909)" style="fill: #a076c7; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
+      </g>
+      <g id="text_9">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="239.449636" y="57.195531" transform="rotate(-0 239.449636 57.195531)">0</text>
+   </g>
+      <g id="text_10">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="293.569636" y="57.195531" transform="rotate(-0 293.569636 57.195531)">0</text>
+   </g>
+      <g id="text_11">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="347.689636" y="57.195531" transform="rotate(-0 347.689636 57.195531)">3</text>
+   </g>
+      <g id="text_12">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="239.449636" y="111.315531" transform="rotate(-0 239.449636 111.315531)">1</text>
+   </g>
+      <g id="text_13">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="293.569636" y="111.315531" transform="rotate(-0 293.569636 111.315531)">0</text>
+   </g>
+      <g id="text_14">
+        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="347.689636" y="111.315531" transform="rotate(-0 347.689636 111.315531)">2</text>
+   </g>
+      <g id="text_15">
+        <text style="fill: var(--blue); font: 700 11px 'DejaVu Sans'; text-anchor: middle" x="293.569636" y="14.118281" transform="rotate(-0 293.569636 14.118281)">После ReLU</text>
+   </g>
+    </g>
+  </g>
+  <defs>
+    <clipPath id="pa3ce4be89b">
+      <rect x="5.76" y="24.118281" width="167.772" height="113.652" />
+    </clipPath>
+    <clipPath id="pd071815909">
+      <rect x="209.683636" y="24.118281" width="167.772" height="113.652" />
+    </clipPath>
+  </defs>
+</svg>
