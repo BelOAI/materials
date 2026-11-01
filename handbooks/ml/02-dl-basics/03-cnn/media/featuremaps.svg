@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="435.801171" height="312.9815" viewBox="0 0 435.801171 312.9815" version="1.1" style="--figure-scale:0.778216" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="526" viewBox="0 0 560 526" role="img" aria-labelledby="title desc">
   <title id="title">Два фильтра на одном изображении</title>
-  <desc id="desc">Верхний ряд: изображение с вертикальной границей, фильтр А с весами минус 1 слева и 1 справа, карта со строками 0, 2, 0. Нижний ряд: то же изображение, фильтр Б с весами минус 1 сверху и 1 снизу, карта из нулей</desc>
+  <desc id="desc">Два ряда. В каждом изображение 4 на 4, фильтр 2 на 2 и карта 3 на 3. Фильтр А даёт строки 0,2,0, фильтр Б — нули.</desc>
   <style id="handbook-style">
 :root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
 @media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
@@ -27,416 +27,67 @@ text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
       <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
     </marker>
   </defs>
-  <defs>
-    <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
-  </defs>
-  <g id="figure_1">
-    <g id="patch_1">
-      <path d="M 0 312.9815  L 435.801171 312.9815  L 435.801171 0  L 0 0  L 0 312.9815  z " style="fill: none" />
-    </g>
-    <g id="axes_1">
-      <g id="patch_2">
-        <path d="M 13.614664 25.867862  L 41.421902 25.867862  L 41.421902 53.6751  L 13.614664 53.6751  z " clip-path="url(#p6659a101af)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_3">
-        <path d="M 41.421902 25.867862  L 69.229141 25.867862  L 69.229141 53.6751  L 41.421902 53.6751  z " clip-path="url(#p6659a101af)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_4">
-        <path d="M 69.229141 25.867862  L 97.036379 25.867862  L 97.036379 53.6751  L 69.229141 53.6751  z " clip-path="url(#p6659a101af)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_5">
-        <path d="M 97.036379 25.867862  L 124.843617 25.867862  L 124.843617 53.6751  L 97.036379 53.6751  z " clip-path="url(#p6659a101af)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_6">
-        <path d="M 13.614664 53.6751  L 41.421902 53.6751  L 41.421902 81.482339  L 13.614664 81.482339  z " clip-path="url(#p6659a101af)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_7">
-        <path d="M 41.421902 53.6751  L 69.229141 53.6751  L 69.229141 81.482339  L 41.421902 81.482339  z " clip-path="url(#p6659a101af)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_8">
-        <path d="M 69.229141 53.6751  L 97.036379 53.6751  L 97.036379 81.482339  L 69.229141 81.482339  z " clip-path="url(#p6659a101af)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_9">
-        <path d="M 97.036379 53.6751  L 124.843617 53.6751  L 124.843617 81.482339  L 97.036379 81.482339  z " clip-path="url(#p6659a101af)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_10">
-        <path d="M 13.614664 81.482339  L 41.421902 81.482339  L 41.421902 109.289577  L 13.614664 109.289577  z " clip-path="url(#p6659a101af)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_11">
-        <path d="M 41.421902 81.482339  L 69.229141 81.482339  L 69.229141 109.289577  L 41.421902 109.289577  z " clip-path="url(#p6659a101af)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_12">
-        <path d="M 69.229141 81.482339  L 97.036379 81.482339  L 97.036379 109.289577  L 69.229141 109.289577  z " clip-path="url(#p6659a101af)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_13">
-        <path d="M 97.036379 81.482339  L 124.843617 81.482339  L 124.843617 109.289577  L 97.036379 109.289577  z " clip-path="url(#p6659a101af)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_14">
-        <path d="M 13.614664 109.289577  L 41.421902 109.289577  L 41.421902 137.096815  L 13.614664 137.096815  z " clip-path="url(#p6659a101af)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_15">
-        <path d="M 41.421902 109.289577  L 69.229141 109.289577  L 69.229141 137.096815  L 41.421902 137.096815  z " clip-path="url(#p6659a101af)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_16">
-        <path d="M 69.229141 109.289577  L 97.036379 109.289577  L 97.036379 137.096815  L 69.229141 137.096815  z " clip-path="url(#p6659a101af)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_17">
-        <path d="M 97.036379 109.289577  L 124.843617 109.289577  L 124.843617 137.096815  L 97.036379 137.096815  z " clip-path="url(#p6659a101af)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="text_1">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="27.518283" y="43.082731" transform="rotate(-0 27.518283 43.082731)">0</text>
-   </g>
-      <g id="text_2">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="55.325521" y="43.082731" transform="rotate(-0 55.325521 43.082731)">0</text>
-   </g>
-      <g id="text_3">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="83.13276" y="43.082731" transform="rotate(-0 83.13276 43.082731)">1</text>
-   </g>
-      <g id="text_4">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="110.939998" y="43.082731" transform="rotate(-0 110.939998 43.082731)">1</text>
-   </g>
-      <g id="text_5">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="27.518283" y="70.88997" transform="rotate(-0 27.518283 70.88997)">0</text>
-   </g>
-      <g id="text_6">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="55.325521" y="70.88997" transform="rotate(-0 55.325521 70.88997)">0</text>
-   </g>
-      <g id="text_7">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="83.13276" y="70.88997" transform="rotate(-0 83.13276 70.88997)">1</text>
-   </g>
-      <g id="text_8">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="110.939998" y="70.88997" transform="rotate(-0 110.939998 70.88997)">1</text>
-   </g>
-      <g id="text_9">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="27.518283" y="98.697208" transform="rotate(-0 27.518283 98.697208)">0</text>
-   </g>
-      <g id="text_10">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="55.325521" y="98.697208" transform="rotate(-0 55.325521 98.697208)">0</text>
-   </g>
-      <g id="text_11">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="83.13276" y="98.697208" transform="rotate(-0 83.13276 98.697208)">1</text>
-   </g>
-      <g id="text_12">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="110.939998" y="98.697208" transform="rotate(-0 110.939998 98.697208)">1</text>
-   </g>
-      <g id="text_13">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="27.518283" y="126.504446" transform="rotate(-0 27.518283 126.504446)">0</text>
-   </g>
-      <g id="text_14">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="55.325521" y="126.504446" transform="rotate(-0 55.325521 126.504446)">0</text>
-   </g>
-      <g id="text_15">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="83.13276" y="126.504446" transform="rotate(-0 83.13276 126.504446)">1</text>
-   </g>
-      <g id="text_16">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="110.939998" y="126.504446" transform="rotate(-0 110.939998 126.504446)">1</text>
-   </g>
-      <g id="text_17">
-        <text style="fill: var(--blue); font: 700 11px 'DejaVu Sans'; text-anchor: middle" x="69.229141" y="14.4775" transform="rotate(-0 69.229141 14.4775)">Изображение</text>
-   </g>
-    </g>
-    <g id="axes_2">
-      <g id="patch_18">
-        <path d="M 188.575811 44.022618  L 226.035532 44.022618  L 226.035532 81.482339  L 188.575811 81.482339  z " clip-path="url(#pb77f75837e)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_19">
-        <path d="M 226.035532 44.022618  L 263.495252 44.022618  L 263.495252 81.482339  L 226.035532 81.482339  z " clip-path="url(#pb77f75837e)" style="fill: var(--purple); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_20">
-        <path d="M 188.575811 81.482339  L 226.035532 81.482339  L 226.035532 118.942059  L 188.575811 118.942059  z " clip-path="url(#pb77f75837e)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_21">
-        <path d="M 226.035532 81.482339  L 263.495252 81.482339  L 263.495252 118.942059  L 226.035532 118.942059  z " clip-path="url(#pb77f75837e)" style="fill: var(--purple); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="text_18">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="207.305671" y="66.063728" transform="rotate(-0 207.305671 66.063728)">-1</text>
-   </g>
-      <g id="text_19">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="244.765392" y="66.063728" transform="rotate(-0 244.765392 66.063728)">1</text>
-   </g>
-      <g id="text_20">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="207.305671" y="103.523449" transform="rotate(-0 207.305671 103.523449)">-1</text>
-   </g>
-      <g id="text_21">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="244.765392" y="103.523449" transform="rotate(-0 244.765392 103.523449)">1</text>
-   </g>
-      <g id="text_22">
-        <text style="fill: var(--blue); font: 22px 'DejaVu Sans'; text-anchor: start" x="274.808088" y="87.552964" transform="rotate(-0 274.808088 87.552964)">→</text>
-   </g>
-      <g id="text_23">
-        <text style="fill: var(--blue); font: 700 11px 'DejaVu Sans'; text-anchor: middle" x="226.035532" y="32.149632" transform="rotate(-0 226.035532 32.149632)">Фильтр А</text>
-   </g>
-    </g>
-    <g id="axes_3">
-      <g id="patch_22">
-        <path d="M 326.845682 30.730459  L 360.680268 30.730459  L 360.680268 64.565045  L 326.845682 64.565045  z " clip-path="url(#p367858bccf)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_23">
-        <path d="M 360.680268 30.730459  L 394.514855 30.730459  L 394.514855 64.565045  L 360.680268 64.565045  z " clip-path="url(#p367858bccf)" style="fill: var(--purple); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_24">
-        <path d="M 394.514855 30.730459  L 428.349441 30.730459  L 428.349441 64.565045  L 394.514855 64.565045  z " clip-path="url(#p367858bccf)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_25">
-        <path d="M 326.845682 64.565045  L 360.680268 64.565045  L 360.680268 98.399632  L 326.845682 98.399632  z " clip-path="url(#p367858bccf)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_26">
-        <path d="M 360.680268 64.565045  L 394.514855 64.565045  L 394.514855 98.399632  L 360.680268 98.399632  z " clip-path="url(#p367858bccf)" style="fill: var(--purple); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_27">
-        <path d="M 394.514855 64.565045  L 428.349441 64.565045  L 428.349441 98.399632  L 394.514855 98.399632  z " clip-path="url(#p367858bccf)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_28">
-        <path d="M 326.845682 98.399632  L 360.680268 98.399632  L 360.680268 132.234218  L 326.845682 132.234218  z " clip-path="url(#p367858bccf)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_29">
-        <path d="M 360.680268 98.399632  L 394.514855 98.399632  L 394.514855 132.234218  L 360.680268 132.234218  z " clip-path="url(#p367858bccf)" style="fill: var(--purple); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_30">
-        <path d="M 394.514855 98.399632  L 428.349441 98.399632  L 428.349441 132.234218  L 394.514855 132.234218  z " clip-path="url(#p367858bccf)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="text_24">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="343.762975" y="50.959002" transform="rotate(-0 343.762975 50.959002)">0</text>
-   </g>
-      <g id="text_25">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="377.597562" y="50.959002" transform="rotate(-0 377.597562 50.959002)">2</text>
-   </g>
-      <g id="text_26">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="411.432148" y="50.959002" transform="rotate(-0 411.432148 50.959002)">0</text>
-   </g>
-      <g id="text_27">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="343.762975" y="84.793589" transform="rotate(-0 343.762975 84.793589)">0</text>
-   </g>
-      <g id="text_28">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="377.597562" y="84.793589" transform="rotate(-0 377.597562 84.793589)">2</text>
-   </g>
-      <g id="text_29">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="411.432148" y="84.793589" transform="rotate(-0 411.432148 84.793589)">0</text>
-   </g>
-      <g id="text_30">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="343.762975" y="118.628175" transform="rotate(-0 343.762975 118.628175)">0</text>
-   </g>
-      <g id="text_31">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="377.597562" y="118.628175" transform="rotate(-0 377.597562 118.628175)">2</text>
-   </g>
-      <g id="text_32">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="411.432148" y="118.628175" transform="rotate(-0 411.432148 118.628175)">0</text>
-   </g>
-      <g id="text_33">
-        <text style="fill: var(--blue); font: 700 11px 'DejaVu Sans'; text-anchor: middle" x="377.597562" y="19.03873" transform="rotate(-0 377.597562 19.03873)">Карта А</text>
-   </g>
-    </g>
-    <g id="axes_4">
-      <g id="patch_31">
-        <path d="M 13.614664 194.602185  L 41.421902 194.602185  L 41.421902 222.409423  L 13.614664 222.409423  z " clip-path="url(#pff9da94c4a)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_32">
-        <path d="M 41.421902 194.602185  L 69.229141 194.602185  L 69.229141 222.409423  L 41.421902 222.409423  z " clip-path="url(#pff9da94c4a)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_33">
-        <path d="M 69.229141 194.602185  L 97.036379 194.602185  L 97.036379 222.409423  L 69.229141 222.409423  z " clip-path="url(#pff9da94c4a)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_34">
-        <path d="M 97.036379 194.602185  L 124.843617 194.602185  L 124.843617 222.409423  L 97.036379 222.409423  z " clip-path="url(#pff9da94c4a)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_35">
-        <path d="M 13.614664 222.409423  L 41.421902 222.409423  L 41.421902 250.216661  L 13.614664 250.216661  z " clip-path="url(#pff9da94c4a)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_36">
-        <path d="M 41.421902 222.409423  L 69.229141 222.409423  L 69.229141 250.216661  L 41.421902 250.216661  z " clip-path="url(#pff9da94c4a)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_37">
-        <path d="M 69.229141 222.409423  L 97.036379 222.409423  L 97.036379 250.216661  L 69.229141 250.216661  z " clip-path="url(#pff9da94c4a)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_38">
-        <path d="M 97.036379 222.409423  L 124.843617 222.409423  L 124.843617 250.216661  L 97.036379 250.216661  z " clip-path="url(#pff9da94c4a)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_39">
-        <path d="M 13.614664 250.216661  L 41.421902 250.216661  L 41.421902 278.0239  L 13.614664 278.0239  z " clip-path="url(#pff9da94c4a)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_40">
-        <path d="M 41.421902 250.216661  L 69.229141 250.216661  L 69.229141 278.0239  L 41.421902 278.0239  z " clip-path="url(#pff9da94c4a)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_41">
-        <path d="M 69.229141 250.216661  L 97.036379 250.216661  L 97.036379 278.0239  L 69.229141 278.0239  z " clip-path="url(#pff9da94c4a)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_42">
-        <path d="M 97.036379 250.216661  L 124.843617 250.216661  L 124.843617 278.0239  L 97.036379 278.0239  z " clip-path="url(#pff9da94c4a)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_43">
-        <path d="M 13.614664 278.0239  L 41.421902 278.0239  L 41.421902 305.831138  L 13.614664 305.831138  z " clip-path="url(#pff9da94c4a)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_44">
-        <path d="M 41.421902 278.0239  L 69.229141 278.0239  L 69.229141 305.831138  L 41.421902 305.831138  z " clip-path="url(#pff9da94c4a)" style="fill: var(--blue-bg); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_45">
-        <path d="M 69.229141 278.0239  L 97.036379 278.0239  L 97.036379 305.831138  L 69.229141 305.831138  z " clip-path="url(#pff9da94c4a)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_46">
-        <path d="M 97.036379 278.0239  L 124.843617 278.0239  L 124.843617 305.831138  L 97.036379 305.831138  z " clip-path="url(#pff9da94c4a)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="text_34">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="27.518283" y="211.817054" transform="rotate(-0 27.518283 211.817054)">0</text>
-   </g>
-      <g id="text_35">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="55.325521" y="211.817054" transform="rotate(-0 55.325521 211.817054)">0</text>
-   </g>
-      <g id="text_36">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="83.13276" y="211.817054" transform="rotate(-0 83.13276 211.817054)">1</text>
-   </g>
-      <g id="text_37">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="110.939998" y="211.817054" transform="rotate(-0 110.939998 211.817054)">1</text>
-   </g>
-      <g id="text_38">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="27.518283" y="239.624292" transform="rotate(-0 27.518283 239.624292)">0</text>
-   </g>
-      <g id="text_39">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="55.325521" y="239.624292" transform="rotate(-0 55.325521 239.624292)">0</text>
-   </g>
-      <g id="text_40">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="83.13276" y="239.624292" transform="rotate(-0 83.13276 239.624292)">1</text>
-   </g>
-      <g id="text_41">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="110.939998" y="239.624292" transform="rotate(-0 110.939998 239.624292)">1</text>
-   </g>
-      <g id="text_42">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="27.518283" y="267.43153" transform="rotate(-0 27.518283 267.43153)">0</text>
-   </g>
-      <g id="text_43">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="55.325521" y="267.43153" transform="rotate(-0 55.325521 267.43153)">0</text>
-   </g>
-      <g id="text_44">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="83.13276" y="267.43153" transform="rotate(-0 83.13276 267.43153)">1</text>
-   </g>
-      <g id="text_45">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="110.939998" y="267.43153" transform="rotate(-0 110.939998 267.43153)">1</text>
-   </g>
-      <g id="text_46">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="27.518283" y="295.238769" transform="rotate(-0 27.518283 295.238769)">0</text>
-   </g>
-      <g id="text_47">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="55.325521" y="295.238769" transform="rotate(-0 55.325521 295.238769)">0</text>
-   </g>
-      <g id="text_48">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="83.13276" y="295.238769" transform="rotate(-0 83.13276 295.238769)">1</text>
-   </g>
-      <g id="text_49">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="110.939998" y="295.238769" transform="rotate(-0 110.939998 295.238769)">1</text>
-   </g>
-      <g id="text_50">
-        <text style="fill: var(--blue); font: 700 11px 'DejaVu Sans'; text-anchor: middle" x="69.229141" y="183.211823" transform="rotate(-0 69.229141 183.211823)">То же изображение</text>
-   </g>
-    </g>
-    <g id="axes_5">
-      <g id="patch_47">
-        <path d="M 188.575811 212.756941  L 226.035532 212.756941  L 226.035532 250.216661  L 188.575811 250.216661  z " clip-path="url(#p4ec5aae275)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_48">
-        <path d="M 226.035532 212.756941  L 263.495252 212.756941  L 263.495252 250.216661  L 226.035532 250.216661  z " clip-path="url(#p4ec5aae275)" style="fill: var(--orange); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_49">
-        <path d="M 188.575811 250.216661  L 226.035532 250.216661  L 226.035532 287.676382  L 188.575811 287.676382  z " clip-path="url(#p4ec5aae275)" style="fill: var(--purple); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_50">
-        <path d="M 226.035532 250.216661  L 263.495252 250.216661  L 263.495252 287.676382  L 226.035532 287.676382  z " clip-path="url(#p4ec5aae275)" style="fill: var(--purple); stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="text_51">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="207.305671" y="234.798051" transform="rotate(-0 207.305671 234.798051)">-1</text>
-   </g>
-      <g id="text_52">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="244.765392" y="234.798051" transform="rotate(-0 244.765392 234.798051)">-1</text>
-   </g>
-      <g id="text_53">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="207.305671" y="272.257772" transform="rotate(-0 207.305671 272.257772)">1</text>
-   </g>
-      <g id="text_54">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="244.765392" y="272.257772" transform="rotate(-0 244.765392 272.257772)">1</text>
-   </g>
-      <g id="text_55">
-        <text style="fill: var(--blue); font: 22px 'DejaVu Sans'; text-anchor: start" x="274.808088" y="256.287286" transform="rotate(-0 274.808088 256.287286)">→</text>
-   </g>
-      <g id="text_56">
-        <text style="fill: var(--blue); font: 700 11px 'DejaVu Sans'; text-anchor: middle" x="226.035532" y="200.883955" transform="rotate(-0 226.035532 200.883955)">Фильтр Б</text>
-   </g>
-    </g>
-    <g id="axes_6">
-      <g id="patch_51">
-        <path d="M 326.845682 199.464782  L 360.680268 199.464782  L 360.680268 233.299368  L 326.845682 233.299368  z " clip-path="url(#p18576db732)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_52">
-        <path d="M 360.680268 199.464782  L 394.514855 199.464782  L 394.514855 233.299368  L 360.680268 233.299368  z " clip-path="url(#p18576db732)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_53">
-        <path d="M 394.514855 199.464782  L 428.349441 199.464782  L 428.349441 233.299368  L 394.514855 233.299368  z " clip-path="url(#p18576db732)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_54">
-        <path d="M 326.845682 233.299368  L 360.680268 233.299368  L 360.680268 267.133955  L 326.845682 267.133955  z " clip-path="url(#p18576db732)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_55">
-        <path d="M 360.680268 233.299368  L 394.514855 233.299368  L 394.514855 267.133955  L 360.680268 267.133955  z " clip-path="url(#p18576db732)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_56">
-        <path d="M 394.514855 233.299368  L 428.349441 233.299368  L 428.349441 267.133955  L 394.514855 267.133955  z " clip-path="url(#p18576db732)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_57">
-        <path d="M 326.845682 267.133955  L 360.680268 267.133955  L 360.680268 300.968541  L 326.845682 300.968541  z " clip-path="url(#p18576db732)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_58">
-        <path d="M 360.680268 267.133955  L 394.514855 267.133955  L 394.514855 300.968541  L 360.680268 300.968541  z " clip-path="url(#p18576db732)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="patch_59">
-        <path d="M 394.514855 267.133955  L 428.349441 267.133955  L 428.349441 300.968541  L 394.514855 300.968541  z " clip-path="url(#p18576db732)" style="fill: #fdf3ce; stroke: var(--grid); stroke-width: 0.6; stroke-linejoin: miter" />
-      </g>
-      <g id="text_57">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="343.762975" y="219.693325" transform="rotate(-0 343.762975 219.693325)">0</text>
-   </g>
-      <g id="text_58">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="377.597562" y="219.693325" transform="rotate(-0 377.597562 219.693325)">0</text>
-   </g>
-      <g id="text_59">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="411.432148" y="219.693325" transform="rotate(-0 411.432148 219.693325)">0</text>
-   </g>
-      <g id="text_60">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="343.762975" y="253.527911" transform="rotate(-0 343.762975 253.527911)">0</text>
-   </g>
-      <g id="text_61">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="377.597562" y="253.527911" transform="rotate(-0 377.597562 253.527911)">0</text>
-   </g>
-      <g id="text_62">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="411.432148" y="253.527911" transform="rotate(-0 411.432148 253.527911)">0</text>
-   </g>
-      <g id="text_63">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="343.762975" y="287.362498" transform="rotate(-0 343.762975 287.362498)">0</text>
-   </g>
-      <g id="text_64">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="377.597562" y="287.362498" transform="rotate(-0 377.597562 287.362498)">0</text>
-   </g>
-      <g id="text_65">
-        <text style=" font: 12px 'DejaVu Sans'; text-anchor: middle; fill: #1b2430; stroke: #ffffff; stroke-width: 0.4; paint-order: stroke; stroke-linejoin: round" x="411.432148" y="287.362498" transform="rotate(-0 411.432148 287.362498)">0</text>
-   </g>
-      <g id="text_66">
-        <text style="fill: var(--blue); font: 700 11px 'DejaVu Sans'; text-anchor: middle" x="377.597562" y="187.773052" transform="rotate(-0 377.597562 187.773052)">Карта Б</text>
-   </g>
-    </g>
-  </g>
-  <defs>
-    <clipPath id="p6659a101af">
-      <rect x="12.224302" y="24.4775" width="114.009677" height="114.009677" />
-    </clipPath>
-    <clipPath id="pb77f75837e">
-      <rect x="186.702825" y="42.149632" width="78.665414" height="78.665414" />
-    </clipPath>
-    <clipPath id="p367858bccf">
-      <rect x="325.153953" y="29.03873" width="104.887218" height="104.887218" />
-    </clipPath>
-    <clipPath id="pff9da94c4a">
-      <rect x="12.224302" y="193.211823" width="114.009677" height="114.009677" />
-    </clipPath>
-    <clipPath id="p4ec5aae275">
-      <rect x="186.702825" y="210.883955" width="78.665414" height="78.665414" />
-    </clipPath>
-    <clipPath id="p18576db732">
-      <rect x="325.153953" y="197.773052" width="104.887218" height="104.887218" />
-    </clipPath>
-  </defs>
+  <style>.value {font-size:22px} .caption {font-size:20px}</style>
+  <text x="96" y="32" text-anchor="middle" class="heading" fill="var(--blue)">Изображение</text><text x="280" y="32" text-anchor="middle" class="heading" fill="var(--blue)">Фильтр А</text><text x="474" y="32" text-anchor="middle" class="heading" fill="var(--blue)">Карта А</text><rect x="24" y="66" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="42.0" y="91.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="60" y="66" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="78.0" y="91.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="96" y="66" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114.0" y="91.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="132" y="66" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="150.0" y="91.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="24" y="102" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="42.0" y="127.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="60" y="102" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="78.0" y="127.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="96" y="102" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114.0" y="127.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="132" y="102" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="150.0" y="127.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="24" y="138" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="42.0" y="163.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="60" y="138" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="78.0" y="163.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="96" y="138" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114.0" y="163.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="132" y="138" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="150.0" y="163.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="24" y="174" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="42.0" y="199.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="60" y="174" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="78.0" y="199.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="96" y="174" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114.0" y="199.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="132" y="174" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="150.0" y="199.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="232" y="90" width="48" height="48" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="256.0" y="121.0" text-anchor="middle" class="value" fill="var(--paper)">−1</text><rect x="280" y="90" width="48" height="48" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <text x="304.0" y="121.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="232" y="138" width="48" height="48" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="256.0" y="169.0" text-anchor="middle" class="value" fill="var(--paper)">−1</text><rect x="280" y="138" width="48" height="48" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <text x="304.0" y="169.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="408" y="72" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="430.0" y="101.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="452" y="72" width="44" height="44" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <text x="474.0" y="101.0" text-anchor="middle" class="value" fill="var(--paper)">2</text><rect x="496" y="72" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="518.0" y="101.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="408" y="116" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="430.0" y="145.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="452" y="116" width="44" height="44" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <text x="474.0" y="145.0" text-anchor="middle" class="value" fill="var(--paper)">2</text><rect x="496" y="116" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="518.0" y="145.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="408" y="160" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="430.0" y="189.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="452" y="160" width="44" height="44" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <text x="474.0" y="189.0" text-anchor="middle" class="value" fill="var(--paper)">2</text><rect x="496" y="160" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="518.0" y="189.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><path d="M182 138L214 138" class="flow" />
+  <path d="M348 138L388 138" class="flow" />
+  <text x="96" y="286" text-anchor="middle" class="heading" fill="var(--blue)">То же</text><text x="96" y="312" text-anchor="middle" class="heading" fill="var(--blue)">изображение</text><text x="280" y="306" text-anchor="middle" class="heading" fill="var(--blue)">Фильтр Б</text><text x="474" y="306" text-anchor="middle" class="heading" fill="var(--blue)">Карта Б</text><rect x="24" y="340" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="42.0" y="365.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="60" y="340" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="78.0" y="365.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="96" y="340" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114.0" y="365.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="132" y="340" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="150.0" y="365.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="24" y="376" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="42.0" y="401.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="60" y="376" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="78.0" y="401.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="96" y="376" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114.0" y="401.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="132" y="376" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="150.0" y="401.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="24" y="412" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="42.0" y="437.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="60" y="412" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="78.0" y="437.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="96" y="412" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114.0" y="437.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="132" y="412" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="150.0" y="437.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="24" y="448" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="42.0" y="473.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="60" y="448" width="36" height="36" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="78.0" y="473.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="96" y="448" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114.0" y="473.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="132" y="448" width="36" height="36" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="150.0" y="473.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="232" y="364" width="48" height="48" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="256.0" y="395.0" text-anchor="middle" class="value" fill="var(--paper)">−1</text><rect x="280" y="364" width="48" height="48" fill="var(--orange)" stroke="var(--edge)" stroke-width="1" />
+  <text x="304.0" y="395.0" text-anchor="middle" class="value" fill="var(--paper)">−1</text><rect x="232" y="412" width="48" height="48" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <text x="256.0" y="443.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="280" y="412" width="48" height="48" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <text x="304.0" y="443.0" text-anchor="middle" class="value" fill="var(--paper)">1</text><rect x="408" y="346" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="430.0" y="375.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="452" y="346" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="474.0" y="375.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="496" y="346" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="518.0" y="375.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="408" y="390" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="430.0" y="419.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="452" y="390" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="474.0" y="419.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="496" y="390" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="518.0" y="419.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="408" y="434" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="430.0" y="463.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="452" y="434" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="474.0" y="463.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><rect x="496" y="434" width="44" height="44" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="518.0" y="463.0" text-anchor="middle" class="value" fill="var(--ink)">0</text><path d="M182 412L214 412" class="flow" />
+  <path d="M348 412L388 412" class="flow" />
 </svg>

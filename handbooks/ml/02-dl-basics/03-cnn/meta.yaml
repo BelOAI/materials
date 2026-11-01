@@ -12,7 +12,7 @@ references:
   adaptation: Базовая последовательность объяснения; без обзора архитектур и продвинутой математики. Текст и схемы созданы заново.
 - label: Яндекс — Область видимости свёрток (иллюстрация)
   url: https://contest.yandex.ru/tracks/ml/_assets/deep-learning-architectures/convolutional-neural-networks/16_receptive_field_fbd1c12519_af58719882_dc46e45295-framed.svg
-  adaptation: Рисунок 8 заменён оригинальной иллюстрацией по ссылке пользователя. Геометрия, надписи и встроенное изображение сохранены; добавлены доступное описание и общий служебный блок SVG.
+  adaptation: Рисунок 8 основан на указанной пользователем иллюстрации Яндекса. Исходная схема и встроенное изображение сохранены; подписи увеличены и набраны векторным текстом для чтения на узком экране и в печати.
 - label: Dive into Deep Learning — Convolutions for Images
   url: https://d2l.ai/chapter_convolutional-neural-networks/conv-layer.html
   adaptation: Проверка терминов свёртки и корреляции; собственный числовой пример границы.
@@ -33,3 +33,5 @@ sync_notebook: false
 resources:
 - path: notebook.ipynb
   label: Вычисления и задания на Python (.ipynb)
+- path: generate_figures.py
+  label: Исходник рисунков 1–7 (.py)

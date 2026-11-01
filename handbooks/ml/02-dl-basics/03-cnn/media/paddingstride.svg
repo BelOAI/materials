@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="560" height="744" viewBox="0 0 560 744" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="766" viewBox="0 0 560 766" role="img" aria-labelledby="title desc">
   <title id="title">Дополнение нулями и шаг фильтра</title>
-  <desc id="desc">Три случая для изображения 5 на 5 и окна 3 на 3. Без дополнения при шаге 1 карта имеет размер 3 на 3. Рамка из нулей толщиной в одну клетку даёт карту 5 на 5. Без дополнения при шаге 2 получается карта 2 на 2. На входах выделено первое положение окна.</desc>
+  <desc id="desc">Изображение 5 на 5 и окно 3 на 3: без рамки, шаг 1, карта 3 на 3; с рамкой нулей, шаг 1, карта 5 на 5; без рамки, шаг 2, карта 2 на 2.</desc>
   <style id="handbook-style">
 :root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
 @media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
@@ -27,152 +27,148 @@ text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
       <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
     </marker>
   </defs>
-  <text x="280" y="29" text-anchor="middle" class="heading">Без дополнения: шаг 1</text><rect x="81" y="52" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="52" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="52" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="52" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="52" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="74" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="74" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="74" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="74" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="74" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="96" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="96" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="96" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="96" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="96" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="118" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="118" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="118" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="118" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="118" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="140" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="140" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="140" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="140" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="140" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="52" width="66" height="66" fill="none" stroke="var(--purple)" stroke-width="3" />
-  <rect x="377" y="90" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="399" y="90" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="421" y="90" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="377" y="112" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="399" y="112" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="421" y="112" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="377" y="134" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="399" y="134" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="421" y="134" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="377" y="90" width="22" height="22" fill="var(--purple)" />
-  <path d="M250 115H316" class="flow" />
-  <text x="136" y="226" text-anchor="middle" class="small">Изображение 5 × 5</text><text x="410" y="226" text-anchor="middle" class="small">Карта 3 × 3</text><text x="280" y="170" text-anchor="middle" class="small">Окно 3 × 3</text><path d="M24 246H536" stroke="var(--grid)" />
-  <text x="280" y="277" text-anchor="middle" class="heading">Рамка из нулей: шаг 1</text><rect x="59" y="300" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="70" y="316" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="81" y="300" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="92" y="316" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="103" y="300" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="114" y="316" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="125" y="300" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="136" y="316" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="147" y="300" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="158" y="316" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="169" y="300" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="180" y="316" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="191" y="300" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="202" y="316" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="59" y="322" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="70" y="338" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="81" y="322" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="322" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="322" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="322" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="322" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="191" y="322" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="202" y="338" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="59" y="344" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="70" y="360" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="81" y="344" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="344" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="344" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="344" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="344" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="191" y="344" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="202" y="360" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="59" y="366" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="70" y="382" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="81" y="366" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="366" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="366" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="366" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="366" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="191" y="366" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="202" y="382" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="59" y="388" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="70" y="404" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="81" y="388" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="388" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="388" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="388" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="388" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="191" y="388" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="202" y="404" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="59" y="410" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="70" y="426" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="81" y="410" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="410" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="410" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="410" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="410" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="191" y="410" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="202" y="426" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="59" y="432" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="70" y="448" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="81" y="432" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="92" y="448" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="103" y="432" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="114" y="448" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="125" y="432" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="136" y="448" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="147" y="432" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="158" y="448" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="169" y="432" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="180" y="448" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="191" y="432" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" />
-  <text x="202" y="448" text-anchor="middle" class="orange" style="font-size:16px">0</text><rect x="59" y="300" width="66" height="66" fill="none" stroke="var(--purple)" stroke-width="3" />
-  <rect x="355" y="338" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="377" y="338" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="399" y="338" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="421" y="338" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="443" y="338" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="355" y="360" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="377" y="360" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="399" y="360" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="421" y="360" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="443" y="360" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="355" y="382" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="377" y="382" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="399" y="382" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="421" y="382" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="443" y="382" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="355" y="404" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="377" y="404" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="399" y="404" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="421" y="404" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="443" y="404" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="355" y="426" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="377" y="426" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="399" y="426" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="421" y="426" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="443" y="426" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="355" y="338" width="22" height="22" fill="var(--purple)" />
-  <path d="M250 363H316" class="flow" />
-  <text x="136" y="474" text-anchor="middle" class="small">Рамка вокруг изображения 5 × 5</text><text x="410" y="474" text-anchor="middle" class="small">Карта 5 × 5</text><text x="280" y="418" text-anchor="middle" class="small">Окно 3 × 3</text><path d="M24 494H536" stroke="var(--grid)" />
-  <text x="280" y="525" text-anchor="middle" class="heading">Без дополнения: шаг 2</text><rect x="81" y="548" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="548" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="548" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="548" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="548" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="570" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="570" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="570" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="570" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="570" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="592" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="592" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="592" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="592" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="592" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="614" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="614" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="614" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="614" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="614" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="636" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="103" y="636" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="125" y="636" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="147" y="636" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="169" y="636" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" />
-  <rect x="81" y="548" width="66" height="66" fill="none" stroke="var(--purple)" stroke-width="3" />
-  <rect x="388" y="586" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="410" y="586" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="388" y="608" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="410" y="608" width="22" height="22" fill="var(--purple-bg)" stroke="var(--edge)" />
-  <rect x="388" y="586" width="22" height="22" fill="var(--purple)" />
-  <path d="M250 611H316" class="flow" />
-  <text x="136" y="722" text-anchor="middle" class="small">Изображение 5 × 5</text><text x="410" y="722" text-anchor="middle" class="small">Карта 2 × 2</text><text x="280" y="666" text-anchor="middle" class="small">Окно 3 × 3</text></svg>
+  <style>.value {font-size:22px} .caption {font-size:20px}</style>
+  <text x="280" y="30" text-anchor="middle" class="heading" fill="var(--ink)">Без дополнения: шаг 1</text><rect x="81" y="54" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="54" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="54" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="54" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="54" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="76" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="76" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="76" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="76" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="76" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="98" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="98" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="98" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="98" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="98" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="120" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="120" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="120" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="120" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="120" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="142" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="142" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="142" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="142" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="142" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="54" width="66" height="66" fill="none" stroke="var(--purple)" stroke-width="3" />
+  <rect x="371" y="90" width="26" height="26" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="397" y="90" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="423" y="90" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="371" y="116" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="397" y="116" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="423" y="116" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="371" y="142" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="397" y="142" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="423" y="142" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <path d="M250 116L316 116" class="flow" />
+  <text x="280" y="176" text-anchor="middle" class="caption" fill="var(--ink)">Окно 3 × 3</text><text x="136" y="214" text-anchor="middle" class="caption" fill="var(--ink)">Изображение 5 × 5</text><text x="410" y="214" text-anchor="middle" class="caption" fill="var(--ink)">Карта 3 × 3</text><text x="280" y="266" text-anchor="middle" class="heading" fill="var(--ink)">Рамка из нулей: шаг 1</text><rect x="59" y="290" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="70" y="308" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="81" y="290" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="92" y="308" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="103" y="290" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114" y="308" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="125" y="290" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="136" y="308" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="147" y="290" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="158" y="308" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="169" y="290" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="180" y="308" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="191" y="290" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="202" y="308" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="59" y="312" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="70" y="330" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="81" y="312" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="312" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="312" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="312" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="312" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="191" y="312" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="202" y="330" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="59" y="334" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="70" y="352" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="81" y="334" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="334" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="334" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="334" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="334" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="191" y="334" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="202" y="352" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="59" y="356" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="70" y="374" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="81" y="356" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="356" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="356" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="356" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="356" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="191" y="356" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="202" y="374" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="59" y="378" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="70" y="396" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="81" y="378" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="378" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="378" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="378" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="378" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="191" y="378" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="202" y="396" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="59" y="400" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="70" y="418" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="81" y="400" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="400" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="400" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="400" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="400" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="191" y="400" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="202" y="418" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="59" y="422" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="70" y="440" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="81" y="422" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="92" y="440" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="103" y="422" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="114" y="440" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="125" y="422" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="136" y="440" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="147" y="422" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="158" y="440" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="169" y="422" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="180" y="440" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="191" y="422" width="22" height="22" fill="var(--orange-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="202" y="440" text-anchor="middle" class="value" fill="var(--orange)">0</text><rect x="59" y="290" width="66" height="66" fill="none" stroke="var(--purple)" stroke-width="3" />
+  <rect x="345" y="326" width="26" height="26" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="371" y="326" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="397" y="326" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="423" y="326" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="449" y="326" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="345" y="352" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="371" y="352" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="397" y="352" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="423" y="352" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="449" y="352" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="345" y="378" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="371" y="378" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="397" y="378" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="423" y="378" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="449" y="378" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="345" y="404" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="371" y="404" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="397" y="404" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="423" y="404" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="449" y="404" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="345" y="430" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="371" y="430" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="397" y="430" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="423" y="430" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="449" y="430" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <path d="M250 352L316 352" class="flow" />
+  <text x="280" y="412" text-anchor="middle" class="caption" fill="var(--ink)">Окно 3 × 3</text><text x="136" y="472" text-anchor="middle" class="caption" fill="var(--ink)">Изображение 5 × 5</text><text x="410" y="472" text-anchor="middle" class="caption" fill="var(--ink)">Карта 5 × 5</text><text x="136" y="498" text-anchor="middle" class="caption" fill="var(--ink)">с рамкой из нулей</text><text x="280" y="558" text-anchor="middle" class="heading" fill="var(--ink)">Без дополнения: шаг 2</text><rect x="81" y="582" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="582" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="582" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="582" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="582" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="604" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="604" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="604" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="604" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="604" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="626" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="626" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="626" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="626" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="626" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="648" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="648" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="648" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="648" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="648" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="670" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="103" y="670" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="125" y="670" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="147" y="670" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="169" y="670" width="22" height="22" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="81" y="582" width="66" height="66" fill="none" stroke="var(--purple)" stroke-width="3" />
+  <rect x="384" y="618" width="26" height="26" fill="var(--purple)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="410" y="618" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="384" y="644" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <rect x="410" y="644" width="26" height="26" fill="var(--purple-bg)" stroke="var(--edge)" stroke-width="1" />
+  <path d="M250 644L316 644" class="flow" />
+  <text x="280" y="704" text-anchor="middle" class="caption" fill="var(--ink)">Окно 3 × 3</text><text x="136" y="742" text-anchor="middle" class="caption" fill="var(--ink)">Изображение 5 × 5</text><text x="410" y="742" text-anchor="middle" class="caption" fill="var(--ink)">Карта 2 × 2</text></svg>
