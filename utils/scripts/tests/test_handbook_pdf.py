@@ -16,7 +16,8 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from handbook_catalog import load_catalog
 from authorship import contributors_markdown
-from handbook_pdf import build, documents, printable, source_revision
+from handbook_pdf import build, documents, editorial_layout, printable, separate_answers, source_revision, walk
+from handbook_publication import endmatter, frontmatter, read_publication
 from repo_paths import REPO_ROOT
 
 
@@ -29,6 +30,75 @@ def link(href):
 
 
 class HandbookPdfTests(unittest.TestCase):
+    def test_answer_sections_allow_any_question_count_and_absent_quiz(self):
+        prose = {'t': 'Para', 'c': [text('Обычный текст')]}
+        self.assertEqual(separate_answers([prose], 'synthetic'), ([prose], [], None))
+        # A numbered heading alone is ordinary prose, not a semantic quiz.
+        heading = {'t': 'Header', 'c': [3, ['q1', [], []], [text('1.')]]}
+        self.assertEqual(separate_answers([heading, prose], 'synthetic'), ([heading, prose], [], None))
+
+    def test_publication_pages_escape_text_and_only_include_confirmed_requisites(self):
+        book = self.root / 'handbooks/alpha'
+        data = self.publication(book)
+        title = r'Книга: 50% & {текст} \input{secret}'
+        pages = frontmatter(data, title)
+        ending = endmatter(data, title, ('synthetic-revision', '2025-01-02'), 'https://example.org/')
+        strings = [node['c'] for node in walk(pages + ending) if node.get('t') == 'Str']
+        self.assertIn(title, strings)
+        self.assertIn('Классификационные данные предварительные; требуется проверка библиографом.', strings)
+        for node in walk(pages + ending):
+            if node.get('t') == 'RawBlock':
+                self.assertNotIn(title, node['c'][1], 'Publication text must never be interpolated into raw TeX')
+                self.assertNotIn(data['annotation'], node['c'][1])
+        for key, label in [('publisher', 'Издатель'), ('place', 'Место издания'), ('year', 'Год издания'),
+                           ('isbn', 'ISBN'), ('reviewers', 'Рецензенты'), ('approval', 'Сведения об утверждении')]:
+            self.assertFalse(any(value.startswith(label + ':') for value in strings), key)
+        self.assertIn('Дата исходников: 2025-01-02', strings)
+        data.update(publisher=dict(value='Издатель & партнёры', source='Подтверждение'),
+                    place=dict(value='Проверенный город', source='Подтверждение'),
+                    year=dict(value='2024', source='Подтверждение'))
+        for entry in data['classification'].values():
+            entry['status'] = 'verified'
+        pages = frontmatter(data, title)
+        strings = [node['c'] for node in walk(pages) if node.get('t') == 'Str']
+        for key in ('publisher', 'place', 'year'):
+            self.assertIn(data[key]['value'], strings)
+        self.assertFalse(any('предварительные' in value for value in strings))
+
+    def test_editorial_breaks_inline_identifiers_and_long_math_chains(self):
+        for identifier in ('ExampleUserSetup', 'some_option_name', 'abcdefghijklmnopqr'):
+            node = {'t': 'Code', 'c': [['', [], []], identifier]}
+            original = deepcopy(node)
+            result = editorial_layout(node)
+            self.assertEqual(node, original)
+            parts = [item['c'][1] for item in result['c'][1] if item['t'] == 'Code']
+            self.assertEqual(''.join(parts), identifier)
+            self.assertLessEqual(max(map(len, parts)), 8)
+            self.assertTrue(any(item['t'] == 'RawInline' for item in result['c'][1]))
+        expression = r'F=\frac{' + '+'.join('x_i' for _ in range(30)) + r'}{n}=\frac{a+b}{n}=c'
+        node = {'t': 'Math', 'c': [{'t': 'DisplayMath'}, expression]}
+        result = editorial_layout(node)['c'][1]
+        self.assertTrue(result.startswith(r'\begin{aligned}'))
+        self.assertEqual(result.count(r'\\[3pt]'), 2)
+        restored = result.removeprefix(r'\begin{aligned}').removesuffix(r'\end{aligned}')
+        self.assertEqual(restored.replace(r'\\[3pt]', '').replace('&', ''), expression)
+        # Do not split relations inside braces or paired delimiters/environments.
+        for protected in [r'\left(' + expression + r'\right)',
+                          r'\begin{gathered}' + expression + r'\end{gathered}',
+                          r'F=\frac{\text{' + 'a=b' * 40 + r'}}{n}']:
+            node['c'][1] = protected
+            self.assertEqual(editorial_layout(node), node)
+
+    def publication(self, folder, **values):
+        data = dict(kind='Учебные материалы', status='Издательский макет', audience='Для читателей 15–18 лет.',
+                    annotation=r'Описание & 50% #1 {текст} \input{secret}', edition='Первая редакция',
+                    classification={key: dict(value=value, status='preliminary', rationale='Тематический подбор',
+                                             sources=['https://example.org/catalog'])
+                                    for key, value in [('udk', '004.8'), ('bbk', '32.8'), ('author_mark', 'Т12')]})
+        data.update(values)
+        (folder / 'publication.yml').write_text(yaml.safe_dump(data, allow_unicode=True))
+        return data
+
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
@@ -125,6 +195,37 @@ class HandbookPdfTests(unittest.TestCase):
         self.asts[old + '-changed'] = ast
         (folder / 'content.md').write_text(old + '-changed')
 
+    def test_explicit_feedback_is_grouped_for_book_chapter_and_paragraph(self):
+        def para(value):
+            return {'t': 'Para', 'c': [text(value)]}
+        def div(kind, body):
+            return {'t': 'Div', 'c': [['', ['handbook-' + kind], []], body]}
+        lesson = self.sources['alpha', 'first']
+        question = div('question', [para('Unique prompt'), div('choices', [para('Choices')]),
+                                   div('hint', [para('Unique hint')]), div('solution', [para('Unique explanation')])])
+        question['c'][0] = ['stable', ['handbook-question'], [['number', '1'], ['correct', 'B']]]
+        self.asts['alpha-first']['blocks'].append(question)
+        book = self.root / 'handbooks/alpha'
+        tail = book / '03-tail'
+        tail.mkdir()
+        self.metadata(tail, slug='tail', paragraphs=[])
+        self.source(tail, 'tail-body', [])
+        self.book_metadata(book, chapters=['07-section', '03-tail'])
+        self.build(selected=book)
+        relevant = [ast for ast in self.compiled if ast['meta']['handbook-level']['c'] in ('book', 'chapter', 'paragraph')
+                    and 'Unique prompt' in json.dumps(ast)]
+        self.assertEqual(len(relevant), 3)
+        for ast in relevant:
+            serialized = json.dumps(ast, ensure_ascii=False)
+            self.assertLess(serialized.index('Unique prompt'), serialized.index('Unique hint'))
+            self.assertIn('quiz--stable--hint', serialized)
+            self.assertIn('quiz--stable--solution', serialized)
+            self.assertIn('Подсказки и решения', serialized)
+            self.assertIn(r'Needspace{10', serialized)
+            self.assertIn('К вопросу', serialized)
+            if ast['meta']['handbook-level']['c'] == 'book':
+                self.assertLess(serialized.index('Unique explanation'), serialized.index('tail-body'))
+
     def test_shared_style_and_book_page_breaks(self):
         self.build()
         commands = [(cmd, kwargs) for cmd, kwargs in self.commands if '--pdf-engine=pdflatex' in cmd]
@@ -145,6 +246,81 @@ class HandbookPdfTests(unittest.TestCase):
         self.build()
         self.assertEqual(len(self.compiled), before + 8)
         self.assertEqual((self.parse_count, self.svg_count), (parse_count, svg_count))
+
+    def test_editorial_profile_isolated_outputs_cache_and_cleanup(self):
+        book = self.root / 'handbooks/alpha'
+        self.publication(book)
+        self.build(selected=book, book_only=True)
+        parsed, images = self.parse_count, self.svg_count
+        reader = self.output / 'alpha/handbook.pdf'
+        self.build(selected=book, book_only=True, profile='belarus-textbook')
+        pdf_commands = [command for command, _ in self.commands if '--pdf-engine=pdflatex' in command]
+        self.assertNotIn('indent:true', pdf_commands[-2], 'Reader must retain its paragraph style')
+        self.assertIn('indent:true', pdf_commands[-1], 'Pandoc must not load parskip in the book profile')
+        editorial = self.output / 'belarus-textbook/alpha/handbook.pdf'
+        self.assertTrue(reader.is_file())
+        self.assertTrue(editorial.is_file())
+        self.assertEqual((self.parse_count, self.svg_count), (parsed, images))
+        self.assertIn('компиляций: 0', self.build(selected=book, book_only=True, profile='belarus-textbook'))
+        ast = self.compiled[-1]
+        self.assertNotIn('subtitle', ast['meta'])
+        self.assertNotIn('Редакция:', json.dumps(ast['meta']['date'], ensure_ascii=False))
+        self.assertIn('предварительные', json.dumps(ast['meta']['include-before'], ensure_ascii=False))
+        self.assertIn('Редакция исходников:', json.dumps(ast['meta']['include-after'], ensure_ascii=False))
+        self.assertNotIn('ISBN:', json.dumps(ast, ensure_ascii=False))
+        annotation = read_publication(book)['annotation']
+        self.assertTrue(any(node == {'t': 'Str', 'c': annotation}
+                            for node in walk(ast)))
+        style = self.root / 'utils/latex/tex/latex/belarustextbook/belarustextbook.sty'
+        style.write_text(style.read_text() + '\n% alternate only\n')
+        self.assertIn('компиляций: 0', self.build(selected=book, book_only=True))
+        self.assertIn('компиляций: 1', self.build(selected=book, book_only=True, profile='belarus-textbook'))
+        self.publication(book, edition='Вторая редакция')
+        self.assertIn('компиляций: 0', self.build(selected=book, book_only=True))
+        self.assertIn('компиляций: 1', self.build(selected=book, book_only=True, profile='belarus-textbook'))
+        stale = editorial.parent / 'old/handbook.pdf'
+        stale.parent.mkdir()
+        stale.write_bytes(b'%PDF-stale')
+        self.build(selected=book, book_only=True, profile='belarus-textbook')
+        self.assertFalse(stale.exists())
+        self.build()
+        self.assertTrue(editorial.is_file(), 'Reader cleanup must preserve the other profile')
+
+    def test_editorial_selection_and_validation_before_cleanup(self):
+        book = self.root / 'handbooks/alpha'
+        for kwargs in [dict(profile='unknown'), dict(profile='belarus-textbook'),
+                       dict(profile='belarus-textbook', book_only=True, selected=self.sources['alpha', 'first'])]:
+            with self.assertRaises(ValueError):
+                self.build(**kwargs)
+        with self.assertRaisesRegex(ValueError, 'publication.yml'):
+            self.build(selected=book, book_only=True, profile='belarus-textbook')
+        self.assertFalse(self.output.exists())
+        self.publication(book)
+        custom = self.root / 'Другая папка/Макет.pdf'
+        self.build(selected=book, book_only=True, profile='belarus-textbook', output=custom)
+        self.assertTrue(custom.is_file())
+
+    def test_publication_metadata_validation(self):
+        book = self.root / 'handbooks/alpha'
+        self.publication(book, isbn=dict(value='978-0-306-40615-7', source='Письмо агентства'),
+                         year=dict(value='2026', source='Редактор'))
+        self.assertEqual(read_publication(book)['year']['value'], '2026')
+        for values in [dict(isbn=dict(value='978-0-306-40615-8', source='Письмо')),
+                       dict(publisher='Выдуманный издатель'), dict(year=dict(value='2026', source='')),
+                       dict(status='Утверждённый учебник'), dict(classification={}), dict(unknown='field')]:
+            self.publication(book, **values)
+            with self.subTest(values=values), self.assertRaises(ValueError):
+                read_publication(book)
+        path = book / 'publication.yml'
+        invalid = self.publication(book)
+        invalid['classification']['udk']['status'] = []
+        path.write_text(yaml.safe_dump(invalid, allow_unicode=True))
+        with self.assertRaisesRegex(ValueError, 'classification.udk'):
+            read_publication(book)
+        self.publication(book)
+        path.write_text(path.read_text() + '\nkind: Повтор\n')
+        with self.assertRaisesRegex(ValueError, 'Повтор'):
+            read_publication(book)
 
     def test_preface_author_metadata_updates_pdf_source_and_cache(self):
         folder = self.root / 'handbooks/alpha'

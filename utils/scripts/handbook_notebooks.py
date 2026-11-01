@@ -1,5 +1,6 @@
 """Синхронизация учебных ноутбуков с Markdown уроков: --write или --check."""
 from __future__ import annotations
+from handbook_blocks import parse as parse_blocks, markdown as block_markdown
 import argparse
 import base64
 import json
@@ -47,7 +48,8 @@ def render_notebook(title: str, text: str, assets: Path | None = None, authors=N
         solutions.append(match.group(1).strip())
         return ''
     text = re.sub(r'<details>\s*<summary>Решение</summary>\s*(.*?)\s*</details>', move, text, flags=re.S)
-    text += '\n\n## Решения задач\n\n' + ''.join(f'### Задача {i}\n\n{solution}\n\n' for i, solution in enumerate(solutions, 1))
+    text += ('\n\n## Решения задач\n\n' if solutions else '') + ''.join(f'### Задача {i}\n\n{solution}\n\n' for i, solution in enumerate(solutions, 1))
+    text = block_markdown(parse_blocks(text), target='notebook')
     cells = []
     def markdown(value):
         if value.strip():
@@ -101,18 +103,79 @@ def synchronize_authors(root: Path, write: bool = False) -> list[str]:
     return stale
 
 
+def update_markdown_cells(original, expected):
+    """Preserve executed code, notebook metadata and existing cell identities."""
+    old_code = [c for c in original['cells'] if c['cell_type'] == 'code']
+    new_code = [c for c in expected['cells'] if c['cell_type'] == 'code']
+    source = lambda c: ''.join(c['source']) if isinstance(c['source'], list) else c['source']
+    if [source(c) for c in old_code] != [source(c) for c in new_code]:
+        return expected  # Ordinary author-requested code synchronization retains its old contract.
+    result = deepcopy(original)
+    result['metadata'] = {**original.get('metadata', {}), **expected.get('metadata', {})}
+    old_markdown = iter(c for c in original['cells'] if c['cell_type'] == 'markdown')
+    code = iter(old_code)
+    cells = []
+    for cell in expected['cells']:
+        if cell['cell_type'] == 'code':
+            cells.append(deepcopy(next(code)))
+        else:
+            prior = next(old_markdown, {})
+            merged = {**deepcopy(prior), **deepcopy(cell)}
+            merged['metadata'] = deepcopy(prior.get('metadata', {}))
+            if prior.get('id'):
+                merged['id'] = prior['id']
+            if prior.get('attachments') or cell.get('attachments'):
+                merged['attachments'] = {**prior.get('attachments', {}), **cell.get('attachments', {})}
+            cells.append(merged)
+    used = set()
+    for i,cell in enumerate(cells):
+        cid = cell.get('id', f'cell-{i:03}')
+        while cid in used:
+            cid += '-md'
+        cell['id'] = cid
+        used.add(cid)
+    result['cells'] = cells
+    return result
+
+
+def update_semantic_cell(original, text):
+    """Refresh only the managed quiz in an otherwise manually authored notebook."""
+    tree = [node for node in parse_blocks(text) if node['kind'] == 'self-check']
+    result = deepcopy(original)
+    cell = next((c for c in result['cells'] if c.get('id') == 'handbook-self-check'), None)
+    if not tree:
+        if cell:
+            result['cells'].remove(cell)
+        return result
+    source = ('## Самопроверка\n\n' + block_markdown(tree, target='notebook')).splitlines(keepends=True)
+    if cell is None:
+        cell = dict(cell_type='markdown', id='handbook-self-check', metadata={})
+        result['cells'].append(cell)
+    cell['source'] = source
+    return result
+
+
 def synchronize(root: Path, write: bool = False) -> list[str]:
     from handbook_site import load_handbook
     book = load_handbook(root, allow_missing_synced=True)
     stale = []
     for item in book['_lessons'].values():
-        if item['status'] == 'planned' or not item.get('sync_notebook'):
+        if item['status'] == 'planned':
             continue
         resources = [r for r in item.get('resources', []) if r['path'] == 'notebook.ipynb']
+        if not resources and not item.get('sync_notebook'):
+            continue
         if not resources:
             raise ValueError(f"{item['id']}: sync_notebook требует ресурс notebook.ipynb")
-        expected = render_notebook(item['title'], item['_content'].read_text(), assets=item['_folder'], authors=item['authors'])
         destination = item['_folder'] / 'notebook.ipynb'
+        if item.get('sync_notebook'):
+            expected = render_notebook(item['title'], item['_content'].read_text(), assets=item['_folder'], authors=item['authors'])
+            if destination.is_file():
+                expected = update_markdown_cells(json.loads(destination.read_text()), expected)
+        elif destination.is_file():
+            expected = update_semantic_cell(json.loads(destination.read_text()), item['_content'].read_text())
+        else:
+            continue
         if not destination.is_file() or json.loads(destination.read_text()) != expected:
             stale.append(item['id'])
             if write:

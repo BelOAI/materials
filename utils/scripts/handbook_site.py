@@ -1,5 +1,6 @@
 """Каталог учебников, стабильные URL и общая оболочка сайта."""
 from __future__ import annotations
+from handbook_blocks import parse as parse_blocks
 import json
 import posixpath
 import re
@@ -153,8 +154,10 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     items = [landing, *handbooks, *book['_pages'], *book['_chapters'].values(), *book['_lessons'].values()]
     texts = [item for item in items if '_content' in item]
     result = subprocess.run(['node', str(source / 'utils/site/render-handbook.mjs')], input=json.dumps([
-        {'name': item['id'], 'source': expand_contributors(expand_authors(
-            item['_content'].read_text(encoding='utf-8'), item.get('_content_authors', item.get('authors')), html=True), item.get('_contributors', []))} for item in texts
+        {'name': item['id'], 'requireCaptions': True, 'source': text,
+         'blocks': parse_blocks(text, item['id'])} for item in texts
+        for text in [expand_contributors(expand_authors(item['_content'].read_text(encoding='utf-8'),
+            item.get('_content_authors', item.get('authors')), html=True), item.get('_contributors', []))]
     ]), text=True, capture_output=True, check=True)
     rendered = dict(zip((item['id'] for item in texts), json.loads(result.stdout)))
     shutil.rmtree(output / 'handbooks', ignore_errors=True)
@@ -162,6 +165,9 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     shutil.copytree(katex / 'dist/fonts', output / 'assets/katex/fonts', dirs_exist_ok=True)
     shutil.copyfile(katex / 'dist/katex.min.css', output / 'assets/katex/katex.min.css')
     shutil.copyfile(katex / 'LICENSE', output / 'assets/katex/LICENSE')
+
+    if (source / 'utils/site/icons').is_dir():
+        shutil.copytree(source / 'utils/site/icons', output / 'assets/handbook-icons', dirs_exist_ok=True)
 
     def title(section):
         handbook = next(h for h in handbooks if section['id'].startswith(h['id'] + '/'))
@@ -259,6 +265,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
                                 source / 'utils/site/src/site.css', Path(__file__),
                                 Path(__file__).with_name('handbook_catalog.py')]
                 dependencies += [Path(__file__).with_name('handbook_notebooks.py'),
+                                 Path(__file__).with_name('handbook_blocks.py'),
                                  Path(__file__).with_name('authorship.py')]
                 dependencies += [p for d in ('media', 'data') for p in (folder / d).rglob('*') if p.is_file() and not any(part.startswith(('_', '.')) for part in p.relative_to(folder).parts)]
                 if export_notebook(target, dependencies=dependencies):

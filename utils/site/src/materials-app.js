@@ -12,3 +12,5 @@ customElements.define("material-preview", MaterialPreview);
 
 import { LectureViewer } from "./lecture-viewer.js";
 customElements.define("lecture-viewer", LectureViewer);
+
+import './handbook-quiz.js';

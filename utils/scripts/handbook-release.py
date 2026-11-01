@@ -13,7 +13,8 @@ spec = importlib.util.spec_from_file_location('assemble_pages', Path(__file__).w
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 api, pages = module.api, module.pages
-ASSETS = ('beloai-ml-handbook.pdf', 'SHA256SUMS')
+PDF_ASSETS = ('beloai-ml-handbook.pdf', 'beloai-ml-handbook-belarus-textbook.pdf')
+ASSETS = (*PDF_ASSETS, 'SHA256SUMS')
 
 
 def version(tag):
@@ -43,14 +44,24 @@ def validate_ref(ref, sha):
 
 
 def verify_assets(folder):
-    pdf = folder / ASSETS[0]
-    expected = f'{hashlib.sha256(pdf.read_bytes()).hexdigest()}  {ASSETS[0]}\n'
-    if (folder / ASSETS[1]).read_text() != expected or not pdf.read_bytes().startswith(b'%PDF-'):
-        raise ValueError('PDF или SHA256SUMS повреждены')
+    expected = ''
+    try:
+        for name in PDF_ASSETS:
+            content = (folder / name).read_bytes()
+            if not content.startswith(b'%PDF-'):
+                raise ValueError(f'Повреждён PDF: {name}')
+            expected += f'{hashlib.sha256(content).hexdigest()}  {name}\n'
+        if (folder / 'SHA256SUMS').read_text() != expected:
+            raise ValueError('SHA256SUMS не соответствует двум PDF')
+    except OSError as error:
+        raise ValueError(f'Неполный комплект PDF: {error}') from error
 
 
 def release_notes(repo, sha, run_id):
-    return (f'Полная PDF-версия учебника машинного обучения BelOAI.\n\n'
+    return (f'Две полные PDF-версии учебника машинного обучения BelOAI из одних исходников.\n\n'
+            f'`{PDF_ASSETS[0]}` — версия для чтения, A4.\n'
+            f'`{PDF_ASSETS[1]}` — издательский макет 170 × 240 мм для аудитории 15–18 лет; '
+            f'классификационные данные предварительные, официальное утверждение не заявлено.\n\n'
             f'Commit: `{sha}`\n\n'
             f'[Сборка](https://github.com/{repo}/actions/runs/{run_id}) · '
             f'[Онлайн-учебник](https://materials.beloai.by/handbooks/ml/)\n')
@@ -62,12 +73,12 @@ def publish(repo, ref, sha, run_id, folder):
     if preview and api(f'repos/{repo}/git/ref/heads/main')['object']['sha'] != sha:
         print('Пропущен устаревший prerelease main')
         return
-    verify_assets(folder)
     releases = list(pages(f'repos/{repo}/releases', None))
     release = next((r for r in releases if r['tag_name'] == tag), None)
     if release and not preview and not release['draft']:
         print(f'{tag} уже опубликован; assets не изменены')
         return
+    verify_assets(folder)
     title = 'Учебник ML — main preview' if preview else f'Учебник ML — {tag}'
     body = release_notes(repo, sha, run_id)
     data = {'tag_name': tag, 'name': title, 'body': body, 'draft': True,

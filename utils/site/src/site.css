@@ -337,3 +337,23 @@ lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls {
 lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-status { flex: none; color: #c4c8cd; }
 lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls button,
 lecture-viewer:is(:fullscreen, .is-fullscreen) .slide-controls input { color-scheme: dark; }
+
+/* Semantic teaching blocks. Labels and icons convey meaning without colour. */
+.handbook-content .handbook-callout { border: 1px solid var(--control-border); border-left-width: 4px; margin: 20px 0; padding: 14px 18px; background: color-mix(in srgb, #347ab5 8%, transparent); }
+.handbook-content .callout-warning { background: color-mix(in srgb, #d99122 12%, transparent); border-left-color: #b57a20; }
+.handbook-content .callout-important { border-left-color: #347ab5; }
+.handbook-content .callout-tip { background: color-mix(in srgb, #3c9673 10%, transparent); border-left-color: #3c9673; }
+.handbook-content .callout-title { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.handbook-content .callout-title img { width: 24px; height: 24px; margin: 0; }
+.handbook-content .handbook-question { margin: 24px 0 32px; }
+.handbook-content .handbook-question fieldset { min-width: 0; margin: 0; padding: 12px 16px 16px; border: 1px solid var(--control-border); }
+.handbook-content .handbook-question legend { padding: 0 6px; font-weight: 700; }
+.handbook-content .quiz-choice { display: flex; gap: 10px; align-items: baseline; margin: 10px 0; }
+.handbook-content .quiz-choice label { font-weight: 400; display: flex; gap: 8px; flex: 1; min-width: 0; cursor: pointer; }
+.handbook-content .quiz-choice label p { margin: 0 0 8px; }
+.handbook-content .quiz-choice input { flex: none; accent-color: currentColor; }
+.handbook-content .quiz-result:empty { display: none; }
+.handbook-content .quiz-check { padding: 8px 16px; font: inherit; color: inherit; background: transparent; border: 1px solid var(--control-border); }
+.handbook-content .quiz-check:disabled { opacity: .5; cursor: default; }
+.handbook-content [hidden] { display: none !important; }
+@media (prefers-color-scheme: dark) { .handbook-content .callout-title img { filter: invert(1); } }
