@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="280" viewBox="0 0 640 280" style="--figure-scale:0.75" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="247" viewBox="0 0 640 247" style="--figure-scale:0.75" role="img" aria-labelledby="title desc">
   <title id="title">Строки таблицы соседей</title>
   <desc id="desc">Строки таблицы соседей для слов «кот», «собака», «ракета», «самолёт». Столбцы пьёт, ловит, спит, дома, общие для кота и собаки, выделены. У «ракеты» и «самолёта» общие столбцы летит, высоко, несёт.</desc>
   <style id="handbook-style">
@@ -48,134 +48,134 @@ text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
       <path d="M0 0L10 5L0 10z" fill="var(--axis)" />
     </marker>
   </defs>
-  <text x="114.0" y="110" transform="rotate(-55 114.0 110)" class="small bold green">пьёт</text>
-  <text x="150.0" y="110" transform="rotate(-55 150.0 110)" class="small">молоко</text>
-  <text x="186.0" y="110" transform="rotate(-55 186.0 110)" class="small">воду</text>
-  <text x="222.0" y="110" transform="rotate(-55 222.0 110)" class="small bold green">ловит</text>
-  <text x="258.0" y="110" transform="rotate(-55 258.0 110)" class="small">мышь</text>
-  <text x="294.0" y="110" transform="rotate(-55 294.0 110)" class="small">мяч</text>
-  <text x="330.0" y="110" transform="rotate(-55 330.0 110)" class="small bold green">спит</text>
-  <text x="366.0" y="110" transform="rotate(-55 366.0 110)" class="small bold green">дома</text>
-  <text x="402.0" y="110" transform="rotate(-55 402.0 110)" class="small">летит</text>
-  <text x="438.0" y="110" transform="rotate(-55 438.0 110)" class="small">высоко</text>
-  <text x="474.0" y="110" transform="rotate(-55 474.0 110)" class="small">несёт</text>
-  <text x="510.0" y="110" transform="rotate(-55 510.0 110)" class="small">спутник</text>
-  <text x="546.0" y="110" transform="rotate(-55 546.0 110)" class="small">пассажиров</text>
-  <rect x="93.0" y="119.0" width="34.0" height="58.0" rx="3" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
-  <rect x="201.0" y="119.0" width="34.0" height="58.0" rx="3" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
-  <rect x="309.0" y="119.0" width="34.0" height="58.0" rx="3" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
-  <rect x="345.0" y="119.0" width="34.0" height="58.0" rx="3" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
-  <text x="82.0" y="138.0" text-anchor="end" class="bold">кот</text>
-  <rect x="92.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="110.0" y="138.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="128.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="146.0" y="138.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="164.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="182.0" y="138.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="200.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="218.0" y="138.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="236.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="254.0" y="138.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="272.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="290.0" y="138.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="308.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="326.0" y="138.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="344.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="362.0" y="138.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="380.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="398.0" y="138.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="416.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="434.0" y="138.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="452.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="470.0" y="138.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="488.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="506.0" y="138.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="524.0" y="118.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="542.0" y="138.0" text-anchor="middle" class="muted small">0</text>
-  <text x="572.0" y="138.0" text-anchor="start" class="muted small">6 соседей</text>
-  <text x="82.0" y="168.0" text-anchor="end" class="bold">собака</text>
-  <rect x="92.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="110.0" y="168.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="128.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="146.0" y="168.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="164.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="182.0" y="168.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="200.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="218.0" y="168.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="236.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="254.0" y="168.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="272.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="290.0" y="168.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="308.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="326.0" y="168.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="344.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="362.0" y="168.0" text-anchor="middle" class="bold orange">1</text>
-  <rect x="380.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="398.0" y="168.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="416.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="434.0" y="168.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="452.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="470.0" y="168.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="488.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="506.0" y="168.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="524.0" y="148.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="542.0" y="168.0" text-anchor="middle" class="muted small">0</text>
-  <text x="572.0" y="168.0" text-anchor="start" class="muted small">6 соседей</text>
-  <text x="82.0" y="206.0" text-anchor="end" class="bold">ракета</text>
-  <rect x="92.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="110.0" y="206.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="128.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="146.0" y="206.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="164.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="182.0" y="206.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="200.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="218.0" y="206.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="236.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="254.0" y="206.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="272.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="290.0" y="206.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="308.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="326.0" y="206.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="344.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="362.0" y="206.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="380.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="398.0" y="206.0" text-anchor="middle" class="bold blue">1</text>
-  <rect x="416.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="434.0" y="206.0" text-anchor="middle" class="bold blue">1</text>
-  <rect x="452.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="470.0" y="206.0" text-anchor="middle" class="bold blue">1</text>
-  <rect x="488.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="506.0" y="206.0" text-anchor="middle" class="bold blue">1</text>
-  <rect x="524.0" y="186.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="542.0" y="206.0" text-anchor="middle" class="muted small">0</text>
-  <text x="572.0" y="206.0" text-anchor="start" class="muted small">4 соседей</text>
-  <text x="82.0" y="236.0" text-anchor="end" class="bold">самолёт</text>
-  <rect x="92.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="110.0" y="236.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="128.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="146.0" y="236.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="164.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="182.0" y="236.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="200.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="218.0" y="236.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="236.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="254.0" y="236.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="272.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="290.0" y="236.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="308.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="326.0" y="236.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="344.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="362.0" y="236.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="380.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="398.0" y="236.0" text-anchor="middle" class="bold blue">1</text>
-  <rect x="416.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="434.0" y="236.0" text-anchor="middle" class="bold blue">1</text>
-  <rect x="452.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="470.0" y="236.0" text-anchor="middle" class="bold blue">1</text>
-  <rect x="488.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="506.0" y="236.0" text-anchor="middle" class="muted small">0</text>
-  <rect x="524.0" y="216.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
-  <text x="542.0" y="236.0" text-anchor="middle" class="bold blue">1</text>
-  <text x="572.0" y="236.0" text-anchor="start" class="muted small">4 соседей</text>
-  <text x="92.0" y="268.0" text-anchor="start" class="green small bold">общих соседей у «кота» и «собаки»: 4 из 6</text>
+  <text x="114.0" y="77" transform="rotate(-55 114.0 77)" class="small bold green">пьёт</text>
+  <text x="150.0" y="77" transform="rotate(-55 150.0 77)" class="small">молоко</text>
+  <text x="186.0" y="77" transform="rotate(-55 186.0 77)" class="small">воду</text>
+  <text x="222.0" y="77" transform="rotate(-55 222.0 77)" class="small bold green">ловит</text>
+  <text x="258.0" y="77" transform="rotate(-55 258.0 77)" class="small">мышь</text>
+  <text x="294.0" y="77" transform="rotate(-55 294.0 77)" class="small">мяч</text>
+  <text x="330.0" y="77" transform="rotate(-55 330.0 77)" class="small bold green">спит</text>
+  <text x="366.0" y="77" transform="rotate(-55 366.0 77)" class="small bold green">дома</text>
+  <text x="402.0" y="77" transform="rotate(-55 402.0 77)" class="small">летит</text>
+  <text x="438.0" y="77" transform="rotate(-55 438.0 77)" class="small">высоко</text>
+  <text x="474.0" y="77" transform="rotate(-55 474.0 77)" class="small">несёт</text>
+  <text x="510.0" y="77" transform="rotate(-55 510.0 77)" class="small">спутник</text>
+  <text x="546.0" y="77" transform="rotate(-55 546.0 77)" class="small">пассажиров</text>
+  <rect x="93.0" y="86.0" width="34.0" height="58.0" rx="3" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
+  <rect x="201.0" y="86.0" width="34.0" height="58.0" rx="3" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
+  <rect x="309.0" y="86.0" width="34.0" height="58.0" rx="3" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
+  <rect x="345.0" y="86.0" width="34.0" height="58.0" rx="3" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
+  <text x="82.0" y="105.0" text-anchor="end" class="bold">кот</text>
+  <rect x="92.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="110.0" y="105.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="128.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="146.0" y="105.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="164.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="182.0" y="105.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="200.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="218.0" y="105.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="236.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="254.0" y="105.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="272.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="290.0" y="105.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="308.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="326.0" y="105.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="344.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="362.0" y="105.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="380.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="398.0" y="105.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="416.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.0" y="105.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="452.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="470.0" y="105.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="488.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="506.0" y="105.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="524.0" y="85.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="542.0" y="105.0" text-anchor="middle" class="muted small">0</text>
+  <text x="572.0" y="105.0" text-anchor="start" class="muted small">6 соседей</text>
+  <text x="82.0" y="135.0" text-anchor="end" class="bold">собака</text>
+  <rect x="92.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="110.0" y="135.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="128.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="146.0" y="135.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="164.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="182.0" y="135.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="200.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="218.0" y="135.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="236.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="254.0" y="135.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="272.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="290.0" y="135.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="308.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="326.0" y="135.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="344.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="362.0" y="135.0" text-anchor="middle" class="bold orange">1</text>
+  <rect x="380.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="398.0" y="135.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="416.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.0" y="135.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="452.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="470.0" y="135.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="488.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="506.0" y="135.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="524.0" y="115.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="542.0" y="135.0" text-anchor="middle" class="muted small">0</text>
+  <text x="572.0" y="135.0" text-anchor="start" class="muted small">6 соседей</text>
+  <text x="82.0" y="173.0" text-anchor="end" class="bold">ракета</text>
+  <rect x="92.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="110.0" y="173.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="128.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="146.0" y="173.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="164.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="182.0" y="173.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="200.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="218.0" y="173.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="236.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="254.0" y="173.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="272.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="290.0" y="173.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="308.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="326.0" y="173.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="344.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="362.0" y="173.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="380.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="398.0" y="173.0" text-anchor="middle" class="bold blue">1</text>
+  <rect x="416.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.0" y="173.0" text-anchor="middle" class="bold blue">1</text>
+  <rect x="452.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="470.0" y="173.0" text-anchor="middle" class="bold blue">1</text>
+  <rect x="488.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="506.0" y="173.0" text-anchor="middle" class="bold blue">1</text>
+  <rect x="524.0" y="153.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="542.0" y="173.0" text-anchor="middle" class="muted small">0</text>
+  <text x="572.0" y="173.0" text-anchor="start" class="muted small">4 соседей</text>
+  <text x="82.0" y="203.0" text-anchor="end" class="bold">самолёт</text>
+  <rect x="92.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="110.0" y="203.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="128.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="146.0" y="203.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="164.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="182.0" y="203.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="200.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="218.0" y="203.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="236.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="254.0" y="203.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="272.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="290.0" y="203.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="308.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="326.0" y="203.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="344.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="362.0" y="203.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="380.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="398.0" y="203.0" text-anchor="middle" class="bold blue">1</text>
+  <rect x="416.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.0" y="203.0" text-anchor="middle" class="bold blue">1</text>
+  <rect x="452.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="470.0" y="203.0" text-anchor="middle" class="bold blue">1</text>
+  <rect x="488.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="506.0" y="203.0" text-anchor="middle" class="muted small">0</text>
+  <rect x="524.0" y="183.0" width="36.0" height="30.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="542.0" y="203.0" text-anchor="middle" class="bold blue">1</text>
+  <text x="572.0" y="203.0" text-anchor="start" class="muted small">4 соседей</text>
+  <text x="92.0" y="235.0" text-anchor="start" class="green small bold">общих соседей у «кота» и «собаки»: 4 из 6</text>
 </svg>
