@@ -1,0 +1,6 @@
+# Print-only adjustments; keys use catalogue IDs and 1-based object positions.
+objects:
+  ml/classic-ml/linear-regression/table:1:
+    widths: [0.09, 0.09, 0.17, 0.17, 0.27, 0.21]
+  ml/classic-ml/gradient-boosting/table:2:
+    widths: [0.36, 0.16, 0.16, 0.16, 0.16]

@@ -1,0 +1,3 @@
+# Изменения правил, CI и процесса работы требуют review владельца.
+/.github/ @pkasila @atolstikov @lamposhka
+/utils/scripts/ci-build.sh @pkasila @atolstikov @lamposhka

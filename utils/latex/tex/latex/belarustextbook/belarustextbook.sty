@@ -1,0 +1,113 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{belarustextbook}[2026/11/01 BelOAI publishing layout]
+\RequirePackage{fix-cm}
+% Pandoc has already loaded fontenc and the discrete LH font definitions.
+% Install CM Super's continuous size ranges and reload the T2A families before
+% selecting 13 pt; otherwise NFSS silently substitutes 12 pt for Cyrillic.
+\makeatletter
+\let\EC@family\relax
+\let\EC@ttfamily\relax
+\RequirePackage{type1ec}
+\input{t2acmr.fd}
+\input{t2acmss.fd}
+\input{t2acmtt.fd}
+\makeatother
+\RequirePackage{handbookcommon}
+\RequirePackage{indentfirst}
+\RequirePackage{enumitem}
+% Indent only the first line (label and opening text) of each item.
+% Wrapped lines and later paragraphs return to the full text-area margin.
+% Align the LEFT edge of every label with the 5 mm prose paragraph indent;
+% right-aligned labels would shift single- and double-digit numbers differently.
+\setlist{leftmargin=0pt,labelindent=5mm,labelwidth=6mm,labelsep=2mm,
+  itemindent=13mm,align=left,
+  listparindent=0pt,topsep=4pt,partopsep=0pt,itemsep=2pt,parsep=0pt}
+\RequirePackage{geometry}
+\geometry{paperwidth=170mm,paperheight=240mm,twoside,
+  inner=20mm,bindingoffset=5mm,outer=15mm,top=20mm,bottom=22mm,
+  headheight=19pt,headsep=5mm,footskip=10mm}
+\RequirePackage{fancyhdr}
+\RequirePackage{xcolor}
+\newcommand{\handbooklogo}{handbook-logo.pdf}
+\newcommand{\handbookchapter}[1]{\markboth{#1}{}}
+\newcommand{\handbooksection}[1]{\markright{#1}}
+\newcommand{\handbookrunningtitle}{}
+% STB 7.206 uses Didot points: 12 Didot pt are about 12.84 TeX pt.
+% Define the font commands themselves, including the return from small text.
+\makeatletter
+\renewcommand{\normalsize}{%
+  \@setfontsize\normalsize{13}{16}%
+  \abovedisplayskip 10pt plus 2pt minus 3pt
+  \belowdisplayskip \abovedisplayskip
+  \abovedisplayshortskip 0pt plus 3pt
+  \belowdisplayshortskip 6pt plus 3pt minus 3pt}
+\renewcommand{\small}{\@setfontsize\small{11}{14}}
+% Notes may be long, so retain the main-text size rather than shrinking them.
+\renewcommand{\footnotesize}{\normalsize}
+\renewcommand{\large}{\@setfontsize\large{14}{18}}
+\renewcommand{\Large}{\@setfontsize\Large{16}{20}}
+\renewcommand{\LARGE}{\@setfontsize\LARGE{18}{22}}
+\makeatother
+\DeclareMathSizes{13}{13}{9}{7}
+\AtBeginDocument{%
+  \normalsize
+  \setlength{\parindent}{5mm}%
+  \setlength{\parskip}{0pt}}
+\raggedbottom
+% Running titles have a fixed height and cannot collide with the text area.
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\thepage}
+\fancyhead[LO]{\parbox[b][14pt][b]{.86\textwidth}{\small\strut\nouppercase{\leftmark}}}
+\fancyhead[RE]{\parbox[b][14pt][b]{.86\textwidth}{\raggedleft\small\strut\handbookrunningtitle}}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+\fancypagestyle{chapteropening}{\fancyhf{}\fancyfoot[LE,RO]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+\newcommand{\handbookrecto}{%
+  \clearpage\ifodd\value{page}\else
+    \null\thispagestyle{empty}\newpage
+  \fi}
+\newcommand{\handbookopenchapter}{\handbookrecto\thispagestyle{chapteropening}}
+\makeatletter
+% Pandoc has already escaped the catalogue title for TeX. Save its plain
+% title (without a subtitle/date) for headers; publication AST owns the cover.
+\renewcommand{\maketitle}{\global\let\handbookrunningtitle\@title}
+\makeatother
+\newenvironment{handbooktitlepage}{%
+  \clearpage\begingroup\thispagestyle{empty}\markboth{}{}%
+  \centering\normalsize\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}%
+  \includegraphics[width=24mm]{\handbooklogo}\par\vspace{30mm}%
+}{\par\clearpage\endgroup}
+\newenvironment{handbooktitleback}{%
+  \clearpage\begingroup\thispagestyle{empty}\markboth{}{}%
+  \normalsize\setlength{\parindent}{0pt}\setlength{\parskip}{6pt}%
+}{\par\clearpage\endgroup}
+\newenvironment{handbookpublicationpage}{%
+  \clearpage\begingroup\pagestyle{plain}\thispagestyle{plain}\markboth{}{}%
+  \normalsize\setlength{\parindent}{0pt}\setlength{\parskip}{6pt}%
+}{\par\clearpage\endgroup}
+% Heading sizes and paragraph treatment are editorial choices, not STB limits.
+\titleformat{\section}{\raggedright\fontsize{22}{26}\selectfont\bfseries\upshape}{\thesection}{.7em}{}
+\titleformat{\subsection}{\raggedright\Large\bfseries\upshape}{\thesubsection}{.7em}{}
+\titleformat{\subsubsection}{\raggedright\large\bfseries\upshape}{\thesubsubsection}{.7em}{}
+\titleformat{\paragraph}[block]{\raggedright\normalsize\bfseries\upshape}{\theparagraph}{.7em}{}
+\titleformat{\subparagraph}[block]{\raggedright\normalsize\bfseries\upshape}{\thesubparagraph}{.7em}{}
+\titlespacing{\section}{0pt}{24pt}{16pt}
+\titlespacing{\subsection}{0pt}{15pt}{7pt}
+\titlespacing{\subsubsection}{0pt}{12pt}{6pt}
+\titlespacing{\paragraph}{0pt}{12pt}{6pt}
+\titlespacing{\subparagraph}{0pt}{12pt}{6pt}
+\captionsetup{font=small,textfont=up,labelfont=up,skip=7pt}
+\setlength{\textfloatsep}{14pt plus 2pt minus 2pt}
+\setlength{\intextsep}{12pt plus 2pt minus 2pt}
+\AtBeginDocument{\color{black}\ifdefined\hypersetup\hypersetup{hidelinks}\fi}
+\pretocmd{\tableofcontents}{\clearpage\markboth{Содержание}{}}{}{}
+\apptocmd{\tableofcontents}{\clearpage\markboth{}{}}{}{}
+% The smaller page needs wrapping, never horizontal scaling of code.
+\AtBeginDocument{\ifdefined\DefineVerbatimEnvironment
+  \RecustomVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},fontsize=\normalsize,breaklines=true,breakanywhere=true}
+\fi}
+% Keep running text and code in black ink; the artwork retains its own colours.
+\newcommand{\handbookblacktoken}[1]{%
+  \ifcsdef{#1}{\expandafter\renewcommand\csname#1\endcsname[1]{##1}}{}}
+\AtBeginDocument{\forcsvlist{\handbookblacktoken}{AlertTok,AnnotationTok,AttributeTok,BaseNTok,BuiltInTok,CharTok,CommentTok,CommentVarTok,ConstantTok,ControlFlowTok,DataTypeTok,DecValTok,DocumentationTok,ErrorTok,ExtensionTok,FloatTok,FunctionTok,ImportTok,InformationTok,KeywordTok,NormalTok,OperatorTok,OtherTok,PreprocessorTok,RegionMarkerTok,SpecialCharTok,SpecialStringTok,StringTok,VariableTok,VerbatimStringTok,WarningTok}}

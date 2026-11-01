@@ -1,30 +1,60 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 496" role="img" aria-labelledby="title desc">
-<title id="title">Выбор признаков в разных вершинах дерева</title><desc id="desc">Условное дерево: в корне доступны высота и число цветов, выбран вопрос о высоте не больше 6 сантиметров. В правой вершине доступны число цветов и объём, выбран вопрос об объёме не больше 12 кубических сантиметров. Для фигурки высотой 7 сантиметров, с двумя цветами и объёмом 10 кубических сантиметров ответы нет и да ведут к прогнозу 30 минут.</desc>
-<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#43638c"/></marker></defs>
-<style>text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#17243a;font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:#e4edf8;stroke:#43638c;stroke-width:2}.warm{fill:#fff0d8;stroke:#a46718;stroke-width:2}.arrow{fill:none;stroke:#43638c;stroke-width:2;marker-end:url(#arrow)}</style>
-<rect width="600" height="496" rx="16" fill="#f7f9fc"/>
-<text x="300" y="33" class="">Доступны: высота и число цветов</text>
-<rect x="115" y="50" width="370" height="55" rx="10" class="warm"/>
-<text x="300" y="85" class="heading">Высота ≤ 6 см?</text>
-<path d="M155 105 L85 153" class="arrow"/>
-<text x="88" y="136" class="">да</text>
-<rect x="22" y="160" width="126" height="52" rx="10" class="box"/>
-<text x="85" y="193" class="heading">18 мин</text>
-<path d="M485 77 H565 V189 L485 210" stroke="#a46718" stroke-width="4" fill="none"/>
-<text x="535" y="125" class="">нет</text>
+  <title id="title">Выбор признаков в разных вершинах дерева</title>
+  <desc id="desc">Условное дерево: в корне доступны высота и число цветов, выбран вопрос о высоте не больше 6 сантиметров. В правой вершине доступны число цветов и объём, выбран вопрос об объёме не больше 12 кубических сантиметров. Для фигурки высотой 7 сантиметров, с двумя цветами и объёмом 10 кубических сантиметров ответы нет и да ведут к прогнозу 30 минут.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0 L7 3.5 L0 7 Z" fill="var(--blue)" />
+    </marker>
+  </defs>
+  <style>text{fill:var(--ink);font-size:22px;text-anchor:middle}.heading{font-size:24px;font-weight:700}.small{font-size:20px}.box{fill:var(--blue-bg);stroke:var(--blue);stroke-width:2}.warm{fill:var(--orange-bg);stroke:var(--orange);stroke-width:2}.arrow{fill:none;stroke:var(--blue);stroke-width:2;marker-end:url(#arrow)}</style>
+  <text x="300" y="33" class="">Доступны: высота и число цветов</text>
+<rect x="115" y="50" width="370" height="55" rx="10" class="warm" />
+  <text x="300" y="85" class="heading">Высота ≤ 6 см?</text>
+<path d="M155 105 L85 153" class="arrow" />
+  <text x="88" y="136" class="">да</text>
+<rect x="22" y="160" width="126" height="52" rx="10" class="box" />
+  <text x="85" y="193" class="heading">18 мин</text>
+<path d="M485 77 H565 V189 L485 210" stroke="var(--orange)" stroke-width="4" fill="none" />
+  <text x="535" y="125" class="">нет</text>
 <text x="362" y="158" class="small">Доступны: число цветов</text>
 <text x="362" y="185" class="small">и объём пластика</text>
-<rect x="232" y="210" width="345" height="55" rx="10" class="warm"/>
-<text x="404" y="245" class="heading">Объём ≤ 12 см³?</text>
-<path d="M320 265 L280 320" stroke="#a46718" stroke-width="4" fill="none"/>
-<text x="273" y="299" class="">да</text>
-<path d="M490 265 L506 320" class="arrow"/>
-<text x="536" y="299" class="">нет</text>
-<rect x="208" y="330" width="144" height="52" rx="10" class="warm"/>
-<text x="280" y="363" class="heading">30 мин</text>
-<rect x="434" y="330" width="144" height="52" rx="10" class="box"/>
-<text x="506" y="363" class="heading">42 мин</text>
-<path d="M25 405 H575" stroke="#c4cedd"/>
-<text x="300" y="438" class="">Новый заказ: 7 см, 2 цвета, 10 см³</text>
+<rect x="232" y="210" width="345" height="55" rx="10" class="warm" />
+  <text x="404" y="245" class="heading">Объём ≤ 12 см³?</text>
+<path d="M320 265 L280 320" stroke="var(--orange)" stroke-width="4" fill="none" />
+  <text x="273" y="299" class="">да</text>
+<path d="M490 265 L506 320" class="arrow" />
+  <text x="536" y="299" class="">нет</text>
+<rect x="208" y="330" width="144" height="52" rx="10" class="warm" />
+  <text x="280" y="363" class="heading">30 мин</text>
+<rect x="434" y="330" width="144" height="52" rx="10" class="box" />
+  <text x="506" y="363" class="heading">42 мин</text>
+<path d="M25 405 H575" stroke="var(--edge)" />
+  <text x="300" y="438" class="">Новый заказ: 7 см, 2 цвета, 10 см³</text>
 <text x="300" y="473" class="">Выделенный путь → прогноз 30 мин</text>
 </svg>

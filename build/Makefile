@@ -1,6 +1,8 @@
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
 SCRIPTS := $(REPO_ROOT)/utils/scripts
 JOBS ?= 2
+PROFILE ?= reader
+PRESS_READY ?= 0
 DIR ?=
 
 .PHONY: all session lecture materials site frontend handbooks handbook-pdf test tex clean
@@ -34,7 +36,7 @@ handbooks: frontend
 	python3 "$(SCRIPTS)/build-handbooks.py"
 
 handbook-pdf:
-	cd "$(REPO_ROOT)" && python3 "$(SCRIPTS)/build-handbook-pdf.py" $(if $(DIR),"$(DIR)",--all) --jobs "$(JOBS)"
+	cd "$(REPO_ROOT)" && python3 "$(SCRIPTS)/build-handbook-pdf.py" $(if $(DIR),"$(DIR)",--all) --jobs "$(JOBS)" --profile "$(PROFILE)" $(if $(filter 1,$(PRESS_READY)),--press-ready) $(if $(filter belarus-textbook,$(PROFILE)),--book-only)
 
 test:
 	cd "$(REPO_ROOT)" && python3 -m unittest discover -s utils/scripts/tests

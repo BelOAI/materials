@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="300" viewBox="0 0 560 300" role="img" aria-labelledby="title desc">
+  <title id="title">Сеть 2–2–1</title>
+  <desc id="desc">Два входа соединены с двумя нейронами скрытого слоя, а они — с одним выходным нейроном. Стрелки показывают направление прямого прохода.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <text x="80" y="34" class="heading blue" text-anchor="middle">Входной слой</text>
+  <text x="280" y="34" class="heading purple" text-anchor="middle">Скрытый слой</text>
+  <text x="480" y="34" class="heading orange" text-anchor="middle">Выход</text>
+  <line x1="110" y1="105" x2="250" y2="105" class="flow" />
+  <line x1="110" y1="105" x2="250" y2="185" class="flow" />
+  <line x1="110" y1="185" x2="250" y2="105" class="flow" />
+  <line x1="110" y1="185" x2="250" y2="185" class="flow" />
+  <line x1="310" y1="105" x2="450" y2="145" class="flow" />
+  <line x1="310" y1="185" x2="450" y2="145" class="flow" />
+  <circle cx="80" cy="105" r="30" fill="var(--blue-bg)" stroke="var(--blue)" stroke-width="2" />
+  <circle cx="80" cy="185" r="30" fill="var(--blue-bg)" stroke="var(--blue)" stroke-width="2" />
+  <circle cx="280" cy="105" r="30" fill="var(--purple-bg)" stroke="var(--purple)" stroke-width="2" />
+  <circle cx="280" cy="185" r="30" fill="var(--purple-bg)" stroke="var(--purple)" stroke-width="2" />
+  <circle cx="480" cy="145" r="30" fill="var(--orange-bg)" stroke="var(--orange)" stroke-width="2" />
+  <text x="80" y="112" class="b big blue" text-anchor="middle">x₁</text>
+  <text x="80" y="192" class="b big blue" text-anchor="middle">x₂</text>
+  <text x="280" y="112" class="b big purple" text-anchor="middle">h₁</text>
+  <text x="280" y="192" class="b big purple" text-anchor="middle">h₂</text>
+  <text x="480" y="152" class="b big orange" text-anchor="middle">p</text>
+  <text x="80" y="250" class="s m" text-anchor="middle">2 входа</text>
+  <text x="280" y="250" class="s m" text-anchor="middle">2 скрытых нейрона</text>
+  <text x="480" y="250" class="s m" text-anchor="middle">1 вероятность</text>
+</svg>

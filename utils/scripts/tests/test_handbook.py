@@ -85,7 +85,7 @@ resources:
   - path: notebook.ipynb
     label: Ноутбук
 ''')
-        text = '## Чему научимся\n\n![Рисунок](media/image.svg)\n\n[Данные](data/sample.csv)\n\n```python\nfrom pathlib import Path\nassert Path("data/sample.csv").is_file()\n```\n\n$$x^2$$\n'
+        text = '## Чему научимся\n\n![Рисунок](media/image.svg)\n\n*Рисунок 1 — Синтетический пример*\n\n[Данные](data/sample.csv)\n\n```python\nfrom pathlib import Path\nassert Path("data/sample.csv").is_file()\n```\n\n$$x^2$$\n'
         (folder / 'content.md').write_text(text)
         for d in ('data', 'media'):
             (folder / d).mkdir()

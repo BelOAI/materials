@@ -11,6 +11,27 @@ from handbook_svg import render_svg, renderer_identity
 
 @unittest.skipUnless(os.environ.get('PDF_RENDER_TESTS') == '1', 'Нужно PDF_RENDER_TESTS=1 и окружение utils/pdf')
 class SvgRenderingTests(unittest.TestCase):
+    def test_solid_pattern_tiles_remain_vectors_in_publishing_export(self):
+        import pymupdf
+        source = '''<svg xmlns="http://www.w3.org/2000/svg" width="180" height="120">
+          <defs><pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse">
+            <rect width="12" height="12" fill="#e8f0ff"/>
+            <path d="M-6 6L6-6 M0 12L12 0 M6 18L18 6" stroke="#2459c2" fill="none"/>
+          </pattern></defs>
+          <path d="M20 20H160V100H20Z" style="fill:url(#hatch);stroke:#2459c2"/>
+          <text x="20" y="115">Vector hatching</text>
+        </svg>'''
+        with tempfile.TemporaryDirectory() as folder:
+            svg, pdf = Path(folder) / 'figure.svg', Path(folder) / 'figure.pdf'
+            svg.write_text(source)
+            before = svg.read_bytes()
+            render_svg(svg, pdf, vector_patterns=True)
+            self.assertEqual(svg.read_bytes(), before)
+            with pymupdf.open(pdf) as document:
+                self.assertFalse(document[0].get_images())
+                self.assertGreater(len(document[0].get_drawings()), 5)
+                self.assertIn('Vector hatching', document[0].get_text())
+
     def test_print_variables_patterns_text_and_vector_output(self):
         import pymupdf
         source = '''<svg xmlns="http://www.w3.org/2000/svg" width="160" height="100" viewBox="0 0 160 100">

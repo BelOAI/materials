@@ -26,7 +26,7 @@ def renderer_identity():
     return (importlib.metadata.version('playwright'), hashlib.sha256(executable.read_bytes()).hexdigest())
 
 
-def render_svg(source: Path, destination: Path):
+def render_svg(source: Path, destination: Path, *, vector_patterns=False):
     """Печатать SVG в DOM: без скриптов, сети и растрирования схемы."""
     try:
         root = ElementTree.fromstring(source.read_bytes())
@@ -59,6 +59,41 @@ def render_svg(source: Path, destination: Path):
                 width, height = dimensions
                 if width <= 0 or height <= 0:
                     raise ValueError(f'Неверные размеры SVG: {source}')
+                if vector_patterns:
+                    # Chromium rasterizes SVG pattern fills at screen resolution.
+                    # Expand user-space tiles into clipped vector shapes in the
+                    # temporary DOM. The original SVG remains byte-for-byte intact.
+                    page.evaluate('''() => {
+                      const svg=document.querySelector('body>svg'), ns='http://www.w3.org/2000/svg';
+                      const make=(tag,attrs={})=>{const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);return e;};
+                      const defs=make('defs');svg.append(defs);
+                      let index=0;
+                      for(const shape of [...svg.querySelectorAll('path,rect,polygon,circle,ellipse')]){
+                        if(shape.closest('defs'))continue;
+                        const match=(shape.style.fill||shape.getAttribute('fill')||'').match(/^url\\(["']?#([^)'" ]+)/);
+                        if(!match)continue;
+                        const pattern=svg.querySelector(`[id="${match[1]}"]`);
+                        if(!pattern||pattern.tagName!=='pattern')continue;
+                        if(pattern.getAttribute('patternUnits')!=='userSpaceOnUse'||pattern.hasAttribute('patternTransform')||pattern.getAttribute('patternContentUnits')==='objectBoundingBox')throw new Error('Unsupported vector pattern geometry');
+                        const w=+pattern.getAttribute('width'),h=+pattern.getAttribute('height');
+                        if(!(w>0&&h>0))throw new Error('Invalid pattern tile');
+                        const box=shape.getBBox(),id=`print-hatch-${index++}`;
+                        const outline=shape.cloneNode(true);outline.removeAttribute('id');outline.style.fill='none';
+                        const clip=make('clipPath',{id}),silhouette=shape.cloneNode(true);
+                        silhouette.removeAttribute('id');silhouette.removeAttribute('transform');silhouette.removeAttribute('clip-path');silhouette.removeAttribute('class');silhouette.style.cssText='fill:black;stroke:none';clip.append(silhouette);defs.append(clip);
+                        const cell=make('clipPath',{id:id+'-cell'});cell.append(make('rect',{width:w,height:h}));defs.append(cell);
+                        const group=make('g');for(const name of ['transform','clip-path','opacity'])if(shape.hasAttribute(name))group.setAttribute(name,shape.getAttribute(name));
+                        const fill=make('g',{'clip-path':`url(#${id})`});group.append(fill);
+                        const ox=+(pattern.getAttribute('x')||0),oy=+(pattern.getAttribute('y')||0);
+                        for(let x=Math.floor((box.x-ox)/w)*w+ox;x<box.x+box.width;x+=w){
+                          for(let y=Math.floor((box.y-oy)/h)*h+oy;y<box.y+box.height;y+=h){
+                            const tile=make('g',{transform:`translate(${x},${y})`}),inside=make('g',{'clip-path':`url(#${id}-cell)`});
+                            for(const child of pattern.children)inside.append(child.cloneNode(true));tile.append(inside);fill.append(tile);
+                          }
+                        }
+                        outline.removeAttribute('transform');outline.removeAttribute('clip-path');group.append(outline);shape.replaceWith(group);
+                      }
+                    }''')
                 page.pdf(path=str(destination), width=f'{width}px', height=f'{height}px',
                          margin={side: '0' for side in ('top', 'right', 'bottom', 'left')},
                          print_background=True)
