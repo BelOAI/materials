@@ -531,25 +531,26 @@ class Builder:
             level = 1 if paragraph else level
             if level == 0:
                 blocks.append({'t': 'RawBlock', 'c': ['latex', '\\handbookchapter{Об учебнике}']})
-            if level == 1 and len(task['item']['id'].split('/')) == 1:
+            chapter_heading = level == 1 and not paragraph
+            paragraph_heading = level == 2 or paragraph
+            if chapter_heading or paragraph_heading:
                 blocks.append({'t': 'RawBlock', 'c': ['latex', '\\clearpage']})
             if chapter and level == 2:
-                blocks.append({'t': 'RawBlock', 'c': ['latex', '\\clearpage']})
                 paragraph_number += 1
             if level:
                 title = ('Глава 1. ' + item['title'] if chapter and level == 1 else
                          f'1.{paragraph_number}. {item["title"]}' if chapter and level == 2 else None)
-                if self.profile_name == 'belarus-textbook' and level == 1:
+                if self.profile_name == 'belarus-textbook' and chapter_heading:
                     chapter_number += 1
                     title = f'Глава {chapter_number}. {item["title"]}'
                 heading = header(level, item, title)
-                if self.profile_name == 'belarus-textbook' and level == 1:
+                if self.profile_name == 'belarus-textbook' and chapter_heading:
                     heading['c'][1][1].append('handbook-chapter-opening')
-                elif self.profile_name == 'belarus-textbook' and level == 2:
+                elif self.profile_name == 'belarus-textbook' and paragraph_heading:
                     heading['c'][1][1].append('handbook-lesson-opening')
                 blocks.append(heading)
             credit = authors_text(item.get('authors', []))
-            if credit and (not chapter or level == 1):
+            if credit and not chapter:
                 blocks.append({'t': 'Para', 'c': [{'t': 'Emph', 'c': [{'t': 'Str', 'c': credit}]}]})
             if item['id'] not in self.prepared:
                 continue
