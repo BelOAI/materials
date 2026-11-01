@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="320" viewBox="0 0 640 320" style="--figure-scale:0.75" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="291" viewBox="0 0 640 291" style="--figure-scale:0.75" role="img" aria-labelledby="title desc">
   <title id="title">Мешок слов как сумма one-hot векторов</title>
   <desc id="desc">Предложение «очень очень хороший фильм»: one-hot векторы четырёх слов складываются в мешок (1, 1, 0, 2, 0) — число вхождений каждого слова словаря. Порядок слов при этом теряется.</desc>
   <style id="handbook-style">
