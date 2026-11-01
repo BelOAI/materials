@@ -1,0 +1,316 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="320" viewBox="0 0 640 320" style="--figure-scale:0.75" role="img" aria-labelledby="title desc">
+  <title id="title">Таблица мешков слов для восьми отзывов</title>
+  <desc id="desc">Восемь отзывов по строкам, 14 слов словаря по столбцам, в ячейках — число вхождений слова в отзыв. Справа — метка отзыва: 1 у четырёх положительных, 0 у четырёх отрицательных.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <style>.muted { fill:var(--muted); } .italic { font-style:italic; } .sym { font-size:calc(24px * var(--figure-scale)); }</style>
+  <defs>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--ink)" />
+    </marker>
+    <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--muted)" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--blue)" />
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--orange)" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--green)" />
+    </marker>
+    <marker id="arrow-axis" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <text x="277.5" y="96" transform="rotate(-55 277.5 96)" class="small">актёры</text>
+  <text x="300.5" y="96" transform="rotate(-55 300.5 96)" class="small">играют</text>
+  <text x="323.5" y="96" transform="rotate(-55 323.5 96)" class="small">музыка</text>
+  <text x="346.5" y="96" transform="rotate(-55 346.5 96)" class="small">отличная</text>
+  <text x="369.5" y="96" transform="rotate(-55 369.5 96)" class="small">отличный</text>
+  <text x="392.5" y="96" transform="rotate(-55 392.5 96)" class="small">очень</text>
+  <text x="415.5" y="96" transform="rotate(-55 415.5 96)" class="small">плохо</text>
+  <text x="438.5" y="96" transform="rotate(-55 438.5 96)" class="small">плохой</text>
+  <text x="461.5" y="96" transform="rotate(-55 461.5 96)" class="small">скучная</text>
+  <text x="484.5" y="96" transform="rotate(-55 484.5 96)" class="small">скучный</text>
+  <text x="507.5" y="96" transform="rotate(-55 507.5 96)" class="small">сюжет</text>
+  <text x="530.5" y="96" transform="rotate(-55 530.5 96)" class="small">фильм</text>
+  <text x="553.5" y="96" transform="rotate(-55 553.5 96)" class="small">хороший</text>
+  <text x="576.5" y="96" transform="rotate(-55 576.5 96)" class="small">хорошо</text>
+  <text x="610.0" y="96.0" text-anchor="middle" class="small bold">метка</text>
+  <text x="252.0" y="121.0" text-anchor="end" class="small">отличный фильм</text>
+  <rect x="262.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="273.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="285.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="296.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="308.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="319.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="331.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="342.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="354.0" y="104.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="365.5" y="121.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="377.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="388.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="400.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="411.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="423.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="446.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="457.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="469.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="480.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="492.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="503.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="515.0" y="104.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="526.5" y="121.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="538.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="549.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="561.0" y="104.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="572.5" y="121.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="596.0" y="106.0" width="28.0" height="20.0" rx="4" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
+  <text x="610.0" y="121.0" text-anchor="middle" class="small bold green">1</text>
+  <text x="252.0" y="145.0" text-anchor="end" class="small">очень хороший фильм</text>
+  <rect x="262.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="273.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="285.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="296.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="308.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="319.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="331.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="342.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="354.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="365.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="377.0" y="128.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="388.5" y="145.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="400.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="411.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="423.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="446.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="457.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="469.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="480.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="492.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="503.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="515.0" y="128.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="526.5" y="145.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="538.0" y="128.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="549.5" y="145.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="561.0" y="128.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="572.5" y="145.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="596.0" y="130.0" width="28.0" height="20.0" rx="4" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
+  <text x="610.0" y="145.0" text-anchor="middle" class="small bold green">1</text>
+  <text x="252.0" y="169.0" text-anchor="end" class="small">хороший сюжет и отличная музыка</text>
+  <rect x="262.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="273.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="285.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="296.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="308.0" y="152.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="319.5" y="169.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="331.0" y="152.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="342.5" y="169.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="354.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="365.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="377.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="388.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="400.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="411.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="423.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="446.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="457.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="469.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="480.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="492.0" y="152.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="503.5" y="169.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="515.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="526.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="538.0" y="152.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="549.5" y="169.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="561.0" y="152.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="572.5" y="169.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="596.0" y="154.0" width="28.0" height="20.0" rx="4" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
+  <text x="610.0" y="169.0" text-anchor="middle" class="small bold green">1</text>
+  <text x="252.0" y="193.0" text-anchor="end" class="small">актёры играют хорошо</text>
+  <rect x="262.0" y="176.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="273.5" y="193.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="285.0" y="176.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="296.5" y="193.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="308.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="319.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="331.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="342.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="354.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="365.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="377.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="388.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="400.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="411.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="423.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="446.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="457.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="469.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="480.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="492.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="503.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="515.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="526.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="538.0" y="176.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="549.5" y="193.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="561.0" y="176.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="572.5" y="193.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="596.0" y="178.0" width="28.0" height="20.0" rx="4" fill="var(--green-bg)" stroke="none" stroke-width="1.5" />
+  <text x="610.0" y="193.0" text-anchor="middle" class="small bold green">1</text>
+  <text x="252.0" y="217.0" text-anchor="end" class="small">скучный фильм</text>
+  <rect x="262.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="273.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="285.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="296.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="308.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="319.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="331.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="342.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="354.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="365.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="377.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="388.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="400.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="411.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="423.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="446.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="457.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="469.0" y="200.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="480.5" y="217.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="492.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="503.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="515.0" y="200.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="526.5" y="217.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="538.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="549.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="561.0" y="200.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="572.5" y="217.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="596.0" y="202.0" width="28.0" height="20.0" rx="4" fill="var(--orange-bg)" stroke="none" stroke-width="1.5" />
+  <text x="610.0" y="217.0" text-anchor="middle" class="small bold orange">0</text>
+  <text x="252.0" y="241.0" text-anchor="end" class="small">очень плохой фильм</text>
+  <rect x="262.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="273.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="285.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="296.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="308.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="319.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="331.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="342.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="354.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="365.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="377.0" y="224.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="388.5" y="241.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="400.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="411.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="423.0" y="224.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.5" y="241.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="446.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="457.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="469.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="480.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="492.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="503.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="515.0" y="224.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="526.5" y="241.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="538.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="549.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="561.0" y="224.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="572.5" y="241.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="596.0" y="226.0" width="28.0" height="20.0" rx="4" fill="var(--orange-bg)" stroke="none" stroke-width="1.5" />
+  <text x="610.0" y="241.0" text-anchor="middle" class="small bold orange">0</text>
+  <text x="252.0" y="265.0" text-anchor="end" class="small">плохой сюжет и скучная музыка</text>
+  <rect x="262.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="273.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="285.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="296.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="308.0" y="248.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="319.5" y="265.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="331.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="342.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="354.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="365.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="377.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="388.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="400.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="411.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="423.0" y="248.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.5" y="265.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="446.0" y="248.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="457.5" y="265.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="469.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="480.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="492.0" y="248.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="503.5" y="265.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="515.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="526.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="538.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="549.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="561.0" y="248.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="572.5" y="265.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="596.0" y="250.0" width="28.0" height="20.0" rx="4" fill="var(--orange-bg)" stroke="none" stroke-width="1.5" />
+  <text x="610.0" y="265.0" text-anchor="middle" class="small bold orange">0</text>
+  <text x="252.0" y="289.0" text-anchor="end" class="small">актёры играют плохо</text>
+  <rect x="262.0" y="272.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="273.5" y="289.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="285.0" y="272.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="296.5" y="289.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="308.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="319.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="331.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="342.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="354.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="365.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="377.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="388.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="400.0" y="272.0" width="23.0" height="24.0" rx="0" fill="var(--blue-bg)" stroke="var(--edge)" stroke-width="1" />
+  <text x="411.5" y="289.0" text-anchor="middle" class="small bold blue">1</text>
+  <rect x="423.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="434.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="446.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="457.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="469.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="480.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="492.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="503.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="515.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="526.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="538.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="549.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="561.0" y="272.0" width="23.0" height="24.0" rx="0" fill="none" stroke="var(--edge)" stroke-width="1" />
+  <text x="572.5" y="289.0" text-anchor="middle" class="small muted">0</text>
+  <rect x="596.0" y="274.0" width="28.0" height="20.0" rx="4" fill="var(--orange-bg)" stroke="none" stroke-width="1.5" />
+  <text x="610.0" y="289.0" text-anchor="middle" class="small bold orange">0</text>
+  <text x="423.0" y="318.0" text-anchor="middle" class="muted small">признаки: по столбцу на каждое слово словаря</text>
+  <text x="252.0" y="318.0" text-anchor="end" class="muted small">объекты: по строке на отзыв</text>
+</svg>
