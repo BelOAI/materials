@@ -18,6 +18,8 @@ learning_outcomes:
   - Сравнивать группировки при разных начальных центрах.
   - Объяснять, что измеряет сумма квадратов расстояний до центров.
 resources:
+  - path: notebook.ipynb
+    label: Эксперименты с K-means (.ipynb)
   - path: media/two-starts.svg
     label: Схема двух запусков (.svg)
   - path: media/iris-scatter.svg

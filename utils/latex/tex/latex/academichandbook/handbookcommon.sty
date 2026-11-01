@@ -1,0 +1,60 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{handbookcommon}[2026/10/31 Shared handbook print adapters]
+\RequirePackage{amssymb}
+\RequirePackage{graphicx}
+\RequirePackage{adjustbox}
+\RequirePackage{float}
+\RequirePackage{needspace}
+\RequirePackage{etoolbox}
+\RequirePackage{titlesec}
+\RequirePackage{lastpage}
+\RequirePackage{caption}
+% Captions already contain their source number and the common Russian prefix.
+\captionsetup{labelformat=empty,font=small,textfont=it,justification=centering,singlelinecheck=false}
+\captionsetup[table]{position=top}
+\AtBeginDocument{\ifdefined\LTleft
+  \setlength{\LTleft}{\fill}\setlength{\LTright}{\fill}
+  \setlength{\LTcapwidth}{\linewidth}
+\fi}
+
+\floatplacement{figure}{H}
+% Pandoc bounds the image by textheight without allowing room for its caption.
+% maxsizebox avoids adjustbox's reuse of the global Gin width/height defaults
+% installed by Pandoc 2.x, which would scale the already-sized graphic twice.
+\let\handbookincludegraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{%
+  \maxsizebox*{\linewidth}{.78\textheight}{%
+    \handbookincludegraphics[width=!,height=!,keepaspectratio,#1]{#2}}}
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+
+% Common prose/code symbols supported only in the print layer.
+\DeclareUnicodeCharacter{00A0}{~}
+\DeclareUnicodeCharacter{03BB}{\ensuremath{\lambda}}
+\DeclareUnicodeCharacter{2011}{\mbox{-}}
+\DeclareUnicodeCharacter{202F}{\,}
+\DeclareUnicodeCharacter{2190}{\ensuremath{\leftarrow}}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
+\DeclareUnicodeCharacter{21D2}{\ensuremath{\Rightarrow}}
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}
+\DeclareUnicodeCharacter{22EF}{\ensuremath{\cdots}}
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+\DeclareUnicodeCharacter{2260}{\ensuremath{\ne}}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\le}}
+\DeclareUnicodeCharacter{2265}{\ensuremath{\ge}}
+\DeclareUnicodeCharacter{25B6}{\ensuremath{\blacktriangleright}}
+
+% Black, breakable teaching callouts; matching local SVG icons are used online.
+\RequirePackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+\newcommand{\handbookcallicon}[1]{%
+  \tikz[baseline=-.6ex,x=1pt,y=1pt,line width=.7pt]{%
+    \ifstrequal{#1}{warning}{\draw (0,0)--(12,0)--(6,11)--cycle;\node at(6,4){\scriptsize\bfseries !};}{%
+    \ifstrequal{#1}{tip}{\draw (6,7) circle(4);\draw (3,3)--(3,0)--(9,0)--(9,3);\draw (4,-2)--(8,-2);}{%
+    \draw (6,5) circle(6);\node at(6,5){\scriptsize\bfseries\ifstrequal{#1}{note}{i}{!}};}}}}
+\newtcolorbox{handbookcallout}[2]{enhanced,breakable,colback=white,colframe=black,
+  colbacktitle=white,coltitle=black,boxrule=.5pt,arc=0pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt,before skip=12pt,after skip=12pt,
+  fonttitle=\normalfont\bfseries,title={\handbookcallicon{#1}\quad #2},
+  parbox=false,before upper={\clubpenalty=10000\widowpenalty=10000}}

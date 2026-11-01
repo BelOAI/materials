@@ -7,7 +7,7 @@ RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash make texlive-latex-base texlive-latex-recommended texlive-latex-extra \
     texlive-fonts-recommended texlive-lang-cyrillic texlive-pictures texlive-science \
-    poppler-utils pandoc texlive-xetex cm-super fontconfig fonts-liberation fonts-dejavu-core \
+    poppler-utils ghostscript pandoc texlive-xetex cm-super fontconfig fonts-liberation fonts-dejavu-core \
  && rm -rf /var/lib/apt/lists/*
 COPY handbooks/ml/00-intro/01-environment/requirements.txt /opt/ci/handbook-requirements.txt
 RUN python -m pip install --no-cache-dir torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu \

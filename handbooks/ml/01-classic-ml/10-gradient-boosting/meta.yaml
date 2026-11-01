@@ -1,0 +1,36 @@
+title: Градиентный бустинг и табличная задача целиком
+slug: gradient-boosting
+description: Строим деревья по очереди, вручную проверяем первый шаг и честно сравниваем бустинг с линейной моделью и лесом.
+status: draft
+build: true
+date: '2026-10-27'
+authors:
+  - name: Алексей Толстиков
+topics:
+  - Последовательное исправление ошибок
+  - Первый шаг бустинга с квадратичной ошибкой
+  - Число деревьев, глубина и скорость обучения
+  - Сравнение моделей и итоговая проверка
+learning_outcomes:
+  - Вычислять остатки и прогноз после первого дерева бустинга.
+  - Объяснять отличие последовательного бустинга от независимых деревьев леса.
+  - Выбирать модель по одинаковым проверочным частям и оценивать её на отдельных данных.
+sync_notebook: true
+resources:
+  - path: notebook.ipynb
+    label: Практика и решения (.ipynb)
+  - path: data/final.csv
+    label: Итоговые заказы без ответов (.csv)
+  - path: data/final_answers.csv
+    label: Ответы для самопроверки (.csv)
+  - path: data/generate.py
+    label: Генератор итоговых заказов (.py)
+  - path: media/first-step.svg
+    label: Схема первого шага (.svg)
+  - path: evaluate.py
+    label: Код сравнения моделей (.py)
+references:
+  - label: scikit-learn — Gradient Boosting
+    url: https://scikit-learn.org/stable/modules/ensemble.html#gradient-boosting
+  - label: scikit-learn — GradientBoostingRegressor
+    url: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html
