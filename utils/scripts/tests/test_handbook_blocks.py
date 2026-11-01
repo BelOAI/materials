@@ -189,6 +189,9 @@ class SemanticBlocksTests(unittest.TestCase):
     @unittest.skipUnless(shutil.which('pandoc'),'Pandoc required')
     def test_quiz_spacing_counts_characters_instead_of_utf8_bytes(self):
         def reserve(character):
-            ast={'pandoc-api-version':[1,23,1],'meta':{},'blocks':[{'t':'Div','c':[['',['handbook-quiz-prompt'],[]],[{'t':'Para','c':[{'t':'Str','c':character*60}]}]]}]}
+            # Use the installed reader's schema: CI and local Pandoc may differ.
+            ast = json.loads(subprocess.check_output(
+                ['pandoc', '-f', 'markdown', '-t', 'json'], input=character * 60, text=True))
+            ast['blocks'] = [{'t': 'Div', 'c': [['', ['handbook-quiz-prompt'], []], ast['blocks']]}]
             return subprocess.check_output(['pandoc','-f','json','-t','latex','--lua-filter',str(REPO_ROOT/'utils/pdf/keep-short-code.lua')],input=json.dumps(ast),text=True).splitlines()[0]
         self.assertEqual(reserve('a'),reserve('я'))
