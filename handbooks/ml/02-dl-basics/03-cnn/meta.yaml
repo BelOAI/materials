@@ -1,0 +1,37 @@
+title: Свёртки и устройство CNN
+slug: cnn
+status: draft
+date: '2026-11-01'
+learning_outcomes:
+- Вычислить отклик фильтра и получить небольшую карту признаков.
+- Объяснить, как расширяется область видимости при последовательном применении свёрток.
+- Объяснить, как один фильтр используется в разных частях изображения.
+references:
+- label: Яндекс — Свёрточные нейросети
+  url: https://education.yandex.ru/handbook/ml/article/svyortochnye-nejroseti
+  adaptation: Базовая последовательность объяснения; без обзора архитектур и продвинутой математики. Текст и схемы созданы заново.
+- label: Яндекс — Область видимости свёрток (иллюстрация)
+  url: https://contest.yandex.ru/tracks/ml/_assets/deep-learning-architectures/convolutional-neural-networks/16_receptive_field_fbd1c12519_af58719882_dc46e45295-framed.svg
+  adaptation: Рисунок 8 основан на указанной пользователем иллюстрации Яндекса. Исходная схема и встроенное изображение сохранены; подписи набраны векторным текстом со встроенным шрифтом PT Sans в обычном начертании и размере текста статьи; внешняя рамка удалена. Для тёмной темы фон и детали адаптируются SVG-фильтром; печатная версия сохраняет светлое оформление.
+- label: Dive into Deep Learning — Convolutions for Images
+  url: https://d2l.ai/chapter_convolutional-neural-networks/conv-layer.html
+  adaptation: Проверка терминов свёртки и корреляции; собственный числовой пример границы.
+- label: Dive into Deep Learning — Multiple Input and Multiple Output Channels
+  url: https://d2l.ai/chapter_convolutional-neural-networks/channels.html
+  adaptation: Проверка роли входных и выходных каналов. Пример совместной обработки входных каналов.
+- label: UC Berkeley CS 189, Fall 2025 — Lecture 18, CNN
+  url: https://eecs189.org/fa25/resources/assets/lectures/lec18/lec18.html
+  adaptation: Идея сопоставить разные фильтры на одной цифре. Собственное изображение с границей, фильтры 2 на 2, пошаговый расчёт обеих карт. Код курса не копируется.
+- label: 'Christopher M. Bishop, Hugh Bishop — Deep Learning: Foundations and Concepts, глава 10'
+  url: https://www.bishopbook.com/
+  adaptation: 'Введение к главе 10 (с. 287–288) и авторский набор рисунков, рисунок 10.5: связь соседних пикселей и двумерное дополнение нулями. Рисунок 7 создан заново для собственного примера 5 × 5 с окном 3 × 3; изображения и текст книги не копируются.'
+description: Разбираем работу фильтра, размер карты признаков и область видимости последовательных свёрток.
+build: true
+authors:
+- name: Максим Банцевич
+sync_notebook: false
+resources:
+- path: notebook.ipynb
+  label: Вычисления и задания на Python (.ipynb)
+- path: generate_figures.py
+  label: Исходник рисунков 1–7 (.py)

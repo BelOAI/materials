@@ -550,7 +550,7 @@ class Builder:
                     heading['c'][1][1].append('handbook-lesson-opening')
                 blocks.append(heading)
             credit = authors_text(item.get('authors', []))
-            if credit and not chapter:
+            if credit and (not chapter or level == 1):
                 blocks.append({'t': 'Para', 'c': [{'t': 'Emph', 'c': [{'t': 'Str', 'c': credit}]}]})
             if item['id'] not in self.prepared:
                 continue
