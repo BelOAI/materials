@@ -4,8 +4,10 @@ description: "Устройство нейросетей: прямой прохо
 status: draft
 paragraphs:
   - 01-from-linear-model-to-neural-network
+  - 02-first-training
   - 03-cnn
 build: true
 authors:
   - name: Евгений Шкумат
   - name: Максим Банцевич
+  - name: Алексей Чернуха

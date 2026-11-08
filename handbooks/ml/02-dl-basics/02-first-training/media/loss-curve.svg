@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="290" viewBox="0 0 600 290" style="--figure-scale:0.75" role="img" aria-labelledby="title desc">
+  <title id="title">Ошибка по эпохам</title>
+  <desc id="desc">График средней ошибки по 200 эпохам обучения: кривая начинается около 0,74, быстро падает в начале, затем снижается всё медленнее и доходит примерно до 0,05 к последней эпохе.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <style>.muted { fill:var(--muted); } .italic { font-style:italic; } .tiny { font-size:calc(13px * var(--figure-scale)); }</style>
+  <defs>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--ink)" />
+    </marker>
+    <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--muted)" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--blue)" />
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--orange)" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--green)" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--red)" />
+    </marker>
+    <marker id="arrow-axis" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <line x1="86.0" y1="194.5" x2="574.0" y2="194.5" stroke="var(--grid)" stroke-width="1" />
+  <text x="74.0" y="199.5" text-anchor="end" class="muted small">0,2</text>
+  <line x1="86.0" y1="149.0" x2="574.0" y2="149.0" stroke="var(--grid)" stroke-width="1" />
+  <text x="74.0" y="154.0" text-anchor="end" class="muted small">0,4</text>
+  <line x1="86.0" y1="103.5" x2="574.0" y2="103.5" stroke="var(--grid)" stroke-width="1" />
+  <text x="74.0" y="108.5" text-anchor="end" class="muted small">0,6</text>
+  <line x1="86.0" y1="58.0" x2="574.0" y2="58.0" stroke="var(--grid)" stroke-width="1" />
+  <text x="74.0" y="63.0" text-anchor="end" class="muted small">0,8</text>
+  <line x1="86.0" y1="240.0" x2="86.0" y2="246.0" stroke="var(--axis)" stroke-width="1" />
+  <text x="86.0" y="266.0" text-anchor="middle" class="muted small">0</text>
+  <line x1="208.0" y1="240.0" x2="208.0" y2="246.0" stroke="var(--axis)" stroke-width="1" />
+  <text x="208.0" y="266.0" text-anchor="middle" class="muted small">50</text>
+  <line x1="330.0" y1="240.0" x2="330.0" y2="246.0" stroke="var(--axis)" stroke-width="1" />
+  <text x="330.0" y="266.0" text-anchor="middle" class="muted small">100</text>
+  <line x1="452.0" y1="240.0" x2="452.0" y2="246.0" stroke="var(--axis)" stroke-width="1" />
+  <text x="452.0" y="266.0" text-anchor="middle" class="muted small">150</text>
+  <line x1="574.0" y1="240.0" x2="574.0" y2="246.0" stroke="var(--axis)" stroke-width="1" />
+  <text x="574.0" y="266.0" text-anchor="middle" class="muted small">200</text>
+  <line x1="86.0" y1="240.0" x2="574.0" y2="240.0" stroke="var(--axis)" stroke-width="1.5" />
+  <line x1="86.0" y1="240.0" x2="86.0" y2="50.0" stroke="var(--axis)" stroke-width="1.5" />
+  <text x="74.0" y="44.0" text-anchor="end" class="muted small">ошибка</text>
+  <text x="574.0" y="288.0" text-anchor="end" class="muted small">эпоха</text>
+  <polyline points="86.0,71.2 88.4,75.4 90.9,79.6 93.3,83.0 95.8,86.5 98.2,89.5 100.6,92.5 103.1,95.2 105.5,97.7 108.0,100.1 110.4,102.2 112.8,104.3 115.3,106.2 117.7,107.9 120.2,109.6 122.6,111.4 125.0,113.1 127.5,114.7 129.9,116.4 132.4,118.1 134.8,119.8 137.2,121.5 139.7,123.2 142.1,124.9 144.6,126.6 147.0,128.3 149.4,129.9 151.9,131.6 154.3,133.3 156.8,134.9 159.2,136.6 161.6,138.2 164.1,139.9 166.5,141.4 169.0,143.1 171.4,144.6 173.8,146.2 176.3,147.8 178.7,149.3 181.2,150.8 183.6,152.3 186.0,153.8 188.5,155.2 190.9,156.7 193.4,158.1 195.8,159.5 198.2,160.9 200.7,162.2 203.1,163.6 205.6,165.0 208.0,166.3 210.4,167.7 212.9,169.1 215.3,170.4 217.8,171.7 220.2,173.0 222.6,174.4 225.1,175.7 227.5,176.9 230.0,178.2 232.4,179.4 234.8,180.6 237.3,181.7 239.7,182.8 242.2,183.9 244.6,184.9 247.0,185.8 249.5,186.8 251.9,187.7 254.4,188.7 256.8,189.6 259.2,190.5 261.7,191.3 264.1,192.1 266.6,192.9 269.0,193.7 271.4,194.4 273.9,195.1 276.3,195.8 278.8,196.5 281.2,197.2 283.6,197.8 286.1,198.5 288.5,199.1 291.0,199.7 293.4,200.3 295.8,200.8 298.3,201.4 300.7,201.9 303.2,202.4 305.6,202.9 308.0,203.5 310.5,204.0 312.9,204.4 315.4,204.9 317.8,205.4 320.2,205.9 322.7,206.4 325.1,206.8 327.6,207.2 330.0,207.7 332.4,208.1 334.9,208.5 337.3,208.9 339.8,209.3 342.2,209.7 344.6,210.1 347.1,210.4 349.5,210.8 352.0,211.2 354.4,211.5 356.8,211.9 359.3,212.3 361.7,212.6 364.2,212.9 366.6,213.3 369.0,213.6 371.5,213.9 373.9,214.2 376.4,214.5 378.8,214.8 381.2,215.1 383.7,215.4 386.1,215.6 388.6,215.8 391.0,216.1 393.4,216.4 395.9,216.7 398.3,216.9 400.8,217.2 403.2,217.4 405.6,217.7 408.1,217.9 410.5,218.1 413.0,218.3 415.4,218.5 417.8,218.8 420.3,219.0 422.7,219.3 425.2,219.5 427.6,219.7 430.0,219.9 432.5,220.1 434.9,220.3 437.4,220.5 439.8,220.7 442.2,220.9 444.7,221.1 447.1,221.3 449.6,221.5 452.0,221.7 454.4,221.9 456.9,222.0 459.3,222.2 461.8,222.4 464.2,222.5 466.6,222.7 469.1,222.8 471.5,223.0 474.0,223.1 476.4,223.3 478.8,223.5 481.3,223.7 483.7,223.9 486.2,224.0 488.6,224.1 491.0,224.2 493.5,224.4 495.9,224.5 498.4,224.7 500.8,224.8 503.2,225.0 505.7,225.1 508.1,225.2 510.6,225.4 513.0,225.5 515.4,225.6 517.9,225.7 520.3,225.9 522.8,226.0 525.2,226.1 527.6,226.2 530.1,226.3 532.5,226.4 535.0,226.5 537.4,226.7 539.8,226.8 542.3,226.9 544.7,227.0 547.2,227.2 549.6,227.3 552.0,227.4 554.5,227.5 556.9,227.6 559.4,227.7 561.8,227.8 564.2,227.9 566.7,228.0 569.1,228.2 571.6,228.3" fill="none" stroke="var(--blue)" stroke-width="2.5" />
+  <circle cx="86.0" cy="71.2" r="5" fill="var(--orange)" stroke="var(--orange)" stroke-width="1.5" />
+  <text x="98.0" y="59.2" text-anchor="start" class="orange small">случайные веса: 0,74</text>
+  <circle cx="571.6" cy="228.3" r="5" fill="var(--green)" stroke="var(--green)" stroke-width="1.5" />
+  <text x="563.6" y="212.3" text-anchor="end" class="green small">после обучения: 0,05</text>
+</svg>
