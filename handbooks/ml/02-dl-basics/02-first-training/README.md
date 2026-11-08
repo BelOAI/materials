@@ -2,7 +2,7 @@
 
 Обучаем небольшую сеть распознавать рукописные цифры 8 на 8: от картинки к вектору из 64 чисел, `MLPClassifier` и `fit`, ошибка и шаг против производной, эпохи и кривая ошибки, десять классов и softmax, честная оценка на отложенных данных.
 
-[Текст](content.md) · [Ноутбук](notebook.ipynb) · [Код рисунков](figures.py) · [От картинки к сети](media/digit-to-net.svg) · [Цикл обучения](media/fit-loop.svg) · [Шаг против производной](media/step.svg) · [Ошибка по эпохам](media/loss-curve.svg) · [Десять вероятностей](media/probabilities.svg) · [Ошибки сети](media/mistakes.svg)
+[Текст](content.md) · [Ноутбук](notebook.ipynb) · [Код рисунков](figures.py) · [От картинки к сети](media/digit-to-net.svg) · [Две ошибки на тройках](media/binary-mistakes.svg) · [Цикл обучения](media/fit-loop.svg) · [Шаг против производной](media/step.svg) · [Ошибка по эпохам](media/loss-curve.svg) · [Десять вероятностей](media/probabilities.svg) · [Ошибки сети](media/mistakes.svg)
 
 Нужны прямой проход и активации из [занятия 2.1](../01-from-linear-model-to-neural-network/README.md), логарифмическая ошибка и градиентный спуск из [занятия 1.6](../../01-classic-ml/06-logistic-regression/README.md), разделение данных и переобучение из занятий [1.7](../../01-classic-ml/07-features-regularization/README.md) и [1.8](../../01-classic-ml/08-honest-evaluation/README.md). PyTorch не требуется: обучение выполняет `MLPClassifier` из scikit-learn. Обратное распространение ошибки только названо; его разбор остаётся за занятием 5.5.
 

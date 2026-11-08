@@ -189,6 +189,10 @@ def experiments():
     net = MLPClassifier(hidden_layer_sizes=(16,), max_iter=200, random_state=0)
     net.fit(X_train, y_train)
 
+    binary_proba = net.predict_proba(X_test)[:, 1]
+    binary_wrong = [(X_test[i].reshape(8, 8) * 16, float(binary_proba[i]))
+                    for i in np.where(net.predict(X_test) != y_test)[0]]
+
     X_all, y_all = digits.data / 16, digits.target
     Xa_train, Xa_test, ya_train, ya_test = train_test_split(
         X_all, y_all, test_size=0.3, random_state=0, stratify=y_all)
@@ -198,6 +202,7 @@ def experiments():
     probabilities = net10.predict_proba(Xa_test)
     return {
         "three": digits.images[3],
+        "binary_wrong": binary_wrong,
         "curve": [float(v) for v in net.loss_curve_],
         "picture": (Xa_test[0] * 16).reshape(8, 8),
         "proba": probabilities[0],
@@ -249,7 +254,24 @@ def fig_digit_to_net(data):
     f.save("digit-to-net")
 
 
-# --- 2. цикл обучения -------------------------------------------------------
+# --- 2. ошибки на тройках и восьмёрках --------------------------------------
+def fig_binary_mistakes(data):
+    items = data["binary_wrong"]
+    f = Figure(460, 214, "Две картинки, на которых сеть ошиблась",
+               "Две картинки 8 на 8 из проверочной части: обе — тройки, которые сеть приняла "
+               f"за восьмёрки с вероятностями {num(items[0][1])} и {num(items[1][1])}.")
+    f.text(230, 28, "обе картинки — тройки", "muted small", "middle")
+    side, gap = 92, 110
+    x0 = (460 - 2 * side - gap) / 2
+    for index, (image, probability) in enumerate(items[:2]):
+        x = x0 + index * (side + gap)
+        f.picture(image, x, 48, side)
+        f.text(x + side / 2, 166, "сеть: восьмёрка", "b red", "middle")
+        f.text(x + side / 2, 190, f"вероятность {num(probability)}", "muted small", "middle")
+    f.save("binary-mistakes")
+
+
+# --- 3. цикл обучения -------------------------------------------------------
 def fig_fit_loop():
     f = Figure(620, 252, "Цикл обучения внутри fit",
                "Три карточки по кругу: прогноз сети, ошибка по правильным ответам и поправка "
@@ -276,7 +298,7 @@ def fig_fit_loop():
     f.save("fit-loop")
 
 
-# --- 3. шаг против производной ----------------------------------------------
+# --- 4. шаг против производной ----------------------------------------------
 def fig_step():
     f = Figure(600, 300, "Шаг против производной",
                "Кривая ошибки в зависимости от одного веса. В текущей точке проведена касательная "
@@ -330,7 +352,7 @@ def fig_step():
     f.save("step")
 
 
-# --- 4. ошибка по эпохам ----------------------------------------------------
+# --- 5. ошибка по эпохам ----------------------------------------------------
 def fig_loss_curve(data):
     curve = data["curve"]
     f = Figure(600, 290, "Ошибка по эпохам",
@@ -368,7 +390,7 @@ def fig_loss_curve(data):
     f.save("loss-curve")
 
 
-# --- 5. десять вероятностей -------------------------------------------------
+# --- 6. десять вероятностей -------------------------------------------------
 def fig_probabilities(data):
     proba = data["proba"]
     best = int(np.argmax(proba))
@@ -397,7 +419,7 @@ def fig_probabilities(data):
     f.save("probabilities")
 
 
-# --- 6. ошибки сети ---------------------------------------------------------
+# --- 7. ошибки сети ---------------------------------------------------------
 def fig_mistakes(data):
     items = data["wrong"]
     pairs = ", ".join(f"{true} сеть назвала {pred}" for _, true, pred, _ in items)
@@ -420,6 +442,7 @@ if __name__ == "__main__":
     MEDIA.mkdir(exist_ok=True)
     data = experiments()
     fig_digit_to_net(data)
+    fig_binary_mistakes(data)
     fig_fit_loop()
     fig_step()
     fig_loss_curve(data)
