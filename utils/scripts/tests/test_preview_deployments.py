@@ -93,7 +93,8 @@ class DeploymentTests(unittest.TestCase):
 
     def test_success_then_cleanup_and_idempotent_prepare(self):
         current, old, other = self.existing(2, run=9), self.existing(1), {'id': 99, 'payload': {}}
-        with patch.object(deploy, 'pages', side_effect=[iter([current, old, other]), iter([{'state': 'success'}])]), \
+        with patch.object(deploy, 'pages', side_effect=[iter([current, old, other]), iter([{'state': 'success'}]),
+                                                       iter([{'state': 'success'}])]), \
                 patch.object(deploy, 'api') as api:
             deploy.prepare('org/repo', {'pr-7': self.item})
             api.assert_not_called()  # same run does not create a duplicate or hide a good version
@@ -123,12 +124,21 @@ class DeploymentTests(unittest.TestCase):
         old, other = self.existing(1), self.existing(3, pr=8)
         item8 = dict(self.item, pr=8, root='test/pr-8/')
         other['payload']['run_id'] = 9
-        with patch.object(deploy, 'pages', side_effect=[iter([old, other]), iter([]), iter([{'state': 'success'}])]), \
+        with patch.object(deploy, 'pages', side_effect=[iter([old, other]), iter([]), iter([{'state': 'success'}]),
+                                                       iter([{'state': 'success'}])]), \
                 patch.object(deploy, 'api', return_value={'id': 2}) as api:
             deploy.prepare('org/repo', {'pr-7': self.item, 'pr-8': item8})
             deploy.finish('org/repo', 'success')
             inactive = [c.args[0] for c in api.call_args_list if c.kwargs['data'].get('state') == 'inactive']
             self.assertEqual(inactive, ['repos/org/repo/deployments/1/statuses'])
+
+    def test_already_inactive_deployment_is_not_updated_again(self):
+        deploy.STATE.parent.mkdir(parents=True, exist_ok=True)
+        deploy.STATE.write_text(json.dumps({'previews': {}, 'previous': [{'id': 7317904467}]}))
+        with patch.object(deploy, 'pages', return_value=iter([{'state': 'inactive'}])), \
+                patch.object(deploy, 'api') as api:
+            deploy.finish('org/repo', 'success')
+            api.assert_not_called()
 
     def test_dev_creates_persistent_nonproduction_deployment(self):
         item = {'sha': 'dev-head', 'run_id': 42, 'root': 'dev/'}
@@ -153,7 +163,8 @@ class DeploymentTests(unittest.TestCase):
         old_dev = dict(dev, id=3, sha='previous-head')
         pr = self.existing(2, run=9)
         with patch.object(deploy, 'pages', side_effect=[iter([dev, old_dev, pr]),
-                                                       iter([{'state': 'success'}]), iter([{'state': 'success'}])]), \
+                                                       iter([{'state': 'success'}]), iter([{'state': 'success'}]),
+                                                       iter([{'state': 'success'}])]), \
                 patch.object(deploy, 'api') as api:
             deploy.prepare('org/repo', {'dev': item, 'pr-7': self.item})
             api.assert_not_called()
