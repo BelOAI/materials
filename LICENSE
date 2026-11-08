@@ -37,4 +37,5 @@ README разделов следуют лицензии своего разде�
 - KaTeX распространяется под MIT; сборка публикует его лицензию в `assets/katex/LICENSE`. Используемые при сборке markdown-it и markdown-it-texmath также распространяются под MIT.
 - Значок Python в `utils/site/assets/python-logo.svg` — официальный логотип Python Software Foundation. [Источник и условия использования](https://www.python.org/community/logos/). На него не распространяется MIT собственного кода интерфейса.
 - Иконки в `utils/site/assets/fontawesome/` — Font Awesome Free 6.7.2, CC BY 4.0. [Источник](https://github.com/FortAwesome/Font-Awesome/tree/6.7.2/svgs/brands), [официальный текст лицензии](utils/site/assets/fontawesome/LICENSE.txt). Они не входят в MIT собственного кода; товарные знаки принадлежат соответствующим владельцам.
+- `handbooks/ml/02-dl-basics/04-embeddings/data/glove-twitter.npz` — выборка векторов GloVe Twitter (Stanford NLP), [PDDL 1.0](https://opendatacommons.org/licenses/pddl/1-0/). Происхождение и способ сборки описаны в README параграфа.
 - В `handbooks/ml/references/` находятся только описания и ссылки. Лицензии репозитория не распространяются на материалы внешних источников.

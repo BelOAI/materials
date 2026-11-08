@@ -22,6 +22,10 @@ def status(repo, deployment, state, *, root='', description=''):
     })
 
 
+def latest_status(repo, deployment):
+    return next(pages(f'repos/{repo}/deployments/{deployment}/statuses', None), None)
+
+
 def owned(deployment):
     payload = deployment.get('payload') or {}
     return isinstance(payload, dict) and payload.get('owner') == OWNER
@@ -72,7 +76,11 @@ def finish(repo, result):
         status(repo, item['id'], 'success', root=item['root'], description='Тестовый сайт опубликован')
     active = {item['id'] for item in current.values()}
     for old in state['previous']:
-        if old['id'] not in active:
+        if old['id'] in active:
+            continue
+        # GitHub rejects redundant inactive transitions for deployments already retired.
+        previous = latest_status(repo, old['id'])
+        if previous is None or previous['state'] != 'inactive':
             status(repo, old['id'], 'inactive', description='Версия заменена или тестовый сайт удалён')
 
 

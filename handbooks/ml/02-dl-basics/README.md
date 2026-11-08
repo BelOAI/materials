@@ -8,8 +8,9 @@
 
 ## Оглавление
 
-- [От линейной модели к нейросети](01-from-linear-model-to-neural-network/README.md)
-- [Первое обучение нейросети](02-first-training/README.md)
-- [Свёртки и устройство CNN](03-cnn/content.md)
+1. [От линейной модели к нейросети](01-from-linear-model-to-neural-network/README.md)
+2. [Первое обучение нейросети](02-first-training/README.md)
+3. [Свёртки и устройство CNN](03-cnn/content.md)
+4. [Эмбеддинги и представление текста](04-embeddings/README.md)
 
 Остальные параграфы будут добавляться по мере подготовки. Порядок задаётся в `meta.yaml`.

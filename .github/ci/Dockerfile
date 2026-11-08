@@ -10,8 +10,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     poppler-utils ghostscript pandoc texlive-xetex cm-super fontconfig fonts-liberation fonts-dejavu-core \
  && rm -rf /var/lib/apt/lists/*
 COPY handbooks/ml/00-intro/01-environment/requirements.txt /opt/ci/handbook-requirements.txt
-RUN python -m pip install --no-cache-dir torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu \
- && python -m pip install --no-cache-dir -r /opt/ci/handbook-requirements.txt
+# gensim не публикует wheel для Python 3.14, а в его архиве с исходниками лежит C-код
+# от старого Cython. В git-теге только .pyx, поэтому расширения пересобираются текущим
+# Cython; компилятор нужен лишь для этой сборки. Версия совпадает с requirements.txt.
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential git \
+ && python -m pip install --no-cache-dir torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu \
+ && python -m pip install --no-cache-dir "gensim @ git+https://github.com/piskvorky/gensim@4.4.0" \
+ && python -m pip install --no-cache-dir -r /opt/ci/handbook-requirements.txt \
+ && rm -rf /var/lib/apt/lists/*
 COPY .github/ci/requirements.txt /opt/ci/requirements.txt
 RUN python -m pip install --no-cache-dir -r /opt/ci/requirements.txt
 COPY utils/pdf/requirements.txt /opt/ci/pdf-requirements.txt

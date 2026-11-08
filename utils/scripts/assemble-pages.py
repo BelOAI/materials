@@ -24,7 +24,10 @@ def api(path, binary=False, *, method=None, data=None):
     if data is not None:
         command += ['--input', '-']
     result = subprocess.run(command, input=json.dumps(data).encode() if data is not None else None,
-                            capture_output=True, check=True)
+                            capture_output=True)
+    if result.returncode:
+        detail = result.stderr.decode(errors='replace').strip()
+        raise RuntimeError(f'Команда {command[0]} завершилась с кодом {result.returncode}: {detail}')
     return result.stdout if binary else json.loads(result.stdout)
 
 
