@@ -1,0 +1,32 @@
+slug: object-detection
+title: Находим объекты на изображении
+description: Читаем рамки и маски готовых моделей, меняем порог показа и разбираем ошибки обнаружения.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-08'
+authors:
+  - name: Алексей Толстиков
+topics:
+  - Рамки и координаты
+  - Оценка и порог
+  - Перекрытие IoU
+  - Маски экземпляров
+learning_outcomes:
+  - Запускать готовый детектор и читать классы, рамки и оценки.
+  - Объяснять влияние порога на пропуски и лишние обнаружения.
+  - Отличать рамку от маски и проверять результат на исходном снимке.
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/box-coordinates.svg
+    label: Координаты рамки (.svg)
+  - path: media/detection-flow.svg
+    label: Схема обнаружения объектов (.svg)
+references:
+  - label: TorchVision — Object Detection Finetuning Tutorial
+    url: https://docs.pytorch.org/tutorials/intermediate/torchvision_tutorial.html
+  - label: TorchVision — Faster R-CNN ResNet-50 FPN V2
+    url: https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.detection.fasterrcnn_resnet50_fpn_v2.html
+  - label: TorchVision — Mask R-CNN ResNet-50 FPN V2
+    url: https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.detection.maskrcnn_resnet50_fpn_v2.html

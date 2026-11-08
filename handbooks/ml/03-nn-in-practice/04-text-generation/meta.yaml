@@ -1,0 +1,30 @@
+slug: text-generation
+title: Генерируем текст языковой моделью
+description: Продолжаем текст готовой моделью, сравниваем настройки генерации и отдельно проверяем факты.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-08'
+authors:
+  - name: Алексей Толстиков
+topics:
+  - Следующий токен
+  - Жадный выбор и сэмплирование
+  - Длина и воспроизводимость
+  - Проверка утверждений
+learning_outcomes:
+  - Запускать готовую модель продолжения текста и выделять новые токены.
+  - Сравнивать режимы генерации при контролируемых условиях.
+  - Проверять фактические утверждения независимо от плавности ответа.
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/generation-loop.svg
+    label: Цикл генерации (.svg)
+  - path: media/temperature.svg
+    label: Температура и доли токенов (.svg)
+references:
+  - label: Hugging Face — Text generation
+    url: https://huggingface.co/docs/transformers/main_classes/text_generation
+  - label: ai-forever — ruGPT-3 small model card
+    url: https://huggingface.co/ai-forever/rugpt3small_based_on_gpt2

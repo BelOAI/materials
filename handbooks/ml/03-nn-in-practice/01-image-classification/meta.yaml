@@ -1,0 +1,28 @@
+slug: image-classification
+title: Распознаём изображения готовой моделью
+description: Загружаем классификатор изображений, читаем его top-3 и проверяем влияние подготовки и условий съёмки.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-08'
+authors:
+  - name: Алексей Толстиков
+topics:
+  - Инференс и классы готовой модели
+  - Логиты и softmax
+  - Подготовка изображения и top-3
+  - Проверка ошибок на своих снимках
+learning_outcomes:
+  - Запускать готовый классификатор на изображении и читать три ведущих класса.
+  - Объяснять ограничения списка классов и оценок softmax.
+  - Сравнивать ответы на нескольких снимках при неизменных весах.
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/classification-flow.svg
+    label: Схема классификации (.svg)
+references:
+  - label: Hugging Face — Image classification
+    url: https://huggingface.co/docs/transformers/tasks/image_classification
+  - label: Microsoft — ResNet-18 model card
+    url: https://huggingface.co/microsoft/resnet-18

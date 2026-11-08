@@ -1,0 +1,32 @@
+slug: text-models
+title: Работаем с текстом готовой моделью
+description: Сравниваем классификацию тональности и поиск близких фраз, проверяя отрицание и языковые ограничения.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-08'
+authors:
+  - name: Алексей Толстиков
+topics:
+  - Метки тональности
+  - Эмбеддинги предложений
+  - Косинусное сходство
+  - Проверка языка и отрицания
+learning_outcomes:
+  - Запускать готовый классификатор коротких русских текстов.
+  - Находить ближайшие фразы по эмбеддингам и объяснять смысл косинуса.
+  - Разбирать ошибки на отрицании и белорусском тексте.
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/text-tasks.svg
+    label: Схема двух текстовых задач (.svg)
+references:
+  - label: Hugging Face — Text classification
+    url: https://huggingface.co/docs/transformers/tasks/sequence_classification
+  - label: Hugging Face — Russian sentiment model card
+    url: https://huggingface.co/blanchefort/rubert-base-cased-sentiment
+  - label: Sentence Transformers — Semantic search
+    url: https://sbert.net/examples/sentence_transformer/applications/semantic-search/README.html
+  - label: Hugging Face — Multilingual MiniLM model card
+    url: https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2

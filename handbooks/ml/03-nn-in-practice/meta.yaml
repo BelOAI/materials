@@ -1,5 +1,13 @@
 slug: nn-in-practice
 title: Нейросети на практике
-description: Практическая работа с нейросетями.
-status: planned
-paragraphs: []
+description: Запускаем готовые модели для изображений и текста, проверяем их ответы и воспроизводимость опыта.
+status: draft
+build: true
+paragraphs:
+  - 01-image-classification
+  - 02-object-detection
+  - 03-text-models
+  - 04-text-generation
+  - 05-image-text-search
+authors:
+  - name: Алексей Толстиков

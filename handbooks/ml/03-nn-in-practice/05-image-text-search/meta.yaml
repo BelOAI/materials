@@ -1,0 +1,28 @@
+slug: image-text-search
+title: Ищем изображения по описанию
+description: Сопоставляем изображения и текст через CLIP, исследуем формулировки и собираем небольшой поиск.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-08'
+authors:
+  - name: Алексей Толстиков
+topics:
+  - Общее пространство изображений и текста
+  - Ранжирование снимков
+  - Выбор среди своих описаний
+  - Проверка формулировок и языков
+learning_outcomes:
+  - Запускать CLIP для поиска по небольшой коллекции.
+  - Читать формы матрицы оценок и ранжировать кандидатов.
+  - Проверять влияние формулировки и отсутствие подходящего результата.
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/clip-search.svg
+    label: Схема поиска по описанию (.svg)
+references:
+  - label: Hugging Face — CLIP model
+    url: https://huggingface.co/docs/transformers/model_doc/clip
+  - label: OpenAI — CLIP model card
+    url: https://huggingface.co/openai/clip-vit-base-patch32
