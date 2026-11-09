@@ -1,0 +1,17 @@
+slug: language-model
+title: Как языковая модель продолжает текст
+description: Прослеживаем причинную маску, предсказание следующего токена и отличие обучения от генерации.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-09'
+authors:
+  - name: Алексей Толстиков
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/concept.svg
+    label: Схема ключевого механизма (.svg)
+references:
+  - label: Hugging Face — Causal language modeling
+    url: https://huggingface.co/docs/transformers/tasks/language_modeling

@@ -1,0 +1,17 @@
+slug: clip
+title: Как CLIP связывает изображения и текст
+description: Разбираем два энкодера, матрицу сходства и обучение на парах изображения и описания.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-09'
+authors:
+  - name: Алексей Толстиков
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/concept.svg
+    label: Схема ключевого механизма (.svg)
+references:
+  - label: Learning Transferable Visual Models From Natural Language Supervision
+    url: https://arxiv.org/abs/2103.00020

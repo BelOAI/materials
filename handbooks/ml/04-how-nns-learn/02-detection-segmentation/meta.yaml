@@ -1,0 +1,17 @@
+slug: detection-segmentation
+title: Как сеть предсказывает рамки и маски
+description: Сравниваем обучение детектора, маску экземпляра и пиксельную карту U-Net.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-09'
+authors:
+  - name: Алексей Толстиков
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/concept.svg
+    label: Схема ключевого механизма (.svg)
+references:
+  - label: 'U-Net: Convolutional Networks for Biomedical Image Segmentation'
+    url: https://arxiv.org/abs/1505.04597

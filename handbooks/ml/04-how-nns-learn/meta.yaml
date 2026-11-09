@@ -1,5 +1,13 @@
 slug: how-nns-learn
 title: Как учатся нейросети
-description: Механизмы обучения нейросетей.
-status: planned
-paragraphs: []
+description: Разбираем архитектуры и обучение моделей, которые применили к изображениям и тексту.
+status: draft
+build: true
+paragraphs:
+  - 01-cnn-resnet
+  - 02-detection-segmentation
+  - 03-text-encoder
+  - 04-language-model
+  - 05-clip
+authors:
+  - name: Алексей Толстиков

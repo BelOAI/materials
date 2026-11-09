@@ -1,0 +1,17 @@
+slug: text-encoder
+title: Как текстовый энкодер строит контекст
+description: Разбираем токены, двустороннее внимание BERT и обучение восстановлению скрытого слова.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-09'
+authors:
+  - name: Алексей Толстиков
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/concept.svg
+    label: Схема ключевого механизма (.svg)
+references:
+  - label: 'BERT: Pre-training of Deep Bidirectional Transformers'
+    url: https://arxiv.org/abs/1810.04805

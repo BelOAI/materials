@@ -1,0 +1,17 @@
+slug: cnn-resnet
+title: Как CNN и ResNet распознают изображения
+description: Прослеживаем карты признаков, остаточную связь и обучение нового классификатора поверх готовой сети.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-09'
+authors:
+  - name: Алексей Толстиков
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/concept.svg
+    label: Схема ключевого механизма (.svg)
+references:
+  - label: PyTorch — ResNet
+    url: https://pytorch.org/vision/stable/models/resnet.html

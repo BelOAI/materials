@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="260" viewBox="0 0 560 260" role="img" aria-labelledby="title desc">
+  <title id="title">Причинная маска</title>
+  <desc id="desc">Строка i может читать только столбцы от 1 до i. Будущие клетки закрыты.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <text class="small" x="280" y="29" text-anchor="middle">Доступ к позиции столбца</text>
+  <text class="small" x="190" y="56" text-anchor="middle">1</text>
+  <text class="small" x="125" y="86" text-anchor="middle">1</text>
+  <rect x="166" y="62" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="190" y="84" text-anchor="middle">да</text>
+  <rect x="228" y="62" width="48" height="30" rx="4" fill="var(--red-bg)" stroke="var(--red)" stroke-width="1.5" />
+  <text class="small" x="252" y="84" text-anchor="middle">нет</text>
+  <rect x="290" y="62" width="48" height="30" rx="4" fill="var(--red-bg)" stroke="var(--red)" stroke-width="1.5" />
+  <text class="small" x="314" y="84" text-anchor="middle">нет</text>
+  <rect x="352" y="62" width="48" height="30" rx="4" fill="var(--red-bg)" stroke="var(--red)" stroke-width="1.5" />
+  <text class="small" x="376" y="84" text-anchor="middle">нет</text>
+  <text class="small" x="252" y="56" text-anchor="middle">2</text>
+  <text class="small" x="125" y="128" text-anchor="middle">2</text>
+  <rect x="166" y="104" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="190" y="126" text-anchor="middle">да</text>
+  <rect x="228" y="104" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="252" y="126" text-anchor="middle">да</text>
+  <rect x="290" y="104" width="48" height="30" rx="4" fill="var(--red-bg)" stroke="var(--red)" stroke-width="1.5" />
+  <text class="small" x="314" y="126" text-anchor="middle">нет</text>
+  <rect x="352" y="104" width="48" height="30" rx="4" fill="var(--red-bg)" stroke="var(--red)" stroke-width="1.5" />
+  <text class="small" x="376" y="126" text-anchor="middle">нет</text>
+  <text class="small" x="314" y="56" text-anchor="middle">3</text>
+  <text class="small" x="125" y="170" text-anchor="middle">3</text>
+  <rect x="166" y="146" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="190" y="168" text-anchor="middle">да</text>
+  <rect x="228" y="146" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="252" y="168" text-anchor="middle">да</text>
+  <rect x="290" y="146" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="314" y="168" text-anchor="middle">да</text>
+  <rect x="352" y="146" width="48" height="30" rx="4" fill="var(--red-bg)" stroke="var(--red)" stroke-width="1.5" />
+  <text class="small" x="376" y="168" text-anchor="middle">нет</text>
+  <text class="small" x="376" y="56" text-anchor="middle">4</text>
+  <text class="small" x="125" y="212" text-anchor="middle">4</text>
+  <rect x="166" y="188" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="190" y="210" text-anchor="middle">да</text>
+  <rect x="228" y="188" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="252" y="210" text-anchor="middle">да</text>
+  <rect x="290" y="188" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="314" y="210" text-anchor="middle">да</text>
+  <rect x="352" y="188" width="48" height="30" rx="4" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.5" />
+  <text class="small" x="376" y="210" text-anchor="middle">да</text>
+</svg>
