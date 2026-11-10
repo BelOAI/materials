@@ -1,0 +1,17 @@
+slug: loss
+title: Что задаёт функция потерь
+description: Сравниваем ошибки регрессии, классификации и сопоставления пар и отделяем цель обучения от оценки качества.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-10'
+authors:
+  - name: Алексей Толстиков
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/concept.svg
+    label: Схема выбора ошибки (.svg)
+references:
+  - label: scikit-learn — метрики регрессии и классификации
+    url: https://scikit-learn.org/stable/api/sklearn.metrics.html

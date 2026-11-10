@@ -1,0 +1,17 @@
+slug: representations-distillation
+title: Представления и дистилляция
+description: Исследуем сходство эмбеддингов и показываем, как малая модель учится на распределении ответов большой.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-10'
+authors:
+  - name: Алексей Толстиков
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/concept.svg
+    label: Схема представлений и ученика (.svg)
+references:
+  - label: Distilling the Knowledge in a Neural Network
+    url: https://arxiv.org/abs/1503.02531

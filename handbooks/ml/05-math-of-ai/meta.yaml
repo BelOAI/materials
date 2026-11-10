@@ -1,5 +1,13 @@
 slug: math-of-ai
 title: Математика ИИ
-description: Математические основы искусственного интеллекта.
-status: planned
-paragraphs: []
+description: Как цель обучения, градиенты, представления, температура и размер модели влияют на работу ИИ.
+status: draft
+build: true
+paragraphs:
+  - 01-loss
+  - 02-gradients
+  - 03-representations-distillation
+  - 04-temperature-confidence
+  - 05-size-quantization
+authors:
+  - name: Алексей Толстиков

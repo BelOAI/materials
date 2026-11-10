@@ -1,0 +1,17 @@
+slug: gradients
+title: Как ошибка меняет веса сети
+description: Прослеживаем изменение веса и смещения через градиент и проверяем расчёт автоматическим дифференцированием.
+status: draft
+build: true
+sync_notebook: false
+date: '2026-11-10'
+authors:
+  - name: Алексей Толстиков
+resources:
+  - path: notebook.ipynb
+    label: Практика и эксперименты (.ipynb)
+  - path: media/concept.svg
+    label: Схема шага обучения (.svg)
+references:
+  - label: PyTorch — Automatic Differentiation with torch.autograd
+    url: https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html
