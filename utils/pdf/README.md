@@ -23,6 +23,8 @@ brew install pandoc poppler
 
 CI-образ включает PDF-инструменты и Chromium в `/opt/playwright`, доступный непривилегированному пользователю сборки. Команды `site` и `handbooks` PDF учебников не собирают; для них предназначен отдельный workflow `Handbook PDF`.
 
+Если установленный Playwright Chromium не запускается локально, можно указать полный путь к рабочему браузеру на основе Chromium через `BELOAI_PDF_BROWSER_EXECUTABLE`. Путь действует только для текущего процесса сборки; кэш SVG учитывает содержимое выбранного исполняемого файла. Например, в PowerShell: `$env:BELOAI_PDF_BROWSER_EXECUTABLE = 'C:\Program Files\Google\Chrome\Application\chrome.exe'`.
+
 ## Команды
 
 Из корня репозитория:

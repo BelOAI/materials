@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="470" viewBox="0 0 1120 470" role="img" aria-labelledby="title desc" style="--figure-scale:1">
+  <title id="title">Второй и третий раунды K-means</title>
+  <desc id="desc">Во втором раунде O, P, R, S и U переходят во вторую группу, размеры групп 15 и 7. В третьем переходят N и Q, размеры 13 и 9.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <text x="280" y="43" text-anchor="middle" class="heading">Раунд 2: 15 и 7</text>
+  <text x="280" y="78" text-anchor="middle" class="s m">Распределили точки, пересчитали центры</text>
+  <rect x="40" y="105" width="486" height="307" rx="8" fill="none" stroke="var(--edge)" />
+  <path d="M72 132 V366" class="grid" />
+  <text x="72" y="397" text-anchor="middle" class="s m">0</text>
+  <path d="M202 132 V366" class="grid" />
+  <text x="202" y="397" text-anchor="middle" class="s m">5</text>
+  <path d="M332 132 V366" class="grid" />
+  <text x="332" y="397" text-anchor="middle" class="s m">10</text>
+  <path d="M462 132 V366" class="grid" />
+  <text x="462" y="397" text-anchor="middle" class="s m">15</text>
+  <path d="M72 366 H462" class="grid" />
+  <text x="55" y="372" text-anchor="end" class="s m">0</text>
+  <path d="M72 288 H462" class="grid" />
+  <text x="55" y="294" text-anchor="end" class="s m">3</text>
+  <path d="M72 210 H462" class="grid" />
+  <text x="55" y="216" text-anchor="end" class="s m">6</text>
+  <path d="M72 132 H462" class="grid" />
+  <text x="55" y="138" text-anchor="end" class="s m">9</text>
+  <path d="M72 132 V366 H462" class="axis" />
+  <text x="478" y="373" class="s i m">x</text>
+  <text x="64" y="119" class="s i m">y</text>
+  <path d="M203.3 245.1 L151.7 263.7" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-dasharray="6 4" />
+  <path d="M203.3 234.1 L214.3 245.1 L203.3 256.1 L192.3 245.1 Z" fill="var(--paper)" stroke="var(--blue)" stroke-width="2.5" />
+  <path d="M423.0 171.0 L376.6 184.0" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-dasharray="6 4" />
+  <path d="M423.0 160.0 L434.0 171.0 L423.0 182.0 L412.0 171.0 Z" fill="var(--paper)" stroke="var(--orange)" stroke-width="2.5" />
+  <circle cx="98" cy="340" r="5.5" fill="var(--blue)" />
+  <circle cx="124" cy="340" r="5.5" fill="var(--blue)" />
+  <circle cx="98" cy="314" r="5.5" fill="var(--blue)" />
+  <circle cx="124" cy="314" r="5.5" fill="var(--blue)" />
+  <circle cx="124" cy="288" r="5.5" fill="var(--blue)" />
+  <circle cx="150" cy="288" r="5.5" fill="var(--blue)" />
+  <circle cx="98" cy="262" r="5.5" fill="var(--blue)" />
+  <circle cx="124" cy="262" r="5.5" fill="var(--blue)" />
+  <circle cx="150" cy="262" r="5.5" fill="var(--blue)" />
+  <circle cx="98" cy="236" r="5.5" fill="var(--blue)" />
+  <circle cx="124" cy="236" r="5.5" fill="var(--blue)" />
+  <circle cx="124" cy="210" r="5.5" fill="var(--blue)" />
+  <circle cx="254" cy="210" r="5.5" fill="var(--blue)" />
+  <circle cx="306" cy="210" r="5.5" fill="var(--blue)" />
+  <circle cx="358" cy="210" r="10" fill="none" stroke="var(--purple)" stroke-width="2.5" />
+  <circle cx="358" cy="210" r="5.5" fill="var(--orange)" />
+  <circle cx="410" cy="210" r="10" fill="none" stroke="var(--purple)" stroke-width="2.5" />
+  <circle cx="410" cy="210" r="5.5" fill="var(--orange)" />
+  <circle cx="280" cy="184" r="5.5" fill="var(--blue)" />
+  <circle cx="332" cy="184" r="10" fill="none" stroke="var(--purple)" stroke-width="2.5" />
+  <circle cx="332" cy="184" r="5.5" fill="var(--orange)" />
+  <circle cx="384" cy="184" r="10" fill="none" stroke="var(--purple)" stroke-width="2.5" />
+  <circle cx="384" cy="184" r="5.5" fill="var(--orange)" />
+  <circle cx="436" cy="184" r="5.5" fill="var(--orange)" />
+  <circle cx="306" cy="158" r="10" fill="none" stroke="var(--purple)" stroke-width="2.5" />
+  <circle cx="306" cy="158" r="5.5" fill="var(--orange)" />
+  <circle cx="410" cy="158" r="5.5" fill="var(--orange)" />
+  <path d="M151.7 252.7 L162.7 263.7 L151.7 274.7 L140.7 263.7 Z" fill="var(--blue)" stroke="var(--blue)" stroke-width="2.5" />
+  <path d="M376.6 173.0 L387.6 184.0 L376.6 195.0 L365.6 184.0 Z" fill="var(--orange)" stroke="var(--orange)" stroke-width="2.5" />
+  <text x="280" y="445" text-anchor="middle" class="s">Перешли: O, P, R, S, U    J = 173,30</text>
+  <text x="840" y="43" text-anchor="middle" class="heading">Раунд 3: 13 и 9</text>
+  <text x="840" y="78" text-anchor="middle" class="s m">Распределили точки, пересчитали центры</text>
+  <rect x="600" y="105" width="486" height="307" rx="8" fill="none" stroke="var(--edge)" />
+  <path d="M632 132 V366" class="grid" />
+  <text x="632" y="397" text-anchor="middle" class="s m">0</text>
+  <path d="M762 132 V366" class="grid" />
+  <text x="762" y="397" text-anchor="middle" class="s m">5</text>
+  <path d="M892 132 V366" class="grid" />
+  <text x="892" y="397" text-anchor="middle" class="s m">10</text>
+  <path d="M1022 132 V366" class="grid" />
+  <text x="1022" y="397" text-anchor="middle" class="s m">15</text>
+  <path d="M632 366 H1022" class="grid" />
+  <text x="615" y="372" text-anchor="end" class="s m">0</text>
+  <path d="M632 288 H1022" class="grid" />
+  <text x="615" y="294" text-anchor="end" class="s m">3</text>
+  <path d="M632 210 H1022" class="grid" />
+  <text x="615" y="216" text-anchor="end" class="s m">6</text>
+  <path d="M632 132 H1022" class="grid" />
+  <text x="615" y="138" text-anchor="end" class="s m">9</text>
+  <path d="M632 132 V366 H1022" class="axis" />
+  <text x="1038" y="373" class="s i m">x</text>
+  <text x="624" y="119" class="s i m">y</text>
+  <path d="M711.7 263.7 L690.0 274.0" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-dasharray="6 4" />
+  <path d="M711.7 252.7 L722.7 263.7 L711.7 274.7 L700.7 263.7 Z" fill="var(--paper)" stroke="var(--blue)" stroke-width="2.5" />
+  <path d="M936.6 184.0 L918.0 186.9" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-dasharray="6 4" />
+  <path d="M936.6 173.0 L947.6 184.0 L936.6 195.0 L925.6 184.0 Z" fill="var(--paper)" stroke="var(--orange)" stroke-width="2.5" />
+  <circle cx="658" cy="340" r="5.5" fill="var(--blue)" />
+  <circle cx="684" cy="340" r="5.5" fill="var(--blue)" />
+  <circle cx="658" cy="314" r="5.5" fill="var(--blue)" />
+  <circle cx="684" cy="314" r="5.5" fill="var(--blue)" />
+  <circle cx="684" cy="288" r="5.5" fill="var(--blue)" />
+  <circle cx="710" cy="288" r="5.5" fill="var(--blue)" />
+  <circle cx="658" cy="262" r="5.5" fill="var(--blue)" />
+  <circle cx="684" cy="262" r="5.5" fill="var(--blue)" />
+  <circle cx="710" cy="262" r="5.5" fill="var(--blue)" />
+  <circle cx="658" cy="236" r="5.5" fill="var(--blue)" />
+  <circle cx="684" cy="236" r="5.5" fill="var(--blue)" />
+  <circle cx="684" cy="210" r="5.5" fill="var(--blue)" />
+  <circle cx="814" cy="210" r="5.5" fill="var(--blue)" />
+  <circle cx="866" cy="210" r="10" fill="none" stroke="var(--purple)" stroke-width="2.5" />
+  <circle cx="866" cy="210" r="5.5" fill="var(--orange)" />
+  <circle cx="918" cy="210" r="5.5" fill="var(--orange)" />
+  <circle cx="970" cy="210" r="5.5" fill="var(--orange)" />
+  <circle cx="840" cy="184" r="10" fill="none" stroke="var(--purple)" stroke-width="2.5" />
+  <circle cx="840" cy="184" r="5.5" fill="var(--orange)" />
+  <circle cx="892" cy="184" r="5.5" fill="var(--orange)" />
+  <circle cx="944" cy="184" r="5.5" fill="var(--orange)" />
+  <circle cx="996" cy="184" r="5.5" fill="var(--orange)" />
+  <circle cx="866" cy="158" r="5.5" fill="var(--orange)" />
+  <circle cx="970" cy="158" r="5.5" fill="var(--orange)" />
+  <path d="M690.0 263.0 L701.0 274.0 L690.0 285.0 L679.0 274.0 Z" fill="var(--blue)" stroke="var(--blue)" stroke-width="2.5" />
+  <path d="M918.0 175.9 L929.0 186.9 L918.0 197.9 L907.0 186.9 Z" fill="var(--orange)" stroke="var(--orange)" stroke-width="2.5" />
+  <text x="840" y="445" text-anchor="middle" class="s">Перешли: N, Q    J = 106,43</text>
+</svg>

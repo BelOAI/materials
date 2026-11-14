@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.metadata
+import os
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -11,6 +12,16 @@ ElementTree.register_namespace('xlink', 'http://www.w3.org/1999/xlink')
 
 
 INSTALL = 'python3 -m playwright install chromium --no-shell'
+BROWSER_EXECUTABLE_ENV = 'BELOAI_PDF_BROWSER_EXECUTABLE'
+
+
+def browser_executable(playwright):
+    """The bundled Chromium by default, or an explicit local Chromium browser."""
+    override = os.environ.get(BROWSER_EXECUTABLE_ENV)
+    executable = Path(override) if override else Path(playwright.chromium.executable_path)
+    if not executable.is_file():
+        raise ValueError(f'Не найден Chromium для PDF: {executable}. Установите его: {INSTALL}')
+    return executable
 
 
 def renderer_identity():
@@ -20,9 +31,7 @@ def renderer_identity():
     except ImportError as error:
         raise ValueError('Установите зависимости utils/pdf/requirements.txt и выполните ' + INSTALL) from error
     with sync_playwright() as playwright:
-        executable = Path(playwright.chromium.executable_path)
-    if not executable.is_file():
-        raise ValueError('Не установлен Chromium для PDF: ' + INSTALL)
+        executable = browser_executable(playwright)
     return (importlib.metadata.version('playwright'), hashlib.sha256(executable.read_bytes()).hexdigest())
 
 
@@ -45,7 +54,9 @@ def render_svg(source: Path, destination: Path, *, vector_patterns=False):
     try:
         with sync_playwright() as playwright:
             # Именно этот бинарник учитывается в renderer_identity, без отдельного headless shell.
-            browser = playwright.chromium.launch(channel='chromium', headless=True)
+            override = os.environ.get(BROWSER_EXECUTABLE_ENV)
+            browser = (playwright.chromium.launch(executable_path=str(browser_executable(playwright)), headless=True)
+                       if override else playwright.chromium.launch(channel='chromium', headless=True))
             try:
                 context = browser.new_context(java_script_enabled=False)
                 context.route('**/*', lambda route: route.abort())

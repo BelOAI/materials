@@ -1,6 +1,6 @@
 title: "Кластеризация и K-means"
 slug: clustering-kmeans
-description: "Два шага K-means на восьми точках и кластеризация классического набора Iris."
+description: "Пять раундов K-means на двух облаках из 22 точек, выбор расстояния и кластеризация набора Iris."
 status: draft
 build: true
 date: "2026-10-25"
@@ -14,14 +14,19 @@ topics:
   - Сумма квадратов расстояний
   - Классический набор «Ирисы»
 learning_outcomes:
-  - Выполнять два шага K-means для небольшого набора точек.
-  - Сравнивать группировки при разных начальных центрах.
+  - Прослеживать распределение и пересчёт центров до остановки на небольшом наборе точек.
+  - Сравнивать число раундов при разных начальных центрах.
   - Объяснять, что измеряет сумма квадратов расстояний до центров.
+  - Объяснять связь между выбранным расстоянием и способом пересчёта центра.
 resources:
   - path: notebook.ipynb
     label: Эксперименты с K-means (.ipynb)
-  - path: media/two-starts.svg
-    label: Схема двух запусков (.svg)
+  - path: media/clouds-iterations.svg
+    label: Начало и первый раунд K-means (.svg)
+  - path: media/clouds-rounds-2-3.svg
+    label: Второй и третий раунды K-means (.svg)
+  - path: media/clouds-rounds-4-5.svg
+    label: Четвёртый и пятый раунды K-means (.svg)
   - path: media/iris-scatter.svg
     label: Ирисы — виды и группы K-means (.svg)
 references:
