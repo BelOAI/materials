@@ -7,6 +7,7 @@ paragraphs:
   - 02-first-training
   - 03-cnn
   - 04-embeddings
+  - 05-transformer
 build: true
 authors:
   - name: Евгений Шкумат
