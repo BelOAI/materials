@@ -247,6 +247,30 @@ class HandbookPdfTests(unittest.TestCase):
         self.assertEqual(len(self.compiled), before + 8)
         self.assertEqual((self.parse_count, self.svg_count), (parse_count, svg_count))
 
+    def test_numbering_is_shared_by_profiles_and_standalone_excerpts(self):
+        book = self.root / 'handbooks/alpha'
+        intro = book / '00-intro'
+        intro.mkdir()
+        self.metadata(intro, slug='intro', title='Introduction', paragraphs=[])
+        self.source(intro, 'intro-body', [])
+        self.book_metadata(book, chapters=['00-intro', '07-section', '02-future'])
+        self.publication(book)
+        expected = {'alpha--intro': 'Introduction', 'alpha--section': 'Глава 1. Тема',
+                    'alpha--section--second': '1.1. Тема', 'alpha--section--first': '1.2. Тема'}
+        for profile in ('reader', 'belarus-textbook'):
+            before = len(self.compiled)
+            self.build(selected=book, profile=profile, book_only=profile != 'reader')
+            seen = set()
+            for ast in self.compiled[before:]:
+                if ast['meta']['handbook-level']['c'] == 'paragraph':
+                    self.assertIn(ast['meta']['title']['c'], {'1.1. Тема', '1.2. Тема'})
+                for node in walk(ast['blocks']):
+                    if node.get('t') == 'Header' and node['c'][1][0] in expected:
+                        identifier = node['c'][1][0]
+                        self.assertEqual(node['c'][2], [text(expected[identifier])])
+                        seen.add(identifier)
+            self.assertEqual(seen, set(expected))
+
     def test_chapters_and_paragraphs_start_after_page_breaks(self):
         book = self.root / 'handbooks/alpha'
         tail = book / '03-tail'
@@ -555,12 +579,12 @@ class HandbookPdfTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'повтор slug'):
             load_catalog(self.root)
 
-    def test_reordering_only_rebuilds_composite_documents(self):
+    def test_reordering_rebuilds_changed_numbers_and_composite_documents(self):
         self.build()
         chapter = self.root / 'handbooks/alpha/07-section'
         self.metadata(chapter, slug='section', paragraphs=['01-first', '09-second'])
         self.build()
-        self.assertEqual(len(self.compiled), 10)
+        self.assertEqual(len(self.compiled), 12)
         self.assertEqual(self.parse_count, 7)
         self.assertEqual(self.svg_count, 1)
 

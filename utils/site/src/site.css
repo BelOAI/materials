@@ -146,6 +146,7 @@ material-preview { position: fixed; left: var(--preview-left); top: var(--previe
 .handbook-chapter-list > li + li { margin-top: 24px; }
 .handbook-chapter-list h3 { font-size: 1.125rem; margin-bottom: 8px; padding: 0; }
 .handbook-chapter-list .section-planned { display: inline-block; color: var(--muted); font-size: .875rem; font-weight: 400; }
+.handbook-paragraph-list, .handbook-section-contents { list-style: none; }
 .handbook-paragraph-list { margin: 8px 0 0; padding-left: 24px; }
 .handbook-paragraph-list li + li { margin-top: 4px; }
 .handbook-list li, .handbook-list a { white-space: normal; overflow-wrap: anywhere; }

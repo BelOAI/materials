@@ -158,7 +158,7 @@ resources:
         self.assertIn('name="description" content="Unique summary marker."', intro)
         self.assertNotIn('Unique summary marker.', intro.split('<main', 1)[1])
         chapter = (self.output / 'handbooks/ml/classic-ml/index.html').read_text()
-        self.assertIn('<h2>Содержание</h2><ol><li><a href="example/"', chapter)
+        self.assertIn('<h2>Содержание</h2><ol class="handbook-section-contents"><li><a href="example/"', chapter)
         self.assertIn('name="description" content="Chapter summary marker."', chapter)
         self.assertNotIn('Chapter summary marker.', chapter.split('<body', 1)[1])
         overview = (self.output / 'handbooks/ml/index.html').read_text()
@@ -316,7 +316,10 @@ resources:
         for i, chapter in enumerate(load_handbook(self.root)['_chapters'].values()):
             path = self.output / 'handbooks' / chapter['id'] / 'index.html'
             html = path.read_text()
-            self.assertIn(f'{i}. {chapter["title"]}', html)
+            expected = f'Глава {i}. {chapter["title"]}' if i else chapter['title']
+            self.assertIn('<h1>' + expected + '</h1>', html)
+            if not i:
+                self.assertNotIn('Глава 0.', html)
             self.assertIn('noindex, nofollow', html)
             self.assertNotIn('rel="next"', html)
             self.assertNotIn('<ol></ol>', html)
@@ -330,6 +333,28 @@ resources:
             self.assertTrue((self.output / 'handbook/ml' / old / 'index.html').is_file())
         self.assertFalse(export.called)
         validate_links(self.output)
+
+    @patch('handbook_site.export_notebook', return_value=False)
+    def test_numbering_follows_metadata_order_and_preserves_source_anchors(self, export):
+        folder = self.paragraph()
+        (folder / 'content.md').write_text('# Source heading\n\nBody.\n')
+        intro = self.root / 'handbooks/ml/00-intro'
+        intro_para = intro / '09-setup'
+        intro_para.mkdir()
+        (intro_para / 'README.md').write_text('# Setup\n')
+        self.metadata(intro, paragraphs=[intro_para.name])
+        self.metadata(folder, sync_notebook=False)
+        (intro_para / 'meta.yaml').write_text(yaml.safe_dump(dict(
+            slug='setup', title='Setup', description='Fixture.', authors=['Writer'], status='draft', build=True)))
+        (intro_para / 'content.md').write_text('Body.\n')
+        publish_handbook(self.root, self.output, [])
+        numbered = (self.output / 'handbooks/ml/classic-ml/example/index.html').read_text()
+        self.assertIn('1.1. Source heading</h1>', numbered)
+        self.assertIn('id="source-heading"', numbered)
+        self.assertIn('1.1. Пример', numbered)
+        unnumbered = (self.output / 'handbooks/ml/intro/setup/index.html').read_text()
+        self.assertIn('<h1>Setup</h1>', unnumbered)
+        self.assertNotIn('0.1.', unnumbered)
 
     def test_notebook_preview_rewrites_source_routes(self):
         self.paragraph()

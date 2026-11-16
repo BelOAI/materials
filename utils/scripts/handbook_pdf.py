@@ -19,7 +19,7 @@ from urllib.parse import quote, unquote, urljoin, urlsplit
 
 from authorship import authors_text, expand_authors, expand_contributors, contributors_markdown, CONTRIBUTORS_MARKER
 from build_cache import Cache
-from handbook_catalog import load_catalog
+from handbook_catalog import numbered_title, load_catalog
 from handbook_publication import read_publication, frontmatter, endmatter
 from handbook_svg import renderer_identity, render_svg
 from handbook_layout import load_layout, layout_part
@@ -511,7 +511,6 @@ class Builder:
         chapter = len(task['item']['id'].split('/')) == 2
         answer_sections = []
         paragraph_number = 0
-        chapter_number = -1
         overrides = load_layout(self.root / 'utils/pdf/print-layout.yml') if self.profile_name == 'belarus-textbook' else {}
         def flush_answers():
             if not answer_sections:
@@ -538,11 +537,7 @@ class Builder:
             if chapter and level == 2:
                 paragraph_number += 1
             if level:
-                title = ('Глава 1. ' + item['title'] if chapter and level == 1 else
-                         f'1.{paragraph_number}. {item["title"]}' if chapter and level == 2 else None)
-                if self.profile_name == 'belarus-textbook' and chapter_heading:
-                    chapter_number += 1
-                    title = f'Глава {chapter_number}. {item["title"]}'
+                title = numbered_title(item, chapter=chapter_heading)
                 heading = header(level, item, title)
                 if self.profile_name == 'belarus-textbook' and chapter_heading:
                     heading['c'][1][1].append('handbook-chapter-opening')
@@ -550,7 +545,7 @@ class Builder:
                     heading['c'][1][1].append('handbook-lesson-opening')
                 blocks.append(heading)
             credit = authors_text(item.get('authors', []))
-            if credit and (not chapter or level == 1):
+            if credit:
                 blocks.append({'t': 'Para', 'c': [{'t': 'Emph', 'c': [{'t': 'Str', 'c': credit}]}]})
             if item['id'] not in self.prepared:
                 continue
@@ -633,7 +628,7 @@ class Builder:
         if ast is None:
             raise ValueError(f"{task['item']['id']}: нет текста")
         ast['blocks'] = blocks
-        ast['meta'] = {'title': {'t': 'MetaString', 'c': task['item']['title']},
+        ast['meta'] = {'title': {'t': 'MetaString', 'c': numbered_title(task['item'], chapter=chapter)},
                        'lang': {'t': 'MetaString', 'c': 'ru-RU'}}
         ast['meta']['handbook-level'] = {'t': 'MetaString', 'c':
             ('book', 'chapter', 'paragraph')[len(task['item']['id'].split('/')) - 1]}
