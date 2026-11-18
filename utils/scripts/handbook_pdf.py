@@ -658,10 +658,12 @@ class Builder:
                 ast = editorial_layout(ast)
         return ast
 
-    def compile(self, task, ast, output):
+    def compile(self, task, ast, output, *, extra_header=''):
         style = self.root / 'utils/pdf'
+        include_toc = task.get('toc', True)
         key = digest(ast, self.env, self.code, self.profile_name, self.profile, self.logo,
-                     task.get('publication'), file_hash(Path(__file__).with_name('handbook_publication.py')))
+                     task.get('publication'), include_toc, extra_header,
+                     file_hash(Path(__file__).with_name('handbook_publication.py')))
         cache = Cache('handbook-pdf', key)
         destination = output / task['filename']
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -675,16 +677,17 @@ class Builder:
                 header_path = folder / 'document-header.tex'
                 header_name = 'pdf-header.tex' if self.profile_name == 'reader' else 'belarus-textbook-header.tex'
                 header_path.write_text((style / header_name).read_text(encoding='utf-8') +
-                                       ('\n\\handbookwholebooktrue\n' if self.profile_name == 'reader' and ast['meta']['handbook-level']['c'] == 'book' else ''),
+                                       ('\n\\handbookwholebooktrue\n' if self.profile_name == 'reader' and ast['meta'].get('handbook-level', {}).get('c') == 'book' else '')
+                                       + extra_header,
                                        encoding='utf-8')
                 tex_env = os.environ.copy()
                 tex_env['TEXINPUTS'] = str(self.root / 'utils/latex/tex/latex') + '//' + os.pathsep + tex_env.get('TEXINPUTS', '')
                 layout = (['-V', 'papersize:a4', '-V', 'fontsize:10pt'] if self.profile_name == 'reader'
                           else ['-V', 'fontsize:12pt', '-V', 'classoption:twoside', '-V', 'indent:true'])
+                toc = ['--table-of-contents', '--toc-depth=2'] if include_toc else []
                 run(['pandoc', str(source), '--from=json', '--pdf-engine=pdflatex',
                      '--lua-filter', str(style / 'keep-short-code.lua'),
-                     '--include-in-header', str(header_path),
-                     '--table-of-contents', '--toc-depth=2',
+                     '--include-in-header', str(header_path), *toc,
                      *layout,
                      '-V', 'fontenc:T2A', '-V', 'fontfamily:handbookfonts',
                      '--output', str(pdf)], cwd=self.scratch, env=tex_env)

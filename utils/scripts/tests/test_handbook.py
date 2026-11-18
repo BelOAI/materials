@@ -55,7 +55,7 @@ class HandbookTests(unittest.TestCase):
             (self.output / 'assets' / name).touch()
         for name in ('github', 'instagram', 'tiktok', 'telegram', 'creative-commons'):
             (self.output / f'assets/fontawesome/{name}.svg').touch()
-        for path in ('index.html', 'materials/index.html', 'license/index.html', 'favicon.svg'):
+        for path in ('index.html', 'materials/index.html', 'contests/index.html', 'license/index.html', 'favicon.svg'):
             target = self.output / path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text('<html><main id="content"></main></html>')

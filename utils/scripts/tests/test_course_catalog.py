@@ -158,6 +158,7 @@ class CourseCatalogTests(unittest.TestCase):
             html = (output / path).read_text()
             navigation = html.split('<course-navigation', 1)[1].split('</course-navigation>', 1)[0]
             self.assertIn(f'href="{root}handbooks/"', navigation)
+            self.assertIn(f'href="{root}contests/"', navigation)
         self.assertNotIn('data-preview=', catalog.split('data-kind="lecture"', 1)[1].split('</li>', 1)[0])
         self.assertLess(topic.index('<lecture-viewer'), topic.index('id="assignment"'))
         self.assertIn('Материал &lt;&amp;&gt;', topic)
