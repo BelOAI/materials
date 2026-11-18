@@ -3,9 +3,20 @@ import fs from 'node:fs';
 import MarkdownIt from 'markdown-it';
 import katex from 'katex';
 import texmath from 'markdown-it-texmath';
+import hljs from 'highlight.js/lib/core';
+import python from 'highlight.js/lib/languages/python';
+
+hljs.registerLanguage('python', python);
 
 const input = JSON.parse(fs.readFileSync(0, 'utf8'));
-const md = new MarkdownIt({ html: true, typographer: false });
+const md = new MarkdownIt({
+  html: true,
+  typographer: false,
+  highlight(code, language) {
+    if (!language || !hljs.getLanguage(language)) return '';
+    return hljs.highlight(code, { language, ignoreIllegals: true }).value;
+  },
+});
 md.use(texmath, { engine: katex, delimiters: 'dollars', katexOptions: {
   output: 'htmlAndMathml', throwOnError: true, trust: false,
 } });

@@ -19,7 +19,7 @@ from urllib.parse import quote, unquote, urljoin, urlsplit
 
 from authorship import authors_text, expand_authors, expand_contributors, contributors_markdown, CONTRIBUTORS_MARKER
 from build_cache import Cache
-from handbook_catalog import load_catalog
+from handbook_catalog import numbered_title, load_catalog
 from handbook_publication import read_publication, frontmatter, endmatter
 from handbook_svg import renderer_identity, render_svg
 from handbook_layout import load_layout, layout_part
@@ -511,7 +511,6 @@ class Builder:
         chapter = len(task['item']['id'].split('/')) == 2
         answer_sections = []
         paragraph_number = 0
-        chapter_number = -1
         overrides = load_layout(self.root / 'utils/pdf/print-layout.yml') if self.profile_name == 'belarus-textbook' else {}
         def flush_answers():
             if not answer_sections:
@@ -538,11 +537,7 @@ class Builder:
             if chapter and level == 2:
                 paragraph_number += 1
             if level:
-                title = ('Глава 1. ' + item['title'] if chapter and level == 1 else
-                         f'1.{paragraph_number}. {item["title"]}' if chapter and level == 2 else None)
-                if self.profile_name == 'belarus-textbook' and chapter_heading:
-                    chapter_number += 1
-                    title = f'Глава {chapter_number}. {item["title"]}'
+                title = numbered_title(item, chapter=chapter_heading)
                 heading = header(level, item, title)
                 if self.profile_name == 'belarus-textbook' and chapter_heading:
                     heading['c'][1][1].append('handbook-chapter-opening')
@@ -550,7 +545,7 @@ class Builder:
                     heading['c'][1][1].append('handbook-lesson-opening')
                 blocks.append(heading)
             credit = authors_text(item.get('authors', []))
-            if credit and (not chapter or level == 1):
+            if credit:
                 blocks.append({'t': 'Para', 'c': [{'t': 'Emph', 'c': [{'t': 'Str', 'c': credit}]}]})
             if item['id'] not in self.prepared:
                 continue
@@ -633,7 +628,7 @@ class Builder:
         if ast is None:
             raise ValueError(f"{task['item']['id']}: нет текста")
         ast['blocks'] = blocks
-        ast['meta'] = {'title': {'t': 'MetaString', 'c': task['item']['title']},
+        ast['meta'] = {'title': {'t': 'MetaString', 'c': numbered_title(task['item'], chapter=chapter)},
                        'lang': {'t': 'MetaString', 'c': 'ru-RU'}}
         ast['meta']['handbook-level'] = {'t': 'MetaString', 'c':
             ('book', 'chapter', 'paragraph')[len(task['item']['id'].split('/')) - 1]}
@@ -663,10 +658,12 @@ class Builder:
                 ast = editorial_layout(ast)
         return ast
 
-    def compile(self, task, ast, output):
+    def compile(self, task, ast, output, *, extra_header=''):
         style = self.root / 'utils/pdf'
+        include_toc = task.get('toc', True)
         key = digest(ast, self.env, self.code, self.profile_name, self.profile, self.logo,
-                     task.get('publication'), file_hash(Path(__file__).with_name('handbook_publication.py')))
+                     task.get('publication'), include_toc, extra_header,
+                     file_hash(Path(__file__).with_name('handbook_publication.py')))
         cache = Cache('handbook-pdf', key)
         destination = output / task['filename']
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -680,16 +677,17 @@ class Builder:
                 header_path = folder / 'document-header.tex'
                 header_name = 'pdf-header.tex' if self.profile_name == 'reader' else 'belarus-textbook-header.tex'
                 header_path.write_text((style / header_name).read_text(encoding='utf-8') +
-                                       ('\n\\handbookwholebooktrue\n' if self.profile_name == 'reader' and ast['meta']['handbook-level']['c'] == 'book' else ''),
+                                       ('\n\\handbookwholebooktrue\n' if self.profile_name == 'reader' and ast['meta'].get('handbook-level', {}).get('c') == 'book' else '')
+                                       + extra_header,
                                        encoding='utf-8')
                 tex_env = os.environ.copy()
                 tex_env['TEXINPUTS'] = str(self.root / 'utils/latex/tex/latex') + '//' + os.pathsep + tex_env.get('TEXINPUTS', '')
                 layout = (['-V', 'papersize:a4', '-V', 'fontsize:10pt'] if self.profile_name == 'reader'
                           else ['-V', 'fontsize:12pt', '-V', 'classoption:twoside', '-V', 'indent:true'])
+                toc = ['--table-of-contents', '--toc-depth=2'] if include_toc else []
                 run(['pandoc', str(source), '--from=json', '--pdf-engine=pdflatex',
                      '--lua-filter', str(style / 'keep-short-code.lua'),
-                     '--include-in-header', str(header_path),
-                     '--table-of-contents', '--toc-depth=2',
+                     '--include-in-header', str(header_path), *toc,
                      *layout,
                      '-V', 'fontenc:T2A', '-V', 'fontfamily:handbookfonts',
                      '--output', str(pdf)], cwd=self.scratch, env=tex_env)

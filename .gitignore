@@ -35,7 +35,7 @@ Thumbs.db
 .idea/
 
 __pycache__
-.venv-fonts/
+.venv/
 
 # Зависимости интерфейса и результаты проверки браузером
 node_modules/
