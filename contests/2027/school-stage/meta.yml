@@ -5,8 +5,6 @@ date: "2026-11-15"
 duration: 2 часа
 participants: 561
 maximum_results: 6
-contest_url: https://new.contest.yandex.ru/contests/101501
-leaderboard_url: https://new.contest.yandex.ru/contests/101501/leaderboard
 tasks:
   - csv-top10
   - biathlon-identity
