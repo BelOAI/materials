@@ -11,7 +11,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
-from course_site import link, write_page
+from course_site import publish_katex, link, write_page
 from authorship import authors_html, expand_authors, expand_contributors
 from handbook_redirects import publish_legacy_handbook, write_redirect
 from notebook_export import export_notebook
@@ -161,10 +161,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     ]), text=True, capture_output=True, check=True)
     rendered = dict(zip((item['id'] for item in texts), json.loads(result.stdout)))
     shutil.rmtree(output / 'handbooks', ignore_errors=True)
-    katex = source / 'utils/site/node_modules/katex'
-    shutil.copytree(katex / 'dist/fonts', output / 'assets/katex/fonts', dirs_exist_ok=True)
-    shutil.copyfile(katex / 'dist/katex.min.css', output / 'assets/katex/katex.min.css')
-    shutil.copyfile(katex / 'LICENSE', output / 'assets/katex/LICENSE')
+    publish_katex(source, output)
 
     if (source / 'utils/site/icons').is_dir():
         shutil.copytree(source / 'utils/site/icons', output / 'assets/handbook-icons', dirs_exist_ok=True)
@@ -220,7 +217,9 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             breadcrumbs = '<nav class="breadcrumbs" aria-label="Путь к странице"><ol>' + ''.join(
                 '<li>' + (escape(label) if target == identifier else navlink(target, label, identifier)) + '</li>'
                 for target, label in trail) + '</ol></nav>'
-        nav += '<hr><ul><li>' + link(root, 'Занятия курса') + '</li><li>' + link(root + 'materials/', 'Все материалы') + '</li>'
+        nav += ('<hr><ul><li>' + link(root, 'Занятия курса') + '</li><li>'
+                + link(root + 'materials/', 'Все материалы') + '</li><li>'
+                + link(root + 'contests/', 'Разборы контестов') + '</li>')
         nav += '<li><a href="https://github.com/BelOAI/materials">Исходники на GitHub</a></li></ul>'
         body = content if re.search(r'<h1\b', content) else '<h1>' + escape(heading) + '</h1>' + content
         note = '<p class="draft-note"><span class="draft-badge">Черновик</span><span>Материалы дорабатываются и будут дополняться.</span></p>'
@@ -228,9 +227,9 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
         write_page(source, output, weeks, path, heading, description,
                    '<div class="handbook-content">' + breadcrumbs + body + '</div>', 'handbook' if handbook else 'handbooks', root,
                    navigation_override=nav, navigation_top=top,
-                   navigation_label='Оглавление учебника' if handbook else 'Навигация по учебникам')
+                   navigation_label='Оглавление учебника' if handbook else 'Навигация по учебникам', math=True)
         dest = output / path / 'index.html'
-        html = dest.read_text(encoding='utf-8').replace('</head>', f'<link rel="stylesheet" href="{root}assets/katex/katex.min.css" />\n<meta name="robots" content="noindex, nofollow" />\n</head>')
+        html = dest.read_text(encoding='utf-8').replace('</head>', '<meta name="robots" content="noindex, nofollow" />\n</head>')
         dest.write_text(html, encoding='utf-8')
 
     def publish_files(item):
