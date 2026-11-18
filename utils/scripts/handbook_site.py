@@ -11,12 +11,12 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
-from course_site import link, write_page
+from course_site import publish_katex, link, write_page
 from authorship import authors_html, expand_authors, expand_contributors
 from handbook_redirects import publish_legacy_handbook, write_redirect
 from notebook_export import export_notebook
 from handbook_notebooks import notebook_authors
-from handbook_catalog import load_catalog, local_file
+from handbook_catalog import load_catalog, local_file, numbered_title
 
 REDIRECTS = {'start': 'intro', 'environment': 'intro', 'diy-nn': 'nn-in-practice',
              'how-they-learn': 'how-nns-learn', 'advanced-math': 'math-of-ai'}
@@ -126,8 +126,8 @@ def handbook_contents(handbook: dict, lessons: dict) -> str:
     if not handbook['sections']:
         return ''
     html = '<nav class="handbook-toc" aria-label="Содержание учебника"><h2>Содержание</h2><ol class="handbook-chapter-list">'
-    for index, section in enumerate(handbook['sections']):
-        html += '<li><h3>' + link(section['slug'] + '/', f'Глава {index}. {section["title"]}')
+    for section in handbook['sections']:
+        html += '<li><h3>' + link(section['slug'] + '/', numbered_title(section, chapter=True))
         if section['status'] == 'planned':
             html += ' <span class="section-planned">Готовится</span>'
         html += '</h3>'
@@ -137,9 +137,9 @@ def handbook_contents(handbook: dict, lessons: dict) -> str:
                 item = lessons[identifier]
                 html += '<li>'
                 if item['status'] == 'planned':
-                    html += '<span class="chapter-unavailable">' + escape(item['title']) + ' (готовится)</span>'
+                    html += '<span class="chapter-unavailable">' + escape(numbered_title(item)) + ' (готовится)</span>'
                 else:
-                    html += link(section['slug'] + '/' + item['slug'] + '/', item['title'])
+                    html += link(section['slug'] + '/' + item['slug'] + '/', numbered_title(item))
                 html += '</li>'
             html += '</ol>'
         html += '</li>'
@@ -161,17 +161,10 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
     ]), text=True, capture_output=True, check=True)
     rendered = dict(zip((item['id'] for item in texts), json.loads(result.stdout)))
     shutil.rmtree(output / 'handbooks', ignore_errors=True)
-    katex = source / 'utils/site/node_modules/katex'
-    shutil.copytree(katex / 'dist/fonts', output / 'assets/katex/fonts', dirs_exist_ok=True)
-    shutil.copyfile(katex / 'dist/katex.min.css', output / 'assets/katex/katex.min.css')
-    shutil.copyfile(katex / 'LICENSE', output / 'assets/katex/LICENSE')
+    publish_katex(source, output)
 
     if (source / 'utils/site/icons').is_dir():
         shutil.copytree(source / 'utils/site/icons', output / 'assets/handbook-icons', dirs_exist_ok=True)
-
-    def title(section):
-        handbook = next(h for h in handbooks if section['id'].startswith(h['id'] + '/'))
-        return f'{handbook["sections"].index(section)}. {section["title"]}'
 
     def navlink(identifier, text, current):
         active = ' aria-current="page"' if identifier == current else ''
@@ -195,14 +188,14 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             top = '<div class="handbook-links"><ul><li>' + navlink('', '← Все учебники', identifier) + '</li></ul></div>'
             nav = '<div class="handbook-tree"><ul><li>' + navlink(handbook['id'], handbook['title'], identifier) + '</li></ul><hr>'
             nav += '<ul class="handbook-chapters">'
-            for index, section in enumerate(handbook['sections']):
-                nav += '<li>' + navlink(section['id'], f'Глава {index}. {section["title"]}', identifier)
+            for section in handbook['sections']:
+                nav += '<li>' + navlink(section['id'], numbered_title(section, chapter=True), identifier)
                 if identifier == section['id'] or identifier.startswith(section['id'] + '/'):
                     nav += '<ul class="handbook-lessons">'
                     for para_id in section['lessons']:
                         item = book['_lessons'][para_id]
-                        nav += '<li>' + (navlink(para_id, item['title'], identifier) if item['status'] != 'planned'
-                                        else '<span class="chapter-unavailable">' + escape(item['title']) + ' (готовится)</span>') + '</li>'
+                        nav += '<li>' + (navlink(para_id, numbered_title(item), identifier) if item['status'] != 'planned'
+                                        else '<span class="chapter-unavailable">' + escape(numbered_title(item)) + ' (готовится)</span>') + '</li>'
                     nav += '</ul>'
                 nav += '</li>'
             nav += '</ul>'
@@ -214,23 +207,29 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             section = next((s for s in handbook['sections'] if identifier == s['id']
                             or identifier.startswith(s['id'] + '/')), None)
             if section:
-                trail.append((section['id'], section['title']))
+                trail.append((section['id'], numbered_title(section, chapter=True)))
             if trail[-1][0] != identifier:
                 trail.append((identifier, heading))
             breadcrumbs = '<nav class="breadcrumbs" aria-label="Путь к странице"><ol>' + ''.join(
                 '<li>' + (escape(label) if target == identifier else navlink(target, label, identifier)) + '</li>'
                 for target, label in trail) + '</ol></nav>'
-        nav += '<hr><ul><li>' + link(root, 'Занятия курса') + '</li><li>' + link(root + 'materials/', 'Все материалы') + '</li>'
+        nav += ('<hr><ul><li>' + link(root, 'Занятия курса') + '</li><li>'
+                + link(root + 'materials/', 'Все материалы') + '</li><li>'
+                + link(root + 'contests/', 'Разборы контестов') + '</li>')
         nav += '<li><a href="https://github.com/BelOAI/materials">Исходники на GitHub</a></li></ul>'
+        current = book['_chapters'].get(identifier) or book['_lessons'].get(identifier)
+        if current and current.get('_number'):
+            prefix = ('Глава ' if identifier in book['_chapters'] else '') + current['_number'] + '. '
+            content = re.sub(r'(<h1\b[^>]*>)', lambda m: m[0] + escape(prefix), content, count=1)
         body = content if re.search(r'<h1\b', content) else '<h1>' + escape(heading) + '</h1>' + content
         note = '<p class="draft-note"><span class="draft-badge">Черновик</span><span>Материалы дорабатываются и будут дополняться.</span></p>'
         body = re.sub(r'(</h1>)', lambda match: match[0] + note, body, count=1)
         write_page(source, output, weeks, path, heading, description,
                    '<div class="handbook-content">' + breadcrumbs + body + '</div>', 'handbook' if handbook else 'handbooks', root,
                    navigation_override=nav, navigation_top=top,
-                   navigation_label='Оглавление учебника' if handbook else 'Навигация по учебникам')
+                   navigation_label='Оглавление учебника' if handbook else 'Навигация по учебникам', math=True)
         dest = output / path / 'index.html'
-        html = dest.read_text(encoding='utf-8').replace('</head>', f'<link rel="stylesheet" href="{root}assets/katex/katex.min.css" />\n<meta name="robots" content="noindex, nofollow" />\n</head>')
+        html = dest.read_text(encoding='utf-8').replace('</head>', '<meta name="robots" content="noindex, nofollow" />\n</head>')
         dest.write_text(html, encoding='utf-8')
 
     def publish_files(item):
@@ -304,14 +303,14 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             else:
                 content += authors_html(section['authors']) + section.get('_html', '')
                 if section['lessons']:
-                    content += '<h2>Содержание</h2><ol>'
+                    content += '<h2>Содержание</h2><ol class="handbook-section-contents">'
                     for para_id in section['lessons']:
                         paragraph = book['_lessons'][para_id]
-                        content += '<li>' + (link(paragraph['slug'] + '/', paragraph['title']) if paragraph['status'] != 'planned' else escape(paragraph['title']) + ' (ещё нет текста)') + '</li>'
+                        content += '<li>' + (link(paragraph['slug'] + '/', numbered_title(paragraph)) if paragraph['status'] != 'planned' else escape(numbered_title(paragraph)) + ' (ещё нет текста)') + '</li>'
                     content += '</ol>'
             if section['id'] in route:
                 content += pagination(section['id'], route, by_id)
-            page(section['id'], title(section), section['description'], content)
+            page(section['id'], numbered_title(section, chapter=True), section['description'], content)
         page(handbook['id'], handbook['title'], handbook['description'], overview)
         for item in lessons:
             if item['status'] == 'planned':
@@ -319,7 +318,7 @@ def publish_handbook(source: Path, output: Path, weeks: list) -> None:
             content = authors_html(item['authors'])
             content += '<nav class="lesson-toc" aria-label="Оглавление параграфа"><ul>' + ''.join('<li>' + link('#' + h['id'], h['text']) + '</li>' for h in rendered[item['id']]['toc'] if h['level'] == 2) + '</ul></nav>'
             content += item['_html'] + pagination(item['id'], route, by_id)
-            page(item['id'], item['title'], item['description'], content)
+            page(item['id'], numbered_title(item), item['description'], content)
     for item in book['_pages']:
         page(item['id'], item['title'], item['title'], item['_html'])
     if any(h['id'] == 'ml' for h in handbooks):
@@ -344,5 +343,5 @@ def pagination(identifier, route, items):
     for offset, label, rel in [(-1, '← ', 'prev'), (1, 'Далее: ', 'next')]:
         if 0 <= index + offset < len(route):
             target = route[index + offset]
-            links += link(root + 'handbooks/' + target + '/', label + items[target]['title'], f' rel="{rel}"')
+            links += link(root + 'handbooks/' + target + '/', label + numbered_title(items[target]), f' rel="{rel}"')
     return '<nav class="week-pagination" aria-label="Переходы между параграфами">' + links + '</nav>'

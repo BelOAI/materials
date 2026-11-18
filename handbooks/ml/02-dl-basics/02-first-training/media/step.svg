@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" style="--figure-scale:0.75" role="img" aria-labelledby="title desc">
+  <title id="title">Шаг против производной</title>
+  <desc id="desc">Кривая ошибки в зависимости от одного веса. В текущей точке проведена касательная с отрицательным наклоном. Небольшой шаг сдвигает вес вправо и опускает его ниже по кривой, слишком большой перелетает через самое низкое место и поднимает ошибку.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <style>.muted { fill:var(--muted); } .italic { font-style:italic; } .tiny { font-size:calc(13px * var(--figure-scale)); }</style>
+  <defs>
+    <marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--ink)" />
+    </marker>
+    <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--muted)" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--blue)" />
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--orange)" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--green)" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--red)" />
+    </marker>
+    <marker id="arrow-axis" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <line x1="58.0" y1="246.0" x2="566.0" y2="246.0" stroke="var(--axis)" stroke-width="1.5" marker-end="url(#arrow-axis)" />
+  <line x1="70.0" y1="258.0" x2="70.0" y2="56.0" stroke="var(--axis)" stroke-width="1.5" marker-end="url(#arrow-axis)" />
+  <text x="556.0" y="272.0" text-anchor="end" class="muted small">вес w</text>
+  <text x="76.0" y="50.0" text-anchor="start" class="muted small">ошибка L</text>
+  <polyline points="83.2,62.7 85.8,66.3 88.3,69.9 90.9,73.4 93.5,76.9 96.0,80.3 98.6,83.7 101.2,87.0 103.7,90.3 106.3,93.6 108.9,96.8 111.5,100.0 114.0,103.2 116.6,106.3 119.2,109.4 121.7,112.4 124.3,115.4 126.9,118.3 129.4,121.2 132.0,124.1 134.6,126.9 137.1,129.7 139.7,132.4 142.3,135.1 144.8,137.8 147.4,140.4 150.0,143.0 152.6,145.5 155.1,148.0 157.7,150.5 160.3,152.9 162.8,155.3 165.4,157.6 168.0,159.9 170.5,162.2 173.1,164.4 175.7,166.5 178.2,168.7 180.8,170.8 183.4,172.8 185.9,174.8 188.5,176.8 191.1,178.7 193.7,180.6 196.2,182.5 198.8,184.3 201.4,186.0 203.9,187.8 206.5,189.5 209.1,191.1 211.6,192.7 214.2,194.3 216.8,195.8 219.3,197.3 221.9,198.7 224.5,200.1 227.0,201.5 229.6,202.8 232.2,204.1 234.8,205.3 237.3,206.5 239.9,207.7 242.5,208.8 245.0,209.9 247.6,210.9 250.2,211.9 252.7,212.9 255.3,213.8 257.9,214.7 260.4,215.5 263.0,216.3 265.6,217.1 268.1,217.8 270.7,218.4 273.3,219.1 275.9,219.7 278.4,220.2 281.0,220.7 283.6,221.2 286.1,221.6 288.7,222.0 291.3,222.4 293.8,222.7 296.4,222.9 299.0,223.2 301.5,223.3 304.1,223.5 306.7,223.6 309.2,223.7 311.8,223.7 314.4,223.7 317.0,223.6 319.5,223.5 322.1,223.4 324.7,223.2 327.2,223.0 329.8,222.7 332.4,222.4 334.9,222.1 337.5,221.7 340.1,221.3 342.6,220.8 345.2,220.3 347.8,219.7 350.3,219.2 352.9,218.5 355.5,217.9 358.1,217.2 360.6,216.4 363.2,215.6 365.8,214.8 368.3,213.9 370.9,213.0 373.5,212.1 376.0,211.1 378.6,210.0 381.2,209.0 383.7,207.9 386.3,206.7 388.9,205.5 391.4,204.3 394.0,203.0 396.6,201.7 399.2,200.3 401.7,198.9 404.3,197.5 406.9,196.0 409.4,194.5 412.0,192.9 414.6,191.3 417.1,189.7 419.7,188.0 422.3,186.3 424.8,184.5 427.4,182.7 430.0,180.9 432.5,179.0 435.1,177.1 437.7,175.1 440.3,173.1 442.8,171.1 445.4,169.0 448.0,166.9 450.5,164.7 453.1,162.5 455.7,160.2 458.2,157.9 460.8,155.6 463.4,153.2 465.9,150.8 468.5,148.4 471.1,145.9 473.6,143.3 476.2,140.8 478.8,138.2 481.4,135.5 483.9,132.8 486.5,130.1 489.1,127.3 491.6,124.5 494.2,121.6 496.8,118.7 499.3,115.8 501.9,112.8 504.5,109.8 507.0,106.7 509.6,103.6 512.2,100.5 514.7,97.3 517.3,94.1 519.9,90.8 522.5,87.5 525.0,84.2 527.6,80.8 530.2,77.4 532.7,73.9 535.3,70.4 537.9,66.8 540.4,63.3 543.0,59.6" fill="none" stroke="var(--blue)" stroke-width="2.5" />
+  <line x1="108.5" y1="103.9" x2="207.5" y2="197.6" stroke="var(--orange)" stroke-width="2" stroke-dasharray="7 5" />
+  <circle cx="158.0" cy="150.8" r="6" fill="var(--orange)" stroke="var(--orange)" stroke-width="1.5" />
+  <text x="206.0" y="214.0" text-anchor="end" class="orange small">касательная:</text>
+  <text x="206.0" y="234.0" text-anchor="end" class="orange small">наклон отрицателен</text>
+  <path d="M165.0 157.768 Q198.0 196.52800000000002 241.0 205.288" fill="none" stroke="var(--green)" stroke-width="2.2" marker-end="url(#arrow-green)" />
+  <circle cx="246.0" cy="210.3" r="5" fill="var(--green)" stroke="var(--green)" stroke-width="1.5" />
+  <text x="272.0" y="174.3" text-anchor="start" class="green small">небольшой шаг:</text>
+  <text x="272.0" y="194.3" text-anchor="start" class="green small">ошибка стала меньше</text>
+  <path d="M168.0 140.768 Q323.0 66 482.0 120.44800000000006" fill="none" stroke="var(--red)" stroke-width="2.2" marker-end="url(#arrow-red)" />
+  <circle cx="488.0" cy="128.4" r="5" fill="var(--red)" stroke="var(--red)" stroke-width="1.5" />
+  <text x="488.0" y="154.4" text-anchor="middle" class="red small">слишком большой шаг:</text>
+  <text x="488.0" y="174.4" text-anchor="middle" class="red small">перелетели минимум</text>
+  <line x1="312.0" y1="223.7" x2="312.0" y2="246.0" stroke="var(--grid)" stroke-width="1" stroke-dasharray="4 4" />
+  <text x="312.0" y="272.0" text-anchor="middle" class="muted small">самое низкое место</text>
+</svg>

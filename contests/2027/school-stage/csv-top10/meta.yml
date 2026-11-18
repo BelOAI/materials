@@ -1,0 +1,7 @@
+slug: csv-top10
+title: CSV — Рейтинг игроков ЧМ-2026
+description: Сортировка таблицы, точный формат CSV и подсчёт баллов по месту в рейтинге.
+kind: programming
+original: https://new.contest.yandex.ru/contests/101501/problems?id=7993389%2F2026_11_15%2F6ws3kERrnp
+web_limits: >-
+  Ограничение времени — **20 секунд**, памяти — **640 МБ**.

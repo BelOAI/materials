@@ -1,0 +1,33 @@
+slug: first-training
+title: Первое обучение нейросети
+description: Обучаем небольшую сеть распознавать цифры 8 на 8 и разбираем, что происходит внутри fit.
+status: draft
+build: true
+date: '2026-11-08'
+authors:
+  - name: Алексей Чернуха
+topics:
+  - Картинка как вектор из 64 чисел
+  - Обучение MLPClassifier и доля верных ответов
+  - Вероятности и уверенность ответа
+  - Ошибка, производная и шаг обучения
+  - Эпохи и кривая ошибки
+  - Десять классов и softmax
+  - Честная оценка, отправная точка и переобучение
+learning_outcomes:
+  - Обучать небольшую сеть на размеченных картинках и измерять её точность.
+  - Объяснять, что происходит внутри fit: откуда берётся ошибка и как меняются веса.
+  - Отличать результат на обучающих примерах от честной оценки на новых данных.
+sync_notebook: true
+resources:
+  - path: notebook.ipynb
+    label: Практика и решения (.ipynb)
+  - path: figures.py
+    label: Исходник рисунков (.py)
+references:
+  - label: scikit-learn — Neural network models (supervised)
+    url: https://scikit-learn.org/stable/modules/neural_networks_supervised.html
+    adaptation: Проверка параметров MLPClassifier, скорости обучения и loss_curve_. Примеры и числа получены самостоятельно.
+  - label: scikit-learn — The digit dataset
+    url: https://scikit-learn.org/stable/auto_examples/datasets/plot_digits_last_image.html
+    adaptation: Источник набора рукописных цифр 8 на 8 (UCI Optical Recognition of Handwritten Digits). Отбор троек и восьмёрок, масштабирование и разбиение выполнены для занятия.
