@@ -72,7 +72,7 @@ def load_contests(source: Path) -> dict:
             stage_meta = _read_yaml(_source_file(source, f"{stage_id}/meta.yml"))
             if (stage_meta.get("slug") != stage_slug
                     or not all(isinstance(stage_meta.get(key), str) and stage_meta[key].strip()
-                               for key in ("title", "description", "date", "contest_url", "leaderboard_url"))
+                               for key in ("title", "description", "date"))
                     or not isinstance(stage_meta.get("tasks"), list) or not stage_meta["tasks"]):
                 raise ValueError(f"{stage_id}/meta.yml: неполные метаданные этапа")
             task_ids = list(stage_meta["tasks"])
@@ -89,11 +89,11 @@ def load_contests(source: Path) -> dict:
                 task_meta = _read_yaml(_source_file(source, f"{stage_id}/{task_slug}/meta.yml"))
                 if (task_meta.get("slug") != task_slug
                         or not all(isinstance(task_meta.get(key), str) and task_meta[key].strip()
-                                   for key in ("title", "description", "original", "kind"))
+                                   for key in ("title", "description", "kind"))
                         or task_meta.get("kind") not in {"math", "programming"}
                         or not isinstance(task_meta.get("web_limits", ""), str)):
                     raise ValueError(f"{task_id}/meta.yml: неполные метаданные задачи")
-                if not urlsplit(task_meta["original"]).scheme in {"https", "http"}:
+                if task_meta.get("original") and not urlsplit(task_meta["original"]).scheme in {"https", "http"}:
                     raise ValueError(f"{task_id}: ссылка original должна использовать HTTP(S)")
                 task_meta.update(id=task_id, stage=stage_meta, _folder=task_folder,
                                  _statement=_source_file(source, f"{stage_id}/{task_slug}/statement.md"),
@@ -242,7 +242,8 @@ def publish_contests(source: Path, output: Path, weeks: list, *, validate: bool 
                 body = f'<h1>{escape(task["title"])}</h1>'
                 body += ('<nav class="contest-download" aria-label="На странице">'
                          '<a href="#statement">Условие</a><a href="#analysis">Разбор</a>'
-                         + link(task["original"], "Оригинальное условие") + '</nav>')
+                         + (link(task["original"], "Оригинальное условие") if task.get("original") else '')
+                         + '</nav>')
                 body += '<section><h2 id="statement">Условие</h2>'
                 body += rendered[task["id"] + "-statement"] + '</section>'
                 body += '<section><h2 id="analysis">Разбор</h2>'
