@@ -30,8 +30,8 @@ export class CourseNavigation extends ReactiveElement {
   connectedCallback() {
     super.connectedCallback();
     this.menu = this.querySelector('.course-menu');
-    this.handbook = document.body.dataset.page === 'handbook';
-    if (this.handbook) {
+    this.reading = Boolean(this.querySelector('.handbook-navigation'));
+    if (this.reading) {
       this.closest('.sidebar')?.classList.add('handbook-sidebar');
       this.menu?.setAttribute('data-overlay', '');
       this.menu?.addEventListener('toggle', this.onToggle);
@@ -54,26 +54,26 @@ export class CourseNavigation extends ReactiveElement {
     if (menu) menu.open = !this.mobile.matches;
     this.syncOverlay();
     cancelAnimationFrame(this.scrollFrame);
-    if (!this.mobile.matches) this.scrollFrame = requestAnimationFrame(() => this.revealCurrentLesson());
+    if (!this.mobile.matches) this.scrollFrame = requestAnimationFrame(() => this.revealCurrentPage());
   }
   closeMenu() {
     this.menu.open = false;
     this.syncOverlay();
     this.menu.querySelector(':scope > summary')?.focus();
   }
-  syncOverlay() { this.setOverlay(Boolean(this.handbook && this.mobile.matches && this.menu?.open)); }
+  syncOverlay() { this.setOverlay(Boolean(this.reading && this.mobile.matches && this.menu?.open)); }
   setOverlay(open) {
     if (open === Boolean(this.overlayOpen)) return;
     this.overlayOpen = open;
     cancelAnimationFrame(this.scrollFrame);
     if (open) {
       this.previousOverflow = document.body.style.overflow;
-      this.scrollFrame = requestAnimationFrame(() => this.revealCurrentLesson());
+      this.scrollFrame = requestAnimationFrame(() => this.revealCurrentPage());
     }
     document.body.style.overflow = open ? 'hidden' : this.previousOverflow ?? '';
     for (const el of document.querySelectorAll('.workspace, .sidebar > header, .skip-link')) el.inert = open;
   }
-  revealCurrentLesson() {
+  revealCurrentPage() {
     const current = this.querySelector('.handbook-navigation a[aria-current="page"]');
     const sidebar = this.menu.querySelector('.navigation-body');
     if (!current || !sidebar || !sidebar.contains(current)) return;

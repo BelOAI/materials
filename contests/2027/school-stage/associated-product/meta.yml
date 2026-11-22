@@ -1,0 +1,4 @@
+slug: associated-product
+title: C — Сопутствующий товар
+description: Подсчёт частоты сопутствующих товаров только среди покупателей X.
+kind: math

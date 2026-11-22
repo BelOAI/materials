@@ -1,0 +1,20 @@
+slug: school-stage
+title: Школьный этап BelOAI 2027
+description: Условия и решения 12 задач первого этапа республиканского конкурса по искусственному интеллекту.
+date: "2026-11-15"
+duration: 2 часа
+participants: 561
+maximum_results: 6
+tasks:
+  - csv-top10
+  - biathlon-identity
+  - image-size
+  - last-one
+  - associated-product
+  - two-directions
+  - secant-axis
+  - linear-model-minimum
+  - decision-tree-sum
+  - circle-two-points
+  - taxi-assignment
+  - permutation-matrices

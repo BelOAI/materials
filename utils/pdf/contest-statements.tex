@@ -1,0 +1,42 @@
+% Шапка и сквозная нумерация сборника условий.
+\makeatletter
+\newcommand{\conteststage}{}
+\newcommand{\contestdate}{}
+\newcommand{\ShortProblemTitle}{}
+\newcommand{\contestfoot}{%
+  \parbox{\textwidth}{\hrule\vspace{5pt}%
+    \centering\sffamily\small Страница \thepage\ из \pageref*{LastPage}}}
+\newcommand{\contesthead}{%
+  \vbox{\hbox to \textwidth{%
+    \makebox[28mm][l]{\raisebox{-.5\height}{\includegraphics[width=24mm]{\handbooklogo}}}%
+    \parbox[c]{\dimexpr\textwidth-56mm\relax}{\centering\sffamily\small
+      \conteststage\par Условия задач · \contestdate\par}%
+    \hspace{28mm}}%
+    \vskip 3pt\hrule}}
+\def\ps@conteststatement{%
+  \let\@oddhead\contesthead\let\@evenhead\contesthead
+  \let\@oddfoot\contestfoot\let\@evenfoot\contestfoot}
+\let\ps@plain\ps@conteststatement
+\makeatother
+\pagestyle{conteststatement}
+\renewcommand{\maketitle}{}
+\setlength{\parindent}{5mm}
+\setlength{\parskip}{1pt plus 1pt}
+\setlength{\headsep}{3mm}
+\addtolength{\textheight}{3mm}
+\setlength{\afterproblemhead}{2mm}
+\setlength{\afterconstraints}{0pt}
+\renewcommand{\problemheadfont}{\Large}
+\titleformat{\subsection}{\normalsize\sffamily\bfseries}{}{0pt}{}
+% Без звёздочки: первый абзац после подзаголовка тоже с красной строкой.
+\titlespacing{\subsection}{0pt}{7pt plus 2pt}{3pt}
+
+\newenvironment{contestsample}{%
+  \par\begin{center}\setlength{\tabcolsep}{6pt}%
+  \begin{tabular}{|c|c|}\hline
+    \textbf{Исходные данные} & \textbf{Результат}\\\hline
+}{\tabularnewline\hline\end{tabular}\end{center}}
+\newenvironment{contestsamplecolumn}{%
+  \begin{minipage}[t]{\dimexpr.5\linewidth-2\tabcolsep-2\arrayrulewidth\relax}%
+  \vspace{4pt}\footnotesize
+}{\vspace{4pt}\end{minipage}}

@@ -21,6 +21,7 @@ from meta_parser import (
 )
 from course_site import load_course, publish_pages
 from handbook_site import publish_handbook
+from contest_site import publish_contests
 
 from repo_paths import REPO_ROOT
 from course_catalog import session_directories
@@ -266,9 +267,13 @@ def main() -> None:
         encoding="utf-8",
     )
     publish_pages(REPO_ROOT, SITE_DIR, manifest)
+    publish_contests(REPO_ROOT, SITE_DIR, course["weeks"], validate=False)
     shutil.copyfile(REPO_ROOT / "utils/site/favicon.svg", SITE_DIR / "favicon.svg")
     if (REPO_ROOT / "handbooks/handbooks.yml").is_file():
         publish_handbook(REPO_ROOT, SITE_DIR, course["weeks"])
+    if (REPO_ROOT / "contests/contests.yml").is_file():
+        from contest_site import validate_links
+        validate_links(SITE_DIR)
     print(f"Опубликован манифест: {len(entries)} материалов")
 
 

@@ -1,0 +1,19 @@
+% Компактный разбор с общей титульной шапкой и номерами страниц.
+\makeatletter
+\newcommand{\conteststage}{}
+\def\ps@contestdebrief{%
+  \let\@oddhead\@empty\let\@evenhead\@empty
+  \def\@oddfoot{\hfil\thepage\hfil}\let\@evenfoot\@oddfoot}
+\let\ps@plain\ps@contestdebrief
+\makeatother
+\pagestyle{contestdebrief}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\renewcommand{\maketitle}{%
+  \begin{center}
+    {\Large\sffamily\conteststage\par}
+    \vspace{4pt}{\LARGE\sffamily\bfseries Разбор задач\par}
+  \end{center}}
+\titleformat{\section}{\large\sffamily\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\normalsize\sffamily\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{14pt plus 2pt}{5pt}

@@ -1,0 +1,4 @@
+slug: permutation-matrices
+title: J — Число допустимых матриц
+description: Подсчёт перестановочных матриц с двумя запрещёнными клетками.
+kind: math

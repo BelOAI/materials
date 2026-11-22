@@ -109,12 +109,21 @@ def render_material(material: dict, root: str, show_subtitle: bool = False) -> s
     </li>"""
 
 
+def publish_katex(source: Path, output: Path) -> None:
+    package = source / "utils/site/node_modules/katex"
+    destination = output / "assets/katex"
+    shutil.copytree(package / "dist/fonts", destination / "fonts", dirs_exist_ok=True)
+    shutil.copyfile(package / "dist/katex.min.css", destination / "katex.min.css")
+    shutil.copyfile(package / "LICENSE", destination / "LICENSE")
+
+
 def write_page(
     source: Path, output: Path, weeks: list,
     path: str, title: str, description: str, content: str, active: str, root: str,
     extra_navigation: str = "",
     *, navigation_override: str | None = None, navigation_top: str = "",
     brand_href: str | None = None, navigation_label: str = "Навигация по материалам",
+    math: bool = False,
 ) -> None:
     about = link(
         root, "О подготовке", ' aria-current="page"' if active == "home" else ""
@@ -136,6 +145,10 @@ def write_page(
         )
         + '</li>'
         + '<li>' + link(root + "handbooks/", "Учебники") + '</li>'
+        + '<li>' + link(
+            root + "contests/", "Разборы контестов",
+            ' aria-current="page"' if active in {"contests", "contest"} else "",
+        ) + '</li>'
         + '<li><a href="https://github.com/BelOAI/materials">Исходники на GitHub</a></li></ul>'
     )
     nav = navigation_override if navigation_override is not None else nav + extra_navigation
@@ -148,11 +161,13 @@ def write_page(
         content=content,
         navigation=nav,
         navigation_top=navigation_top,
-        navigation_class="handbook-navigation" if active == "handbook" else "",
+        navigation_class="handbook-navigation" if active in {"handbook", "contests", "contest"} else "",
         brand_href=escape(brand_href if brand_href is not None else root, quote=True),
         navigation_label=escape(navigation_label, quote=True),
         license_current=' aria-current="page"' if path == "license" else "",
     )
+    if math:
+        html = html.replace("</head>", f'<link rel="stylesheet" href="{root}assets/katex/katex.min.css" />\n  </head>', 1)
     dest = output / path / "index.html"
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(html, encoding="utf-8")
