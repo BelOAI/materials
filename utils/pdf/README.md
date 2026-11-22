@@ -6,7 +6,7 @@
 
 ## Зависимости
 
-Нужны Python 3.14, Pandoc, pdfLaTeX, XeLaTeX (для логотипа), Poppler (`pdfinfo`, `pdffonts`, `pdftoppm`) и пакеты из `requirements.txt` этой папки. TeX должен включать CM Super, поддержку русского языка, `fontspec`, `babel`, `standalone`, `titlesec`, `lastpage`, `adjustbox`, `float`, `caption`, `needspace`, `framed`, `fancyvrb` и математические пакеты.
+Нужны Python 3.14, Pandoc, pdfLaTeX, XeLaTeX (для логотипа), Poppler (`pdfinfo`, `pdffonts`, `pdftoppm`) и пакеты из `requirements.txt` этой папки. TeX должен включать CM Super, поддержку русского языка, `fontspec`, `babel`, `standalone`, `titlesec`, `lastpage`, `adjustbox`, `float`, `caption`, `needspace`, `framed`, `fancyvrb`, `fvextra`, `tcolorbox` (с `environ`, `trimspaces` и `pdfcol`) и математические пакеты.
 
 ```bash
 python3 -m pip install -r utils/pdf/requirements.txt

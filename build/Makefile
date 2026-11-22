@@ -5,7 +5,7 @@ PROFILE ?= reader
 PRESS_READY ?= 0
 DIR ?=
 
-.PHONY: all session lecture materials site frontend handbooks handbook-pdf test tex clean
+.PHONY: all session lecture materials site frontend handbooks handbook-pdf contest-pdf test tex clean
 
 all: site
 
@@ -38,6 +38,9 @@ handbooks: frontend
 handbook-pdf:
 	cd "$(REPO_ROOT)" && python3 "$(SCRIPTS)/build-handbook-pdf.py" $(if $(DIR),"$(DIR)",--all) --jobs "$(JOBS)" --profile "$(PROFILE)" $(if $(filter 1,$(PRESS_READY)),--press-ready) $(if $(filter belarus-textbook,$(PROFILE)),--book-only)
 
+contest-pdf:
+	cd "$(REPO_ROOT)" && python3 "$(SCRIPTS)/build-contest-pdf.py"
+
 test:
 	cd "$(REPO_ROOT)" && python3 -m unittest discover -s utils/scripts/tests
 	npm --prefix "$(REPO_ROOT)/utils/site" test
@@ -45,6 +48,7 @@ test:
 site: frontend
 	"$(SCRIPTS)/build-all.sh"
 	python3 "$(SCRIPTS)/generate-site.py"
+	python3 "$(SCRIPTS)/build-contest-pdf.py"
 
 clean:
 	find "$(REPO_ROOT)/course" -type f \( \

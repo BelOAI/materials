@@ -1,0 +1,4 @@
+slug: circle-two-points
+title: H — Круг для двух точек
+description: Минимальный радиус круга, содержащего хотя бы две из шести точек.
+kind: math

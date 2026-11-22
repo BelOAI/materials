@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="174" viewBox="0 0 400 174" role="img" aria-labelledby="title desc">
+  <title id="title">Кривая и секущий отрезок</title>
+  <desc id="desc">График y = 2ˣ − 3,4. Точки при x₁ = 1 и x₂ = 2 соединены отрезком, который пересекает ось Ox.</desc>
+  <style id="handbook-style">
+:root { color-scheme:light dark; --figure-scale:1; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e3e8ee; --muted:#aab6c4; --axis:#8796a7; --grid:#3d4855; --edge:#46525f; --blue:#8cbcff; --blue-bg:#1e2c42; --purple:#c7a9ff; --purple-bg:#2d2442; --orange:#ffbd6b; --orange-bg:#3a2b1a; --green:#81c995; --green-bg:#1c3326; --red:#ff9a8a; --red-bg:#3a2227; --yellow:#fdd663; --yellow-bg:#382f18; --paper:#212529; --panel:none; } }
+@media print { :root { color-scheme:light; --ink:#1b2430; --muted:#55657a; --axis:#7a8a9c; --grid:#d5dee8; --edge:#c9d4e0; --blue:#2459c2; --blue-bg:#e8f0ff; --purple:#7238c4; --purple-bg:#f2eaff; --orange:#b05300; --orange-bg:#fff2e3; --green:#188038; --green-bg:#e6f4ea; --red:#c53929; --red-bg:#fce8e6; --yellow:#8a5a00; --yellow-bg:#fef4ce; --paper:#ffffff; --panel:none; } }
+svg { fill:var(--ink); font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; font-size:calc(20px * var(--figure-scale)); }
+text, tspan { font-family:'PT Sans','DejaVu Sans',Arial,sans-serif; }
+.s, .small { font-size:calc(16px * var(--figure-scale)); }
+.heading, .label { font-size:calc(22px * var(--figure-scale)); font-weight:700; }
+.b, .bold { font-weight:700; } .m { fill:var(--muted); } .i { font-style:italic; }
+.big { font-size:32px; font-weight:700; }
+.blue { fill:var(--blue); }
+.purple { fill:var(--purple); }
+.orange { fill:var(--orange); }
+.green { fill:var(--green); }
+.red { fill:var(--red); }
+.yellow { fill:var(--yellow); }
+.axis { fill:none; stroke:var(--axis); stroke-width:1.25; }
+.grid { fill:none; stroke:var(--grid); stroke-width:0.75; }
+.block { rx:6; stroke-width:2; }
+.flow { fill:none; stroke:var(--axis); stroke-width:2; marker-end:url(#handbook-arrow); }
+</style>
+  <defs id="handbook-defs">
+    <marker id="handbook-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4L0 8Z" fill="var(--axis)" />
+    </marker>
+  </defs>
+  <style>
+.cell { fill:var(--paper); stroke:var(--edge); stroke-width:1.4 }
+.marked { fill:var(--blue-bg); stroke:var(--blue); stroke-width:1.5 }
+.bad { fill:var(--orange-bg); stroke:var(--orange); stroke-width:1.5 }
+.edge { fill:none; stroke:var(--axis); stroke-width:1.5 }
+.lineblue { fill:none; stroke:var(--blue); stroke-width:2.5 }
+.lineorange { fill:none; stroke:var(--orange); stroke-width:2.5 }
+</style>
+  <path d="M28 163V14M15 90H390" class="axis" />
+  <polyline points="28.0,152.4 31.5,151.9 35.0,151.5 38.4,151.0 41.9,150.5 45.4,150.0 48.8,149.6 52.3,149.0 55.8,148.5 59.3,148.0 62.8,147.5 66.2,146.9 69.7,146.4 73.2,145.8 76.7,145.3 80.1,144.7 83.6,144.1 87.1,143.5 90.6,142.9 94.0,142.3 97.5,141.6 101.0,141.0 104.5,140.3 107.9,139.7 111.4,139.0 114.9,138.3 118.4,137.6 121.8,136.9 125.3,136.2 128.8,135.4 132.2,134.7 135.7,133.9 139.2,133.1 142.7,132.3 146.1,131.5 149.6,130.7 153.1,129.9 156.6,129.0 160.0,128.2 163.5,127.3 167.0,126.4 170.5,125.5 174.0,124.6 177.4,123.6 180.9,122.7 184.4,121.7 187.8,120.7 191.3,119.7 194.8,118.7 198.3,117.6 201.8,116.6 205.2,115.5 208.7,114.4 212.2,113.3 215.7,112.1 219.1,111.0 222.6,109.8 226.1,108.6 229.5,107.4 233.0,106.1 236.5,104.9 240.0,103.6 243.5,102.3 246.9,100.9 250.4,99.6 253.9,98.2 257.4,96.8 260.8,95.4 264.3,93.9 267.8,92.4 271.2,90.9 274.7,89.4 278.2,87.9 281.7,86.3 285.2,84.7 288.6,83.0 292.1,81.4 295.6,79.7 299.1,77.9 302.5,76.2 306.0,74.4 309.5,72.6 312.9,70.7 316.4,68.9 319.9,66.9 323.4,65.0 326.8,63.0 330.3,61.0 333.8,58.9 337.3,56.8 340.8,54.7 344.2,52.6 347.7,50.4 351.2,48.1 354.7,45.8 358.1,43.5 361.6,41.2 365.1,38.8 368.6,36.3 372.0,33.8 375.5,31.3" class="lineblue" />
+  <path d="M167 126.4L306 74.4" class="lineorange" />
+  <circle cx="167" cy="126.4" r="4" class="orange" />
+  <circle cx="306" cy="74.4" r="4" class="orange" />
+  <text x="104" y="36" text-anchor="middle" class="blue">y = 2ˣ − 3,4</text><text x="164" y="150" text-anchor="middle" class="small">x₁ = 1</text><text x="336" y="64" text-anchor="middle" class="small">x₂ = 2</text><text x="239" y="82" text-anchor="middle" class="orange">x = ?</text><text x="386" y="109" text-anchor="middle" class="small">x</text><text x="40" y="19" text-anchor="middle" class="small">y</text></svg>

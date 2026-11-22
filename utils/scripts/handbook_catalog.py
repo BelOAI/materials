@@ -205,6 +205,7 @@ def load_catalog(source: Path, *, allow_missing_synced=False) -> dict:
 def _load_sections(handbook, book, allow_missing_synced):
     slug, base = handbook['slug'], handbook['_folder']
     sections, paragraphs, identifiers = [], {}, set()
+    chapter_number = 0
     for folder in ordered_folders(base, handbook.get('chapters')):
         chapter = read_metadata(folder)
         if chapter.get('build') is False:
@@ -214,7 +215,10 @@ def _load_sections(handbook, book, allow_missing_synced):
         if identifier in identifiers:
             raise ValueError(f'{folder}: повтор или зарезервированный slug')
         identifiers.add(identifier)
-        chapter.update(id=identifier, _folder=folder, lessons=[])
+        if chapter['slug'] != 'intro':
+            chapter_number += 1
+        number = str(chapter_number) if chapter['slug'] != 'intro' else ''
+        chapter.update(id=identifier, _folder=folder, lessons=[], _number=number)
         para_folders = list(ordered_folders(folder, chapter.get('paragraphs')))
         if chapter['status'] == 'planned' and (chapter.get('paragraphs') or (folder / 'content.md').exists()):
             raise ValueError(f'{folder}: planned не должен содержать текст или параграфы')
@@ -232,7 +236,8 @@ def _load_sections(handbook, book, allow_missing_synced):
             if para_id in identifiers:
                 raise ValueError(f'{para_folder}: повтор slug')
             identifiers.add(para_id)
-            item.update(id=para_id, _folder=para_folder)
+            para_number = f'{number}.{len(chapter["lessons"]) + 1}' if number else ''
+            item.update(id=para_id, _folder=para_folder, _number=para_number)
             if item['status'] != 'planned':
                 item['_content'] = local_file(para_folder, 'content.md')
             validate_resources(para_folder, item, allow_missing_synced)
@@ -242,3 +247,10 @@ def _load_sections(handbook, book, allow_missing_synced):
     handbook['sections'] = sections
     book['_lessons'].update(paragraphs)
     book['_chapters'].update({s['id']: s for s in sections})
+
+
+def numbered_title(item, *, chapter=False):
+    """Единая подпись для сайта и PDF; введение и его параграфы без номеров."""
+    number = item.get('_number', '')
+    prefix = ('Глава ' if chapter else '') + number + '. ' if number else ''
+    return prefix + item['title']
