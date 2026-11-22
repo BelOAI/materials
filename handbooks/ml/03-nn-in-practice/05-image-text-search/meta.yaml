@@ -21,6 +21,8 @@ resources:
     label: Практика и эксперименты (.ipynb)
   - path: media/clip-search.svg
     label: Схема поиска по описанию (.svg)
+  - path: media/result-1.png
+    label: Галерея поисковой выдачи (.png)
 references:
   - label: Hugging Face — CLIP model
     url: https://huggingface.co/docs/transformers/model_doc/clip

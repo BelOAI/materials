@@ -1,0 +1,24 @@
+# Изображения для главы 3
+
+Набор предназначен для первого запуска, а не для оценки качества моделей. Источник файлов — [scikit-image 0.25.2](https://github.com/scikit-image/scikit-image/tree/v0.25.2/skimage/data); происхождение и условия перечислены в [документации skimage.data](https://scikit-image.org/docs/stable/api/skimage.data.html).
+
+| Файл | Содержание и автор | Условия |
+| :--- | :--- | :--- |
+| coffee.png | Чашка кофе на столе, Rachel Michetti; Pikolo Espresso Bar | CC0 |
+| chelsea.png | Кошка Chelsea, Stefan van der Walt | CC0 |
+| rocket.jpg | Запуск Falcon 9 с DSCOVR, SpaceX | Общественное достояние |
+| brick.png | Кирпичная стена, CC0Textures; преобразование и обрезка scikit-image | CC0 |
+| grass.png | Трава, исходник DeviantArt; обрезка и перевод в оттенки серого scikit-image | CC0 |
+| coffee-crop.png | Обрезка coffee.png: (100, 40, 500, 360), выполнена для BelOAI | CC0, как исходник |
+
+coffee.png и coffee-crop.png показывают один исходный кадр: это связанные примеры, а не независимые наблюдения. Изображения не создавались нейросетью. Файлы исходников сохранены без изменений, кроме явно названной обрезки.
+
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) допускает копирование и изменение без ограничений авторского права. Эти сторонние изображения не переводятся под CC BY репозитория.
+
+Для ноутбука скачайте архив изображений со страницы главы и распакуйте рядом с notebook.ipynb: должна получиться папка data/. В Colab загрузите ZIP в /content и выполните:
+
+```python
+from zipfile import ZipFile
+with ZipFile("images.zip") as archive:
+    archive.extractall(".")
+```

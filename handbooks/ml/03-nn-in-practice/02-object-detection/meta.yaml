@@ -23,6 +23,10 @@ resources:
     label: Координаты рамки (.svg)
   - path: media/detection-flow.svg
     label: Схема обнаружения объектов (.svg)
+  - path: media/result-1.png
+    label: Сравнение порогов детектора (.png)
+  - path: media/result-2.png
+    label: Маска ложки (.png)
 references:
   - label: TorchVision — Object Detection Finetuning Tutorial
     url: https://docs.pytorch.org/tutorials/intermediate/torchvision_tutorial.html
