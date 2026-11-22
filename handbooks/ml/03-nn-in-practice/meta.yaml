@@ -1,13 +1,37 @@
 slug: nn-in-practice
 title: Нейросети на практике
-description: Запускаем готовые модели для изображений и текста, проверяем их ответы и воспроизводимость опыта.
+description: Запускаем готовые модели для изображений и текста, проверяем их ответы
+  и воспроизводимость опыта.
 status: draft
 build: true
 paragraphs:
-  - 01-image-classification
-  - 02-object-detection
-  - 03-text-models
-  - 04-text-generation
-  - 05-image-text-search
+- 01-image-classification
+- 02-object-detection
+- 03-text-models
+- 04-text-generation
+- 05-image-text-search
 authors:
-  - name: Алексей Толстиков
+- name: Алексей Толстиков
+resources:
+- path: images.zip
+  label: Изображения для первого запуска (.zip)
+- path: data/SOURCES.txt
+  label: Происхождение изображений и подготовка данных
+- path: requirements.txt
+  label: Библиотеки примеров (.txt)
+- path: data/SHA256SUMS.json
+  label: SHA256SUMS.json
+- path: data/brick.png
+  label: brick.png
+- path: data/chelsea.png
+  label: chelsea.png
+- path: data/coffee-crop.png
+  label: coffee-crop.png
+- path: data/coffee.png
+  label: coffee.png
+- path: data/grass.png
+  label: grass.png
+- path: data/rocket.jpg
+  label: rocket.jpg
+- path: experiment-results.json
+  label: Проверенные результаты и версии (.json)

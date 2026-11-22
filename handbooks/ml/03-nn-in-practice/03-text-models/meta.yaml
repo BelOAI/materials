@@ -21,6 +21,8 @@ resources:
     label: Практика и эксперименты (.ipynb)
   - path: media/text-tasks.svg
     label: Схема двух текстовых задач (.svg)
+  - path: media/negation-similarity.svg
+    label: Сходство фраз с отрицанием (.svg)
 references:
   - label: Hugging Face — Text classification
     url: https://huggingface.co/docs/transformers/tasks/sequence_classification
